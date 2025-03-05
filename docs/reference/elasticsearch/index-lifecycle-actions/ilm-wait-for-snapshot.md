@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-wait-for-snapshot.html
----
-
 # Wait for snapshot [ilm-wait-for-snapshot]
 
 Phases allowed: delete.
@@ -16,6 +11,25 @@ Waits for the specified {{slm-init}} policy to be executed before removing the i
 
 
 ## Example [ilm-wait-for-snapshot-ex]
+
+% [source,console]
+% --------------------------------------------------
+% PUT /_snapshot/backing_repo
+% {
+%  "type": "fs",
+%   "settings": {
+%     "location": "my_backup_location"
+%   }
+% }
+% 
+% PUT /_slm/policy/slm-policy-name
+% {
+%   "schedule": "0 30 1 * * ?",
+%   "name": "<daily-snap-{now/d}>",
+%   "repository": "backing_repo"
+% }
+% --------------------------------------------------
+% // TESTSETUP
 
 ```console
 PUT _ilm/policy/my_policy

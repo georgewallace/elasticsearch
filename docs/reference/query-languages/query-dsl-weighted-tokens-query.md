@@ -1,7 +1,5 @@
 ---
 navigation_title: "Weighted tokens"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-weighted-tokens-query.html
 ---
 
 # Weighted tokens query [query-dsl-weighted-tokens-query]
@@ -10,21 +8,21 @@ mapped_pages:
 ::::{admonition} Deprecated in 8.15.0.
 :class: warning
 
-This query has been replaced by the [Sparse vector](/reference/query-languages/query-dsl-sparse-vector-query.md) and will be removed in an upcoming release.
+This query has been replaced by the [Sparse vector](query-dsl-sparse-vector-query.md) and will be removed in an upcoming release.
 ::::
 
 
-::::{warning}
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-The weighted tokens query requires a list of token-weight pairs that are sent in with a query rather than calculated using a {{nlp}} model. These token pairs are then used in a query against a [sparse vector](/reference/elasticsearch/mapping-reference/sparse-vector.md) or [rank features](/reference/elasticsearch/mapping-reference/rank-features.md) field.
+The weighted tokens query requires a list of token-weight pairs that are sent in with a query rather than calculated using a {{nlp}} model. These token pairs are then used in a query against a [sparse vector](sparse-vector.md) or [rank features](rank-features.md) field.
 
 Weighted tokens queries are useful when you want to use an external query expansion model, or quickly prototype changes without reindexing a new model.
 
 
-### Example request [weighted-tokens-query-ex-request]
+### Example request [weighted-tokens-query-ex-request] 
 
 ```console
 POST _search
@@ -44,8 +42,10 @@ POST _search
 }
 ```
 
+%  TEST[skip: TBD]
 
-## Top level parameters for `weighted_token` [weighted-token-query-params]
+
+## Top level parameters for `weighted_token` [weighted-token-query-params] 
 
 `<tokens>`
 :   (Required, dictionary) A dictionary of token-weight pairs.
@@ -64,17 +64,17 @@ POST _search
         `only_score_pruned_tokens`
         :   (Optional, boolean) If `true` we only input pruned tokens into scoring, and discard non-pruned tokens. It is strongly recommended to set this to `false` for the main query, but this can be set to `true` for a rescore query to get more relevant results. Default: `false`.
 
-        ::::{note}
+        ::::{note} 
         The default values for `tokens_freq_ratio_threshold` and `tokens_weight_threshold` were chosen based on tests using ELSER that provided the most optimal results.
         ::::
 
 
 
-### Example weighted tokens query with pruning configuration and rescore [weighted-tokens-query-with-pruning-config-and-rescore-example]
+### Example weighted tokens query with pruning configuration and rescore [weighted-tokens-query-with-pruning-config-and-rescore-example] 
 
 The following example adds a pruning configuration to the `text_expansion` query. The pruning configuration identifies non-significant tokens to prune from the query in order to improve query performance.
 
-Token pruning happens at the shard level. While this should result in the same tokens being labeled as insignificant across shards, this is not guaranteed based on the composition of each shard. Therefore, if you are running `text_expansion` with a `pruning_config` on a multi-shard index, we strongly recommend adding a [Rescore filtered search results](/reference/elasticsearch/rest-apis/filter-search-results.md#rescore) function with the tokens that were originally pruned from the query. This will help mitigate any shard-level inconsistency with pruned tokens and provide better relevance overall.
+Token pruning happens at the shard level. While this should result in the same tokens being labeled as insignificant across shards, this is not guaranteed based on the composition of each shard. Therefore, if you are running `text_expansion` with a `pruning_config` on a multi-shard index, we strongly recommend adding a [Rescore filtered search results](filter-search-results.md#rescore) function with the tokens that were originally pruned from the query. This will help mitigate any shard-level inconsistency with pruned tokens and provide better relevance overall.
 
 ```console
 GET my-index/_search
@@ -110,4 +110,6 @@ GET my-index/_search
    }
 }
 ```
+
+% TEST[skip: TBD]
 

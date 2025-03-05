@@ -1,13 +1,11 @@
 ---
 navigation_title: "Geo-distance"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geodistance-aggregation.html
 ---
 
 # Geo-distance aggregation [search-aggregations-bucket-geodistance-aggregation]
 
 
-A multi-bucket aggregation that works on `geo_point` fields and conceptually works very similar to the [range](/reference/data-analysis/aggregations/search-aggregations-bucket-range-aggregation.md) aggregation. The user can define a point of origin and a set of distance range buckets. The aggregation evaluates the distance of each document value from the origin point and determines the buckets it belongs to based on the ranges (a document belongs to a bucket if the distance between the document and the origin falls within the distance range of the bucket).
+A multi-bucket aggregation that works on `geo_point` fields and conceptually works very similar to the [range](search-aggregations-bucket-range-aggregation.md) aggregation. The user can define a point of origin and a set of distance range buckets. The aggregation evaluates the distance of each document value from the origin point and determines the buckets it belongs to based on the ranges (a document belongs to a bucket if the distance between the document and the origin falls within the distance range of the bucket).
 
 $$$geodistance-aggregation-example$$$
 
@@ -86,7 +84,9 @@ Response:
 }
 ```
 
-The specified field must be of type `geo_point` (which can only be set explicitly in the mappings). And it can also hold an array of `geo_point` fields, in which case all will be taken into account during aggregation. The origin point can accept all formats supported by the [`geo_point` type](/reference/elasticsearch/mapping-reference/geo-point.md):
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
+The specified field must be of type `geo_point` (which can only be set explicitly in the mappings). And it can also hold an array of `geo_point` fields, in which case all will be taken into account during aggregation. The origin point can accept all formats supported by the [`geo_point` type](geo-point.md):
 
 * Object format: `{ "lat" : 52.3760, "lon" : 4.894 }` - this is the safest format as it is the most explicit about the `lat` & `lon` values
 * String format: `"52.3760, 4.894"` - where the first number is the `lat` and the second is the `lon`
@@ -114,6 +114,8 @@ POST /museums/_search?size=0
 }
 ```
 
+%  TEST[continued]
+
 1. The distances will be computed in kilometers
 
 
@@ -140,6 +142,8 @@ POST /museums/_search?size=0
 }
 ```
 
+%  TEST[continued]
+
 ## Keyed Response [_keyed_response_2]
 
 Setting the `keyed` flag to `true` will associate a unique string key with each bucket and return the ranges as a hash rather than an array:
@@ -163,6 +167,8 @@ POST /museums/_search?size=0
   }
 }
 ```
+
+%  TEST[continued]
 
 Response:
 
@@ -192,6 +198,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
 It is also possible to customize the key for each range:
 
 ```console
@@ -213,6 +221,8 @@ POST /museums/_search?size=0
   }
 }
 ```
+
+%  TEST[continued]
 
 Response:
 
@@ -241,5 +251,7 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
 

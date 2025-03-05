@@ -1,28 +1,23 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analyzer.html
----
+# `analyzer` [analyzer]
 
-# analyzer [analyzer]
-
-::::{important}
-Only [`text`](/reference/elasticsearch/mapping-reference/text.md) fields support the `analyzer` mapping parameter.
+::::{important} 
+Only [`text`](text.md) fields support the `analyzer` mapping parameter.
 
 ::::
 
 
-The `analyzer` parameter specifies the [analyzer](docs-content://manage-data/data-store/text-analysis/anatomy-of-an-analyzer.md) used for [text analysis](docs-content://manage-data/data-store/text-analysis.md) when indexing or searching a `text` field.
+The `analyzer` parameter specifies the [analyzer](analyzer-anatomy.md) used for [text analysis](analysis.md) when indexing or searching a `text` field.
 
-Unless overridden with the [`search_analyzer`](/reference/elasticsearch/mapping-reference/search-analyzer.md) mapping parameter, this analyzer is used for both [index and search analysis](docs-content://manage-data/data-store/text-analysis/index-search-analysis.md). See [Specify an analyzer](docs-content://manage-data/data-store/text-analysis/specify-an-analyzer.md).
+Unless overridden with the [`search_analyzer`](search-analyzer.md) mapping parameter, this analyzer is used for both [index and search analysis](analysis-index-search-time.md). See [Specify an analyzer](specify-analyzer.md).
 
-::::{tip}
-We recommend testing analyzers before using them in production. See [Test an analyzer](docs-content://manage-data/data-store/text-analysis/test-an-analyzer.md).
+::::{tip} 
+We recommend testing analyzers before using them in production. See [Test an analyzer](test-analyzer.md).
 
 ::::
 
 
-::::{tip}
-The `analyzer` setting can **not** be updated on existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+::::{tip} 
+The `analyzer` setting can **not** be updated on existing fields using the [update mapping API](indices-put-mapping.md).
 ::::
 
 
@@ -98,8 +93,8 @@ GET my-index-000001/_search
 }
 ```
 
-::::{tip}
-The `search_quote_analyzer` setting can be updated on existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+::::{tip} 
+The `search_quote_analyzer` setting can be updated on existing fields using the [update mapping API](indices-put-mapping.md).
 ::::
 
 

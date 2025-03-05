@@ -1,7 +1,5 @@
 ---
 navigation_title: "Network direction"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/network-direction-processor.html
 ---
 
 # Network direction processor [network-direction-processor]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Calculates the network direction given a source IP address, destination IP address, and a list of internal networks.
 
-The network direction processor reads IP addresses from [Elastic Common Schema (ECS)][Elastic Common Schema (ECS)](ecs://reference/index.md)) fields by default. If you use the ECS, only the `internal_networks` option must be specified.
+The network direction processor reads IP addresses from [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}) fields by default. If you use the ECS, only the `internal_networks` option must be specified.
 
 $$$network-direction-options$$$
 
@@ -18,19 +16,19 @@ $$$network-direction-options$$$
 | `source_ip` | no | `source.ip` | Field containing the source IP address. |
 | `destination_ip` | no | `destination.ip` | Field containing the destination IP address. |
 | `target_field` | no | `network.direction` | Output field for the network direction. |
-| `internal_networks` | yes * |  | List of internal networks. Supports IPv4 andIPv6 addresses and ranges in CIDR notation. Also supports the named ranges listed below. These may be constructed with [template snippets](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#template-snippets). * Must specify only one of `internal_networks` or `internal_networks_field`. |
+| `internal_networks` | yes * |  | List of internal networks. Supports IPv4 andIPv6 addresses and ranges in CIDR notation. Also supports the named ranges listed below. These may be constructed with [template snippets](ingest.md#template-snippets). * Must specify only one of `internal_networks` or `internal_networks_field`. |
 | `internal_networks_field` | no |  | A field on the given document to read the `internal_networks` configuration from. |
 | `ignore_missing` | no | `true` | If `true` and any required fields are missing,the processor quietly exits without modifying the document. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 One of either `internal_networks` or `internal_networks_field` must be specified. If `internal_networks_field` is specified, it follows the behavior specified by `ignore_missing`.
 
 
-## Supported named network ranges [supported-named-network-ranges]
+## Supported named network ranges [supported-named-network-ranges] 
 
 The named ranges supported for the `internal_networks` option are:
 
@@ -45,7 +43,7 @@ The named ranges supported for the `internal_networks` option are:
 * `unspecified` - Matches unspecified addresses (either the IPv4 address "0.0.0.0" or the IPv6 address "::").
 
 
-## Examples [network-direction-processor-ex]
+## Examples [network-direction-processor-ex] 
 
 The following example illustrates the use of the network direction processor:
 
@@ -100,4 +98,8 @@ Which produces the following result:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"_index":"_index","_id":"_id","_version":"-3","_ingest":{"timestamp":$body.docs.0.doc._ingest.timestamp},/]
+
+%  NOTCONSOLE
 

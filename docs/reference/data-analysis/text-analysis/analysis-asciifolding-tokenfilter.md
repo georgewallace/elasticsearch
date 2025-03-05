@@ -1,7 +1,5 @@
 ---
 navigation_title: "ASCII folding"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-asciifolding-tokenfilter.html
 ---
 
 # ASCII folding token filter [analysis-asciifolding-tokenfilter]
@@ -9,11 +7,11 @@ mapped_pages:
 
 Converts alphabetic, numeric, and symbolic characters that are not in the Basic Latin Unicode block (first 127 ASCII characters) to their ASCII equivalent, if one exists. For example, the filter changes `à` to `a`.
 
-This filter uses Lucene’s [ASCIIFoldingFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/ASCIIFoldingFilter.md).
+This filter uses Lucene’s [ASCIIFoldingFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/ASCIIFoldingFilter.md).
 
 ## Example [analysis-asciifolding-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `asciifolding` filter to drop the diacritical marks in `açaí à la carte`:
+The following [analyze API](indices-analyze.md) request uses the `asciifolding` filter to drop the diacritical marks in `açaí à la carte`:
 
 ```console
 GET /_analyze
@@ -30,10 +28,46 @@ The filter produces the following tokens:
 [ acai, a, la, carte ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "acai",
+%       "start_offset" : 0,
+%       "end_offset" : 4,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "a",
+%       "start_offset" : 5,
+%       "end_offset" : 6,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "la",
+%       "start_offset" : 7,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "carte",
+%       "start_offset" : 10,
+%       "end_offset" : 15,
+%       "type" : "<ALPHANUM>",
+%       "position" : 3
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-asciifolding-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `asciifolding` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `asciifolding` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /asciifold_example

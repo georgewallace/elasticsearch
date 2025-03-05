@@ -1,7 +1,5 @@
 ---
 navigation_title: "Max bucket"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-max-bucket-aggregation.html
 ---
 
 # Max bucket aggregation [search-aggregations-pipeline-max-bucket-aggregation]
@@ -21,12 +19,14 @@ A `max_bucket` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$max-bucket-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | The path to the buckets we wish to find the maximum for (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details) | Required |  |
-| `gap_policy` | The policy to apply when gaps are found in the data (see [Dealing with gaps in the data](/reference/data-analysis/aggregations/pipeline.md#gap-policy) for more details) | Optional | `skip` |
+| `buckets_path` | The path to the buckets we wish to find the maximum for (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details) | Required |  |
+| `gap_policy` | The policy to apply when gaps are found in the data (see [Dealing with gaps in the data](search-aggregations-pipeline.md#gap-policy) for more details) | Optional | `skip` |
 | `format` | [DecimalFormat pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/DecimalFormat.md) for theoutput value. If specified, the formatted value is returned in the aggregation’s`value_as_string` property | Optional | `null` |
 
 The following snippet calculates the maximum of the total monthly `sales`:
@@ -57,6 +57,8 @@ POST /sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. `buckets_path` instructs this max_bucket aggregation that we want the maximum value of the `sales` aggregation in the `sales_per_month` date histogram.
 
@@ -105,6 +107,12 @@ And the following may be the response:
    }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
 
 1. `keys` is an array of strings since the maximum value may be present in multiple buckets
 

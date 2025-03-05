@@ -1,16 +1,14 @@
 ---
 navigation_title: "Character group"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-chargroup-tokenizer.html
 ---
 
 # Character group tokenizer [analysis-chargroup-tokenizer]
 
 
-The `char_group` tokenizer breaks text into terms whenever it encounters a character which is in a defined set. It is mostly useful for cases where a simple custom tokenization is desired, and the overhead of use of the [`pattern` tokenizer](/reference/data-analysis/text-analysis/analysis-pattern-tokenizer.md) is not acceptable.
+The `char_group` tokenizer breaks text into terms whenever it encounters a character which is in a defined set. It is mostly useful for cases where a simple custom tokenization is desired, and the overhead of use of the [`pattern` tokenizer](analysis-pattern-tokenizer.md) is not acceptable.
 
 
-## Configuration [_configuration_8]
+## Configuration [_configuration_8] 
 
 The `char_group` tokenizer accepts one parameter:
 
@@ -21,7 +19,7 @@ The `char_group` tokenizer accepts one parameter:
 :   The maximum token length. If a token is seen that exceeds this length then it is split at `max_token_length` intervals. Defaults to `255`.
 
 
-## Example output [_example_output_7]
+## Example output [_example_output_7] 
 
 ```console
 POST _analyze

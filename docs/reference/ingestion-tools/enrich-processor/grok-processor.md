@@ -1,7 +1,5 @@
 ---
 navigation_title: "Grok"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html
 ---
 
 # Grok processor [grok-processor]
@@ -11,7 +9,7 @@ Extracts structured fields out of a single text field within a document. You cho
 
 This processor comes packaged with many [reusable patterns](https://github.com/elastic/elasticsearch/blob/master/libs/grok/src/main/resources/patterns).
 
-If you need help building patterns to match your logs, you will find the [Grok Debugger](docs-content://explore-analyze/query-filter/tools/grok-debugger.md) tool quite useful! The [Grok Constructor](https://grokconstructor.appspot.com) is also a useful tool.
+If you need help building patterns to match your logs, you will find the [Grok Debugger](https://www.elastic.co/guide/en/kibana/current/xpack-grokdebugger.html) tool quite useful! The [Grok Constructor](https://grokconstructor.appspot.com) is also a useful tool.
 
 ## Using the Grok Processor in a Pipeline [using-grok]
 
@@ -22,13 +20,13 @@ $$$grok-options$$$
 | `field` | yes | - | The field to use for grok expression parsing |
 | `patterns` | yes | - | An ordered list of grok expression to match and extract named captures with. Returns on the first expression in the list that matches. |
 | `pattern_definitions` | no | - | A map of pattern-name and pattern tuples defining custom patterns to be used by the current processor. Patterns matching existing names will override the pre-existing definition. |
-| `ecs_compatibility` | no | `disabled` | Must be `disabled` or `v1`. If `v1`, the processor uses patterns with [Elastic Common Schema (ECS)](ecs://reference/ecs-field-reference.md) field names. |
+| `ecs_compatibility` | no | `disabled` | Must be `disabled` or `v1`. If `v1`, the processor uses patterns with [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}/ecs-field-reference.html) field names. |
 | `trace_match` | no | false | when true, `_ingest._grok_match_index` will be inserted into your matched document’s metadata with the index into the pattern found in `patterns` that matched. |
 | `ignore_missing` | no | false | If `true` and `field` does not exist or is `null`, the processor quietly exits without modifying the document |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 Here is an example of using the provided patterns to extract out and name structured fields from a string field in a document.
@@ -84,6 +82,8 @@ This pipeline will insert these named captures as new fields within the document
 }
 ```
 
+%  TESTRESPONSE[s/2016-11-08T19:43:03.850\+0000/$body.docs.0.doc._ingest.timestamp/]
+
 
 ## Custom Patterns [custom-patterns]
 
@@ -108,6 +108,8 @@ You can add your own patterns to a processor definition under the `pattern_defin
   ]
 }
 ```
+
+%  NOTCONSOLE
 
 
 ## Providing Multiple Match Patterns [trace-match]
@@ -167,7 +169,40 @@ response:
 }
 ```
 
+%  TESTRESPONSE[s/2016-11-08T19:43:03.850\+0000/$body.docs.0.doc._ingest.timestamp/]
+
 Both patterns will set the field `pet` with the appropriate match, but what if we want to trace which of our patterns matched and populated our fields? We can do this with the `trace_match` parameter. Here is the output of that same pipeline, but with `"trace_match": true` configured:
+
+% Hidden setup for example:
+% [source,console]
+% --------------------------------------------------
+% POST _ingest/pipeline/_simulate
+% {
+%   "pipeline": {
+%   "description" : "parse multiple patterns",
+%   "processors": [
+%     {
+%       "grok": {
+%         "field": "message",
+%         "patterns": ["%{FAVORITE_DOG:pet}", "%{FAVORITE_CAT:pet}"],
+%         "trace_match": true,
+%         "pattern_definitions" : {
+%           "FAVORITE_DOG" : "beagle",
+%           "FAVORITE_CAT" : "burmese"
+%         }
+%       }
+%     }
+%   ]
+% },
+% "docs":[
+%   {
+%     "_source": {
+%       "message": "I love burmese cats!"
+%     }
+%   }
+%   ]
+% }
+% --------------------------------------------------
 
 ```console-result
 {
@@ -190,6 +225,8 @@ Both patterns will set the field `pet` with the appropriate match, but what if w
   ]
 }
 ```
+
+%  TESTRESPONSE[s/2016-11-08T19:43:03.850\+0000/$body.docs.0.doc._ingest.timestamp/]
 
 In the above response, you can see that the index of the pattern that matched was `"1"`. This is to say that it was the second (index starts at zero) pattern in `patterns` to match.
 
@@ -215,7 +252,9 @@ The above request will return a response body containing a key-value representat
 }
 ```
 
-By default, the API returns a list of legacy Grok patterns. These legacy patterns predate the [Elastic Common Schema (ECS)](ecs://reference/ecs-field-reference.md) and don’t use ECS field names. To return patterns that extract ECS field names, specify `v1` in the optional `ecs_compatibility` query parameter.
+%  NOTCONSOLE
+
+By default, the API returns a list of legacy Grok patterns. These legacy patterns predate the [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}/ecs-field-reference.html) and don’t use ECS field names. To return patterns that extract ECS field names, specify `v1` in the optional `ecs_compatibility` query parameter.
 
 ```console
 GET _ingest/processor/grok?ecs_compatibility=v1
@@ -241,6 +280,8 @@ The API returns the following response.
 }
 ```
 
+%  NOTCONSOLE
+
 This can be useful to reference as the built-in patterns change across versions.
 
 
@@ -258,7 +299,7 @@ $$$grok-watchdog-options$$$
 
 ## Grok debugging [grok-debugging]
 
-It is advised to use the [Grok Debugger](docs-content://explore-analyze/query-filter/tools/grok-debugger.md) to debug grok patterns. From there you can test one or more patterns in the UI against sample data. Under the covers it uses the same engine as ingest node processor.
+It is advised to use the [Grok Debugger](https://www.elastic.co/guide/en/kibana/current/xpack-grokdebugger.html) to debug grok patterns. From there you can test one or more patterns in the UI against sample data. Under the covers it uses the same engine as ingest node processor.
 
 Additionally, it is recommended to enable debug logging for Grok so that any additional messages may also be seen in the Elasticsearch server log.
 
@@ -270,5 +311,7 @@ PUT _cluster/settings
   }
 }
 ```
+
+%  NOTCONSOLE
 
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Registered domain"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/registered-domain-processor.html
 ---
 
 # Registered domain processor [registered-domain-processor]
@@ -17,13 +15,13 @@ $$$registered-domain-options$$$
 | `target_field` | no | `<empty string>` | Object field containingextracted domain components. If an `<empty string>`, the processor addscomponents to the document’s root. |
 | `ignore_missing` | no | `true` | If `true` and any required fieldsare missing, the processor quietly exits without modifying the document. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 
-## Examples [registered-domain-processor-ex]
+## Examples [registered-domain-processor-ex] 
 
 The following example illustrates the use of the registered domain processor:
 
@@ -72,4 +70,6 @@ Which produces the following result:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"_index":"_index","_id":"_id","_version":"-3","_ingest":{"timestamp":$body.docs.0.doc._ingest.timestamp},/]
 

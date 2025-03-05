@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/index-prefixes.html
----
-
-# index_prefixes [index-prefixes]
+# `index_prefixes` [index-prefixes]
 
 The `index_prefixes` parameter enables the indexing of term prefixes to speed up prefix searches. It accepts the following optional settings:
 
@@ -72,4 +67,6 @@ GET my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 

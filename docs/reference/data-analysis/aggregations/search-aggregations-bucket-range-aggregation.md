@@ -1,7 +1,5 @@
 ---
 navigation_title: "Range"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-range-aggregation.html
 ---
 
 # Range aggregation [search-aggregations-bucket-range-aggregation]
@@ -30,6 +28,10 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 Response:
 
@@ -61,6 +63,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 ## Keyed Response [_keyed_response_4]
 
 Setting the `keyed` flag to `true` will associate a unique string key with each bucket and return the ranges as a hash rather than an array:
@@ -85,6 +89,10 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 Response:
 
@@ -113,6 +121,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 It is also possible to customize the key for each range:
 
 $$$range-aggregation-custom-keys-example$$$
@@ -135,6 +145,10 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 Response:
 
@@ -163,10 +177,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 
 ## Script [_script]
 
-If the data in your documents doesn’t exactly match what you’d like to aggregate, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if you need to apply a particular currency conversion rate:
+If the data in your documents doesn’t exactly match what you’d like to aggregate, use a [runtime field](runtime.md). For example, if you need to apply a particular currency conversion rate:
 
 $$$range-aggregation-runtime-field-example$$$
 
@@ -201,6 +217,40 @@ GET sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
+
+% 
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "price_ranges": {
+%       "buckets": [
+%         {
+%           "key": "*-100.0",
+%           "to": 100.0,
+%           "doc_count": 2
+%         },
+%         {
+%           "key": "100.0-200.0",
+%           "from": 100.0,
+%           "to": 200.0,
+%           "doc_count": 5
+%         },
+%         {
+%           "key": "200.0-*",
+%           "from": 200.0,
+%           "doc_count": 0
+%         }
+%       ]
+%     }
+%   }
+% }
+% ----
+% 
+
 
 ## Sub Aggregations [_sub_aggregations_2]
 
@@ -230,6 +280,10 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 Response:
 
@@ -281,6 +335,8 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\.//]
 
 
 ## Histogram fields [search-aggregations-bucket-range-aggregation-histogram-fields]
@@ -381,9 +437,14 @@ The `range` aggregation will sum the counts of each range computed based on the 
 }
 ```
 
-::::{important}
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+::::{important} 
 Range aggregation is a bucket aggregation, which partitions documents into buckets rather than calculating metrics over fields like metrics aggregations do. Each bucket represents a collection of documents which sub-aggregations can run on. On the other hand, a histogram field is a pre-aggregated field representing multiple values inside a single field: buckets of numerical data and a count of items/documents for each bucket. This mismatch between the range aggregations expected input (expecting raw documents) and the histogram field (that provides summary information) limits the outcome of the aggregation to only the doc counts for each bucket.
 
-**Consequently, when executing a range aggregation over a histogram field, no sub-aggregations are allowed.**
+***Consequently, when executing a range aggregation over a histogram field, no sub-aggregations are allowed.***
 
 ::::
+
+
+

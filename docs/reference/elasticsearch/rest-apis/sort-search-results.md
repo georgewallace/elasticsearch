@@ -1,15 +1,8 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sort-search-results.html
-applies_to:
-  stack: all
----
-
-# Sort search results
+# Sort search results [sort-search-results]
 
 Allows you to add one or more sorts on specific fields. Each sort can be reversed as well. The sort is defined on a per field level, with special field name for `_score` to sort by score, and `_doc` to sort by index order.
 
-To optimize sorting performance, avoid sorting by [`text`](/reference/elasticsearch/mapping-reference/text.md)fields; instead, use [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) or [`numerical`](/reference/elasticsearch/mapping-reference/number.md) fields. Additionally, you can improve performance by enabling pre-sorting at index time using [index sorting](/reference/elasticsearch/index-settings/sorting.md). While this can speed up query-time sorting, it may reduce indexing performance and increase memory usage.
+To optimize sorting performance, avoid sorting by [`text`](text.md)fields; instead, use [`keyword`](keyword.md) or [`numerical`](number.md) fields. Additionally, you can improve performance by enabling pre-sorting at index time using [index sorting](index-modules-index-sorting.md). While this can speed up query-time sorting, it may reduce indexing performance and increase memory usage.
 
 Assuming the following index mapping:
 
@@ -47,15 +40,17 @@ GET /my-index-000001/_search
 }
 ```
 
-::::{note}
-`_doc` has no real use-case besides being the most efficient sort order. So if you don’t care about the order in which documents are returned, then you should sort by `_doc`. This especially helps when [scrolling](/reference/elasticsearch/rest-apis/paginate-search-results.md#scroll-search-results).
+%  TEST[continued]
+
+::::{note} 
+`_doc` has no real use-case besides being the most efficient sort order. So if you don’t care about the order in which documents are returned, then you should sort by `_doc`. This especially helps when [scrolling](paginate-search-results.md#scroll-search-results).
 ::::
 
 
 
-## Sort values [_sort_values]
+## Sort values [_sort_values] 
 
-The search response includes `sort` values for each document. Use the `format` parameter to specify a [date format](/reference/elasticsearch/mapping-reference/mapping-date-format.md#built-in-date-formats) for the `sort` values of [`date`](/reference/elasticsearch/mapping-reference/date.md) and [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) fields. The following search returns `sort` values for the `post_date` field in the `strict_date_optional_time_nanos` format.
+The search response includes `sort` values for each document. Use the `format` parameter to specify a [date format](mapping-date-format.md#built-in-date-formats) for the `sort` values of [`date`](date.md) and [`date_nanos`](date_nanos.md) fields. The following search returns `sort` values for the `post_date` field in the `strict_date_optional_time_nanos` format.
 
 ```console
 GET /my-index-000001/_search
@@ -69,8 +64,10 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TEST[continued]
 
-## Sort order [_sort_order]
+
+## Sort order [_sort_order] 
 
 The `order` option can have the following values:
 
@@ -83,7 +80,7 @@ The `order` option can have the following values:
 The order defaults to `desc` when sorting on the `_score`, and defaults to `asc` when sorting on anything else.
 
 
-## Sort mode option [_sort_mode_option]
+## Sort mode option [_sort_mode_option] 
 
 Elasticsearch supports sorting by array or multi-valued fields. The `mode` option controls what array value is picked for sorting the document it belongs to. The `mode` option can have the following values:
 
@@ -105,7 +102,7 @@ Elasticsearch supports sorting by array or multi-valued fields. The `mode` optio
 The default sort mode in the ascending sort order is `min` — the lowest value is picked. The default sort mode in the descending order is `max` — the highest value is picked.
 
 
-### Sort mode example usage [_sort_mode_example_usage]
+### Sort mode example usage [_sort_mode_example_usage] 
 
 In the example below the field price has multiple prices per document. In this case the result hits will be sorted by price ascending based on the average price per document.
 
@@ -128,7 +125,7 @@ POST /_search
 ```
 
 
-## Sorting numeric fields [_sorting_numeric_fields]
+## Sorting numeric fields [_sorting_numeric_fields] 
 
 For numeric fields it is also possible to cast the values from one type to another using the `numeric_type` option. This option accepts the following values: [`"double", "long", "date", "date_nanos"`] and can be useful for searches across multiple data streams or indices where the sort field is mapped differently.
 
@@ -156,6 +153,8 @@ PUT /index_long
 }
 ```
 
+%  TEST[continued]
+
 Since `field` is mapped as a `double` in the first index and as a `long` in the second index, it is not possible to use this field to sort requests that query both indices by default. However you can force the type to one or the other with the `numeric_type` option in order to force a specific type for all indices:
 
 ```console
@@ -170,6 +169,8 @@ POST /index_long,index_double/_search
    ]
 }
 ```
+
+%  TEST[continued]
 
 In the example above, values for the `index_long` index are casted to a double in order to be compatible with the values produced by the `index_double` index. It is also possible to transform a floating point field into a `long` but note that in this case floating points are replaced by the largest value that is less than or equal (greater than or equal if the value is negative) to the argument and is equal to a mathematical integer.
 
@@ -197,6 +198,8 @@ PUT /index_long
 }
 ```
 
+%  TEST[continued]
+
 Values in these indices are stored with different resolutions so sorting on these fields will always sort the `date` before the `date_nanos` (ascending order). With the `numeric_type` type option it is possible to set a single resolution for the sort, setting to `date` will convert the `date_nanos` to the millisecond resolution while `date_nanos` will convert the values in the `date` field to the nanoseconds resolution:
 
 ```console
@@ -212,13 +215,15 @@ POST /index_long,index_double/_search
 }
 ```
 
-::::{warning}
+%  TEST[continued]
+
+::::{warning} 
 To avoid overflow, the conversion to `date_nanos` cannot be applied on dates before 1970 and after 2262 as nanoseconds are represented as longs.
 ::::
 
 
 
-## Sorting within nested objects. [nested-sorting]
+## Sorting within nested objects. [nested-sorting] 
 
 Elasticsearch also supports sorting by fields that are inside one or more nested objects. The sorting by nested field support has a `nested` sort option with the following properties:
 
@@ -234,13 +239,13 @@ Elasticsearch also supports sorting by fields that are inside one or more nested
 `nested`
 :   Same as top-level `nested` but applies to another nested path within the current nested object.
 
-::::{note}
+::::{note} 
 Elasticsearch will throw an error if a nested field is defined in a sort without a `nested` context.
 ::::
 
 
 
-### Nested sorting examples [_nested_sorting_examples]
+### Nested sorting examples [_nested_sorting_examples] 
 
 In the below example `offer` is a field of type `nested`. The nested `path` needs to be specified; otherwise, Elasticsearch doesn’t know on what nested level sort values need to be captured.
 
@@ -314,7 +319,7 @@ POST /_search
 Nested sorting is also supported when sorting by scripts and sorting by geo distance.
 
 
-## Missing values [_missing_values]
+## Missing values [_missing_values] 
 
 The `missing` parameter specifies how docs which are missing the sort field should be treated: The `missing` value can be set to `_last`, `_first`, or a custom value (that will be used for missing docs as the sort value). The default is `_last`.
 
@@ -332,13 +337,13 @@ GET /_search
 }
 ```
 
-::::{note}
+::::{note} 
 If a nested inner object doesn’t match with the `nested.filter` then a missing value is used.
 ::::
 
 
 
-## Ignoring unmapped fields [_ignoring_unmapped_fields]
+## Ignoring unmapped fields [_ignoring_unmapped_fields] 
 
 By default, the search request will fail if there is no mapping associated with a field. The `unmapped_type` option allows you to ignore fields that have no mapping and not sort by them. The value of this parameter is used to determine what sort values to emit. Here is an example of how it can be used:
 
@@ -357,7 +362,7 @@ GET /_search
 If any of the indices that are queried doesn’t have a mapping for `price` then Elasticsearch will handle it as if there was a mapping of type `long`, with all documents in this index having no value for this field.
 
 
-## Geo distance sorting [geo-sorting]
+## Geo distance sorting [geo-sorting] 
 
 Allow to sort by `_geo_distance`. Here is an example, assuming `pin.location` is a field of type `geo_point`:
 
@@ -394,7 +399,7 @@ GET /_search
 `ignore_unmapped`
 :   Indicates if the unmapped field should be treated as a missing value. Setting it to `true` is equivalent to specifying an `unmapped_type` in the field sort. The default is `false` (unmapped field cause the search to fail).
 
-::::{note}
+::::{note} 
 geo distance sorting does not support configurable missing values: the distance will always be considered equal to `Infinity` when a document does not have values for the field that is used for distance computation.
 ::::
 
@@ -402,7 +407,7 @@ geo distance sorting does not support configurable missing values: the distance 
 The following formats are supported in providing the coordinates:
 
 
-### Lat lon as properties [_lat_lon_as_properties]
+### Lat lon as properties [_lat_lon_as_properties] 
 
 ```console
 GET /_search
@@ -426,7 +431,7 @@ GET /_search
 ```
 
 
-### Lat lon as WKT string [_lat_lon_as_wkt_string]
+### Lat lon as WKT string [_lat_lon_as_wkt_string] 
 
 Format in [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md).
 
@@ -449,7 +454,7 @@ GET /_search
 ```
 
 
-### Geohash [_geohash]
+### Geohash [_geohash] 
 
 ```console
 GET /_search
@@ -470,7 +475,7 @@ GET /_search
 ```
 
 
-### Lat lon as array [_lat_lon_as_array]
+### Lat lon as array [_lat_lon_as_array] 
 
 Format in `[lon, lat]`, note, the order of lon/lat here in order to conform with [GeoJSON](http://geojson.org/).
 
@@ -493,7 +498,7 @@ GET /_search
 ```
 
 
-## Multiple reference points [_multiple_reference_points]
+## Multiple reference points [_multiple_reference_points] 
 
 Multiple geo points can be passed as an array containing any `geo_point` format, for example
 
@@ -520,7 +525,7 @@ and so forth.
 The final distance for a document will then be `min`/`max`/`avg` (defined via `mode`) distance of all points contained in the document to all points given in the sort request.
 
 
-## Script based sorting [script-based-sorting]
+## Script based sorting [script-based-sorting] 
 
 Allow to sort based on custom scripts, here is an example:
 
@@ -547,7 +552,7 @@ GET /_search
 ```
 
 
-## Track scores [_track_scores]
+## Track scores [_track_scores] 
 
 When sorting on a field, scores are not computed. By setting `track_scores` to true, scores will still be computed and tracked.
 
@@ -567,7 +572,7 @@ GET /_search
 ```
 
 
-## Memory considerations [_memory_considerations]
+## Memory considerations [_memory_considerations] 
 
 When sorting, the relevant sorted field values are loaded into memory. This means that per shard, there should be enough memory to contain them. For string based types, the field sorted on should not be analyzed / tokenized. For numeric types, if possible, it is recommended to explicitly set the type to narrower types (like `short`, `integer` and `float`).
 

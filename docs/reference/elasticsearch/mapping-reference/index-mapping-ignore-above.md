@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/index-mapping-ignore-above.html
----
-
-# index.mapping.ignore_above [index-mapping-ignore-above]
+# `index.mapping.ignore_above` [index-mapping-ignore-above]
 
 The `ignore_above` setting, typically used at the field level, can also be applied at the index level using `index.mapping.ignore_above`. This setting lets you define a maximum string length for all applicable fields across the index, including `keyword`, `wildcard`, and keyword values in `flattened` fields. Any values that exceed this limit will be ignored during indexing and won’t be stored.
 
@@ -20,12 +15,12 @@ PUT my-index-000001
 
 In this example, all applicable fields in `my-index-000001` will ignore any strings longer than 256 characters.
 
-::::{tip}
+::::{tip} 
 You can override this index-wide setting for specific fields by specifying a custom `ignore_above` value in the field mapping.
 ::::
 
 
-::::{note}
+::::{note} 
 Just like the field-level `ignore_above`, this setting only affects indexing and storage. The original values are still available in the `_source` field if `_source` is enabled, which is the default behavior in Elasticsearch.
 ::::
 

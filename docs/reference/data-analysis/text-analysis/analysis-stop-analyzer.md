@@ -1,16 +1,14 @@
 ---
 navigation_title: "Stop"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stop-analyzer.html
 ---
 
 # Stop analyzer [analysis-stop-analyzer]
 
 
-The `stop` analyzer is the same as the [`simple` analyzer](/reference/data-analysis/text-analysis/analysis-simple-analyzer.md) but adds support for removing stop words. It defaults to using the `_english_` stop words.
+The `stop` analyzer is the same as the [`simple` analyzer](analysis-simple-analyzer.md) but adds support for removing stop words. It defaults to using the `_english_` stop words.
 
 
-## Example output [_example_output_5]
+## Example output [_example_output_5] 
 
 ```console
 POST _analyze
@@ -20,6 +18,79 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "foxes",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "jumped",
+%       "start_offset": 24,
+%       "end_offset": 30,
+%       "type": "word",
+%       "position": 4
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 31,
+%       "end_offset": 35,
+%       "type": "word",
+%       "position": 5
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 40,
+%       "end_offset": 44,
+%       "type": "word",
+%       "position": 7
+%     },
+%     {
+%       "token": "dog",
+%       "start_offset": 45,
+%       "end_offset": 48,
+%       "type": "word",
+%       "position": 8
+%     },
+%     {
+%       "token": "s",
+%       "start_offset": 49,
+%       "end_offset": 50,
+%       "type": "word",
+%       "position": 9
+%     },
+%     {
+%       "token": "bone",
+%       "start_offset": 51,
+%       "end_offset": 55,
+%       "type": "word",
+%       "position": 10
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following terms:
 
 ```text
@@ -27,7 +98,7 @@ The above sentence would produce the following terms:
 ```
 
 
-## Configuration [_configuration_6]
+## Configuration [_configuration_6] 
 
 The `stop` analyzer accepts the following parameters:
 
@@ -37,10 +108,10 @@ The `stop` analyzer accepts the following parameters:
 `stopwords_path`
 :   The path to a file containing stop words. This path is relative to the Elasticsearch `config` directory.
 
-See the [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) for more information about stop word configuration.
+See the [Stop Token Filter](analysis-stop-tokenfilter.md) for more information about stop word configuration.
 
 
-## Example configuration [_example_configuration_5]
+## Example configuration [_example_configuration_5] 
 
 In this example, we configure the `stop` analyzer to use a specified list of words as stop words:
 
@@ -66,6 +137,72 @@ POST my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "foxes",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "jumped",
+%       "start_offset": 24,
+%       "end_offset": 30,
+%       "type": "word",
+%       "position": 4
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 40,
+%       "end_offset": 44,
+%       "type": "word",
+%       "position": 7
+%     },
+%     {
+%       "token": "dog",
+%       "start_offset": 45,
+%       "end_offset": 48,
+%       "type": "word",
+%       "position": 8
+%     },
+%     {
+%       "token": "s",
+%       "start_offset": 49,
+%       "end_offset": 50,
+%       "type": "word",
+%       "position": 9
+%     },
+%     {
+%       "token": "bone",
+%       "start_offset": 51,
+%       "end_offset": 55,
+%       "type": "word",
+%       "position": 10
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following terms:
 
 ```text
@@ -73,16 +210,16 @@ The above example produces the following terms:
 ```
 
 
-## Definition [_definition_5]
+## Definition [_definition_5] 
 
 It consists of:
 
 Tokenizer
-:   * [Lower Case Tokenizer](/reference/data-analysis/text-analysis/analysis-lowercase-tokenizer.md)
+:   * [Lower Case Tokenizer](analysis-lowercase-tokenizer.md)
 
 
 Token filters
-:   * [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md)
+:   * [Stop Token Filter](analysis-stop-tokenfilter.md)
 
 
 If you need to customize the `stop` analyzer beyond the configuration parameters then you need to recreate it as a `custom` analyzer and modify it, usually by adding token filters. This would recreate the built-in `stop` analyzer and you can use it as a starting point for further customization:
@@ -110,6 +247,8 @@ PUT /stop_example
   }
 }
 ```
+
+%  TEST[s/\n$/\nstartyaml\n  - compare_analyzers: {index: stop_example, first: stop, second: rebuilt_stop}\nendyaml\n/]
 
 1. The default stopwords can be overridden with the `stopwords` or `stopwords_path` parameters.
 2. You’d add any token filters after `english_stop`.

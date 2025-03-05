@@ -1,13 +1,11 @@
 ---
 navigation_title: "Nested"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-nested-query.html
 ---
 
 # Nested query [query-dsl-nested-query]
 
 
-Wraps another query to search [nested](/reference/elasticsearch/mapping-reference/nested.md) fields.
+Wraps another query to search [nested](nested.md) fields.
 
 The `nested` query searches nested field objects as if they were indexed as separate documents. If an object matches the search, the `nested` query returns the root parent document.
 
@@ -15,7 +13,7 @@ The `nested` query searches nested field objects as if they were indexed as sepa
 
 ### Index setup [nested-query-index-setup]
 
-To use the `nested` query, your index must include a [nested](/reference/elasticsearch/mapping-reference/nested.md) field mapping. For example:
+To use the `nested` query, your index must include a [nested](nested.md) field mapping. For example:
 
 ```console
 PUT /my-index-000001
@@ -53,6 +51,8 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TEST[continued]
+
 
 
 ## Top-level parameters for `nested` [nested-top-level-params]
@@ -67,11 +67,11 @@ You can search nested fields using dot notation that includes the complete path,
 
 Multi-level nesting is automatically supported, and detected, resulting in an inner nested query to automatically match the relevant nesting level, rather than root, if it exists within another nested query.
 
-See [Multi-level nested queries](#multi-level-nested-query-ex) for an example.
+See [Multi-level nested queries](query-dsl-nested-query.md#multi-level-nested-query-ex) for an example.
 
 
 `score_mode`
-:   (Optional, string) Indicates how scores for matching child objects affect the root parent document’s [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores). Valid values are:
+:   (Optional, string) Indicates how scores for matching child objects affect the root parent document’s [relevance score](query-filter-context.md#relevance-scores). Valid values are:
 
 `avg` (Default)
 :   Use the mean relevance score of all matching child objects.
@@ -102,7 +102,7 @@ You can use this parameter to query multiple indices that may not contain the fi
 
 ### Context of script queries [nested-query-script-notes]
 
-If you run a [`script` query](/reference/query-languages/query-dsl-script-query.md) within a nested query, you can only access doc values from the nested document, not the parent or root document.
+If you run a [`script` query](query-dsl-script-query.md) within a nested query, you can only access doc values from the nested document, not the parent or root document.
 
 
 ### Multi-level nested queries [multi-level-nested-query-ex]
@@ -176,6 +176,8 @@ PUT /drivers/_doc/2?refresh
 }
 ```
 
+%  TEST[continued]
+
 You can now use a multi-level nested query to match documents based on the `make` and `model` fields.
 
 ```console
@@ -201,6 +203,8 @@ GET /drivers/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 The search request returns the following response:
 
@@ -246,13 +250,15 @@ The search request returns the following response:
 }
 ```
 
+%  TESTRESPONSE[s/"took" : 5/"took": $body.took/]
+
 
 ### `must_not` clauses and `nested` queries [must-not-clauses-and-nested-queries]
 
-If a `nested` query matches one or more nested objects in a document, it returns the document as a hit. This applies even if other nested objects in the document don’t match the query. Keep this in mind when using a `nested` query that contains an inner [`must_not` clause](/reference/query-languages/query-dsl-bool-query.md).
+If a `nested` query matches one or more nested objects in a document, it returns the document as a hit. This applies even if other nested objects in the document don’t match the query. Keep this in mind when using a `nested` query that contains an inner [`must_not` clause](query-dsl-bool-query.md).
 
-::::{tip}
-Use the [`inner_hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) parameter to see which nested objects matched a `nested` query.
+::::{tip} 
+Use the [`inner_hits`](inner-hits.md) parameter to see which nested objects matched a `nested` query.
 ::::
 
 
@@ -321,6 +327,8 @@ POST my-index/_search
 }
 ```
 
+%  TEST[s/_search/_search?filter_path=hits.hits/]
+
 The search returns:
 
 ```console
@@ -361,6 +369,8 @@ The search returns:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 1. This nested object matches the query. As a result, the search returns the object’s parent document as a hit.
 2. This nested object doesn’t match the query. Since another nested object in the same document does match the query, the search still returns the parent document as a hit.
 
@@ -389,6 +399,10 @@ POST my-index/_search
 }
 ```
 
+%  TEST[continued]
+
+%  TEST[s/_search/_search?filter_path=hits.hits/]
+
 The search returns:
 
 ```console
@@ -413,6 +427,8 @@ The search returns:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\.//]
 
 
 

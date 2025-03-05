@@ -1,7 +1,5 @@
 ---
 navigation_title: "{{infer-cap}} bucket"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-inference-bucket-aggregation.html
 ---
 
 # {{infer-cap}} bucket aggregation [search-aggregations-pipeline-inference-bucket-aggregation]
@@ -9,7 +7,7 @@ mapped_pages:
 
 A parent pipeline aggregation which loads a pre-trained model and performs {{infer}} on the collated result fields from the parent bucket aggregation.
 
-To use the {{infer}} bucket aggregation, you need to have the same security privileges that are required for using the [get trained models API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-ml-get-trained-models).
+To use the {{infer}} bucket aggregation, you need to have the same security privileges that are required for using the [get trained models API](get-trained-models.md).
 
 ## Syntax [inference-bucket-agg-syntax]
 
@@ -32,6 +30,8 @@ A `inference` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 1. The unique identifier or alias for the trained model.
 2. The optional inference config which overrides the model’s default settings
 3. Map the value of `avg_agg` to the model’s input field `avg_cost`
@@ -42,8 +42,8 @@ $$$inference-bucket-params$$$
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
 | `model_id` | The ID or alias for the trained model. | Required | - |
-| `inference_config` | Contains the inference type and its options. There are two types: [`regression`](#inference-agg-regression-opt) and [`classification`](#inference-agg-classification-opt) | Optional | - |
-| `buckets_path` | Defines the paths to the input aggregations and maps the aggregation names to the field names expected by the model.See [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details | Required | - |
+| `inference_config` | Contains the inference type and its options. There are two types: [`regression`](search-aggregations-pipeline-inference-bucket-aggregation.md#inference-agg-regression-opt) and [`classification`](search-aggregations-pipeline-inference-bucket-aggregation.md#inference-agg-classification-opt) | Optional | - |
+| `buckets_path` | Defines the paths to the input aggregations and maps the aggregation names to the field names expected by the model.See [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details | Required | - |
 
 
 ## Configuration options for {{infer}} models [_configuration_options_for_infer_models]
@@ -51,19 +51,19 @@ $$$inference-bucket-params$$$
 The `inference_config` setting is optional and usually isn’t required as the pre-trained models come equipped with sensible defaults. In the context of aggregations some options can be overridden for each of the two types of model.
 
 
-#### Configuration options for {{regression}} models [inference-agg-regression-opt]
+#### Configuration options for {{regression}} models [inference-agg-regression-opt] 
 
 `num_top_feature_importance_values`
-:   (Optional, integer) Specifies the maximum number of [{{feat-imp}}](docs-content://explore-analyze/machine-learning/data-frame-analytics/ml-feature-importance.md) values per document. By default, it is zero and no {{feat-imp}} calculation occurs.
+:   (Optional, integer) Specifies the maximum number of [{{feat-imp}}](https://www.elastic.co/guide/en/machine-learning/current/ml-feature-importance.html) values per document. By default, it is zero and no {{feat-imp}} calculation occurs.
 
 
-#### Configuration options for {{classification}} models [inference-agg-classification-opt]
+#### Configuration options for {{classification}} models [inference-agg-classification-opt] 
 
 `num_top_classes`
 :   (Optional, integer) Specifies the number of top class predictions to return. Defaults to 0.
 
 `num_top_feature_importance_values`
-:   (Optional, integer) Specifies the maximum number of [{{feat-imp}}](docs-content://explore-analyze/machine-learning/data-frame-analytics/ml-feature-importance.md) values per document. Defaults to 0 which means no {{feat-imp}} calculation occurs.
+:   (Optional, integer) Specifies the maximum number of [{{feat-imp}}](https://www.elastic.co/guide/en/machine-learning/current/ml-feature-importance.html) values per document. Defaults to 0 which means no {{feat-imp}} calculation occurs.
 
 `prediction_field_type`
 :   (Optional, string) Specifies the type of the predicted field to write. Valid values are: `string`, `number`, `boolean`. When `boolean` is provided `1.0` is transformed to `true` and `0.0` to `false`.
@@ -157,6 +157,8 @@ GET kibana_sample_data_logs/_search
   }
 }
 ```
+
+%  TEST[skip:setup kibana sample data]
 
 1. A composite bucket aggregation that aggregates the data by `client_ip`.
 2. A series of metrics and bucket sub-aggregations.

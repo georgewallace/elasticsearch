@@ -4,7 +4,9 @@ navigation_title: "Examples"
 
 # {{esql}} examples [esql-examples]
 
-## Aggregating and enriching windows event logs
+
+
+## Aggregating and enriching windows event logs [_aggregating_and_enriching_windows_event_logs] 
 
 ```esql
 FROM logs-*
@@ -27,7 +29,7 @@ FROM logs-*
 * Keeps only selected fields: "event_code_count," "event.code," "host.name," and "event.description."
 
 
-## Summing outbound traffic from a process `curl.exe`
+## Summing outbound traffic from a process `curl.exe` [_summing_outbound_traffic_from_a_process_curl_exe] 
 
 ```esql
 FROM logs-endpoint
@@ -47,8 +49,7 @@ FROM logs-endpoint
 * Keeps only the "kb" and "destination.address" fields.
 
 
-
-## Manipulating DNS logs to find a high number of unique dns queries per registered domain
+## Manipulating DNS logs to find a high number of unique dns queries per registered domain [_manipulating_dns_logs_to_find_a_high_number_of_unique_dns_queries_per_registered_domain] 
 
 ```esql
 FROM logs-*
@@ -67,8 +68,7 @@ FROM logs-*
 * Renames fields for clarity: "unique_queries" to "Unique Queries," "dns.question.registered_domain" to "Registered Domain," and "process.name" to "Process."
 
 
-
-## Identifying high-numbers of outbound user connections
+## Identifying high-numbers of outbound user connections [_identifying_high_numbers_of_outbound_user_connections] 
 
 ```esql
 FROM logs-*
@@ -89,3 +89,4 @@ FROM logs-*
 * Uses a "CASE" statement to create a "follow_up" field, setting it to "true" when "destcount" is greater than or equal to 100 and "false" otherwise.
 * Sorts the results by "destcount" in descending order.
 * Keeps selected fields: "destcount," "host.name," "user.name," "group.name," and "follow_up."
+

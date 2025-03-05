@@ -1,7 +1,5 @@
 ---
 navigation_title: "Function score"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
 ---
 
 # Function score query [query-dsl-function-score-query]
@@ -27,7 +25,9 @@ GET /_search
 }
 ```
 
-1. See [Function score](#score-functions) for a list of supported functions.
+%  TEST[setup:my_index]
+
+1. See [Function score](query-dsl-function-score-query.md#score-functions) for a list of supported functions.
 
 
 Furthermore, several functions can be combined. In this case one can optionally choose to apply the function only if a document matches a given filtering query
@@ -59,11 +59,13 @@ GET /_search
 }
 ```
 
+%  TEST[setup:my_index]
+
 1. Boost for the whole query.
-2. See [Function score](#score-functions) for a list of supported functions.
+2. See [Function score](query-dsl-function-score-query.md#score-functions) for a list of supported functions.
 
 
-::::{note}
+::::{note} 
 The scores produced by the filtering query of each function do not matter.
 ::::
 
@@ -92,7 +94,7 @@ First, each document is scored by the defined functions. The parameter `score_mo
 
 Because scores can be on different scales (for example, between 0 and 1 for decay functions but arbitrary for `field_value_factor`) and also because sometimes a different impact of functions on the score is desirable, the score of each function can be adjusted with a user defined `weight`. The `weight` can be defined per function in the `functions` array (example above) and is multiplied with the score computed by the respective function. If weight is given without any other function declaration, `weight` acts as a function that simply returns the `weight`.
 
-In case `score_mode` is set to `avg` the individual scores will be combined by a **weighted** average. For example, if two functions return score 1 and 2 and their respective weights are 3 and 4, then their scores will be combined as `(1*3+2*4)/(3+4)` and **not** `(1*3+2*4)/2`.
+In case `score_mode` is set to `avg` the individual scores will be combined by a ***weighted*** average. For example, if two functions return score 1 and 2 and their respective weights are 3 and 4, then their scores will be combined as `(1*3+2*4)/(3+4)` and ***not*** `(1*3+2*4)/2`.
 
 The new score can be restricted to not exceed a certain limit by setting the `max_boost` parameter. The default for `max_boost` is FLT_MAX.
 
@@ -118,19 +120,19 @@ The newly computed score is combined with the score of the query. The parameter 
 
 By default, modifying the score does not change which documents match. To exclude documents that do not meet a certain score threshold the `min_score` parameter can be set to the desired score threshold.
 
-::::{note}
-For `min_score` to work, **all** documents returned by the query need to be scored and then filtered out one by one.
+::::{note} 
+For `min_score` to work, ***all*** documents returned by the query need to be scored and then filtered out one by one.
 ::::
 
 
 $$$score-functions$$$
 The `function_score` query provides several types of score functions.
 
-* [`script_score`](#function-script-score)
-* [`weight`](#function-weight)
-* [`random_score`](#function-random)
-* [`field_value_factor`](#function-field-value-factor)
-* [decay functions](#function-decay): `gauss`, `linear`, `exp`
+* [`script_score`](query-dsl-function-score-query.md#function-script-score)
+* [`weight`](query-dsl-function-score-query.md#function-weight)
+* [`random_score`](query-dsl-function-score-query.md#function-random)
+* [`field_value_factor`](query-dsl-function-score-query.md#function-field-value-factor)
+* [decay functions](query-dsl-function-score-query.md#function-decay): `gauss`, `linear`, `exp`
 
 ## Script score [function-script-score]
 
@@ -154,7 +156,9 @@ GET /_search
 }
 ```
 
-::::{important}
+%  TEST[setup:my_index]
+
+::::{important} 
 In {{es}}, all document scores are positive 32-bit floating point numbers.
 
 If the `script_score` function produces a score with greater precision, it is converted to the nearest 32-bit float.
@@ -190,6 +194,8 @@ GET /_search
 }
 ```
 
+%  TEST[setup:my_index]
+
 Note that unlike the `custom_score` query, the score of the query is multiplied with the result of the script scoring. If you wish to inhibit this, set `"boost_mode": "replace"`
 
 
@@ -201,6 +207,10 @@ The `weight` score allows you to multiply the score by the provided `weight`. Th
 "weight" : number
 ```
 
+%  NOTCONSOLE
+
+%  I couldn’t come up with a good example for this one.
+
 
 ## Random [function-random]
 
@@ -208,7 +218,7 @@ The `random_score` generates scores that are uniformly distributed from 0 up to 
 
 In case you want scores to be reproducible, it is possible to provide a `seed` and `field`. The final score will then be computed based on this seed, the minimum value of `field` for the considered document and a salt that is computed based on the index name and shard id so that documents that have the same value but are stored in different indexes get different scores. Note that documents that are within the same shard and have the same value for `field` will however get the same score, so it is usually desirable to use a field that has unique values for all documents. A good default choice might be to use the `_seq_no` field, whose only drawback is that scores will change if the document is updated since update operations also update the value of the `_seq_no` field.
 
-::::{note}
+::::{note} 
 It was possible to set a seed without setting a field, but this has been deprecated as this requires loading fielddata on the `_id` field which consumes a lot of memory.
 ::::
 
@@ -226,6 +236,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[setup:my_index]
 
 
 ## Field Value factor [function-field-value-factor]
@@ -249,6 +261,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[setup:my_index]
 
 Which will translate into the following formula for scoring:
 
@@ -281,12 +295,12 @@ There are a number of options for the `field_value_factor` function:
 `missing`
 :   Value used if the document doesn’t have that field. The modifier and factor are still applied to it as though it were read from the document.
 
-::::{note}
+::::{note} 
 Scores produced by the `field_value_score` function must be non-negative, otherwise an error will be thrown. The `log` and `ln` modifiers will produce negative values if used on values between 0 and 1. Be sure to limit the values of the field with a range filter to avoid this, or use `log1p` and `ln1p`.
 ::::
 
 
-::::{note}
+::::{note} 
 Keep in mind that taking the log() of 0, or the square root of a negative number is an illegal operation, and an exception will be thrown. Be sure to limit the values of the field with a range filter to avoid this, or use `log1p` and `ln1p`.
 ::::
 
@@ -309,11 +323,13 @@ To use distance scoring on a query that has numerical fields, the user has to de
 }
 ```
 
+%  NOTCONSOLE
+
 1. The `DECAY_FUNCTION` should be one of `linear`, `exp`, or `gauss`.
 2. The specified field must be a numeric, date, or geopoint field.
 
 
-In the above example, the field is a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) and origin can be provided in geo format. `scale` and `offset` must be given with a unit in this case. If your field is a date field, you can set `scale` and `offset` as days, weeks, and so on. Example:
+In the above example, the field is a [`geo_point`](geo-point.md) and origin can be provided in geo format. `scale` and `offset` must be given with a unit in this case. If your field is a date field, you can set `scale` and `offset` as days, weeks, and so on. Example:
 
 ```console
 GET /_search
@@ -333,7 +349,9 @@ GET /_search
 }
 ```
 
-1. The date format of the origin depends on the [`format`](/reference/elasticsearch/mapping-reference/mapping-date-format.md) defined in your mapping. If you do not define the origin, the current time is used.
+%  TEST[setup:my_index]
+
+1. The date format of the origin depends on the [`format`](mapping-date-format.md) defined in your mapping. If you do not define the origin, the current time is used.
 2. The `offset` and `decay` parameters are optional.
 
 
@@ -360,42 +378,46 @@ The `DECAY_FUNCTION` determines the shape of the decay:
 `gauss`
 :   Normal decay, computed as:
 
-![Gaussian](../../images/Gaussian.png "")
+![Gaussian](images/Gaussian.png "")
 
-where ![sigma](../../images/sigma.png "") is computed to assure that the score takes the value `decay` at distance `scale` from `origin`+-`offset`
+where ![sigma](images/sigma.png "") is computed to assure that the score takes the value `decay` at distance `scale` from `origin`+-`offset`
 
-![sigma calc](../../images/sigma_calc.png "")
+%  \sigma^2 = -scale^2/(2 \cdot ln(decay))
 
-See [Normal decay, keyword `gauss`](#gauss-decay) for graphs demonstrating the curve generated by the `gauss` function.
+![sigma calc](images/sigma_calc.png "")
+
+See [Normal decay, keyword `gauss`](query-dsl-function-score-query.md#gauss-decay) for graphs demonstrating the curve generated by the `gauss` function.
 
 
 `exp`
 :   Exponential decay, computed as:
 
-![Exponential](../../images/Exponential.png "")
+![Exponential](images/Exponential.png "")
 
-where again the parameter ![lambda](../../images/lambda.png "") is computed to assure that the score takes the value `decay` at distance `scale` from `origin`+-`offset`
+where again the parameter ![lambda](images/lambda.png "") is computed to assure that the score takes the value `decay` at distance `scale` from `origin`+-`offset`
 
-![lambda calc](../../images/lambda_calc.png "")
+%  \lambda = ln(decay)/scale
 
-See [Exponential decay, keyword `exp`](#exp-decay) for graphs demonstrating the curve generated by the `exp` function.
+![lambda calc](images/lambda_calc.png "")
+
+See [Exponential decay, keyword `exp`](query-dsl-function-score-query.md#exp-decay) for graphs demonstrating the curve generated by the `exp` function.
 
 
 `linear`
 :   Linear decay, computed as:
 
-![Linear](../../images/Linear.png "").
+![Linear](images/Linear.png "").
 
 where again the parameter `s` is computed to assure that the score takes the value `decay` at distance `scale` from `origin`+-`offset`
 
-![s calc](../../images/s_calc.png "")
+![s calc](images/s_calc.png "")
 
 In contrast to the normal and exponential decay, this function actually sets the score to 0 if the field value exceeds twice the user given scale value.
 
 
 For single functions the three decay functions together with their parameters can be visualized like this (the field in this example called "age"):
 
-![decay 2d](../../images/decay_2d.png "")
+![decay 2d](images/decay_2d.png "")
 
 
 ### Multi-values fields [_multi_values_fields]
@@ -426,6 +448,8 @@ Example:
     }
 ```
 
+%  NOTCONSOLE
+
 
 
 ## Detailed example [_detailed_example]
@@ -451,6 +475,8 @@ The function for `price` in this case would be
 }
 ```
 
+%  NOTCONSOLE
+
 1. This decay function could also be `linear` or `exp`.
 
 
@@ -464,6 +490,8 @@ and for `location`:
     }
 }
 ```
+
+%  NOTCONSOLE
 
 1. This decay function could also be `linear` or `exp`.
 
@@ -510,13 +538,13 @@ Next, we show how the computed score looks like for each of the three possible d
 
 When choosing `gauss` as the decay function in the above example, the contour and surface plot of the multiplier looks like this:
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768157/cd0e18a6-e898-11e2-9b3c-f0145078bd6f.png
-% :alt: cd0e18a6 e898 11e2 9b3c f0145078bd6f
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768157/cd0e18a6-e898-11e2-9b3c-f0145078bd6f.png
+:alt: cd0e18a6 e898 11e2 9b3c f0145078bd6f
+:::
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768160/ec43c928-e898-11e2-8e0d-f3c4519dbd89.png
-% :alt: ec43c928 e898 11e2 8e0d f3c4519dbd89
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768160/ec43c928-e898-11e2-8e0d-f3c4519dbd89.png
+:alt: ec43c928 e898 11e2 8e0d f3c4519dbd89
+:::
 
 Suppose your original search results matches three hotels :
 
@@ -531,26 +559,26 @@ Suppose your original search results matches three hotels :
 
 When choosing `exp` as the decay function in the above example, the contour and surface plot of the multiplier looks like this:
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768161/082975c0-e899-11e2-86f7-174c3a729d64.png
-% :alt: 082975c0 e899 11e2 86f7 174c3a729d64
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768161/082975c0-e899-11e2-86f7-174c3a729d64.png
+:alt: 082975c0 e899 11e2 86f7 174c3a729d64
+:::
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768162/0b606884-e899-11e2-907b-aefc77eefef6.png
-% :alt: 0b606884 e899 11e2 907b aefc77eefef6
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768162/0b606884-e899-11e2-907b-aefc77eefef6.png
+:alt: 0b606884 e899 11e2 907b aefc77eefef6
+:::
 
 
 ### Linear decay, keyword `linear` [linear-decay]
 
 When choosing `linear` as the decay function in the above example, the contour and surface plot of the multiplier looks like this:
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768164/1775b0ca-e899-11e2-9f4a-776b406305c6.png
-% :alt: 1775b0ca e899 11e2 9f4a 776b406305c6
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768164/1775b0ca-e899-11e2-9f4a-776b406305c6.png
+:alt: 1775b0ca e899 11e2 9f4a 776b406305c6
+:::
 
-% :::{image} https://f.cloud.github.com/assets/4320215/768165/19d8b1aa-e899-11e2-91bc-6b0553e8d722.png
-% :alt: 19d8b1aa e899 11e2 91bc 6b0553e8d722
-% :::
+:::{image} https://f.cloud.github.com/assets/4320215/768165/19d8b1aa-e899-11e2-91bc-6b0553e8d722.png
+:alt: 19d8b1aa e899 11e2 91bc 6b0553e8d722
+:::
 
 
 
@@ -562,3 +590,5 @@ Only numeric, date, and geopoint fields are supported.
 ## What if a field is missing? [_what_if_a_field_is_missing]
 
 If the numeric field is missing in the document, the function will return 1.
+
+

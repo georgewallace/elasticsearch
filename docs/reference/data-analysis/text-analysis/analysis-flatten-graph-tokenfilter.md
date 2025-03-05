@@ -1,31 +1,29 @@
 ---
 navigation_title: "Flatten graph"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-flatten-graph-tokenfilter.html
 ---
 
 # Flatten graph token filter [analysis-flatten-graph-tokenfilter]
 
 
-Flattens a [token graph](docs-content://manage-data/data-store/text-analysis/token-graphs.md) produced by a graph token filter, such as [`synonym_graph`](/reference/data-analysis/text-analysis/analysis-synonym-graph-tokenfilter.md) or [`word_delimiter_graph`](/reference/data-analysis/text-analysis/analysis-word-delimiter-graph-tokenfilter.md).
+Flattens a [token graph](token-graphs.md) produced by a graph token filter, such as [`synonym_graph`](analysis-synonym-graph-tokenfilter.md) or [`word_delimiter_graph`](analysis-word-delimiter-graph-tokenfilter.md).
 
-Flattening a token graph containing [multi-position tokens](docs-content://manage-data/data-store/text-analysis/token-graphs.md#token-graphs-multi-position-tokens) makes the graph suitable for [indexing](docs-content://manage-data/data-store/text-analysis/index-search-analysis.md). Otherwise, indexing does not support token graphs containing multi-position tokens.
+Flattening a token graph containing [multi-position tokens](token-graphs.md#token-graphs-multi-position-tokens) makes the graph suitable for [indexing](analysis-index-search-time.md). Otherwise, indexing does not support token graphs containing multi-position tokens.
 
-::::{warning}
+::::{warning} 
 Flattening graphs is a lossy process.
 
-If possible, avoid using the `flatten_graph` filter. Instead, use graph token filters in [search analyzers](docs-content://manage-data/data-store/text-analysis/index-search-analysis.md) only. This eliminates the need for the `flatten_graph` filter.
+If possible, avoid using the `flatten_graph` filter. Instead, use graph token filters in [search analyzers](analysis-index-search-time.md) only. This eliminates the need for the `flatten_graph` filter.
 
 ::::
 
 
-The `flatten_graph` filter uses Lucene’s [FlattenGraphFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/core/FlattenGraphFilter.md).
+The `flatten_graph` filter uses Lucene’s [FlattenGraphFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/core/FlattenGraphFilter.md).
 
 ## Example [analysis-flatten-graph-tokenfilter-analyze-ex]
 
 To see how the `flatten_graph` filter works, you first need to produce a token graph containing multi-position tokens.
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `synonym_graph` filter to add `internet phonebook` as a multi-position synonym for `domain name system` in the text `domain name system is fragile`:
+The following [analyze API](indices-analyze.md) request uses the `synonym_graph` filter to add `dns` as a multi-position synonym for `domain name system` in the text `domain name system is fragile`:
 
 ```console
 GET /_analyze
@@ -34,18 +32,69 @@ GET /_analyze
   "filter": [
     {
       "type": "synonym_graph",
-      "synonyms": [ "internet phonebook, domain name system" ]
+      "synonyms": [ "dns, domain name system" ]
     }
   ],
   "text": "domain name system is fragile"
 }
 ```
 
-The filter produces the following token graph with `internet phonebook` as a multi-position token.
+The filter produces the following token graph with `dns` as a multi-position token.
 
-:::{image} ../../../images/token-graph-dns-synonym-ex2.svg
-:alt: token graph dns synonym example
+:::{image} images/token-graph-dns-synonym-ex.svg
+:alt: token graph dns synonym ex
 :::
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "dns",
+%       "start_offset": 0,
+%       "end_offset": 18,
+%       "type": "SYNONYM",
+%       "position": 0,
+%       "positionLength": 3
+%     },
+%     {
+%       "token": "domain",
+%       "start_offset": 0,
+%       "end_offset": 6,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "name",
+%       "start_offset": 7,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "system",
+%       "start_offset": 12,
+%       "end_offset": 18,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "is",
+%       "start_offset": 19,
+%       "end_offset": 21,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "fragile",
+%       "start_offset": 22,
+%       "end_offset": 29,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     }
+%   ]
+% }
+% ----
 
 Indexing does not support token graphs containing multi-position tokens. To make this token graph suitable for indexing, it needs to be flattened.
 
@@ -58,7 +107,7 @@ GET /_analyze
   "filter": [
     {
       "type": "synonym_graph",
-      "synonyms": [ "internet phonebook, domain name system" ]
+      "synonyms": [ "dns, domain name system" ]
     },
     "flatten_graph"
   ],
@@ -68,14 +117,65 @@ GET /_analyze
 
 The filter produces the following flattened token graph, which is suitable for indexing.
 
-:::{image} ../../../images/token-graph-dns-synonym-flattened-ex2.svg
-:alt: token graph dns flattened example
+:::{image} images/token-graph-dns-invalid-ex.svg
+:alt: token graph dns invalid ex
 :::
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "dns",
+%       "start_offset": 0,
+%       "end_offset": 18,
+%       "type": "SYNONYM",
+%       "position": 0,
+%       "positionLength": 3
+%     },
+%     {
+%       "token": "domain",
+%       "start_offset": 0,
+%       "end_offset": 6,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "name",
+%       "start_offset": 7,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "system",
+%       "start_offset": 12,
+%       "end_offset": 18,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "is",
+%       "start_offset": 19,
+%       "end_offset": 21,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "fragile",
+%       "start_offset": 22,
+%       "end_offset": 29,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     }
+%   ]
+% }
+% ----
 
 
 ## Add to an analyzer [analysis-keyword-marker-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `flatten_graph` token filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `flatten_graph` token filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 In this analyzer, a custom `word_delimiter_graph` filter produces token graphs containing catenated, multi-position tokens. The `flatten_graph` filter flattens these token graphs, making them suitable for indexing.
 

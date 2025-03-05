@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/service-tokens-command.html
----
-
 # elasticsearch-service-tokens [service-tokens-command]
 
 Use the `elasticsearch-service-tokens` command to create, list, and delete file-based service account tokens.
 
 
-## Synopsis [_synopsis_9]
+## Synopsis [_synopsis_9] 
 
 ```shell
 bin/elasticsearch-service-tokens
@@ -18,10 +13,10 @@ bin/elasticsearch-service-tokens
 ```
 
 
-## Description [_description_16]
+## Description [_description_16] 
 
-::::{note}
-The recommended way to manage [service tokens](docs-content://deploy-manage/users-roles/cluster-or-deployment-auth/service-accounts.md#service-accounts-tokens) is via the [Create service account tokens](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-security-create-service-token) API. File based tokens are intended for use with orchestrators such as [{{ece}}](docs-content://deploy-manage/deploy/cloud-enterprise.md) and [{{eck}}](docs-content://deploy-manage/deploy/cloud-on-k8s.md)
+::::{note} 
+The recommended way to manage [service tokens](service-accounts.md#service-accounts-tokens) is via the [Create service account tokens](security-api-create-service-token.md) API. File based tokens are intended for use with orchestrators such as [{{ece}}](https://www.elastic.co/guide/en/cloud-enterprise/{{ece-version-link}}) and [{{eck}}](https://www.elastic.co/guide/en/cloud-on-k8s/current)
 ::::
 
 
@@ -29,15 +24,15 @@ This command creates a `service_tokens` file in the `$ES_HOME/config` directory 
 
 This command only makes changes to the `service_tokens` file on the local node. If the service token will be used to authenticate requests against multiple nodes in the cluster then you must copy the `service_tokens` file to each node.
 
-See [service accounts](docs-content://deploy-manage/users-roles/cluster-or-deployment-auth/service-accounts.md) for further information about the behaviour of service accounts and the management of service tokens.
+See [service accounts](service-accounts.md) for further information about the behaviour of service accounts and the management of service tokens.
 
-::::{important}
+::::{important} 
 To ensure that {{es}} can read the service account token information at startup, run `elasticsearch-service-tokens` as the same user you use to run {{es}}. Running this command as `root` or some other user updates the permissions for the `service_tokens` file and prevents {{es}} from accessing it.
 ::::
 
 
 
-## Parameters [service-tokens-command-parameters]
+## Parameters [service-tokens-command-parameters] 
 
 `create`
 :   Creates a service account token for the specified service account.
@@ -54,7 +49,7 @@ To ensure that {{es}} can read the service account token information at startup,
 
         Token names must be at least 1 and no more than 256 characters. They can contain alphanumeric characters (`a-z`, `A-Z`, `0-9`), dashes (`-`), and underscores (`_`), but cannot begin with an underscore.
 
-        ::::{note}
+        ::::{note} 
         Token names must be unique in the context of the associated service account.
         ::::
 
@@ -93,7 +88,7 @@ To ensure that {{es}} can read the service account token information at startup,
 
 
 
-## Examples [_examples_21]
+## Examples [_examples_21] 
 
 The following command creates a service account token named `my-token` for the `elastic/fleet-server` service account.
 
@@ -113,7 +108,9 @@ Use this bearer token to authenticate with your {{es}} cluster.
 curl -H "Authorization: Bearer AAEAAWVsYXN0aWM...vZmxlZXQtc2VydmVyL3Rva2VuMTo3TFdaSDZ" http://localhost:9200/_cluster/health
 ```
 
-::::{note}
+%  NOTCONSOLE
+
+::::{note} 
 If your node has `xpack.security.http.ssl.enabled` set to `true`, then you must specify `https` in the request URL.
 ::::
 

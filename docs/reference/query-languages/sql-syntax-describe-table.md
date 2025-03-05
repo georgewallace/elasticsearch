@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-describe-table.html
----
-
 # DESCRIBE TABLE [sql-syntax-describe-table]
 
 ```sql
@@ -19,7 +14,7 @@ DESCRIBE | DESC
 4. SQL LIKE pattern matching table names.
 
 
-**Description**: `DESC` and `DESCRIBE` are aliases to [SHOW COLUMNS](/reference/query-languages/sql-syntax-show-columns.md).
+**Description**: `DESC` and `DESCRIBE` are aliases to [SHOW COLUMNS](sql-syntax-show-columns.md).
 
 ```sql
 DESCRIBE emp;

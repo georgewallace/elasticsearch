@@ -1,21 +1,19 @@
 ---
 navigation_title: "Metadata fields"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/esql-metadata-fields.html
 ---
 
 # {{esql}} metadata fields [esql-metadata-fields]
 
 
-{{esql}} can access [metadata fields](/reference/elasticsearch/mapping-reference/document-metadata-fields.md). The currently supported ones are:
+{{esql}} can access [metadata fields](mapping-fields.md). The currently supported ones are:
 
-* [`_index`](/reference/elasticsearch/mapping-reference/mapping-index-field.md): the index to which the document belongs. The field is of the type [keyword](/reference/elasticsearch/mapping-reference/keyword.md).
-* [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md): the source document’s ID. The field is of the type [keyword](/reference/elasticsearch/mapping-reference/keyword.md).
-* `_version`: the source document’s version. The field is of the type [long](/reference/elasticsearch/mapping-reference/number.md).
-* [`_ignored`](/reference/elasticsearch/mapping-reference/mapping-ignored-field.md): the ignored source document fields. The field is of the type [keyword](/reference/elasticsearch/mapping-reference/keyword.md).
-* `_score`: when enabled, the final score assigned to each row matching an ES|QL query. Scoring will be updated when using [full text search functions](/reference/query-languages/esql/esql-functions-operators.md#esql-search-functions).
+* [`_index`](mapping-index-field.md): the index to which the document belongs. The field is of the type [keyword](keyword.md).
+* [`_id`](mapping-id-field.md): the source document’s ID. The field is of the type [keyword](keyword.md).
+* `_version`: the source document’s version. The field is of the type [long](number.md).
+* [`_ignored`](mapping-ignored-field.md): the ignored source document fields. The field is of the type [keyword](keyword.md).
+* `_score`: when enabled, the final score assigned to each row matching an ES|QL query. Scoring will be updated when using [full text search functions](esql-functions-operators.md#esql-search-functions).
 
-To enable the access to these fields, the [`FROM`](/reference/query-languages/esql/esql-commands.md#esql-from) source command needs to be provided with a dedicated directive:
+To enable the access to these fields, the [`FROM`](esql-commands.md#esql-from) source command needs to be provided with a dedicated directive:
 
 ```esql
 FROM index METADATA _index, _id

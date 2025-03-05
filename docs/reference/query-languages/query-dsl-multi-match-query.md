@@ -1,13 +1,11 @@
 ---
 navigation_title: "Multi-match"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
 ---
 
 # Multi-match query [query-dsl-multi-match-query]
 
 
-The `multi_match` query builds on the [`match` query](/reference/query-languages/query-dsl-match-query.md) to allow multi-field queries:
+The `multi_match` query builds on the [`match` query](query-dsl-match-query.md) to allow multi-field queries:
 
 ```console
 GET /_search
@@ -26,7 +24,7 @@ GET /_search
 
 
 
-### `fields` and per-field boosting [field-boost]
+### `fields` and per-field boosting [field-boost] 
 
 Fields can be specified with wildcards, eg:
 
@@ -67,39 +65,39 @@ If no `fields` are provided, the `multi_match` query defaults to the `index.quer
 ::::{admonition} Field number limit
 :class: warning
 
-By default, there is a limit to the number of clauses a query can contain. This limit is defined by the [`indices.query.bool.max_clause_count`](/reference/elasticsearch/configuration-reference/search-settings.md#indices-query-bool-max-clause-count) setting, which defaults to `4096`. For multi-match queries, the number of clauses is calculated as the number of fields multiplied by the number of terms.
+By default, there is a limit to the number of clauses a query can contain. This limit is defined by the [`indices.query.bool.max_clause_count`](search-settings.md#indices-query-bool-max-clause-count) setting, which defaults to `4096`. For multi-match queries, the number of clauses is calculated as the number of fields multiplied by the number of terms.
 
 ::::
 
 
 
-### Types of `multi_match` query: [multi-match-types]
+### Types of `multi_match` query: [multi-match-types] 
 
 The way the `multi_match` query is executed internally depends on the `type` parameter, which can be set to:
 
 `best_fields`
-:   (**default**) Finds documents which match any field, but uses the  `_score` from the best field. See [`best_fields`](#type-best-fields).
+:   (**default**) Finds documents which match any field, but uses the  `_score` from the best field. See [`best_fields`](query-dsl-multi-match-query.md#type-best-fields).
 
 `most_fields`
-:   Finds documents which match any field and combines the `_score` from each field. See [`most_fields`](#type-most-fields).
+:   Finds documents which match any field and combines the `_score` from each field. See [`most_fields`](query-dsl-multi-match-query.md#type-most-fields).
 
 `cross_fields`
-:   Treats fields with the same `analyzer` as though they were one big field. Looks for each word in **any** field. See [`cross_fields`](#type-cross-fields).
+:   Treats fields with the same `analyzer` as though they were one big field. Looks for each word in **any** field. See [`cross_fields`](query-dsl-multi-match-query.md#type-cross-fields).
 
 `phrase`
-:   Runs a `match_phrase` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](#type-phrase).
+:   Runs a `match_phrase` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](query-dsl-multi-match-query.md#type-phrase).
 
 `phrase_prefix`
-:   Runs a `match_phrase_prefix` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](#type-phrase).
+:   Runs a `match_phrase_prefix` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](query-dsl-multi-match-query.md#type-phrase).
 
 `bool_prefix`
-:   Creates a `match_bool_prefix` query on each field and combines the `_score` from each field. See [`bool_prefix`](#type-bool-prefix).
+:   Creates a `match_bool_prefix` query on each field and combines the `_score` from each field. See [`bool_prefix`](query-dsl-multi-match-query.md#type-bool-prefix).
 
 ## `best_fields` [type-best-fields]
 
 The `best_fields` type is most useful when you are searching for multiple words best found in the same field. For instance brown fox in a single field is more meaningful than brown in one field and fox in the other.
 
-The `best_fields` type generates a [`match` query](/reference/query-languages/query-dsl-match-query.md) for each field and wraps them in a [`dis_max`](/reference/query-languages/query-dsl-dis-max-query.md) query, to find the single best matching field. For instance, this query:
+The `best_fields` type generates a [`match` query](query-dsl-match-query.md) for each field and wraps them in a [`dis_max`](query-dsl-dis-max-query.md) query, to find the single best matching field. For instance, this query:
 
 ```console
 GET /_search
@@ -137,7 +135,7 @@ Normally the `best_fields` type uses the score of the **single** best matching f
 * the score from the best matching field
 * plus `tie_breaker * _score` for all other matching fields
 
-Also, accepts `analyzer`, `boost`, `operator`, `minimum_should_match`, `fuzziness`, `lenient`, `prefix_length`, `max_expansions`, `fuzzy_rewrite`, `zero_terms_query`, `auto_generate_synonyms_phrase_query` and `fuzzy_transpositions`, as explained in [match query](/reference/query-languages/query-dsl-match-query.md).
+Also, accepts `analyzer`, `boost`, `operator`, `minimum_should_match`, `fuzziness`, `lenient`, `prefix_length`, `max_expansions`, `fuzzy_rewrite`, `zero_terms_query`, `auto_generate_synonyms_phrase_query` and `fuzzy_transpositions`, as explained in [match query](query-dsl-match-query.md).
 
 ::::{admonition} `operator` and `minimum_should_match`
 :class: important
@@ -173,7 +171,7 @@ This query is executed as:
 ```
 In other words, **all terms** must be present **in a single field** for a document to match.
 
-The [`combined_fields`](/reference/query-languages/query-dsl-combined-fields-query.md) query offers a term-centric approach that handles `operator` and `minimum_should_match` on a per-term basis. The other multi-match mode [`cross_fields`](#type-cross-fields) also addresses this issue.
+The [`combined_fields`](query-dsl-combined-fields-query.md) query offers a term-centric approach that handles `operator` and `minimum_should_match` on a per-term basis. The other multi-match mode [`cross_fields`](query-dsl-multi-match-query.md#type-cross-fields) also addresses this issue.
 
 ::::
 
@@ -222,7 +220,7 @@ Also, accepts `analyzer`, `boost`, `operator`, `minimum_should_match`, `fuzzines
 
 ## `phrase` and `phrase_prefix` [type-phrase]
 
-The `phrase` and `phrase_prefix` types behave just like [`best_fields`](#type-best-fields), but they use a `match_phrase` or `match_phrase_prefix` query instead of a `match` query.
+The `phrase` and `phrase_prefix` types behave just like [`best_fields`](query-dsl-multi-match-query.md#type-best-fields), but they use a `match_phrase` or `match_phrase_prefix` query instead of a `match` query.
 
 This query:
 
@@ -255,7 +253,7 @@ GET /_search
 }
 ```
 
-Also, accepts `analyzer`, `boost`, `lenient` and `zero_terms_query` as explained in [Match](/reference/query-languages/query-dsl-match-query.md), as well as `slop` which is explained in [Match phrase](/reference/query-languages/query-dsl-match-query-phrase.md). Type `phrase_prefix` additionally accepts `max_expansions`.
+Also, accepts `analyzer`, `boost`, `lenient` and `zero_terms_query` as explained in [Match](query-dsl-match-query.md), as well as `slop` which is explained in [Match phrase](query-dsl-match-query-phrase.md). Type `phrase_prefix` additionally accepts `max_expansions`.
 
 ::::{admonition} `phrase`, `phrase_prefix` and `fuzziness`
 :class: important
@@ -272,8 +270,8 @@ The `fuzziness` parameter cannot be used with the `phrase` or `phrase_prefix` ty
 
 The `cross_fields` type is particularly useful with structured documents where multiple fields **should** match. For instance, when querying the `first_name` and `last_name` fields for Will Smith, the best match is likely to have Will in one field and Smith in the other.
 
-::::{admonition}
-This sounds like a job for [`most_fields`](#type-most-fields) but there are two problems with that approach. The first problem is that `operator` and `minimum_should_match` are applied per-field, instead of per-term (see [explanation above](#operator-min)).
+::::{admonition} 
+This sounds like a job for [`most_fields`](query-dsl-multi-match-query.md#type-most-fields) but there are two problems with that approach. The first problem is that `operator` and `minimum_should_match` are applied per-field, instead of per-term (see [explanation above](query-dsl-multi-match-query.md#operator-min)).
 
 The second problem is to do with relevance: the different term frequencies in the `first_name` and `last_name` fields can produce unexpected results.
 
@@ -310,7 +308,7 @@ is executed as:
 +(first_name:will last_name:will)
 +(first_name:smith last_name:smith)
 ```
-In other words, **all terms** must be present **in at least one field** for a document to match.  (Compare this to [the logic used for `best_fields` and `most_fields`](#operator-min).)
+In other words, **all terms** must be present **in at least one field** for a document to match.  (Compare this to [the logic used for `best_fields` and `most_fields`](query-dsl-multi-match-query.md#operator-min).)
 
 That solves one of the two problems. The problem of differing term frequencies is solved by *blending* the term frequencies for all fields in order to even out the differences.
 
@@ -318,7 +316,7 @@ In practice, `first_name:smith` will be treated as though it has the same freque
 
 Note that `cross_fields` is usually only useful on short string fields that all have a `boost` of `1`. Otherwise boosts, term freqs and length normalization contribute to the score in such a way that the blending of term statistics is not meaningful anymore.
 
-If you run the above query through the [Validate](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-validate-query), it returns this explanation:
+If you run the above query through the [Validate](search-validate.md), it returns this explanation:
 
 ```
 +blended("will",  fields: [first_name, last_name])
@@ -326,8 +324,8 @@ If you run the above query through the [Validate](https://www.elastic.co/docs/ap
 ```
 Also, accepts `analyzer`, `boost`, `operator`, `minimum_should_match`, `lenient` and `zero_terms_query`.
 
-::::{warning}
-The `cross_fields` type blends field statistics in a complex way that can be hard to interpret. The score combination can even be incorrect, in particular when some documents contain some of the search fields, but not all of them. You should consider the [`combined_fields`](/reference/query-languages/query-dsl-combined-fields-query.md) query as an alternative, which is also term-centric but combines field statistics in a more robust way.
+::::{warning} 
+The `cross_fields` type blends field statistics in a complex way that can be hard to interpret. The score combination can even be incorrect, in particular when some documents contain some of the search fields, but not all of them. You should consider the [`combined_fields`](query-dsl-combined-fields-query.md) query as an alternative, which is also term-centric but combines field statistics in a more robust way.
 ::::
 
 
@@ -365,7 +363,7 @@ would be executed as:
 ```
 In other words, `first` and `last` would be grouped together and treated as a single field, and `first.edge` and `last.edge` would be grouped together and treated as a single field.
 
-Having multiple groups is fine, but when combined with `operator` or `minimum_should_match`, it can suffer from the [same problem](#operator-min) as `most_fields` or `best_fields`.
+Having multiple groups is fine, but when combined with `operator` or `minimum_should_match`, it can suffer from the [same problem](query-dsl-multi-match-query.md#operator-min) as `most_fields` or `best_fields`.
 
 You can easily rewrite this query yourself as two separate `cross_fields` queries combined with a `dis_max` query, and apply the `minimum_should_match` parameter to just one of them:
 
@@ -452,7 +450,7 @@ The `fuzziness` parameter cannot be used with the `cross_fields` type.
 
 ## `bool_prefix` [type-bool-prefix]
 
-The `bool_prefix` type’s scoring behaves like [`most_fields`](#type-most-fields), but using a [`match_bool_prefix` query](/reference/query-languages/query-dsl-match-bool-prefix-query.md) instead of a `match` query.
+The `bool_prefix` type’s scoring behaves like [`most_fields`](query-dsl-multi-match-query.md#type-most-fields), but using a [`match_bool_prefix` query](query-dsl-match-bool-prefix-query.md) instead of a `match` query.
 
 ```console
 GET /_search
@@ -467,7 +465,7 @@ GET /_search
 }
 ```
 
-The `analyzer`, `boost`, `operator`, `minimum_should_match`, `lenient`, `zero_terms_query`, and `auto_generate_synonyms_phrase_query` parameters as explained in [match query](/reference/query-languages/query-dsl-match-query.md) are supported. The `fuzziness`, `prefix_length`, `max_expansions`, `fuzzy_rewrite`, and `fuzzy_transpositions` parameters are supported for the terms that are used to construct term queries, but do not have an effect on the prefix query constructed from the final term.
+The `analyzer`, `boost`, `operator`, `minimum_should_match`, `lenient`, `zero_terms_query`, and `auto_generate_synonyms_phrase_query` parameters as explained in [match query](query-dsl-match-query.md) are supported. The `fuzziness`, `prefix_length`, `max_expansions`, `fuzzy_rewrite`, and `fuzzy_transpositions` parameters are supported for the terms that are used to construct term queries, but do not have an effect on the prefix query constructed from the final term.
 
 The `slop` parameter is not supported by this query type.
 

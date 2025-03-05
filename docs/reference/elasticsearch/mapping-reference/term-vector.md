@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/term-vector.html
----
+# `term_vector` [term-vector]
 
-# term_vector [term-vector]
-
-Term vectors contain information about the terms produced by the [analysis](docs-content://manage-data/data-store/text-analysis.md) process, including:
+Term vectors contain information about the terms produced by the [analysis](analysis.md) process, including:
 
 * a list of terms.
 * the position (or order) of each term.
@@ -37,9 +32,9 @@ The `term_vector` setting accepts:
 `with_positions_offsets_payloads`
 :   Terms, positions, offsets and payloads are stored.
 
-The fast vector highlighter requires `with_positions_offsets`. [The term vectors API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-termvectors) can retrieve whatever is stored.
+The fast vector highlighter requires `with_positions_offsets`. [The term vectors API](docs-termvectors.md) can retrieve whatever is stored.
 
-::::{warning}
+::::{warning} 
 Setting `with_positions_offsets` will double the size of a field’s index.
 ::::
 

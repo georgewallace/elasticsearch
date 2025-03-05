@@ -1,7 +1,5 @@
 ---
 navigation_title: "Percolate"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-percolate-query.html
 ---
 
 # Percolate query [query-dsl-percolate-query]
@@ -11,8 +9,8 @@ The `percolate` query can be used to match queries stored in an index. The `perc
 
 ## Sample usage [_sample_usage]
 
-::::{tip}
-To provide a simple example, this documentation uses one index, `my-index-000001`, for both the percolate queries and documents. This setup can work well when there are just a few percolate queries registered. For heavier usage, we recommend you store queries and documents in separate indices. For more details, refer to [How it Works Under the Hood](#how-it-works).
+::::{tip} 
+To provide a simple example, this documentation uses one index, `my-index-000001`, for both the percolate queries and documents. This setup can work well when there are just a few percolate queries registered. For heavier usage, we recommend you store queries and documents in separate indices. For more details, refer to [How it Works Under the Hood](query-dsl-percolate-query.md#how-it-works).
 ::::
 
 
@@ -36,7 +34,7 @@ PUT /my-index-000001
 
 The `message` field is the field used to preprocess the document defined in the `percolator` query before it gets indexed into a temporary index.
 
-The `query` field is used for indexing the query documents. It will hold a json object that represents an actual Elasticsearch query. The `query` field has been configured to use the [percolator field type](/reference/elasticsearch/mapping-reference/percolator.md). This field type understands the query dsl and stores the query in such a way that it can be used later on to match documents defined on the `percolate` query.
+The `query` field is used for indexing the query documents. It will hold a json object that represents an actual Elasticsearch query. The `query` field has been configured to use the [percolator field type](percolator.md). This field type understands the query dsl and stores the query in such a way that it can be used later on to match documents defined on the `percolate` query.
 
 Register a query in the percolator:
 
@@ -50,6 +48,8 @@ PUT /my-index-000001/_doc/1?refresh
   }
 }
 ```
+
+%  TEST[continued]
 
 Match a document to the registered percolator queries:
 
@@ -66,6 +66,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 The above request will yield the following response:
 
@@ -105,6 +107,8 @@ The above request will yield the following response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 13,/"took": "$body.took",/]
 
 1. The query with id `1` matches our document.
 2. The `_percolator_document_slot` field indicates which document has matched with this query. Useful when percolating multiple document simultaneously.
@@ -175,6 +179,8 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TEST[continued]
+
 At index time terms are extracted from the percolator query and the percolator can often determine whether a query matches just by looking at those extracted terms. However, computing scores requires to deserialize each matching query and run it against the percolated document, which is a much more expensive operation. Hence if computing scores is not required the `percolate` query should be wrapped in a `constant_score` query or a `bool` query’s filter clause.
 
 Note that the `percolate` query never gets cached by the query cache.
@@ -210,6 +216,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 1. The documents array contains 4 documents that are going to be percolated at the same time.
 
@@ -251,11 +259,13 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TESTRESPONSE[s/"took": 13,/"took": "$body.took",/]
+
 1. The `_percolator_document_slot` indicates that the first, second and last documents specified in the `percolate` query are matching with this query.
 
 
 
-## Percolating an existing document [_percolating_an_existing_document]
+## Percolating an Existing Document [_percolating_an_existing_document]
 
 In order to percolate a newly indexed document, the `percolate` query can be used. Based on the response from an index request, the `_id` and other meta information can be used to immediately percolate the newly added document.
 
@@ -271,6 +281,8 @@ PUT /my-index-000001/_doc/2
   "message" : "A new bonsai tree in the office"
 }
 ```
+
+%  TEST[continued]
 
 Index response:
 
@@ -306,6 +318,8 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TEST[continued]
+
 1. The version is optional, but useful in certain cases. We can ensure that we are trying to percolate the document we just have indexed. A change may be made after we have indexed, and if that is the case the search request would fail with a version conflict error.
 
 
@@ -334,6 +348,8 @@ PUT /my-index-000001/_doc/3?refresh
 }
 ```
 
+%  TEST[continued]
+
 Save another query:
 
 ```console
@@ -346,6 +362,8 @@ PUT /my-index-000001/_doc/4?refresh
   }
 }
 ```
+
+%  TEST[continued]
 
 Execute a search request with the `percolate` query and highlighting enabled:
 
@@ -367,6 +385,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 This will yield the following response.
 
@@ -432,6 +452,8 @@ This will yield the following response.
 }
 ```
 
+%  TESTRESPONSE[s/"took": 7,/"took": "$body.took",/]
+
 1. The terms from each query have been highlighted in the document.
 
 
@@ -468,6 +490,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 The slightly different response:
 
@@ -519,6 +543,8 @@ The slightly different response:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 13,/"took": "$body.took",/]
+
 1. The highlight fields have been prefixed with the document slot they belong to, in order to know which highlight field belongs to what document.
 
 
@@ -558,6 +584,8 @@ PUT /my-index-000001/_doc/5?refresh
 }
 ```
 
+%  TEST[continued]
+
 ```console
 GET /my-index-000001/_search
 {
@@ -582,6 +610,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 ```console-result
 {
@@ -640,6 +670,8 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TESTRESPONSE[s/"took": 55,/"took": "$body.took",/]
+
 1. The first document matched only the first sub-query.
 2. The second document matched only the second sub-query.
 3. The third document matched both sub-queries.
@@ -679,6 +711,8 @@ GET /my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 1. The `name` parameter will be used to identify which percolator document slots belong to what `percolate` query.
 
@@ -724,13 +758,15 @@ The above search request returns a response similar to this:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 13,/"took": "$body.took",/]
+
 1. The `_percolator_document_slot_query1` percolator slot field indicates that these matched slots are from the `percolate` query with `_name` parameter set to `query1`.
 
 
 
-## How it works under the hood [how-it-works]
+## How it Works Under the Hood [how-it-works]
 
-When indexing a document into an index that has the [percolator field type](/reference/elasticsearch/mapping-reference/percolator.md) mapping configured, the query part of the document gets parsed into a Lucene query and is stored into the Lucene index. A binary representation of the query gets stored, but also the query’s terms are analyzed and stored into an indexed field.
+When indexing a document into an index that has the [percolator field type](percolator.md) mapping configured, the query part of the document gets parsed into a Lucene query and is stored into the Lucene index. A binary representation of the query gets stored, but also the query’s terms are analyzed and stored into an indexed field.
 
 At search time, the document specified in the request gets parsed into a Lucene document and is stored in a in-memory temporary Lucene index. This in-memory index can just hold this one document and it is optimized for that. After this a special query is built based on the terms in the in-memory index that select candidate percolator queries based on their indexed query terms. These queries are then evaluated by the in-memory index if they actually match.
 
@@ -747,7 +783,7 @@ GET /_search
 }
 ```
 
-::::{note}
+::::{note} 
 The above example assumes that there is a `query` field of type `percolator` in the mappings.
 ::::
 
@@ -762,12 +798,12 @@ Given the design of percolation, it often makes sense to use separate indices fo
 
 ### Allow expensive queries [_allow_expensive_queries_3]
 
-Percolate queries will not be executed if [`search.allow_expensive_queries`](/reference/query-languages/querydsl.md#query-dsl-allow-expensive-queries) is set to false.
+Percolate queries will not be executed if [`search.allow_expensive_queries`](query-dsl.md#query-dsl-allow-expensive-queries) is set to false.
 
 
 ### Using custom similarities [_using_custom_similarities]
 
-Percolate queries will not respect any configured [custom similarity](/reference/elasticsearch/index-settings/similarity.md). They always use the default Lucene similarity.
+Percolate queries will not respect any configured [custom similarity](index-modules-similarity.md). They always use the default Lucene similarity.
 
 
 

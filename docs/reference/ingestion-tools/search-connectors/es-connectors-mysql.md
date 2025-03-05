@@ -1,42 +1,406 @@
 ---
 navigation_title: "MySQL"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-mysql.html
 ---
 
 # Elastic MySQL connector reference [es-connectors-mysql]
 
 
-The *Elastic MySQL connector* is a [connector](/reference/ingestion-tools/search-connectors/index.md) for [MySQL](https://www.mysql.com) data sources. This connector is written in Python using the [Elastic connector framework](https://github.com/elastic/connectors/tree/main).
+%  Attributes used in this file:
+
+The *Elastic MySQL connector* is a [connector](es-connectors.md) for [MySQL](https://www.mysql.com) data sources. This connector is written in Python using the [Elastic connector framework](https://github.com/elastic/connectors/tree/main).
 
 View the [**source code** for this connector](https://github.com/elastic/connectors/tree/main/connectors/sources/mysql.py) (branch *main*, compatible with Elastic *9.0*).
 
-::::{important}
-As of Elastic 9.0, managed connectors on Elastic Cloud Hosted are no longer available. All connectors must be [self-managed](/reference/ingestion-tools/search-connectors/self-managed-connectors.md).
+::::{admonition} Choose your connector reference
+Are you using a managed connector on Elastic Cloud or a self-managed connector? Expand the documentation based on your deployment method.
+
 ::::
 
-## **Self-managed connector** [es-connectors-mysql-connector-client-reference]
 
-### Availability and prerequisites [es-connectors-mysql-client-prerequisites]
+%  //////// //// //// //// //// //// //// ////////
 
-This connector is available as a **self-managed managed connector** in Elastic versions **8.5.0 and later**. To use this connector as a self-managed connector, satisfy all [self-managed connector requirements](/reference/ingestion-tools/search-connectors/self-managed-connectors.md).
+%  ////////   NATIVE CONNECTOR REFERENCE   ///////
+
+%  //////// //// //// //// //// //// //// ////////
+
+
+## **Elastic managed connector reference** [es-connectors-mysql-native-connector-reference] 
+
+::::::{dropdown} View **Elastic managed connector** reference
+
+### Availability and prerequisites [es-connectors-mysql-prerequisites] 
+
+This connector is available as a **managed connector** in Elastic versions **8.5.0 and later**. To use this connector natively in Elastic Cloud, satisfy all [managed connector requirements](es-native-connectors.md).
 
 This connector has no additional prerequisites beyond the shared requirements, linked above.
 
-### Create a MySQL connector [es-connectors-mysql-create-connector-client]
+
+### Compatibility [es-connectors-mysql-compatibility] 
+
+This connector is compatible with **MySQL 5.6 and later**.
+
+The connector is also compatible with **MariaDB** databases compatible with the above.
+
+The data source and your Elastic deployment must be able to communicate with each other over a network.
 
 
-#### Use the UI [es-connectors-mysql-client-create-use-the-ui]
+### Create a MySQL connector [es-connectors-mysql-create-native-connector] 
+
+
+## Use the UI [es-connectors-mysql-create-use-the-ui] 
 
 To create a new MySQL connector:
 
-1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](docs-content://explore-analyze/query-filter/filtering.md#_finding_your_apps_and_objects).
+1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](https://www.elastic.co/guide/en/kibana/current/kibana-concepts-analysts.html#_finding_your_apps_and_objects).
+2. Follow the instructions to create a new native  **MySQL** connector.
+
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
+
+
+## Use the API [es-connectors-mysql-create-use-the-api] 
+
+You can use the {{es}} [Create connector API](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) to create a new native MySQL connector.
+
+For example:
+
+```console
+PUT _connector/my-mysql-connector
+{
+  "index_name": "my-elasticsearch-index",
+  "name": "Content synced from MySQL",
+  "service_type": "mysql",
+  "is_native": true
+}
+```
+
+%  TEST[skip:can’t test in isolation]
+
+:::::{dropdown} You’ll also need to **create an API key** for the connector to use.
+::::{note} 
+The user needs the cluster privileges `manage_api_key`, `manage_connector` and `write_connector_secrets` to generate API keys programmatically.
+
+::::
+
+
+To create an API key for the connector:
+
+1. Run the following command, replacing values where indicated. Note the `id` and `encoded` return values from the response:
+
+    ```console
+    POST /_security/api_key
+    {
+      "name": "my-connector-api-key",
+      "role_descriptors": {
+        "my-connector-connector-role": {
+          "cluster": [
+            "monitor",
+            "manage_connector"
+          ],
+          "indices": [
+            {
+              "names": [
+                "my-index_name",
+                ".search-acl-filter-my-index_name",
+                ".elastic-connectors*"
+              ],
+              "privileges": [
+                "all"
+              ],
+              "allow_restricted_indices": false
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+2. Use the `encoded` value to store a connector secret, and note the `id` return value from this response:
+
+    ```console
+    POST _connector/_secret
+    {
+      "value": "encoded_api_key"
+    }
+    ```
+
+
+%  TEST[skip:need to retrieve ids from the response]
+
++ . Use the API key `id` and the connector secret `id` to update the connector:
+
++
+
+```console
+PUT /_connector/my_connector_id>/_api_key_id
+{
+  "api_key_id": "API key_id",
+  "api_key_secret_id": "secret_id"
+}
+```
+
+%  TEST[skip:need to retrieve ids from the response]
+
+:::::
+
+
+Refer to the [{{es}} API documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) for details of all available Connector APIs.
+
+
+### Usage [es-connectors-mysql-usage] 
+
+To use this connector natively in Elastic Cloud, see [*Elastic managed connectors*](es-native-connectors.md).
+
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
+
+
+### Configuration [es-connectors-mysql-configuration] 
+
+Each time you create an index to be managed by this connector, you will create a new connector configuration. You will need some or all of the following information about the data source.
+
+Host
+:   The IP address or domain name of the MySQL host, excluding port. Examples:
+
+    * `192.158.1.38`
+    * `localhost`
+
+
+Port
+:   The port of the MySQL host. Examples:
+
+    * `3306`
+    * `3307`
+
+
+Username
+:   The MySQL username the connector will use.
+
+    The user must have access to the configured database. You may want to create a dedicated, read-only user for each connector.
+
+
+Password
+:   The MySQL password the connector will use.
+
+Database
+:   The MySQL database to sync. The database must be accessible using the configured username and password.
+
+    Examples:
+
+    * `products`
+    * `orders`
+
+
+Comma-separated list of tables
+:   The tables in the configured database to sync. One or more table names, separated by commas. The tables must be accessible using the configured username and password.
+
+    Examples:
+
+    * `furniture, food, toys`
+    * `laptops`
+
+        ::::{tip} 
+        This field can be bypassed when using advanced sync rules.
+
+        ::::
+
+
+Enable SSL
+:   Whether SSL verification will be enabled. Default value is `True`.
+
+SSL Certificate
+:   Content of SSL certificate. If SSL is disabled, the SSL certificate value will be ignored.
+
+    ::::{dropdown} **Expand** to see an example certificate
+    ```
+    -----BEGIN CERTIFICATE-----
+    MIID+jCCAuKgAwIBAgIGAJJMzlxLMA0GCSqGSIb3DQEBCwUAMHoxCzAJBgNVBAYT
+    AlVTMQwwCgYDVQQKEwNJQk0xFjAUBgNVBAsTDURlZmF1bHROb2RlMDExFjAUBgNV
+    BAsTDURlZmF1bHRDZWxsMDExGTAXBgNVBAsTEFJvb3QgQ2VydGlmaWNhdGUxEjAQ
+    BgNVBAMTCWxvY2FsaG9zdDAeFw0yMTEyMTQyMjA3MTZaFw0yMjEyMTQyMjA3MTZa
+    MF8xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xFjAUBgNVBAsTDURlZmF1bHRO
+    b2RlMDExFjAUBgNVBAsTDURlZmF1bHRDZWxsMDExEjAQBgNVBAMTCWxvY2FsaG9z
+    dDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMv5HCsJZIpI5zCy+jXV
+    z6lmzNc9UcVSEEHn86h6zT6pxuY90TYeAhlZ9hZ+SCKn4OQ4GoDRZhLPTkYDt+wW
+    CV3NTIy9uCGUSJ6xjCKoxClJmgSQdg5m4HzwfY4ofoEZ5iZQ0Zmt62jGRWc0zuxj
+    hegnM+eO2reBJYu6Ypa9RPJdYJsmn1RNnC74IDY8Y95qn+WZj//UALCpYfX41hko
+    i7TWD9GKQO8SBmAxhjCDifOxVBokoxYrNdzESl0LXvnzEadeZTd9BfUtTaBHhx6t
+    njqqCPrbTY+3jAbZFd4RiERPnhLVKMytw5ot506BhPrUtpr2lusbN5svNXjuLeea
+    MMUCAwEAAaOBoDCBnTATBgNVHSMEDDAKgAhOatpLwvJFqjAdBgNVHSUEFjAUBggr
+    BgEFBQcDAQYIKwYBBQUHAwIwVAYDVR0RBE0wS4E+UHJvZmlsZVVVSUQ6QXBwU3J2
+    MDEtQkFTRS05MDkzMzJjMC1iNmFiLTQ2OTMtYWI5NC01Mjc1ZDI1MmFmNDiCCWxv
+    Y2FsaG9zdDARBgNVHQ4ECgQITzqhA5sO8O4wDQYJKoZIhvcNAQELBQADggEBAKR0
+    gY/BM69S6BDyWp5dxcpmZ9FS783FBbdUXjVtTkQno+oYURDrhCdsfTLYtqUlP4J4
+    CHoskP+MwJjRIoKhPVQMv14Q4VC2J9coYXnePhFjE+6MaZbTjq9WaekGrpKkMaQA
+    iQt5b67jo7y63CZKIo9yBvs7sxODQzDn3wZwyux2vPegXSaTHR/rop/s/mPk3YTS
+    hQprs/IVtPoWU4/TsDN3gIlrAYGbcs29CAt5q9MfzkMmKsuDkTZD0ry42VjxjAmk
+    xw23l/k8RoD1wRWaDVbgpjwSzt+kl+vJE/ip2w3h69eEZ9wbo6scRO5lCO2JM4Pr
+    7RhLQyWn2u00L7/9Omw=
+    -----END CERTIFICATE-----
+    ```
+
+    ::::
+
+
+
+### Known issues [es-connectors-mysql-known-issues] 
+
+This connector has the following known issues:
+
+* **Upgrading from a tech preview connector (8.7 or earlier) to 8.8 will cause the MySQL connector configuration to be invalid.**
+
+    MySQL connectors prior to 8.8 can be missing some configuration fields that are required for the connector to run. If you would like to continue using your MySQL connector after upgrading from 8.7 or earlier, run the script below to fix your connector’s configuration. This will populate the configuration with the missing fields. The auxilliary information needed for the configuration will then be automatically added by by the self-managed connector.
+
+    ```console
+    POST /.elastic-connectors/_update/connector_id
+    {
+      "doc" : {
+        "configuration": {
+          "tables": {
+            "type": "list",
+            "value": "*"
+          },
+          "ssl_enabled": {
+            "type": "bool",
+            "value": false
+          },
+          "ssl_ca": {
+            "type": "str",
+            "value": ""
+          },
+          "fetch_size": {
+            "type": "int",
+            "value": 50
+          },
+          "retry_count": {
+            "type": "int",
+            "value": 3
+          }
+        }
+      }
+    }
+    ```
+
+
+%  TEST[skip:TODO]
+
++ * **Upgrading to 8.8 does not migrate MySQL sync rules.**
+
++ After upgrading, you must re-create your sync rules.
+
+See [Known issues](es-connectors-known-issues.md) for any issues affecting all connectors.
+
+
+### Documents and syncs [es-connectors-mysql-syncs] 
+
+The following describes the default syncing behavior for this connector. Use [sync rules](es-sync-rules.md) and [ingest pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-pipeline-search.html) to customize syncing for specific indices.
+
+All records in the MySQL database included in your connector configuration are extracted and transformed into documents in your Elasticsearch index.
+
+* For each row in your MySQL database table, the connector creates one **Elasticsearch document**.
+* For each column, the connector transforms the column into an **Elasticsearch field**.
+* Elasticsearch [dynamically maps^](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-mapping.html) MySQL data types to **Elasticsearch data types**.
+* Tables with no primary key defined are skipped.
+* Field values that represent other records are replaced with the primary key for that record (composite primary keys are joined with `_`).
+
+The Elasticsearch mapping is created when the first document is created.
+
+Each sync is a "full" sync.
+
+For each MySQL row discovered:
+
+* If it does not exist, the document is created in Elasticsearch.
+* If it already exists in Elasticsearch, the Elasticsearch document is replaced and the version is incremented.
+* If an existing Elasticsearch document no longer exists in the MySQL table, it is deleted from Elasticsearch.
+
+::::{note} 
+* Files bigger than 10 MB won’t be extracted
+* Permissions are not synced by default. **All documents** indexed to an Elastic deployment will be visible to **all users with access** to that Elastic Deployment.
+
+::::
+
+
+
+### Sync rules [es-connectors-mysql-sync-rules] 
+
+The following sections describe [Sync rules](es-sync-rules.md) for this connector.
+
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+
+[Advanced rules](es-sync-rules.md#es-sync-rules-advanced) for MySQL can be used to pass arbitrary SQL statements to a MySQL instance.
+
+::::{important} 
+You need to specify the tables used in your custom query in the "tables" field.
+
+::::
+
+
+For example:
+
+```js
+[
+    {
+        "tables": ["table1", "table2"],
+        "query": "SELECT ... FROM ..."
+    }
+]
+```
+
+%  NOTCONSOLE
+
+::::{warning} 
+When using advanced rules, a query can bypass the configuration field `tables`. This will happen if the query specifies a table that doesn’t appear in the configuration. This can also happen if the configuration specifies `*` to fetch all tables while the advanced sync rule requests for only a subset of tables.
+
+::::
+
+
+
+### Troubleshooting [es-connectors-mysql-troubleshooting] 
+
+See [Troubleshooting](es-connectors-troubleshooting.md).
+
+
+### Security [es-connectors-mysql-security] 
+
+See [Security](es-connectors-security.md).
+
+%  Closing the collapsible section
+
+::::::
+
+
+%  //////// //// //// //// //// //// //// ////////
+
+%  //////// CONNECTOR CLIENT REFERENCE     ///////
+
+%  //////// //// //// //// //// //// //// ////////
+
+
+## **Self-managed connector** [es-connectors-mysql-connector-client-reference] 
+
+::::::{dropdown} View **self-managed connector** reference
+
+### Availability and prerequisites [es-connectors-mysql-client-prerequisites] 
+
+This connector is available as a **managed connector** in Elastic versions **8.5.0 and later**. To use this connector natively in Elastic Cloud, satisfy all [managed connector requirements](es-native-connectors.md).
+
+This connector is also available as a **self-managed connector** from the **Elastic connector framework**. To use this connector as a self-managed connector, satisfy all [self-managed connector requirements](es-build-connector.md).
+
+This connector has no additional prerequisites beyond the shared requirements, linked above.
+
+
+### Create a MySQL connector [es-connectors-mysql-create-connector-client] 
+
+
+## Use the UI [es-connectors-mysql-client-create-use-the-ui] 
+
+To create a new MySQL connector:
+
+1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](https://www.elastic.co/guide/en/kibana/current/kibana-concepts-analysts.html#_finding_your_apps_and_objects).
 2. Follow the instructions to create a new  **MySQL** self-managed connector.
 
 
-#### Use the API [es-connectors-mysql-client-create-use-the-api]
+## Use the API [es-connectors-mysql-client-create-use-the-api] 
 
-You can use the {{es}} [Create connector API](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector) to create a new self-managed MySQL self-managed connector.
+You can use the {{es}} [Create connector API](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) to create a new self-managed MySQL self-managed connector.
 
 For example:
 
@@ -49,8 +413,10 @@ PUT _connector/my-mysql-connector
 }
 ```
 
-:::::{dropdown} You’ll also need to create an API key for the connector to use.
-::::{note}
+%  TEST[skip:can’t test in isolation]
+
+:::::{dropdown} You’ll also need to **create an API key** for the connector to use.
+::::{note} 
 The user needs the cluster privileges `manage_api_key`, `manage_connector` and `write_connector_secrets` to generate API keys programmatically.
 
 ::::
@@ -93,17 +459,19 @@ To create an API key for the connector:
 :::::
 
 
-Refer to the [{{es}} API documentation](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector) for details of all available Connector APIs.
+Refer to the [{{es}} API documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) for details of all available Connector APIs.
 
 
-### Usage [es-connectors-mysql-client-usage]
+### Usage [es-connectors-mysql-client-usage] 
 
-To use this connector as a **self-managed connector**, see [*Self-managed connectors*](/reference/ingestion-tools/search-connectors/self-managed-connectors.md).
+To use this connector as a **managed connector**, use the **Connector** workflow. See [*Elastic managed connectors*](es-native-connectors.md).
 
-For additional operations, see [*Connectors UI in {{kib}}*](/reference/ingestion-tools/search-connectors/connectors-ui-in-kibana.md).
+To use this connector as a **self-managed connector**, see [*Self-managed connectors*](es-build-connector.md).
+
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
 
 
-### Compatibility [es-connectors-mysql-client-compatibility]
+### Compatibility [es-connectors-mysql-client-compatibility] 
 
 This connector is compatible with **MySQL 5.6 and later**.
 
@@ -112,7 +480,7 @@ The connector is also compatible with **MariaDB** databases compatible with the 
 The data source and your Elastic deployment must be able to communicate with each other over a network.
 
 
-### Configuration [es-connectors-mysql-client-configuration]
+### Configuration [es-connectors-mysql-client-configuration] 
 
 Each time you create an index to be managed by this connector, you will create a new connector configuration. You will need some or all of the following information about the data source.
 
@@ -195,7 +563,7 @@ SSL Certificate
 
 
 
-### Known issues [es-connectors-mysql-client-known-issues]
+### Known issues [es-connectors-mysql-client-known-issues] 
 
 This connector has the following known issues:
 
@@ -233,23 +601,25 @@ This connector has the following known issues:
     }
     ```
 
-* **Upgrading to 8.8 does not migrate MySQL sync rules.**
 
-    After upgrading, you must re-create your sync rules.
+%  TEST[skip:TODO]
+
++ * **Upgrading to 8.8 does not migrate MySQL sync rules.**
+
++ After upgrading, you must re-create your sync rules.
+
+See [Known issues](es-connectors-known-issues.md) for any issues affecting all connectors.
 
 
-See [Known issues](/release-notes/known-issues.md) for any issues affecting all connectors.
+### Documents and syncs [es-connectors-mysql-client-syncs] 
 
-
-### Documents and syncs [es-connectors-mysql-client-syncs]
-
-The following describes the default syncing behavior for this connector. Use [sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md) and [ingest pipelines](docs-content://solutions/search/ingest-for-search.md) to customize syncing for specific indices.
+The following describes the default syncing behavior for this connector. Use [sync rules](es-sync-rules.md) and [ingest pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-pipeline-search.html) to customize syncing for specific indices.
 
 All records in the MySQL database included in your connector configuration are extracted and transformed into documents in your Elasticsearch index.
 
 * For each row in your MySQL database table, the connector creates one **Elasticsearch document**.
 * For each column, the connector transforms the column into an **Elasticsearch field**.
-* Elasticsearch [dynamically maps^](docs-content://manage-data/data-store/mapping/dynamic-mapping.md) MySQL data types to **Elasticsearch data types**.
+* Elasticsearch [dynamically maps^](https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-mapping.html) MySQL data types to **Elasticsearch data types**.
 * Tables with no primary key defined are skipped.
 * Field values that represent other records are replaced with the primary key for that record (composite primary keys are joined with `_`).
 
@@ -264,23 +634,25 @@ For each MySQL row discovered:
 * If an existing Elasticsearch document no longer exists in the MySQL table, it is deleted from Elasticsearch.
 
 
-### Deployment using Docker [es-connectors-mysql-client-docker]
+### Deployment using Docker [es-connectors-mysql-client-docker] 
 
 You can deploy the MySQL connector as a self-managed connector using Docker. Follow these instructions.
 
-::::{dropdown} Step 1: Download sample configuration file
+::::{dropdown} **Step 1: Download sample configuration file**
 Download the sample configuration file. You can either download it manually or run the following command:
 
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
 
+%  NOTCONSOLE
+
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
 ::::
 
 
-::::{dropdown} Step 2: Update the configuration file for your self-managed connector
+::::{dropdown} **Step 2: Update the configuration file for your self-managed connector**
 Update the configuration file with the following settings to match your environment:
 
 * `elasticsearch.host`
@@ -308,7 +680,7 @@ Note: You can change other default configurations by simply uncommenting specifi
 ::::
 
 
-::::{dropdown} Step 3: Run the Docker image
+::::{dropdown} **Step 3: Run the Docker image**
 Run the Docker image with the Connector Service using the following command:
 
 ```sh
@@ -317,7 +689,7 @@ docker run \
 --network "elastic" \
 --tty \
 --rm \
-docker.elastic.co/integrations/elastic-connectors:9.0.0 \
+docker.elastic.co/integrations/elastic-connectors:9.0.0-beta1.0 \
 /app/bin/elastic-ingest \
 -c /config/config.yml
 ```
@@ -329,22 +701,22 @@ Refer to [`DOCKER.md`](https://github.com/elastic/connectors/tree/main/docs/DOCK
 
 Find all available Docker images in the [official registry](https://www.docker.elastic.co/r/integrations/elastic-connectors).
 
-::::{tip}
+::::{tip} 
 We also have a quickstart self-managed option using Docker Compose, so you can spin up all required services at once: Elasticsearch, Kibana, and the connectors service. Refer to this [README](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
 
 ::::
 
 
 
-### Sync rules [es-connectors-mysql-client-sync-rules]
+### Sync rules [es-connectors-mysql-client-sync-rules] 
 
-The following sections describe [Sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md) for this connector.
+The following sections describe [Sync rules](es-sync-rules.md) for this connector.
 
-[Basic sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
 
-[Advanced rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-advanced) for MySQL can be used to pass arbitrary SQL statements to a MySQL instance.
+[Advanced rules](es-sync-rules.md#es-sync-rules-advanced) for MySQL can be used to pass arbitrary SQL statements to a MySQL instance.
 
-::::{important}
+::::{important} 
 You need to specify the tables used in your custom query in the "tables" field.
 
 ::::
@@ -361,19 +733,26 @@ For example:
 ]
 ```
 
-::::{warning}
+%  NOTCONSOLE
+
+::::{warning} 
 When using advanced rules, a query can bypass the configuration field `tables`. This will happen if the query specifies a table that doesn’t appear in the configuration. This can also happen if the configuration specifies `*` to fetch all tables while the advanced sync rule requests for only a subset of tables.
 
 ::::
 
 
 
-### Troubleshooting [es-connectors-mysql-client-troubleshooting]
+### Troubleshooting [es-connectors-mysql-client-troubleshooting] 
 
-See [Troubleshooting](/reference/ingestion-tools/search-connectors/es-connectors-troubleshooting.md).
+See [Troubleshooting](es-connectors-troubleshooting.md).
 
 
-### Security [es-connectors-mysql-client-security]
+### Security [es-connectors-mysql-client-security] 
 
-See [Security](/reference/ingestion-tools/search-connectors/es-connectors-security.md).
+See [Security](es-connectors-security.md).
+
+%  Closing the collapsible section
+
+::::::
+
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Keyword marker"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-keyword-marker-tokenfilter.html
 ---
 
 # Keyword marker token filter [analysis-keyword-marker-tokenfilter]
@@ -9,21 +7,21 @@ mapped_pages:
 
 Marks specified tokens as keywords, which are not stemmed.
 
-The `keyword_marker` filter assigns specified tokens a `keyword` attribute of `true`. Stemmer token filters, such as [`stemmer`](/reference/data-analysis/text-analysis/analysis-stemmer-tokenfilter.md) or [`porter_stem`](/reference/data-analysis/text-analysis/analysis-porterstem-tokenfilter.md), skip tokens with a `keyword` attribute of `true`.
+The `keyword_marker` filter assigns specified tokens a `keyword` attribute of `true`. Stemmer token filters, such as [`stemmer`](analysis-stemmer-tokenfilter.md) or [`porter_stem`](analysis-porterstem-tokenfilter.md), skip tokens with a `keyword` attribute of `true`.
 
-::::{important}
-To work properly, the `keyword_marker` filter must be listed before any stemmer token filters in the [analyzer configuration](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+::::{important} 
+To work properly, the `keyword_marker` filter must be listed before any stemmer token filters in the [analyzer configuration](analysis-custom-analyzer.md).
 
 ::::
 
 
-The `keyword_marker` filter uses Lucene’s [KeywordMarkerFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/KeywordMarkerFilter.md).
+The `keyword_marker` filter uses Lucene’s [KeywordMarkerFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/KeywordMarkerFilter.md).
 
 ## Example [analysis-keyword-marker-tokenfilter-analyze-ex]
 
 To see how the `keyword_marker` filter works, you first need to produce a token stream containing stemmed tokens.
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the [`stemmer`](/reference/data-analysis/text-analysis/analysis-stemmer-tokenfilter.md) filter to create stemmed tokens for `fox running and jumping`.
+The following [analyze API](indices-analyze.md) request uses the [`stemmer`](analysis-stemmer-tokenfilter.md) filter to create stemmed tokens for `fox running and jumping`.
 
 ```console
 GET /_analyze
@@ -39,6 +37,42 @@ The request produces the following tokens. Note that `running` was stemmed to `r
 ```text
 [ fox, run, and, jump ]
 ```
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "fox",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "run",
+%       "start_offset": 4,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "and",
+%       "start_offset": 12,
+%       "end_offset": 15,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "jump",
+%       "start_offset": 16,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----
 
 To prevent `jumping` from being stemmed, add the `keyword_marker` filter before the `stemmer` filter in the previous analyze API request. Specify `jumping` in the `keywords` parameter of the `keyword_marker` filter.
 
@@ -62,6 +96,42 @@ The request produces the following tokens. `running` is still stemmed to `run`, 
 ```text
 [ fox, run, and, jumping ]
 ```
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "fox",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "run",
+%       "start_offset": 4,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "and",
+%       "start_offset": 12,
+%       "end_offset": 15,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "jumping",
+%       "start_offset": 16,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----
 
 To see the `keyword` attribute for these tokens, add the following arguments to the analyze API request:
 
@@ -230,7 +300,7 @@ This parameter, `keywords`, or `keywords_pattern` must be specified. You cannot 
 
 This parameter, `keywords`, or `keywords_path` must be specified. You cannot specify this parameter and `keywords` or `keywords_pattern`.
 
-::::{warning}
+::::{warning} 
 Poorly written regular expressions can cause {{es}} to run slowly or result in stack overflow errors, causing the running node to suddenly exit.
 
 ::::
@@ -242,7 +312,7 @@ Poorly written regular expressions can cause {{es}} to run slowly or result in s
 
 To customize the `keyword_marker` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses a custom `keyword_marker` filter and the `porter_stem` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+For example, the following [create index API](indices-create-index.md) request uses a custom `keyword_marker` filter and the `porter_stem` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 The custom `keyword_marker` filter marks tokens specified in the `analysis/example_word_list.txt` file as keywords. The `porter_stem` filter does not stem these tokens.
 

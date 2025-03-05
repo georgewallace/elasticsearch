@@ -1,7 +1,5 @@
 ---
 navigation_title: "Remove duplicates"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-remove-duplicates-tokenfilter.html
 ---
 
 # Remove duplicates token filter [analysis-remove-duplicates-tokenfilter]
@@ -9,13 +7,13 @@ mapped_pages:
 
 Removes duplicate tokens in the same position.
 
-The `remove_duplicates` filter uses Lucene’s [RemoveDuplicatesTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/RemoveDuplicatesTokenFilter.md).
+The `remove_duplicates` filter uses Lucene’s [RemoveDuplicatesTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/RemoveDuplicatesTokenFilter.md).
 
 ## Example [analysis-remove-duplicates-tokenfilter-analyze-ex]
 
 To see how the `remove_duplicates` filter works, you first need to produce a token stream containing duplicate tokens in the same position.
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the [`keyword_repeat`](/reference/data-analysis/text-analysis/analysis-keyword-repeat-tokenfilter.md) and [`stemmer`](/reference/data-analysis/text-analysis/analysis-stemmer-tokenfilter.md) filters to create stemmed and unstemmed tokens for `jumping dog`.
+The following [analyze API](indices-analyze.md) request uses the [`keyword_repeat`](analysis-keyword-repeat-tokenfilter.md) and [`stemmer`](analysis-stemmer-tokenfilter.md) filters to create stemmed and unstemmed tokens for `jumping dog`.
 
 ```console
 GET _analyze
@@ -114,7 +112,7 @@ The API returns the following response. There is now only one `dog` token in pos
 
 ## Add to an analyzer [analysis-remove-duplicates-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `remove_duplicates` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `remove_duplicates` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 This custom analyzer uses the `keyword_repeat` and `stemmer` filters to create a stemmed and unstemmed version of each token in a stream. The `remove_duplicates` filter then removes any duplicate tokens in the same position.
 

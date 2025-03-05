@@ -1,13 +1,11 @@
 ---
 navigation_title: "Match phrase prefix"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html
 ---
 
 # Match phrase prefix query [query-dsl-match-query-phrase-prefix]
 
 
-Returns documents that contain the words of a provided text, in the **same order** as provided. The last term of the provided text is treated as a [prefix](/reference/query-languages/query-dsl-prefix-query.md), matching any words that begin with that term.
+Returns documents that contain the words of a provided text, in the ***same order*** as provided. The last term of the provided text is treated as a [prefix](query-dsl-prefix-query.md), matching any words that begin with that term.
 
 ## Example request [match-phrase-prefix-query-ex-request]
 
@@ -40,11 +38,11 @@ GET /_search
 `query`
 :   (Required, string) Text you wish to find in the provided `<field>`.
 
-The `match_phrase_prefix` query [analyzes](docs-content://manage-data/data-store/text-analysis.md) any provided text into tokens before performing a search. The last term of this text is treated as a [prefix](/reference/query-languages/query-dsl-prefix-query.md), matching any words that begin with that term.
+The `match_phrase_prefix` query [analyzes](analysis.md) any provided text into tokens before performing a search. The last term of this text is treated as a [prefix](query-dsl-prefix-query.md), matching any words that begin with that term.
 
 
 `analyzer`
-:   (Optional, string) [Analyzer](docs-content://manage-data/data-store/text-analysis.md) used to convert text in the `query` value into tokens. Defaults to the [index-time analyzer](docs-content://manage-data/data-store/text-analysis/specify-an-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
+:   (Optional, string) [Analyzer](analysis.md) used to convert text in the `query` value into tokens. Defaults to the [index-time analyzer](specify-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
 
 `max_expansions`
 :   (Optional, integer) Maximum number of terms to which the last provided term of the `query` value will expand. Defaults to `50`.
@@ -59,7 +57,7 @@ The `match_phrase_prefix` query [analyzes](docs-content://manage-data/data-store
 :   No documents are returned if the `analyzer` removes all tokens.
 
 `all`
-:   Returns all documents, similar to a [`match_all`](/reference/query-languages/query-dsl-match-all-query.md) query.
+:   Returns all documents, similar to a [`match_all`](query-dsl-match-all-query.md) query.
 
 
 
@@ -73,4 +71,7 @@ For example, consider the query string `quick brown f`. This query works by crea
 
 The problem is that the first 50 terms may not include the term `fox` so the phrase `quick brown fox` will not be found. This usually isn’t a problem as the user will continue to type more letters until the word they are looking for appears.
 
-For better solutions for *search-as-you-type* check out the [completion suggester](/reference/elasticsearch/rest-apis/search-suggesters.md#completion-suggester) and the [`search_as_you_type` field type](/reference/elasticsearch/mapping-reference/search-as-you-type.md).
+For better solutions for *search-as-you-type* see the [completion suggester](search-suggesters.md#completion-suggester) and the [`search_as_you_type` field type](search-as-you-type.md).
+
+
+

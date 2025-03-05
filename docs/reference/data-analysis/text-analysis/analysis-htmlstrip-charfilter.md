@@ -1,7 +1,5 @@
 ---
 navigation_title: "HTML strip"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-htmlstrip-charfilter.html
 ---
 
 # HTML strip character filter [analysis-htmlstrip-charfilter]
@@ -9,11 +7,11 @@ mapped_pages:
 
 Strips HTML elements from a text and replaces HTML entities with their decoded value (e.g, replaces `&amp;` with `&`).
 
-The `html_strip` filter uses Lucene’s [HTMLStripCharFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/charfilter/HTMLStripCharFilter.md).
+The `html_strip` filter uses Lucene’s [HTMLStripCharFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/charfilter/HTMLStripCharFilter.md).
 
 ## Example [analysis-htmlstrip-charfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `html_strip` filter to change the text `<p>I&apos;m so <b>happy</b>!</p>` to `\nI'm so happy!\n`.
+The following [analyze API](indices-analyze.md) request uses the `html_strip` filter to change the text `<p>I&apos;m so <b>happy</b>!</p>` to `\nI'm so happy!\n`.
 
 ```console
 GET /_analyze
@@ -32,10 +30,25 @@ The filter produces the following text:
 [ \nI'm so happy!\n ]
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "\nI’m so happy!\n",
+%       "start_offset": 0,
+%       "end_offset": 32,
+%       "type": "word",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----
+
 
 ## Add to an analyzer [analysis-htmlstrip-charfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `html_strip` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `html_strip` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /my-index-000001
@@ -66,7 +79,7 @@ PUT /my-index-000001
 
 To customize the `html_strip` filter, duplicate it to create the basis for a new custom character filter. You can modify the filter using its configurable parameters.
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request configures a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md) using a custom `html_strip` filter, `my_custom_html_strip_char_filter`.
+The following [create index API](indices-create-index.md) request configures a new [custom analyzer](analysis-custom-analyzer.md) using a custom `html_strip` filter, `my_custom_html_strip_char_filter`.
 
 The `my_custom_html_strip_char_filter` filter skips the removal of the `<b>` HTML element.
 

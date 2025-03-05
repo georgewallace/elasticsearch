@@ -1,7 +1,5 @@
 ---
 navigation_title: "Shape"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/shape.html
 ---
 
 # Shape field type [shape]
@@ -9,12 +7,12 @@ mapped_pages:
 
 The `shape` data type facilitates the indexing of and searching with arbitrary `x, y` cartesian shapes such as rectangles and polygons. It can be used to index and query geometries whose coordinates fall in a 2-dimensional planar coordinate system.
 
-You can query documents using this type using [shape Query](/reference/query-languages/query-dsl-shape-query.md).
+You can query documents using this type using [shape Query](query-dsl-shape-query.md).
 
 
-## Mapping Options [shape-mapping-options]
+## Mapping Options [shape-mapping-options] 
 
-Like the [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) field type, the `shape` field mapping maps [GeoJSON](http://geojson.org) or [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) (WKT) geometry objects to the shape type. To enable it, users must explicitly map fields to the shape type.
+Like the [`geo_shape`](geo-shape.md) field type, the `shape` field mapping maps [GeoJSON](http://geojson.org) or [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) (WKT) geometry objects to the shape type. To enable it, users must explicitly map fields to the shape type.
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -24,7 +22,7 @@ Like the [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) 
 | `coerce` | If `true` unclosed linear rings in polygons will be automatically closed. | `false` |
 
 
-## Indexing approach [shape-indexing-approach]
+## Indexing approach [shape-indexing-approach] 
 
 Like `geo_shape`, the `shape` field type is indexed by decomposing geometries into a triangular mesh and indexing each triangle as a 7 dimension point in a BKD tree. The coordinates provided to the indexer are single precision floating point values so the field guarantees the same accuracy provided by the java virtual machine (typically `1E-38`). For polygons/multi-polygons the performance of the tessellator primarily depends on the number of vertices that define the geometry.
 
@@ -33,7 +31,7 @@ Like `geo_shape`, the `shape` field type is indexed by decomposing geometries in
 `CONTAINS` relation query - `shape` queries with `relation` defined as `contains` are supported for indices created with ElasticSearch 7.5.0 or higher.
 
 
-### Example [_example_2]
+### Example [_example_2] 
 
 ```console
 PUT /example
@@ -48,10 +46,12 @@ PUT /example
 }
 ```
 
+%  TESTSETUP
+
 This mapping definition maps the geometry field to the shape type. The indexer uses single precision floats for the vertex values so accuracy is guaranteed to the same precision as `float` values provided by the java virtual machine approximately (typically 1E-38).
 
 
-## Input Structure [shape-input-structure]
+## Input Structure [shape-input-structure] 
 
 Shapes can be represented using either the [GeoJSON](http://geojson.org) or [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) (WKT) format. The following table provides a mapping of GeoJSON and WKT to Elasticsearch types:
 
@@ -66,7 +66,7 @@ Shapes can be represented using either the [GeoJSON](http://geojson.org) or [Wel
 | `GeometryCollection` | `GEOMETRYCOLLECTION` | `geometrycollection` | A shape collection similar to the`multi*` shapes except that multiple types can coexist (e.g., a Point and a LineString). |
 | `N/A` | `BBOX` | `envelope` | A bounding rectangle, or envelope, specified byspecifying only the top left and bottom right points. |
 
-::::{note}
+::::{note} 
 For all types, both the inner `type` and `coordinates` fields are required.
 
 In GeoJSON and WKT, and therefore Elasticsearch, the correct **coordinate order is (X, Y)** within coordinate arrays. This differs from many Geospatial APIs (e.g., `geo_shape`) that typically use the colloquial latitude, longitude (Y, X) ordering.
@@ -75,7 +75,7 @@ In GeoJSON and WKT, and therefore Elasticsearch, the correct **coordinate order 
 
 
 
-### [Point](http://geojson.org/geojson-spec.md#id2) [point-shape]
+### [Point](http://geojson.org/geojson-spec.md#id2) [point-shape] 
 
 A point is a single coordinate in cartesian `x, y` space. It may represent the location of an item of interest in a virtual world or projected space. The following is an example of a point in GeoJSON.
 
@@ -99,7 +99,7 @@ POST /example/_doc
 ```
 
 
-### [LineString](http://geojson.org/geojson-spec.md#id3) [linestring]
+### [LineString](http://geojson.org/geojson-spec.md#id3) [linestring] 
 
 A `linestring` defined by an array of two or more positions. By specifying only two points, the `linestring` will represent a straight line. Specifying more than two points creates an arbitrary path. The following is an example of a LineString in GeoJSON.
 
@@ -123,7 +123,7 @@ POST /example/_doc
 ```
 
 
-### [Polygon](http://geojson.org/geojson-spec.md#id4) [polygon]
+### [Polygon](http://geojson.org/geojson-spec.md#id4) [polygon] 
 
 A polygon is defined by a list of a list of points. The first and last points in each (outer) list must be the same (the polygon must be closed). The following is an example of a Polygon in GeoJSON.
 
@@ -192,7 +192,7 @@ POST /example/_doc
 ```
 
 
-### [MultiPoint](http://geojson.org/geojson-spec.md#id5) [multipoint]
+### [MultiPoint](http://geojson.org/geojson-spec.md#id5) [multipoint] 
 
 The following is an example of a list of GeoJSON points:
 
@@ -218,7 +218,7 @@ POST /example/_doc
 ```
 
 
-### [MultiLineString](http://geojson.org/geojson-spec.md#id6) [multilinestring]
+### [MultiLineString](http://geojson.org/geojson-spec.md#id6) [multilinestring] 
 
 The following is an example of a list of GeoJSON linestrings:
 
@@ -246,7 +246,7 @@ POST /example/_doc
 ```
 
 
-### [MultiPolygon](http://geojson.org/geojson-spec.md#id7) [multipolygon]
+### [MultiPolygon](http://geojson.org/geojson-spec.md#id7) [multipolygon] 
 
 The following is an example of a list of GeoJSON polygons (second polygon contains a hole):
 
@@ -274,7 +274,7 @@ POST /example/_doc
 ```
 
 
-### [Geometry Collection](http://geojson.org/geojson-spec.md#geometrycollection) [geometry_collection]
+### [Geometry Collection](http://geojson.org/geojson-spec.md#geometrycollection) [geometry_collection] 
 
 The following is an example of a collection of GeoJSON geometry objects:
 
@@ -307,7 +307,7 @@ POST /example/_doc
 ```
 
 
-### Envelope [_envelope_2]
+### Envelope [_envelope_2] 
 
 Elasticsearch supports an `envelope` type, which consists of coordinates for upper left and lower right points of the shape to represent a bounding rectangle in the format `[[minX, maxY], [maxX, minY]]`:
 
@@ -333,7 +333,7 @@ POST /example/_doc
 ```
 
 
-## Sorting and Retrieving index Shapes [_sorting_and_retrieving_index_shapes_2]
+## Sorting and Retrieving index Shapes [_sorting_and_retrieving_index_shapes_2] 
 
 Due to the complex input structure and index representation of shapes, it is not currently possible to sort shapes or retrieve their fields directly. The `shape` value is only retrievable through the `_source` field.
 

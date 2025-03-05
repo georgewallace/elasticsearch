@@ -1,7 +1,5 @@
 ---
 navigation_title: "Geo-centroid"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-geocentroid-aggregation.html
 ---
 
 # Geo-centroid aggregation [search-aggregations-metrics-geocentroid-aggregation]
@@ -49,7 +47,7 @@ POST /museums/_search?size=0
 }
 ```
 
-1. The `geo_centroid` aggregation specifies the field to use for computing the centroid. (NOTE: field must be a [Geopoint](/reference/elasticsearch/mapping-reference/geo-point.md) type)
+1. The `geo_centroid` aggregation specifies the field to use for computing the centroid. (NOTE: field must be a [Geopoint](geo-point.md) type)
 
 
 The above aggregation demonstrates how one would compute the centroid of the location field for all museums' documents.
@@ -71,6 +69,8 @@ The response for the above aggregation:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
 The `geo_centroid` aggregation is more interesting when combined as a sub-aggregation to other bucket aggregations.
 
 Example:
@@ -91,7 +91,9 @@ POST /museums/_search?size=0
 }
 ```
 
-The above example uses `geo_centroid` as a sub-aggregation to a [terms](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md) bucket aggregation for finding the central location for museums in each city.
+%  TEST[continued]
+
+The above example uses `geo_centroid` as a sub-aggregation to a [terms](search-aggregations-bucket-terms-aggregation.md) bucket aggregation for finding the central location for museums in each city.
 
 The response for the above aggregation:
 
@@ -142,10 +144,12 @@ The response for the above aggregation:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
-## Geo Centroid Aggregation on `geo_shape` fields [geocentroid-aggregation-geo-shape]
 
-The centroid metric for geoshapes is more nuanced than for points. The centroid of a specific aggregation bucket containing shapes is the centroid of the highest-dimensionality shape type in the bucket. For example, if a bucket contains shapes comprising of polygons and lines, then the lines do not contribute to the centroid metric. Each type of shape’s centroid is calculated differently. Envelopes and circles ingested via the [Circle](/reference/ingestion-tools/enrich-processor/ingest-circle-processor.md) are treated as polygons.
+## Geo Centroid Aggregation on `geo_shape` fields [geocentroid-aggregation-geo-shape] 
+
+The centroid metric for geoshapes is more nuanced than for points. The centroid of a specific aggregation bucket containing shapes is the centroid of the highest-dimensionality shape type in the bucket. For example, if a bucket contains shapes comprising of polygons and lines, then the lines do not contribute to the centroid metric. Each type of shape’s centroid is calculated differently. Envelopes and circles ingested via the [Circle](ingest-circle-processor.md) are treated as polygons.
 
 | Geometry Type | Centroid Calculation |
 | --- | --- |
@@ -186,6 +190,8 @@ POST /places/_search?size=0
 }
 ```
 
+%  TEST
+
 ```console-result
 {
   ...
@@ -201,10 +207,12 @@ POST /places/_search?size=0
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
 ::::{admonition} Using `geo_centroid` as a sub-aggregation of `geohash_grid`
 :class: warning
 
-The [`geohash_grid`](/reference/data-analysis/aggregations/search-aggregations-bucket-geohashgrid-aggregation.md) aggregation places documents, not individual geopoints, into buckets. If a document’s `geo_point` field contains [multiple values](/reference/elasticsearch/mapping-reference/array.md), the document could be assigned to multiple buckets, even if one or more of its geopoints are outside the bucket boundaries.
+The [`geohash_grid`](search-aggregations-bucket-geohashgrid-aggregation.md) aggregation places documents, not individual geopoints, into buckets. If a document’s `geo_point` field contains [multiple values](array.md), the document could be assigned to multiple buckets, even if one or more of its geopoints are outside the bucket boundaries.
 
 If a `geocentroid` sub-aggregation is also used, each centroid is calculated using all geopoints in a bucket, including those outside the bucket boundaries. This can result in centroids outside of bucket boundaries.
 

@@ -1,15 +1,13 @@
 ---
 navigation_title: "Sparse vector"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sparse-vector.html
 ---
 
 # Sparse vector field type [sparse-vector]
 
 
-A `sparse_vector` field can index features and weights so that they can later be used to query documents in queries with a [`sparse_vector`](/reference/query-languages/query-dsl-sparse-vector-query.md). This field can also be used with a legacy [`text_expansion`](/reference/query-languages/query-dsl-text-expansion-query.md) query.
+A `sparse_vector` field can index features and weights so that they can later be used to query documents in queries with a [`sparse_vector`](query-dsl-sparse-vector-query.md). This field can also be used with a legacy [`text_expansion`](query-dsl-text-expansion-query.md) query.
 
-`sparse_vector` is the field type that should be used with [ELSER mappings](docs-content://solutions/search/semantic-search/semantic-search-elser-ingest-pipelines.md#elser-mappings).
+`sparse_vector` is the field type that should be used with [ELSER mappings](semantic-search-elser.md#elser-mappings).
 
 ```console
 PUT my-index
@@ -24,17 +22,17 @@ PUT my-index
 }
 ```
 
-See [semantic search with ELSER](docs-content://solutions/search/semantic-search/semantic-search-elser-ingest-pipelines.md) for a complete example on adding documents to a `sparse_vector` mapped field using ELSER.
+See [semantic search with ELSER](semantic-search-elser.md) for a complete example on adding documents to a `sparse_vector` mapped field using ELSER.
 
 ## Parameters for `sparse_vector` fields [sparse-vectors-params]
 
 The following parameters are accepted by `sparse_vector` fields:
 
-[store](/reference/elasticsearch/mapping-reference/mapping-store.md)
-:   Indicates whether the field value should be stored and retrievable independently of the [_source](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field. Accepted values: true or false (default). The field’s data is stored using term vectors, a disk-efficient structure compared to the original JSON input. The input map can be retrieved during a search request via the [`fields` parameter](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#search-fields-param). To benefit from reduced disk usage, you must either:
+[store](mapping-store.md)
+:   Indicates whether the field value should be stored and retrievable independently of the [_source](mapping-source-field.md) field. Accepted values: true or false (default). The field’s data is stored using term vectors, a disk-efficient structure compared to the original JSON input. The input map can be retrieved during a search request via the [`fields` parameter](search-fields.md#search-fields-param). To benefit from reduced disk usage, you must either:
 
-    * Exclude the field from [_source](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#source-filtering).
-    * Use [synthetic `_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md#synthetic-source).
+    * Exclude the field from [_source](search-fields.md#source-filtering).
+    * Use [synthetic `_source`](mapping-source-field.md#synthetic-source).
 
 
 
@@ -91,22 +89,22 @@ GET my-index-000001/_search
 }
 ```
 
-::::{note}
+::::{note} 
 `sparse_vector` fields can not be included in indices that were **created** on {{es}} versions between 8.0 and 8.10
 ::::
 
 
-::::{note}
+::::{note} 
 `sparse_vector` fields only support strictly positive values. Negative values will be rejected.
 ::::
 
 
-::::{note}
-`sparse_vector` fields do not support [analyzers](docs-content://manage-data/data-store/text-analysis.md), querying, sorting or aggregating. They may only be used within specialized queries. The recommended query to use on these fields are [`sparse_vector`](/reference/query-languages/query-dsl-sparse-vector-query.md) queries. They may also be used within legacy [`text_expansion`](/reference/query-languages/query-dsl-text-expansion-query.md) queries.
+::::{note} 
+`sparse_vector` fields do not support [analyzers](analysis.md), querying, sorting or aggregating. They may only be used within specialized queries. The recommended query to use on these fields are [`sparse_vector`](query-dsl-sparse-vector-query.md) queries. They may also be used within legacy [`text_expansion`](query-dsl-text-expansion-query.md) queries.
 ::::
 
 
-::::{note}
+::::{note} 
 `sparse_vector` fields only preserve 9 significant bits for the precision, which translates to a relative error of about 0.4%.
 ::::
 

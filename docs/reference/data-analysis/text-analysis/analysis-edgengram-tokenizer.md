@@ -1,7 +1,5 @@
 ---
 navigation_title: "Edge n-gram"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-edgengram-tokenizer.html
 ---
 
 # Edge n-gram tokenizer [analysis-edgengram-tokenizer]
@@ -11,13 +9,13 @@ The `edge_ngram` tokenizer first breaks text down into words whenever it encount
 
 Edge N-Grams are useful for *search-as-you-type* queries.
 
-::::{tip}
-When you need *search-as-you-type* for text which has a widely known order, such as movie or song titles, the completion suggester is a much more efficient choice than edge N-grams. Edge N-grams have the advantage when trying to autocomplete words that can appear in any order. For more information about completion suggesters, refer to [](/reference/elasticsearch/rest-apis/search-suggesters.md).
+::::{tip} 
+When you need *search-as-you-type* for text which has a widely known order, such as movie or song titles, the [completion suggester](search-suggesters.md#completion-suggester) is a much more efficient choice than edge N-grams. Edge N-grams have the advantage when trying to autocomplete words that can appear in any order.
 ::::
 
 
 
-## Example output [_example_output_9]
+## Example output [_example_output_9] 
 
 With the default settings, the `edge_ngram` tokenizer treats the initial text as a single token and produces N-grams with minimum length `1` and maximum length `2`:
 
@@ -29,19 +27,43 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "Q",
+%       "start_offset": 0,
+%       "end_offset": 1,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "Qu",
+%       "start_offset": 0,
+%       "end_offset": 2,
+%       "type": "word",
+%       "position": 1
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following terms:
 
 ```text
 [ Q, Qu ]
 ```
 
-::::{note}
+::::{note} 
 These default gram lengths are almost entirely useless. You need to configure the `edge_ngram` before using it.
 ::::
 
 
 
-## Configuration [_configuration_10]
+## Configuration [_configuration_10] 
 
 The `edge_ngram` tokenizer accepts the following parameters:
 
@@ -51,7 +73,7 @@ The `edge_ngram` tokenizer accepts the following parameters:
 `max_gram`
 :   Maximum length of characters in a gram. Defaults to `2`.
 
-See [Limitations of the `max_gram` parameter](#max-gram-limits).
+See [Limitations of the `max_gram` parameter](analysis-edgengram-tokenizer.md#max-gram-limits).
 
 
 `token_chars`
@@ -71,20 +93,20 @@ See [Limitations of the `max_gram` parameter](#max-gram-limits).
 :   Custom characters that should be treated as part of a token. For example, setting this to `+-_` will make the tokenizer treat the plus, minus and underscore sign as part of a token.
 
 
-## Limitations of the `max_gram` parameter [max-gram-limits]
+## Limitations of the `max_gram` parameter [max-gram-limits] 
 
 The `edge_ngram` tokenizer’s `max_gram` value limits the character length of tokens. When the `edge_ngram` tokenizer is used with an index analyzer, this means search terms longer than the `max_gram` length may not match any indexed terms.
 
 For example, if the `max_gram` is `3`, searches for `apple` won’t match the indexed term `app`.
 
-To account for this, you can use the [`truncate`](/reference/data-analysis/text-analysis/analysis-truncate-tokenfilter.md) token filter with a search analyzer to shorten search terms to the `max_gram` character length. However, this could return irrelevant results.
+To account for this, you can use the [`truncate`](analysis-truncate-tokenfilter.md) token filter with a search analyzer to shorten search terms to the `max_gram` character length. However, this could return irrelevant results.
 
 For example, if the `max_gram` is `3` and search terms are truncated to three characters, the search term `apple` is shortened to `app`. This means searches for `apple` return any indexed terms matching `app`, such as `apply`, `approximate` and `apple`.
 
 We recommend testing both approaches to see which best fits your use case and desired search experience.
 
 
-## Example configuration [_example_configuration_7]
+## Example configuration [_example_configuration_7] 
 
 In this example, we configure the `edge_ngram` tokenizer to treat letters and digits as tokens, and to produce grams with minimum length `2` and maximum length `10`:
 
@@ -119,6 +141,72 @@ POST my-index-000001/_analyze
   "text": "2 Quick Foxes."
 }
 ```
+
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "Qu",
+%       "start_offset": 2,
+%       "end_offset": 4,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "Qui",
+%       "start_offset": 2,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "Quic",
+%       "start_offset": 2,
+%       "end_offset": 6,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "Quick",
+%       "start_offset": 2,
+%       "end_offset": 7,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "Fo",
+%       "start_offset": 8,
+%       "end_offset": 10,
+%       "type": "word",
+%       "position": 4
+%     },
+%     {
+%       "token": "Fox",
+%       "start_offset": 8,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 5
+%     },
+%     {
+%       "token": "Foxe",
+%       "start_offset": 8,
+%       "end_offset": 12,
+%       "type": "word",
+%       "position": 6
+%     },
+%     {
+%       "token": "Foxes",
+%       "start_offset": 8,
+%       "end_offset": 13,
+%       "type": "word",
+%       "position": 7
+%     }
+%   ]
+% }
+% ----------------------------
+% 
 
 The above example produces the following terms:
 
@@ -194,4 +282,37 @@ GET my-index-000001/_search
 1. The `autocomplete` analyzer indexes the terms `[qu, qui, quic, quick, fo, fox, foxe, foxes]`.
 2. The `autocomplete_search` analyzer searches for the terms `[quick, fo]`, both of which appear in the index.
 
+
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "took": $body.took,
+%   "timed_out": false,
+%   "_shards": {
+%     "total": 1,
+%     "successful": 1,
+%     "skipped" : 0,
+%     "failed": 0
+%   },
+%   "hits": {
+%     "total" : {
+%         "value": 1,
+%         "relation": "eq"
+%     },
+%     "max_score": 0.5753642,
+%     "hits": [
+%       {
+%         "_index": "my-index-000001",
+%         "_id": "1",
+%         "_score": 0.5753642,
+%         "_source": {
+%           "title": "Quick Foxes"
+%         }
+%       }
+%     ]
+%   }
+% }
+% ----------------------------
+% // TESTRESPONSE[s/"took".*/"took": "$body.took",/]
 

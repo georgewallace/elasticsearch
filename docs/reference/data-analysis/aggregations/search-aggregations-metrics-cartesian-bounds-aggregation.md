@@ -1,13 +1,11 @@
 ---
 navigation_title: "Cartesian-bounds"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cartesian-bounds-aggregation.html
 ---
 
 # Cartesian-bounds aggregation [search-aggregations-metrics-cartesian-bounds-aggregation]
 
 
-A metric aggregation that computes the spatial bounding box containing all values for a [Point](/reference/elasticsearch/mapping-reference/point.md) or [Shape](/reference/elasticsearch/mapping-reference/shape.md) field.
+A metric aggregation that computes the spatial bounding box containing all values for a [Point](point.md) or [Shape](shape.md) field.
 
 Example:
 
@@ -52,11 +50,11 @@ POST /museums/_search?size=0
 }
 ```
 
-1. The `cartesian_bounds` aggregation specifies the field to use to obtain the bounds, which must be a [Point](/reference/elasticsearch/mapping-reference/point.md) or a [Shape](/reference/elasticsearch/mapping-reference/shape.md) type.
+1. The `cartesian_bounds` aggregation specifies the field to use to obtain the bounds, which must be a [Point](point.md) or a [Shape](shape.md) type.
 
 
-::::{note}
-Unlike the case with the [`geo_bounds`](/reference/data-analysis/aggregations/search-aggregations-metrics-geobounds-aggregation.md#geobounds-aggregation-geo-shape) aggregation, there is no option to set [`wrap_longitude`](/reference/data-analysis/aggregations/search-aggregations-metrics-geobounds-aggregation.md#geo-bounds-wrap-longitude). This is because the cartesian space is euclidean and does not wrap back on itself. So the bounds will always have a minimum x value less than or equal to the maximum x value.
+::::{note} 
+Unlike the case with the [`geo_bounds`](search-aggregations-metrics-geobounds-aggregation.md#geobounds-aggregation-geo-shape) aggregation, there is no option to set [`wrap_longitude`](search-aggregations-metrics-geobounds-aggregation.md#geo-bounds-wrap-longitude). This is because the cartesian space is euclidean and does not wrap back on itself. So the bounds will always have a minimum x value less than or equal to the maximum x value.
 ::::
 
 
@@ -84,8 +82,10 @@ The response for the above aggregation:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
-## Cartesian Bounds Aggregation on `shape` fields [cartesian-bounds-aggregation-shape]
+
+## Cartesian Bounds Aggregation on `shape` fields [cartesian-bounds-aggregation-shape] 
 
 The Cartesian Bounds Aggregation is also supported on `cartesian_shape` fields.
 
@@ -121,6 +121,8 @@ POST /places/_search?size=0
 }
 ```
 
+%  TEST
+
 ```console-result
 {
   ...
@@ -140,4 +142,6 @@ POST /places/_search?size=0
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 

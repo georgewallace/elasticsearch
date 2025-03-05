@@ -1,13 +1,57 @@
 ---
 navigation_title: "Rare terms"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-rare-terms-aggregation.html
 ---
 
 # Rare terms aggregation [search-aggregations-bucket-rare-terms-aggregation]
 
 
-A multi-bucket value source based aggregation which finds "rare" terms — terms that are at the long-tail of the distribution and are not frequent. Conceptually, this is like a `terms` aggregation that is sorted by `_count` ascending. As noted in the [terms aggregation docs](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order), actually ordering a `terms` agg by count ascending has unbounded error. Instead, you should use the `rare_terms` aggregation
+A multi-bucket value source based aggregation which finds "rare" terms — terms that are at the long-tail of the distribution and are not frequent. Conceptually, this is like a `terms` aggregation that is sorted by `_count` ascending. As noted in the [terms aggregation docs](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order), actually ordering a `terms` agg by count ascending has unbounded error. Instead, you should use the `rare_terms` aggregation
+
+% 
+% [source,js]
+% --------------------------------------------------
+% PUT /products
+% {
+%   "mappings": {
+%     "properties": {
+%       "genre": {
+%         "type": "keyword"
+%       },
+%       "product": {
+%         "type": "keyword"
+%       }
+%     }
+%   }
+% }
+% 
+% POST /products/_bulk?refresh
+% {"index":{"_id":0}}
+% {"genre": "rock", "product": "Product A"}
+% {"index":{"_id":1}}
+% {"genre": "rock"}
+% {"index":{"_id":2}}
+% {"genre": "rock"}
+% {"index":{"_id":3}}
+% {"genre": "jazz", "product": "Product Z"}
+% {"index":{"_id":4}}
+% {"genre": "jazz"}
+% {"index":{"_id":5}}
+% {"genre": "electronic"}
+% {"index":{"_id":6}}
+% {"genre": "electronic"}
+% {"index":{"_id":7}}
+% {"genre": "electronic"}
+% {"index":{"_id":8}}
+% {"genre": "electronic"}
+% {"index":{"_id":9}}
+% {"genre": "electronic"}
+% {"index":{"_id":10}}
+% {"genre": "swing"}
+% 
+% -------------------------------------------------
+% // NOTCONSOLE
+% // TESTSETUP
+% 
 
 ## Syntax [_syntax_3]
 
@@ -21,6 +65,8 @@ A `rare_terms` aggregation looks like this in isolation:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 |     |     |     |     |
 | --- | --- | --- | --- |
@@ -49,6 +95,8 @@ GET /_search
 }
 ```
 
+%  TEST[s/_search/_search\?filter_path=aggregations/]
+
 Response:
 
 ```console-result
@@ -67,6 +115,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 In this example, the only bucket that we see is the "swing" bucket, because it is the only term that appears in one document. If we increase the `max_doc_count` to `2`, we’ll see some more buckets:
 
 $$$rare-terms-aggregation-max-doc-count-example$$$
@@ -84,6 +134,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 This now shows the "jazz" term which has a `doc_count` of 2":
 
@@ -106,6 +158,8 @@ This now shows the "jazz" term which has a `doc_count` of 2":
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\.//]
 
 
 ## Maximum document count [search-aggregations-bucket-rare-terms-aggregation-max-doc-count]
@@ -152,21 +206,21 @@ The X-axis shows the number of distinct values the aggregation has seen, and the
 
 This first chart shows precision `0.01`:
 
-![accuracy 01](../../../images/accuracy_01.png "")
+![accuracy 01](images/accuracy_01.png "")
 
 And precision `0.001` (the default):
 
-![accuracy 001](../../../images/accuracy_001.png "")
+![accuracy 001](images/accuracy_001.png "")
 
 And finally `precision 0.0001`:
 
-![accuracy 0001](../../../images/accuracy_0001.png "")
+![accuracy 0001](images/accuracy_0001.png "")
 
 The default precision of `0.001` maintains an accuracy of < 2.5% for the tested conditions, and accuracy slowly degrades in a controlled, linear fashion as the number of distinct values increases.
 
 The default precision of `0.001` has a memory profile of `1.748⁻⁶ * n` bytes, where `n` is the number of distinct values the aggregation has seen (it can also be roughly eyeballed, e.g. 20 million unique values is about 30mb of memory). The memory usage is linear to the number of distinct values regardless of which precision is chosen, the precision only affects the slope of the memory profile as seen in this chart:
 
-![memory](../../../images/memory.png "")
+![memory](images/memory.png "")
 
 For comparison, an equivalent terms aggregation at 20 million buckets would be roughly `20m * 69b == ~1.38gb` (with 69 bytes being a very optimistic estimate of an empty bucket cost, far lower than what the circuit breaker accounts for). So although the `rare_terms` agg is relatively heavy, it is still orders of magnitude smaller than the equivalent terms aggregation
 
@@ -196,7 +250,7 @@ GET /_search
 
 In the above example, buckets will be created for all the tags that starts with `swi`, except those starting with `electro` (so the tag `swing` will be aggregated but not `electro_swing`). The `include` regular expression will determine what values are "allowed" to be aggregated, while the `exclude` determines the values that should not be aggregated. When both are defined, the `exclude` has precedence, meaning, the `include` is evaluated first and only then the `exclude`.
 
-The syntax is the same as [regexp queries](/reference/query-languages/regexp-syntax.md).
+The syntax is the same as [regexp queries](regexp-syntax.md).
 
 
 ### Filtering Values with exact values [_filtering_values_with_exact_values]

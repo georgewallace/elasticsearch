@@ -1,7 +1,5 @@
 ---
 navigation_title: "Fingerprint"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-fingerprint-analyzer.html
 ---
 
 # Fingerprint analyzer [analysis-fingerprint-analyzer]
@@ -12,7 +10,7 @@ The `fingerprint` analyzer implements a [fingerprinting algorithm](https://githu
 Input text is lowercased, normalized to remove extended characters, sorted, deduplicated and concatenated into a single token. If a stopword list is configured, stop words will also be removed.
 
 
-## Example output [_example_output]
+## Example output [_example_output] 
 
 ```console
 POST _analyze
@@ -22,6 +20,23 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "and consistent godel is said sentence this yes",
+%       "start_offset": 0,
+%       "end_offset": 52,
+%       "type": "fingerprint",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following single term:
 
 ```text
@@ -29,7 +44,7 @@ The above sentence would produce the following single term:
 ```
 
 
-## Configuration [_configuration_2]
+## Configuration [_configuration_2] 
 
 The `fingerprint` analyzer accepts the following parameters:
 
@@ -45,10 +60,10 @@ The `fingerprint` analyzer accepts the following parameters:
 `stopwords_path`
 :   The path to a file containing stop words.
 
-See the [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) for more information about stop word configuration.
+See the [Stop Token Filter](analysis-stop-tokenfilter.md) for more information about stop word configuration.
 
 
-## Example configuration [_example_configuration_2]
+## Example configuration [_example_configuration_2] 
 
 In this example, we configure the `fingerprint` analyzer to use the pre-defined list of English stop words:
 
@@ -74,6 +89,23 @@ POST my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "consistent godel said sentence yes",
+%       "start_offset": 0,
+%       "end_offset": 52,
+%       "type": "fingerprint",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following term:
 
 ```text
@@ -81,19 +113,19 @@ The above example produces the following term:
 ```
 
 
-## Definition [_definition]
+## Definition [_definition] 
 
 The `fingerprint` tokenizer consists of:
 
 Tokenizer
-:   * [Standard Tokenizer](/reference/data-analysis/text-analysis/analysis-standard-tokenizer.md)
+:   * [Standard Tokenizer](analysis-standard-tokenizer.md)
 
 
 Token Filters (in order)
-:   * [Lower Case Token Filter](/reference/data-analysis/text-analysis/analysis-lowercase-tokenfilter.md)
-* [ASCII folding](/reference/data-analysis/text-analysis/analysis-asciifolding-tokenfilter.md)
-* [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) (disabled by default)
-* [Fingerprint](/reference/data-analysis/text-analysis/analysis-fingerprint-tokenfilter.md)
+:   * [Lower Case Token Filter](analysis-lowercase-tokenfilter.md)
+* [ASCII folding](analysis-asciifolding-tokenfilter.md)
+* [Stop Token Filter](analysis-stop-tokenfilter.md) (disabled by default)
+* [Fingerprint](analysis-fingerprint-tokenfilter.md)
 
 
 If you need to customize the `fingerprint` analyzer beyond the configuration parameters then you need to recreate it as a `custom` analyzer and modify it, usually by adding token filters. This would recreate the built-in `fingerprint` analyzer and you can use it as a starting point for further customization:
@@ -117,4 +149,6 @@ PUT /fingerprint_example
   }
 }
 ```
+
+%  TEST[s/\n$/\nstartyaml\n  - compare_analyzers: {index: fingerprint_example, first: fingerprint, second: rebuilt_fingerprint}\nendyaml\n/]
 

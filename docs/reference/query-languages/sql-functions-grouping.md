@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-grouping.html
----
-
 # Grouping Functions [sql-functions-grouping]
 
-Functions for creating special *grouping*s (also known as *bucketing*); as such these need to be used as part of the [grouping](/reference/query-languages/sql-syntax-select.md#sql-syntax-group-by).
+Functions for creating special *grouping*s (also known as *bucketing*); as such these need to be used as part of the [grouping](sql-syntax-select.md#sql-syntax-group-by).
 
 ## `HISTOGRAM` [sql-functions-grouping-histogram]
 
@@ -24,7 +19,7 @@ HISTOGRAM(
 1. numeric expression (typically a field). If this field contains only `null` values, the function returns `null`. Otherwise, the function ignores `null` values in this field.
 2. numeric interval. If `null`, the function returns `null`.
 3. date/time expression (typically a field). If this field contains only `null` values, the function returns `null`. Otherwise, the function ignores `null` values in this field.
-4. date/time [interval](/reference/query-languages/sql-functions-datetime.md#sql-functions-datetime-interval). If `null`, the function returns `null`.
+4. date/time [interval](sql-functions-datetime.md#sql-functions-datetime-interval). If `null`, the function returns `null`.
 
 
 **Output**: non-empty buckets or groups of the given expression divided according to the given interval
@@ -35,8 +30,8 @@ HISTOGRAM(
 bucket_key = Math.floor(value / interval) * interval
 ```
 
-::::{note}
-The histogram in SQL does **NOT** return empty buckets for missing intervals as the traditional [histogram](/reference/data-analysis/aggregations/search-aggregations-bucket-histogram-aggregation.md) and  [date histogram](/reference/data-analysis/aggregations/search-aggregations-bucket-datehistogram-aggregation.md). Such behavior does not fit conceptually in SQL which treats all missing values as `null`; as such the histogram places all missing values in the `null` group.
+::::{note} 
+The histogram in SQL does **NOT** return empty buckets for missing intervals as the traditional [histogram](search-aggregations-bucket-histogram-aggregation.md) and  [date histogram](search-aggregations-bucket-datehistogram-aggregation.md). Such behavior does not fit conceptually in SQL which treats all missing values as `null`; as such the histogram places all missing values in the `null` group.
 ::::
 
 
@@ -128,16 +123,19 @@ SELECT HISTOGRAM(MONTH(birth_date), 2) AS h, COUNT(*) as c FROM emp GROUP BY h O
 null           |10
 ```
 
-::::{important}
-When the histogram in SQL is applied on **DATE** type instead of **DATETIME**, the interval specified is truncated to the multiple of a day. E.g.: for `HISTOGRAM(CAST(birth_date AS DATE), INTERVAL '2 3:04' DAY TO MINUTE)` the interval actually used will be `INTERVAL '2' DAY`. If the interval specified is less than 1 day, e.g.: `HISTOGRAM(CAST(birth_date AS DATE), INTERVAL '20' HOUR)` then the interval used will be `INTERVAL '1' DAY`.
+::::{important} 
+When the histogram in SQL is applied on ***DATE*** type instead of ***DATETIME***, the interval specified is truncated to the multiple of a day. E.g.: for `HISTOGRAM(CAST(birth_date AS DATE), INTERVAL '2 3:04' DAY TO MINUTE)` the interval actually used will be `INTERVAL '2' DAY`. If the interval specified is less than 1 day, e.g.: `HISTOGRAM(CAST(birth_date AS DATE), INTERVAL '20' HOUR)` then the interval used will be `INTERVAL '1' DAY`.
 ::::
 
 
-::::{important}
-All intervals specified for a date/time HISTOGRAM will use a [fixed interval](/reference/data-analysis/aggregations/search-aggregations-bucket-datehistogram-aggregation.md) in their `date_histogram` aggregation definition, with the notable exceptions of `INTERVAL '1' YEAR`, `INTERVAL '1' MONTH` and `INTERVAL '1' DAY`  where a calendar interval is used. The choice for a calendar interval was made for having a more intuitive result for YEAR, MONTH and DAY groupings. In the case of YEAR, for example, the calendar intervals consider a one year bucket as the one starting on January 1st that specific year, whereas a fixed interval one-year-bucket considers one year as a number of milliseconds (for example, `31536000000ms` corresponding to 365 days, 24 hours per day, 60 minutes per hour etc.). With fixed intervals, the day of February 5th, 2019 for example, belongs to a bucket that starts on December 20th, 2018 and {{es}} (and implicitly Elasticsearch SQL) would have returned the year 2018 for a date that’s actually in 2019. With calendar interval this behavior is more intuitive, having the day of February 5th, 2019 actually belonging to the 2019 year bucket.
+::::{important} 
+All intervals specified for a date/time HISTOGRAM will use a [fixed interval](search-aggregations-bucket-datehistogram-aggregation.md) in their `date_histogram` aggregation definition, with the notable exceptions of `INTERVAL '1' YEAR`, `INTERVAL '1' MONTH` and `INTERVAL '1' DAY`  where a calendar interval is used. The choice for a calendar interval was made for having a more intuitive result for YEAR, MONTH and DAY groupings. In the case of YEAR, for example, the calendar intervals consider a one year bucket as the one starting on January 1st that specific year, whereas a fixed interval one-year-bucket considers one year as a number of milliseconds (for example, `31536000000ms` corresponding to 365 days, 24 hours per day, 60 minutes per hour etc.). With fixed intervals, the day of February 5th, 2019 for example, belongs to a bucket that starts on December 20th, 2018 and {{es}} (and implicitly Elasticsearch SQL) would have returned the year 2018 for a date that’s actually in 2019. With calendar interval this behavior is more intuitive, having the day of February 5th, 2019 actually belonging to the 2019 year bucket.
 ::::
 
 
-::::{important}
-Histogram in SQL cannot be applied on **TIME** type. E.g.: `HISTOGRAM(CAST(birth_date AS TIME), INTERVAL '10' MINUTES)` is currently not supported.
+::::{important} 
+Histogram in SQL cannot be applied on ***TIME*** type. E.g.: `HISTOGRAM(CAST(birth_date AS TIME), INTERVAL '10' MINUTES)` is currently not supported.
 ::::
+
+
+

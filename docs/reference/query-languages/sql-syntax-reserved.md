@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-reserved.html
----
-
 # Reserved keywords [sql-syntax-reserved]
 
 Table with reserved keywords that need to be quoted. Also provide an example to make it more obvious.

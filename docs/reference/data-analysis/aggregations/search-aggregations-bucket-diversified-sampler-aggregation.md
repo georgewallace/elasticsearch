@@ -1,7 +1,5 @@
 ---
 navigation_title: "Diversified sampler"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-diversified-sampler-aggregation.html
 ---
 
 # Diversified sampler aggregation [search-aggregations-bucket-diversified-sampler-aggregation]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Like the `sampler` aggregation this is a filtering aggregation used to limit any sub aggregations' processing to a sample of the top-scoring documents. The `diversified_sampler` aggregation adds the ability to limit the number of matches that share a common value such as an "author".
 
-::::{note}
+::::{note} 
 Any good market researcher will tell you that when working with samples of data it is important that the sample represents a healthy variety of opinions rather than being skewed by any single voice. The same is true with aggregations and sampling with these diversify settings can offer a way to remove the bias in your content (an over-populated geography, a large spike in a timeline or an over-active forum spammer).
 ::::
 
@@ -55,6 +53,8 @@ POST /stackoverflow/_search?size=0
 }
 ```
 
+%  TEST[setup:stackoverflow]
+
 Response:
 
 ```console-result
@@ -80,13 +80,17 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+%  TESTRESPONSE[s/2.213/$body.aggregations.my_unbiased_sample.keywords.buckets.0.score/]
+
 1. 151 documents were sampled in total.
 2. The results of the significant_terms aggregation are not skewed by any single author’s quirks because we asked for a maximum of one post from any one author in our sample.
 
 
 ## Scripted example [_scripted_example]
 
-In this scenario we might want to diversify on a combination of field values. We can use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) to produce a hash of the multiple values in a tags field to ensure we don’t have a sample that consists of the same repeated combinations of tags.
+In this scenario we might want to diversify on a combination of field values. We can use a [runtime field](runtime.md) to produce a hash of the multiple values in a tags field to ensure we don’t have a sample that consists of the same repeated combinations of tags.
 
 $$$diversified-sampler-aggregation-runtime-field-example$$$
 
@@ -124,6 +128,8 @@ POST /stackoverflow/_search?size=0
 }
 ```
 
+%  TEST[setup:stackoverflow]
+
 Response:
 
 ```console-result
@@ -155,6 +161,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+%  TESTRESPONSE[s/2.213/$body.aggregations.my_unbiased_sample.keywords.buckets.0.score/]
+
+%  TESTRESPONSE[s/1.34/$body.aggregations.my_unbiased_sample.keywords.buckets.1.score/]
+
 
 ## shard_size [_shard_size]
 
@@ -174,7 +186,7 @@ The optional `execution_hint` setting can influence the management of the values
 * hold ordinals of the field as determined by the Lucene index (`global_ordinals`)
 * hold hashes of the field values - with potential for hash collisions (`bytes_hash`)
 
-The default setting is to use [`global_ordinals`](/reference/elasticsearch/mapping-reference/eager-global-ordinals.md) if this information is available from the Lucene index and reverting to `map` if not. The `bytes_hash` setting may prove faster in some cases but introduces the possibility of false positives in de-duplication logic due to the possibility of hash collisions. Please note that Elasticsearch will ignore the choice of execution hint if it is not applicable and that there is no backward compatibility guarantee on these hints.
+The default setting is to use [`global_ordinals`](eager-global-ordinals.md) if this information is available from the Lucene index and reverting to `map` if not. The `bytes_hash` setting may prove faster in some cases but introduces the possibility of false positives in de-duplication logic due to the possibility of hash collisions. Please note that Elasticsearch will ignore the choice of execution hint if it is not applicable and that there is no backward compatibility guarantee on these hints.
 
 
 ## Limitations [_limitations_6]

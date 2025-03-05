@@ -1,7 +1,5 @@
 ---
 navigation_title: "Limit token count"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-limit-token-count-tokenfilter.html
 ---
 
 # Limit token count token filter [analysis-limit-token-count-tokenfilter]
@@ -11,9 +9,9 @@ Limits the number of output tokens. The `limit` filter is commonly used to limit
 
 By default, the `limit` filter keeps only the first token in a stream. For example, the filter can change the token stream `[ one, two, three ]` to `[ one ]`.
 
-This filter uses Lucene’s [LimitTokenCountFilter](https://lucene.apache.org/core/6_6_1/analyzers-common/org/apache/lucene/analysis/miscellaneous/LimitTokenCountFilter.html).
+This filter uses Lucene’s [LimitTokenCountFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/LimitTokenCountFilter.md).
 
-::::{tip}
+::::{tip} 
 ```
  If you want to limit the size of field values based on
 _character length_, use the <<ignore-above,`ignore_above`>> mapping parameter.
@@ -32,7 +30,7 @@ _character length_, use the <<ignore-above,`ignore_above`>> mapping parameter.
 
 ## Example [analysis-limit-token-count-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `limit` filter to keep only the first two tokens in `quick fox jumps over lazy dog`:
+The following [analyze API](indices-analyze.md) request uses the `limit` filter to keep only the first two tokens in `quick fox jumps over lazy dog`:
 
 ```console
 GET _analyze
@@ -54,10 +52,32 @@ The filter produces the following tokens:
 [ quick, fox ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 6,
+%       "end_offset": 9,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-limit-token-count-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `limit` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `limit` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT limit_example

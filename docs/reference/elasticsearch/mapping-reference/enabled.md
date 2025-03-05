@@ -1,13 +1,8 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/enabled.html
----
-
-# enabled [enabled]
+# `enabled` [enabled]
 
 Elasticsearch tries to index all of the fields you give it, but sometimes you want to just store the field without indexing it. For instance, imagine that you are using Elasticsearch as a web session store. You may want to index the session ID and last update time, but you don’t need to query or run aggregations on the session data itself.
 
-The `enabled` setting, which can be applied only to the top-level mapping definition and to [`object`](/reference/elasticsearch/mapping-reference/object.md) fields, causes Elasticsearch to skip parsing of the contents of the field entirely. The JSON can still be retrieved from the [`_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field, but it is not searchable or stored in any other way:
+The `enabled` setting, which can be applied only to the top-level mapping definition and to [`object`](object.md) fields, causes Elasticsearch to skip parsing of the contents of the field entirely. The JSON can still be retrieved from the [`_source`](mapping-source-field.md) field, but it is not searchable or stored in any other way:
 
 ```console
 PUT my-index-000001
@@ -52,7 +47,7 @@ PUT my-index-000001/_doc/session_2
 3. The `session_data` will also ignore values that are not JSON objects.
 
 
-The entire mapping may be disabled as well, in which case the document is stored in the [`_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field, which means it can be retrieved, but none of its contents are indexed in any way:
+The entire mapping may be disabled as well, in which case the document is stored in the [`_source`](mapping-source-field.md) field, which means it can be retrieved, but none of its contents are indexed in any way:
 
 ```console
 PUT my-index-000001

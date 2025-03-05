@@ -1,7 +1,5 @@
 ---
 navigation_title: "Elision"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-elision-tokenfilter.html
 ---
 
 # Elision token filter [analysis-elision-tokenfilter]
@@ -13,18 +11,18 @@ When not customized, the filter removes the following French elisions by default
 
 `l'`, `m'`, `t'`, `qu'`, `n'`, `s'`, `j'`, `d'`, `c'`, `jusqu'`, `quoiqu'`, `lorsqu'`, `puisqu'`
 
-Customized versions of this filter are included in several of {{es}}'s built-in [language analyzers](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md):
+Customized versions of this filter are included in several of {{es}}'s built-in [language analyzers](analysis-lang-analyzer.md):
 
-* [Catalan analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#catalan-analyzer)
-* [French analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#french-analyzer)
-* [Irish analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#irish-analyzer)
-* [Italian analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#italian-analyzer)
+* [Catalan analyzer](analysis-lang-analyzer.md#catalan-analyzer)
+* [French analyzer](analysis-lang-analyzer.md#french-analyzer)
+* [Irish analyzer](analysis-lang-analyzer.md#irish-analyzer)
+* [Italian analyzer](analysis-lang-analyzer.md#italian-analyzer)
 
-This filter uses Lucene’s [ElisionFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/util/ElisionFilter.md).
+This filter uses Lucene’s [ElisionFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/util/ElisionFilter.md).
 
 ## Example [analysis-elision-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `elision` filter to remove `j'` from `j’examine près du wharf`:
+The following [analyze API](indices-analyze.md) request uses the `elision` filter to remove `j'` from `j’examine près du wharf`:
 
 ```console
 GET _analyze
@@ -41,10 +39,46 @@ The filter produces the following tokens:
 [ examine, près, du, wharf ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "examine",
+%       "start_offset" : 0,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "près",
+%       "start_offset" : 10,
+%       "end_offset" : 14,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "du",
+%       "start_offset" : 15,
+%       "end_offset" : 17,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "wharf",
+%       "start_offset" : 18,
+%       "end_offset" : 23,
+%       "type" : "<ALPHANUM>",
+%       "position" : 3
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-elision-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `elision` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `elision` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /elision_example

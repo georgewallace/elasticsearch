@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-show-tables.html
----
-
 # SHOW TABLES [sql-syntax-show-tables]
 
 ```sql
@@ -21,7 +16,7 @@ SHOW TABLES
 5. SQL LIKE pattern matching table names.
 
 
-See [index patterns](/reference/query-languages/sql-index-patterns.md) for more information about patterns.
+See [index patterns](sql-index-patterns.md) for more information about patterns.
 
 **Description**: List the tables available to the current user and their type.
 
@@ -35,7 +30,7 @@ javaRestTest      |employees      |VIEW      |ALIAS
 javaRestTest      |library        |TABLE     |INDEX
 ```
 
-Match multiple indices by using {{es}} [multi-target syntax](/reference/elasticsearch/rest-apis/api-conventions.md#api-multi-index) notation:
+Match multiple indices by using {{es}} [multi-target syntax](api-conventions.md#api-multi-index) notation:
 
 ```sql
 SHOW TABLES "*,-l*";

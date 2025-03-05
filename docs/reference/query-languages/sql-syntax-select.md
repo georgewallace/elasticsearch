@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-select.html
----
-
 # SELECT [sql-syntax-select]
 
 ```sql
@@ -20,12 +15,12 @@ SELECT [TOP [ count ] ] select_expr [, ...]
 
 The general execution of `SELECT` is as follows:
 
-1. All elements in the `FROM` list are computed (each element can be base or alias table). Currently `FROM` supports exactly one table. Do note however that the table name can be a pattern (see [FROM Clause](#sql-syntax-from) below).
-2. If the `WHERE` clause is specified, all rows that do not satisfy the condition are eliminated from the output. (See [WHERE Clause](#sql-syntax-where) below.)
-3. If the `GROUP BY` clause is specified, or if there are aggregate function calls, the output is combined into groups of rows that match on one or more values, and the results of aggregate functions are computed. If the `HAVING` clause is present, it eliminates groups that do not satisfy the given condition. (See [GROUP BY Clause](#sql-syntax-group-by) and [HAVING Clause](#sql-syntax-having) below.)
+1. All elements in the `FROM` list are computed (each element can be base or alias table). Currently `FROM` supports exactly one table. Do note however that the table name can be a pattern (see [FROM Clause](sql-syntax-select.md#sql-syntax-from) below).
+2. If the `WHERE` clause is specified, all rows that do not satisfy the condition are eliminated from the output. (See [WHERE Clause](sql-syntax-select.md#sql-syntax-where) below.)
+3. If the `GROUP BY` clause is specified, or if there are aggregate function calls, the output is combined into groups of rows that match on one or more values, and the results of aggregate functions are computed. If the `HAVING` clause is present, it eliminates groups that do not satisfy the given condition. (See [GROUP BY Clause](sql-syntax-select.md#sql-syntax-group-by) and [HAVING Clause](sql-syntax-select.md#sql-syntax-having) below.)
 4. The actual output rows are computed using the `SELECT` output expressions for each selected row or row group.
-5. If the `ORDER BY` clause is specified, the returned rows are sorted in the specified order. If `ORDER BY` is not given, the rows are returned in whatever order the system finds fastest to produce. (See [ORDER BY Clause](#sql-syntax-order-by) below.)
-6. If the `LIMIT` or `TOP` is specified (cannot use both in the same query), the `SELECT` statement only returns a subset of the result rows. (See [LIMIT Clause](#sql-syntax-limit) and [TOP clause](#sql-syntax-top) below.)
+5. If the `ORDER BY` clause is specified, the returned rows are sorted in the specified order. If `ORDER BY` is not given, the rows are returned in whatever order the system finds fastest to produce. (See [ORDER BY Clause](sql-syntax-select.md#sql-syntax-order-by) below.)
+6. If the `LIMIT` or `TOP` is specified (cannot use both in the same query), the `SELECT` statement only returns a subset of the result rows. (See [LIMIT Clause](sql-syntax-select.md#sql-syntax-limit) and [TOP clause](sql-syntax-select.md#sql-syntax-top) below.)
 
 ## `SELECT` List [sql-syntax-select-list]
 
@@ -81,7 +76,7 @@ which essentially returns all(top-level fields, sub-fields, such as multi-fields
 
 ## TOP [sql-syntax-top]
 
-The `TOP` clause can be used before the [`SELECT` list](#sql-syntax-select-list) or the <<sql-syntax-select-wildcard, `wildcard`> to restrict (limit) the number of rows returned using the format:
+The `TOP` clause can be used before the [`SELECT` list](sql-syntax-select.md#sql-syntax-select-list) or the <<sql-syntax-select-wildcard, `wildcard`> to restrict (limit) the number of rows returned using the format:
 
 ```sql
 SELECT TOP <count> <select list> ...
@@ -101,8 +96,8 @@ Georgi         |Facello        |10001
 Bezalel        |Simmel         |10002
 ```
 
-::::{note}
-[`TOP`](#sql-syntax-top) and [`LIMIT`](#sql-syntax-limit) cannot be used together in the same query and an error is returned otherwise.
+::::{note} 
+[`TOP`](sql-syntax-select.md#sql-syntax-top) and [`LIMIT`](sql-syntax-select.md#sql-syntax-limit) cannot be used together in the same query and an error is returned otherwise.
 ::::
 
 
@@ -130,7 +125,7 @@ SELECT * FROM "emp" LIMIT 1;
 1953-09-02T00:00:00Z|10001          |Georgi         |M              |1986-06-26T00:00:00.000Z|2              |Facello        |Georgi Facello |57305
 ```
 
-The name can be a [pattern](/reference/elasticsearch/rest-apis/api-conventions.md#api-multi-index) pointing to multiple indices (likely requiring quoting as mentioned above) with the restriction that **all** resolved concrete tables have **exact mapping**.
+The name can be a [pattern](api-conventions.md#api-multi-index) pointing to multiple indices (likely requiring quoting as mentioned above) with the restriction that **all** resolved concrete tables have ***exact mapping***.
 
 ```sql
 SELECT emp_no FROM "e*p" LIMIT 1;
@@ -140,7 +135,7 @@ SELECT emp_no FROM "e*p" LIMIT 1;
 10001
 ```
 
-[preview] To run a [{{ccs}}](docs-content://solutions/search/cross-cluster-search.md), specify a cluster name using the `<remote_cluster>:<target>` syntax, where `<remote_cluster>` maps to a SQL catalog (cluster) and `<target>` to a table (index or data stream). The `<remote_cluster>` supports wildcards (`*`) and `<target>` can be an [index pattern](/reference/query-languages/sql-index-patterns.md).
+[preview] To run a [{{ccs}}](modules-cross-cluster-search.md), specify a cluster name using the `<remote_cluster>:<target>` syntax, where `<remote_cluster>` maps to a SQL catalog (cluster) and `<target>` to a table (index or data stream). The `<remote_cluster>` supports wildcards (`*`) and `<target>` can be an [index pattern](sql-index-patterns.md).
 
 ```sql
 SELECT emp_no FROM "my*cluster:*emp" LIMIT 1;
@@ -311,8 +306,8 @@ F              |1.7873117044424276|0.05504995122217512
 M              |2.280646181070106 |0.44302407229580243
 ```
 
-::::{tip}
-If custom bucketing is required, it can be achieved with the use of [`CASE`](/reference/query-languages/sql-functions-conditional.md#sql-functions-conditional-case), as shown [here](/reference/query-languages/sql-functions-conditional.md#sql-functions-conditional-case-groupby-custom-buckets).
+::::{tip} 
+If custom bucketing is required, it can be achieved with the use of [`CASE`](sql-functions-conditional.md#sql-functions-conditional-case), as shown [here](sql-functions-conditional.md#sql-functions-conditional-case-groupby-custom-buckets).
 ::::
 
 
@@ -388,7 +383,7 @@ SELECT MIN(salary) AS min, MAX(salary) AS max, MAX(salary) - MIN(salary) AS diff
 
 ### Implicit Grouping [sql-syntax-having-group-by-implicit]
 
-As indicated above, it is possible to have a `HAVING` clause without a `GROUP BY`. In this case, the so-called [*implicit grouping*](#sql-syntax-group-by-implicit) is applied, meaning all selected rows are considered to form a single group and `HAVING` can be applied on any of the aggregate functions specified on this group. As such, the query emits only a single row (as there is only a single group) and `HAVING` condition returns either one row (the group) or zero if the condition fails.
+As indicated above, it is possible to have a `HAVING` clause without a `GROUP BY`. In this case, the so-called [*implicit grouping*](sql-syntax-select.md#sql-syntax-group-by-implicit) is applied, meaning all selected rows are considered to form a single group and `HAVING` can be applied on any of the aggregate functions specified on this group. As such, the query emits only a single row (as there is only a single group) and `HAVING` condition returns either one row (the group) or zero if the condition fails.
 
 In this example, `HAVING` matches:
 
@@ -399,6 +394,18 @@ SELECT MIN(salary) AS min, MAX(salary) AS max FROM emp HAVING min > 25000;
 ---------------+---------------
 25324          |74999
 ```
+
+% However `HAVING` can also not match, in which case an empty result is returned:
+
+% 
+
+% [source, sql]
+
+% ----
+
+% include-tagged::/doc/elasticsearch/x-pack/docs/en/../../plugin/sql/qa/server/src/main/resources//docs/docs.csv-spec[groupByHavingImplicitNoMatch]
+
+% ----
 
 
 
@@ -415,7 +422,7 @@ where:
 `expression`
 :   Represents an input column, an output column or an ordinal number of the position (starting from one) of an output column. Additionally, ordering can be done based on the results *score*. The direction, if not specified, is by default `ASC` (ascending). Regardless of the ordering specified, null values are ordered last (at the end).
 
-::::{important}
+::::{important} 
 When used along-side, `GROUP BY` expression can point *only* to the columns used for grouping or aggregate functions.
 ::::
 
@@ -439,7 +446,7 @@ James S.A. Corey |Leviathan Wakes     |561            |2011-06-02T00:00:00Z
 
 For queries that perform grouping, ordering can be applied either on the grouping columns (by default ascending) or on aggregate functions.
 
-::::{note}
+::::{note} 
 With `GROUP BY`, make sure the ordering targets the resulting group - applying it to individual elements inside the group will have no impact on the results since regardless of the order, values inside the group are aggregated.
 ::::
 
@@ -493,8 +500,8 @@ M              |25945
 null           |25324
 ```
 
-::::{important}
-Ordering by aggregation is possible for up to **10000** entries for memory consumption reasons. In cases where the results pass this threshold, use [`LIMIT`](#sql-syntax-limit) or [`TOP`](#sql-syntax-top) to reduce the number of results.
+::::{important} 
+Ordering by aggregation is possible for up to **10000** entries for memory consumption reasons. In cases where the results pass this threshold, use [`LIMIT`](sql-syntax-select.md#sql-syntax-limit) or [`TOP`](sql-syntax-select.md#sql-syntax-top) to reduce the number of results.
 ::::
 
 
@@ -503,8 +510,8 @@ Ordering by aggregation is possible for up to **10000** entries for memory consu
 
 When doing full-text queries in the `WHERE` clause, results can be returned based on their [score](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/relevance-intro.html) or *relevance* to the given query.
 
-::::{note}
-When doing multiple text queries in the `WHERE` clause then, their scores will be combined using the same rules as {{es}}'s [bool query](/reference/query-languages/query-dsl-bool-query.md).
+::::{note} 
+When doing multiple text queries in the `WHERE` clause then, their scores will be combined using the same rules as {{es}}'s [bool query](query-dsl-bool-query.md).
 ::::
 
 
@@ -561,8 +568,8 @@ SELECT first_name, last_name, emp_no FROM emp LIMIT 1;
 Georgi         |Facello        |10001
 ```
 
-::::{note}
-[`TOP`](#sql-syntax-top) and [`LIMIT`](#sql-syntax-limit) cannot be used together in the same query and an error is returned otherwise.
+::::{note} 
+[`TOP`](sql-syntax-select.md#sql-syntax-top) and [`LIMIT`](sql-syntax-select.md#sql-syntax-limit) cannot be used together in the same query and an error is returned otherwise.
 ::::
 
 
@@ -573,13 +580,13 @@ The `PIVOT` clause performs a cross tabulation on the results of the query: it a
 
 The clause can be broken down in three parts: the aggregation, the `FOR`- and the `IN`-subclause.
 
-The `aggregation_expr` subclause specifies an expression containing an [aggregation function](/reference/query-languages/sql-functions-aggs.md) to be applied on one of the source columns. Only one aggregation can be provided, currently.
+The `aggregation_expr` subclause specifies an expression containing an [aggregation function](sql-functions-aggs.md) to be applied on one of the source columns. Only one aggregation can be provided, currently.
 
 The `FOR`-subclause specifies the pivoting column: the distinct values of this column will become the candidate set of values to be rotated.
 
 The `IN`-subclause defines a filter: the intersection between the set provided here and the candidate set from the `FOR`-subclause will be rotated to become the headers of the columns appended to the end result. The filter can not be a subquery, one must provide here literal values, obtained in advance.
 
-The pivoting operation will perform an implicit [GROUP BY](#sql-syntax-group-by) on all source columns not specified in the `PIVOT` clause, along with the values filtered through the `IN`-clause. Consider the following statement:
+The pivoting operation will perform an implicit [GROUP BY](sql-syntax-select.md#sql-syntax-group-by) on all source columns not specified in the `PIVOT` clause, along with the values filtered through the `IN`-clause. Consider the following statement:
 
 ```sql
 SELECT * FROM test_emp PIVOT (SUM(salary) FOR languages IN (1, 2)) LIMIT 5;
@@ -595,10 +602,10 @@ null                 |10044          |Mingsen        |F              |1994-05-21
 
 The query execution could logically be broken down in the following steps:
 
-1. a [GROUP BY](#sql-syntax-group-by) on the column in the `FOR`-clause: `languages`;
+1. a [GROUP BY](sql-syntax-select.md#sql-syntax-group-by) on the column in the `FOR`-clause: `languages`;
 2. the resulting values are filtered through the set provided in the `IN`-clause;
 3. the now filtered column is pivoted to form the headers of the two additional columns appended to the result: `1` and `2`;
-4. a [GROUP BY](#sql-syntax-group-by) on all columns of the source table `test_emp`, except `salary` (part of the aggregation subclause) and `languages` (part of the `FOR`-clause);
+4. a [GROUP BY](sql-syntax-select.md#sql-syntax-group-by) on all columns of the source table `test_emp`, except `salary` (part of the aggregation subclause) and `languages` (part of the `FOR`-clause);
 5. the values in these appended columns are the `SUM` aggregations of `salary`, grouped by the respective language.
 
 The table-value expression to cross-tabulate can also be the result of a subquery:
@@ -631,7 +638,7 @@ null           |48396.28571428572|62140.666666666664
 5              |39052.875        |46705.555555555555
 ```
 
-The resulting cross tabulation can further have the [ORDER BY](#sql-syntax-order-by) and [LIMIT](#sql-syntax-limit) clauses applied:
+The resulting cross tabulation can further have the [ORDER BY](sql-syntax-select.md#sql-syntax-order-by) and [LIMIT](sql-syntax-select.md#sql-syntax-limit) clauses applied:
 
 ```sql
 SELECT * FROM (SELECT languages, gender, salary FROM test_emp) PIVOT (AVG(salary) FOR gender IN ('F')) ORDER BY languages DESC LIMIT 4;
@@ -642,3 +649,5 @@ SELECT * FROM (SELECT languages, gender, salary FROM test_emp) PIVOT (AVG(salary
 3              |53660.0
 2              |50684.4
 ```
+
+

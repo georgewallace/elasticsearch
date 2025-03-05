@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic.html
----
+# `dynamic` [dynamic]
 
-# dynamic [dynamic]
-
-When you index a document containing a new field, {{es}} [adds the field dynamically](docs-content://manage-data/data-store/mapping/dynamic-mapping.md) to a document or to inner objects within a document. The following document adds the string field `username`, the object field `name`, and two string fields under the `name` object:
+When you index a document containing a new field, {{es}} [adds the field dynamically](dynamic-mapping.md) to a document or to inner objects within a document. The following document adds the string field `username`, the object field `name`, and two string fields under the `name` object:
 
 ```console
 PUT my-index-000001/_doc/1
@@ -43,7 +38,7 @@ GET my-index-000001/_mapping
 
 ## Setting `dynamic` on inner objects [dynamic-inner-objects]
 
-[Inner objects](/reference/elasticsearch/mapping-reference/object.md) inherit the `dynamic` setting from their parent object. In the following example, dynamic mapping is disabled at the type level, so no new top-level fields will be added dynamically.
+[Inner objects](object.md) inherit the `dynamic` setting from their parent object. In the following example, dynamic mapping is disabled at the type level, so no new top-level fields will be added dynamically.
 
 However, the `user.social_networks` object enables dynamic mapping, so you can add fields to this inner object.
 
@@ -83,7 +78,7 @@ The `dynamic` parameter controls whether new fields are added dynamically, and a
 :   New fields are added to the mapping (default).
 
 `runtime`
-:   New fields are added to the mapping as [runtime fields](docs-content://manage-data/data-store/mapping/runtime-fields.md). These fields are not indexed, and are loaded from `_source` at query time.
+:   New fields are added to the mapping as [runtime fields](runtime.md). These fields are not indexed, and are loaded from `_source` at query time.
 
 `false`
 :   New fields are ignored. These fields will not be indexed or searchable, but will still appear in the `_source` field of returned hits. These fields will not be added to the mapping, and new fields must be added explicitly.
@@ -94,6 +89,6 @@ The `dynamic` parameter controls whether new fields are added dynamically, and a
 
 ## Behavior when reaching the field limit [dynamic-field-limit]
 
-Setting `dynamic` to either `true` or `runtime` will only add dynamic fields until `index.mapping.total_fields.limit` is reached. By default, index requests for documents that would exceed the field limit will fail, unless `index.mapping.total_fields.ignore_dynamic_beyond_limit` is set to `true`. In that case, ignored fields are added to the [`_ignored` metadata field](/reference/elasticsearch/mapping-reference/mapping-ignored-field.md). For more index setting details, refer to [](/reference/elasticsearch/index-settings/mapping-limit.md).
+Setting `dynamic` to either `true` or `runtime` will only add dynamic fields until [`index.mapping.total_fields.limit`](mapping-settings-limit.md) is reached. By default, index requests for documents that would exceed the field limit will fail, unless [`index.mapping.total_fields.ignore_dynamic_beyond_limit`](mapping-settings-limit.md) is set to `true`. In that case, ignored fields are added to the [`_ignored` metadata field](mapping-ignored-field.md).
 
 

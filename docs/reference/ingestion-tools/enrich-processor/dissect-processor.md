@@ -1,13 +1,11 @@
 ---
 navigation_title: "Dissect"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/dissect-processor.html
 ---
 
 # Dissect processor [dissect-processor]
 
 
-Similar to the [Grok Processor](/reference/ingestion-tools/enrich-processor/grok-processor.md), dissect also extracts structured fields out of a single text field within a document. However unlike the [Grok Processor](/reference/ingestion-tools/enrich-processor/grok-processor.md), dissect does not use [Regular Expressions](https://en.wikipedia.org/wiki/Regular_expression). This allows dissect’s syntax to be simple and for some cases faster than the [Grok Processor](/reference/ingestion-tools/enrich-processor/grok-processor.md).
+Similar to the [Grok Processor](grok-processor.md), dissect also extracts structured fields out of a single text field within a document. However unlike the [Grok Processor](grok-processor.md), dissect does not use [Regular Expressions](https://en.wikipedia.org/wiki/Regular_expression). This allows dissect’s syntax to be simple and for some cases faster than the [Grok Processor](grok-processor.md).
 
 Dissect matches a single text field against a defined pattern.
 
@@ -44,11 +42,17 @@ and result in a document with the following fields:
 }
 ```
 
+%  NOTCONSOLE
+
+%  tag::intro-example-explanation[]
+
 A dissect pattern is defined by the parts of the string that will be discarded. In the previous example, the first part to be discarded is a single space. Dissect finds this space, then assigns the value of `clientip` everything up until that space. Next, dissect matches the `[` and then `]` and then assigns `@timestamp` to everything in-between `[` and `]`. Paying special attention to the parts of the string to discard will help build successful dissect patterns.
 
-Successful matches require all keys in a pattern to have a value. If any of the `%{{keyname}}` defined in the pattern do not have a value, then an exception is thrown and may be handled by the [`on_failure`](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures) directive. An empty key `%{}` or a [named skip key](#dissect-modifier-named-skip-key) can be used to match values, but exclude the value from the final document. All matched values are represented as string data types. The [convert processor](/reference/ingestion-tools/enrich-processor/convert-processor.md) may be used to convert to expected data type.
+%  end::intro-example-explanation[]
 
-Dissect also supports [key modifiers](#dissect-key-modifiers) that can change dissect’s default behavior. For example you can instruct dissect to ignore certain fields, append fields, skip over padding, etc. See [below](#dissect-key-modifiers) for more information.
+Successful matches require all keys in a pattern to have a value. If any of the `%{{keyname}}` defined in the pattern do not have a value, then an exception is thrown and may be handled by the [`on_failure`](ingest.md#handling-pipeline-failures) directive. An empty key `%{}` or a [named skip key](dissect-processor.md#dissect-modifier-named-skip-key) can be used to match values, but exclude the value from the final document. All matched values are represented as string data types. The [convert processor](convert-processor.md) may be used to convert to expected data type.
+
+Dissect also supports [key modifiers](dissect-processor.md#dissect-key-modifiers) that can change dissect’s default behavior. For example you can instruct dissect to ignore certain fields, append fields, skip over padding, etc. See [below](dissect-processor.md#dissect-key-modifiers) for more information.
 
 $$$dissect-options$$$
 
@@ -59,9 +63,9 @@ $$$dissect-options$$$
 | `append_separator` | no | "" (empty string) | The character(s) that separate the appended fields. |
 | `ignore_missing` | no | false | If `true` and `field` does not exist or is `null`, the processor quietly exits without modifying the document |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 ```js
@@ -73,21 +77,29 @@ $$$dissect-options$$$
 }
 ```
 
+%  NOTCONSOLE
+
 ## Dissect key modifiers [dissect-key-modifiers]
 
+%  tag::dissect-key-modifiers[]
+
 Key modifiers can change the default behavior for dissection. Key modifiers may be found on the left or right of the `%{{keyname}}` always inside the `%{` and `}`. For example `%{+keyname ->}` has the append and right padding modifiers.
+
+%  end::dissect-key-modifiers[]
 
 $$$dissect-key-modifiers-table$$$
 
 | Modifier | Name | Position | Example | Description | Details |
 | --- | --- | --- | --- | --- | --- |
-| `->` | Skip right padding | (far) right | `%{keyname1->}` | Skips any repeated characters to the right | [link](#dissect-modifier-skip-right-padding) |
-| `+` | Append | left | `%{+keyname} %{+keyname}` | Appends two or more fields together | [link](#dissect-modifier-append-key) |
-| `+` with `/n` | Append with order | left and right | `%{+keyname/2} %{+keyname/1}` | Appends two or more fields together in the order specified | [link](#dissect-modifier-append-key-with-order) |
-| `?` | Named skip key | left | `%{?ignoreme}` | Skips the matched value in the output. Same behavior as `%{}` | [link](#dissect-modifier-named-skip-key) |
-| `*` and `&` | Reference keys | left | `%{*r1} %{&r1}` | Sets the output key as value of `*` and output value of `&` | [link](#dissect-modifier-reference-keys) |
+| `->` | Skip right padding | (far) right | `%{keyname1->}` | Skips any repeated characters to the right | [link](dissect-processor.md#dissect-modifier-skip-right-padding) |
+| `+` | Append | left | `%{+keyname} %{+keyname}` | Appends two or more fields together | [link](dissect-processor.md#dissect-modifier-append-key) |
+| `+` with `/n` | Append with order | left and right | `%{+keyname/2} %{+keyname/1}` | Appends two or more fields together in the order specified | [link](dissect-processor.md#dissect-modifier-append-key-with-order) |
+| `?` | Named skip key | left | `%{?ignoreme}` | Skips the matched value in the output. Same behavior as `%{}` | [link](dissect-processor.md#dissect-modifier-named-skip-key) |
+| `*` and `&` | Reference keys | left | `%{*r1} %{&r1}` | Sets the output key as value of `*` and output value of `&` | [link](dissect-processor.md#dissect-modifier-reference-keys) |
 
 ### Right padding modifier (`->`) [dissect-modifier-skip-right-padding]
+
+%  tag::dissect-modifier-skip-right-padding[]
 
 The algorithm that performs the dissection is very strict in that it requires all characters in the pattern to match the source string. For example, the pattern `%{{fookey}} %{{barkey}}` (1 space), will match the string "foo bar" (1 space), but will not match the string "foo  bar" (2 spaces) since the pattern has only 1 space and the source string has 2 spaces.
 
@@ -97,6 +109,8 @@ Use the right padding modifier to allow for repetition of the characters after a
 
 The right padding modifier may be placed on any key with any other modifiers. It should always be the furthest right modifier. For example: `%{+keyname/1->}` and `%{->}`
 
+%  end::dissect-modifier-skip-right-padding[]
+
 Right padding modifier example
 
 |     |     |
@@ -105,7 +119,11 @@ Right padding modifier example
 | **Input** | 1998-08-10T17:15:42,466          WARN |
 | **Result** | * ts = 1998-08-10T17:15:42,466<br>* level = WARN<br> |
 
+%  tag::dissect-modifier-empty-right-padding[]
+
 The right padding modifier may be used with an empty key to help skip unwanted data. For example, the same input string, but wrapped with brackets requires the use of an empty right padded key to achieve the same result.
+
+%  end::dissect-modifier-empty-right-padding[]
 
 Right padding modifier with empty key example
 
@@ -118,8 +136,11 @@ Right padding modifier with empty key example
 
 ### Append modifier (`+`) [append-modifier]
 
-$$$dissect-modifier-append-key$$$
+%  tag::append-modifier[]
+
 Dissect supports appending two or more results together for the output. Values are appended left to right. An append separator can be specified. In this example the append_separator is defined as a space.
+
+%  end::append-modifier[]
 
 Append modifier example
 
@@ -132,8 +153,11 @@ Append modifier example
 
 ### Append with order modifier (`+` and `/n`) [append-order-modifier]
 
-$$$dissect-modifier-append-key-with-order$$$
+%  tag::append-order-modifier[]
+
 Dissect supports appending two or more results together for the output. Values are appended based on the order defined (`/n`). An append separator can be specified. In this example the append_separator is defined as a comma.
+
+%  end::append-order-modifier[]
 
 Append with order modifier example
 
@@ -146,8 +170,11 @@ Append with order modifier example
 
 ### Named skip key (`?`) [named-skip-key]
 
-$$$dissect-modifier-named-skip-key$$$
+%  tag::named-skip-key[]
+
 Dissect supports ignoring matches in the final result. This can be done with an empty key `%{}`, but for readability it may be desired to give that empty key a name.
+
+%  end::named-skip-key[]
 
 Named skip key modifier example
 
@@ -160,7 +187,8 @@ Named skip key modifier example
 
 ### Reference keys (`*` and `&`) [reference-keys]
 
-$$$dissect-modifier-reference-keys$$$
+%  tag::reference-keys[]
+
 Dissect support using parsed values as the key/value pairings for the structured content. Imagine a system that partially logs in key/value pairs. Reference keys allow you to maintain that key/value relationship.
 
 Reference key modifier example
@@ -170,6 +198,8 @@ Reference key modifier example
 | **Pattern** | `[%{{ts}}] [%{{level}}] %{*p1}:%{&p1} %{*p2}:%{&p2}` |
 | **Input** | [2018-08-10T17:15:42,466] [ERR] ip:1.2.3.4 error:REFUSED |
 | **Result** | * ts = 2018-08-10T17:15:42,466<br>* level = ERR<br>* ip = 1.2.3.4<br>* error = REFUSED<br> |
+
+%  end::reference-keys[]
 
 
 

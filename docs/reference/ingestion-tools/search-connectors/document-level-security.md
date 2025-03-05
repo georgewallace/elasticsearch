@@ -1,51 +1,69 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-dls.html
----
+# Document level security [document-level-security]
 
-# Document level security [es-dls]
+Document level security restricts the documents that users have read access to. In particular, it restricts which documents can be accessed from document-based read APIs.
 
-Document level security (DLS) enables you to restrict access to documents in your Elasticsearch indices according to user and group permissions. This ensures search results only return authorized information for users, based on their permissions.
+To enable document level security, you use a query to specify the documents that each role can access. The document `query` is associated with a particular data stream, index, or wildcard (`*`) pattern and operates in conjunction with the privileges specified for the data streams and indices.
 
+The specified document `query`:
 
-## Availability & prerequisites [es-dls-availability-prerequisites]
+* Expects the same format as if it was defined in the search request
+* Supports [templating a role query](field-and-document-access-control.md#templating-role-query) that can access the details of the currently authenticated user
+* Accepts queries written as either string values or nested JSON
+* Supports the majority of the {{es}} [Query Domain Specific Language (DSL)](query-dsl.md), with [some limitations](security-limitations.md#field-document-limitations) for field and document level security
 
-Support for DLS in Elastic connectors was introduced in version **8.9.0**.
-
-::::{note}
-This feature is in **beta** and is subject to change. The design and code is less mature than official GA features and is being provided as-is with no warranties. Beta features are not subject to the support SLA of official GA features.
-
+::::{important} 
+Omitting the `query` parameter entirely disables document level security for the respective indices permission entry.
 ::::
 
 
-This feature is not available for all Elastic subscription levels. Refer to the subscriptions pages for [Elastic Cloud](https://www.elastic.co/subscriptions/cloud) and [Elastic Stack](https://www.elastic.co/subscriptions).
+The following role definition grants read access only to documents that belong to the `click` category within all the `events-*` data streams and indices:
 
-DLS is available by default when using the following Elastic connectors:
+```console
+POST /_security/role/click_role
+{
+  "indices": [
+    {
+      "names": [ "events-*" ],
+      "privileges": [ "read" ],
+      "query": "{\"match\": {\"category\": \"click\"}}"
+    }
+  ]
+}
+```
 
-* [Confluence](/reference/ingestion-tools/search-connectors/es-connectors-confluence.md)
-* [Dropbox](/reference/ingestion-tools/search-connectors/es-connectors-dropbox.md)
-* [Jira](/reference/ingestion-tools/search-connectors/es-connectors-jira.md) (including Jira Data Center)
-* [GitHub](/reference/ingestion-tools/search-connectors/es-connectors-github.md)
-* [Gmail](/reference/ingestion-tools/search-connectors/es-connectors-gmail.md)
-* [Google Drive](/reference/ingestion-tools/search-connectors/es-connectors-google-drive.md)
-* [Network Drive](/reference/ingestion-tools/search-connectors/es-connectors-network-drive.md)
-* [OneDrive](/reference/ingestion-tools/search-connectors/es-connectors-onedrive.md)
-* [Outlook](/reference/ingestion-tools/search-connectors/es-connectors-outlook.md)
-* [Salesforce](/reference/ingestion-tools/search-connectors/es-connectors-salesforce.md)
-* [SharePoint Online](/reference/ingestion-tools/search-connectors/es-connectors-sharepoint-online.md)
-* [SharePoint Server](/reference/ingestion-tools/search-connectors/es-connectors-sharepoint.md)
-* [ServiceNow](/reference/ingestion-tools/search-connectors/es-connectors-servicenow.md)
+You can write this same query using nested JSON syntax:
 
-Note that our standalone products (App Search and Workplace Search) do not use this feature. Workplace Search has its own permissions management system.
+```console
+POST _security/role/click_role
+{
+  "indices": [
+    {
+      "names": [ "events-*" ],
+      "privileges": [ "read" ],
+      "query": {
+        "match": {
+          "category": "click"
+        }
+      }
+    }
+  ]
+}
+```
 
+The following role grants read access only to the documents whose `department_id` equals `12`:
 
-## Learn more [es-dls-learn-more]
-
-DLS documentation:
-
-* [How DLS works](/reference/ingestion-tools/search-connectors/es-dls-overview.md)
-* [DLS in Search Applications](/reference/ingestion-tools/search-connectors/es-dls-e2e-guide.md)
-* [DLS for SharePoint Online connector](/reference/ingestion-tools/search-connectors/es-connectors-sharepoint-online.md#es-connectors-sharepoint-online-client-configuration)
-
-
+```console
+POST /_security/role/dept_role
+{
+  "indices" : [
+    {
+      "names" : [ "*" ],
+      "privileges" : [ "read" ],
+      "query" : {
+        "term" : { "department_id" : 12 }
+      }
+    }
+  ]
+}
+```
 

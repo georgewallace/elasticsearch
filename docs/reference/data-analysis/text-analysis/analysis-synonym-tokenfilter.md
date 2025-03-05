@@ -1,43 +1,41 @@
 ---
 navigation_title: "Synonym"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-synonym-tokenfilter.html
 ---
 
 # Synonym token filter [analysis-synonym-tokenfilter]
 
 
-The `synonym` token filter allows to easily handle [synonyms](docs-content://solutions/search/full-text/search-with-synonyms.md) during the analysis process.
+The `synonym` token filter allows to easily handle [synonyms](search-with-synonyms.md) during the analysis process.
 
 
-## Define synonyms sets [analysis-synonym-define-synonyms]
+## Define synonyms sets [analysis-synonym-define-synonyms] 
 
 Synonyms in a synonyms set are defined using **synonym rules**. Each synonym rule contains words that are synonyms.
 
 You can use two formats to define synonym rules: Solr and WordNet.
 
 
-### Solr format [_solr_format]
+### Solr format [_solr_format] 
 
 This format uses two different definitions:
 
 * Equivalent synonyms: Define groups of words that are equivalent. Words are separated by commas. Example:
 
-    ```text
+    ```synonyms
     ipod, i-pod, i pod
     computer, pc, laptop
     ```
 
 * Explicit synonyms: Matches a group of words to other words. Words on the left hand side of the rule definition are expanded into all the possibilities described on the right hand side. Example:
 
-    ```text
+    ```synonyms
     personal computer => pc
     sea biscuit, sea biscit => seabiscuit
     ```
 
 
 
-### WordNet format [_wordnet_format]
+### WordNet format [_wordnet_format] 
 
 [WordNet](https://wordnet.princeton.edu/) defines synonyms sets spanning multiple lines. Each line contains the following information:
 
@@ -49,16 +47,16 @@ This format uses two different definitions:
 
 The following example defines a synonym set for the words "come", "advance" and "approach":
 
-```text
+```synonyms
 s(100000002,1,'come',v,1,0).
 s(100000002,2,'advance',v,1,0).
 s(100000002,3,'approach',v,1,0).""";
 ```
 
 
-## Configure synonyms sets [analysis-synonym-configure-sets]
+## Configure synonyms sets [analysis-synonym-configure-sets] 
 
-Synonyms can be configured using the [synonyms API](docs-content://solutions/search/full-text/search-with-synonyms.md#synonyms-store-synonyms-api), a [synonyms file](docs-content://solutions/search/full-text/search-with-synonyms.md#synonyms-store-synonyms-file), or directly [inlined](docs-content://solutions/search/full-text/search-with-synonyms.md#synonyms-store-synonyms-inline) in the token filter configuration. See [store your synonyms set](docs-content://solutions/search/full-text/search-with-synonyms.md#synonyms-store-synonyms) for more details on each option.
+Synonyms can be configured using the [synonyms API](search-with-synonyms.md#synonyms-store-synonyms-api), a [synonyms file](search-with-synonyms.md#synonyms-store-synonyms-file), or directly [inlined](search-with-synonyms.md#synonyms-store-synonyms-inline) in the token filter configuration. See [store your synonyms set](search-with-synonyms.md#synonyms-store-synonyms) for more details on each option.
 
 Use `synonyms_set` configuration option to provide a synonym set created via Synonyms Management APIs:
 
@@ -72,7 +70,7 @@ Use `synonyms_set` configuration option to provide a synonym set created via Syn
   }
 ```
 
-::::{warning}
+::::{warning} 
 Synonyms sets must exist before they can be added to indices. If an index is created referencing a nonexistent synonyms set, the index will remain in a partially created and inoperable state. The only way to recover from this scenario is to ensure the synonyms set exists then either delete and re-create the index, or close and re-open the index.
 
 ::::
@@ -104,12 +102,12 @@ Use `synonyms` to define inline synonyms:
 
 Additional settings are:
 
-* `updateable` (defaults to `false`). If `true` allows [reloading](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-reload-search-analyzers) search analyzers to pick up changes to synonym files. Only to be used for search analyzers.
-* `expand` (defaults to `true`). Expands definitions for equivalent synonym rules. See [expand equivalent synonyms](#synonym-tokenizer-expand-equivalent-synonyms).
-* `lenient` (defaults to the value of the `updateable` setting). If `true` ignores errors while parsing the synonym rules. It is important to note that only those synonym rules which cannot get parsed are ignored. See [synonyms and stop token filters](#synonym-tokenizer-stop-token-filter) for an example of `lenient` behaviour for invalid synonym rules.
+* `updateable` (defaults to `false`). If `true` allows [reloading](indices-reload-analyzers.md) search analyzers to pick up changes to synonym files. Only to be used for search analyzers.
+* `expand` (defaults to `true`). Expands definitions for equivalent synonym rules. See [expand equivalent synonyms](analysis-synonym-tokenfilter.md#synonym-tokenizer-expand-equivalent-synonyms).
+* `lenient` (defaults to the value of the `updateable` setting). If `true` ignores errors while parsing the synonym rules. It is important to note that only those synonym rules which cannot get parsed are ignored. See [synonyms and stop token filters](analysis-synonym-tokenfilter.md#synonym-tokenizer-stop-token-filter) for an example of `lenient` behaviour for invalid synonym rules.
 
 
-### `expand` equivalent synonym rules [synonym-tokenizer-expand-equivalent-synonyms]
+### `expand` equivalent synonym rules [synonym-tokenizer-expand-equivalent-synonyms] 
 
 The `expand` parameter controls whether to expand equivalent synonym rules. Consider a synonym defined like:
 
@@ -140,12 +138,12 @@ baz => foo
 The `expand` parameter does not affect explicit synonym rules, like `foo, bar => baz`.
 
 
-### `tokenizer` and `ignore_case` are deprecated [synonym-tokenizer-ignore_case-deprecated]
+### `tokenizer` and `ignore_case` are deprecated [synonym-tokenizer-ignore_case-deprecated] 
 
 The `tokenizer` parameter controls the tokenizers that will be used to tokenize the synonym, this parameter is for backwards compatibility for indices that created before 6.0. The `ignore_case` parameter works with `tokenizer` parameter only.
 
 
-## Configure analyzers with synonym token filters [analysis-synonym-analizers-configure]
+## Configure analyzers with synonym token filters [analysis-synonym-analizers-configure] 
 
 To apply synonyms, you will need to include a synonym token filters into an analyzer:
 
@@ -160,7 +158,7 @@ To apply synonyms, you will need to include a synonym token filters into an anal
 ```
 
 
-### Token filters ordering [analysis-synonym-token-order]
+### Token filters ordering [analysis-synonym-token-order] 
 
 Order is important for your token filters. Text will be processed first through filters preceding the synonym filter before being processed by the synonym filter.
 
@@ -168,19 +166,19 @@ Order is important for your token filters. Text will be processed first through 
 
 Because entries in the synonym map cannot have stacked positions, some token filters may cause issues here. Token filters that produce multiple versions of a token may choose which version of the token to emit when parsing synonyms. For example, `asciifolding` will only produce the folded version of the token. Others, like `multiplexer`, `word_delimiter_graph` or `ngram` will throw an error.
 
-If you need to build analyzers that include both multi-token filters and synonym filters, consider using the [multiplexer](/reference/data-analysis/text-analysis/analysis-multiplexer-tokenfilter.md) filter, with the multi-token filters in one branch and the synonym filter in the other.
+If you need to build analyzers that include both multi-token filters and synonym filters, consider using the [multiplexer](analysis-multiplexer-tokenfilter.md) filter, with the multi-token filters in one branch and the synonym filter in the other.
 
 
-### Synonyms and `stop` token filters [synonym-tokenizer-stop-token-filter]
+### Synonyms and `stop` token filters [synonym-tokenizer-stop-token-filter] 
 
-Synonyms and [stop token filters](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) interact with each other in the following ways:
+Synonyms and [stop token filters](analysis-stop-tokenfilter.md) interact with each other in the following ways:
 
 
-#### Stop token filter **before** synonym token filter [_stop_token_filter_before_synonym_token_filter]
+#### Stop token filter **before** synonym token filter [_stop_token_filter_before_synonym_token_filter] 
 
 Stop words will be removed from the synonym rule definition. This can can cause errors on the synonym rule.
 
-::::{warning}
+::::{warning} 
 If `lenient` is set to `false`, invalid synonym rules can cause errors when applying analyzer changes. For reloadable analyzers, this prevents reloading and applying changes. You must correct errors in the synonym rules and reload the analyzer.
 
 When `lenient` is set to `false`, an index with invalid synonym rules cannot be reopened, making it inoperable when:
@@ -215,7 +213,7 @@ baz => baz
 ```
 
 
-#### Stop token filter **after** synonym token filter [_stop_token_filter_after_synonym_token_filter]
+#### Stop token filter **after** synonym token filter [_stop_token_filter_after_synonym_token_filter] 
 
 The stop filter will remove the terms from the resulting synonym expansion.
 

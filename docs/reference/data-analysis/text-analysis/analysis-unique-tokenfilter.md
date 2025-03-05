@@ -1,7 +1,5 @@
 ---
 navigation_title: "Unique"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-unique-tokenfilter.html
 ---
 
 # Unique token filter [analysis-unique-tokenfilter]
@@ -11,15 +9,15 @@ Removes duplicate tokens from a stream. For example, you can use the `unique` fi
 
 If the `only_on_same_position` parameter is set to `true`, the `unique` filter removes only duplicate tokens *in the same position*.
 
-::::{note}
-When `only_on_same_position` is `true`, the `unique` filter works the same as [`remove_duplicates`](/reference/data-analysis/text-analysis/analysis-remove-duplicates-tokenfilter.md) filter.
+::::{note} 
+When `only_on_same_position` is `true`, the `unique` filter works the same as [`remove_duplicates`](analysis-remove-duplicates-tokenfilter.md) filter.
 
 ::::
 
 
 ## Example [analysis-unique-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `unique` filter to remove duplicate tokens from `the quick fox jumps the lazy fox`:
+The following [analyze API](indices-analyze.md) request uses the `unique` filter to remove duplicate tokens from `the quick fox jumps the lazy fox`:
 
 ```console
 GET _analyze
@@ -36,10 +34,53 @@ The filter removes duplicated tokens for `the` and `fox`, producing the followin
 [ the, quick, fox, jumps, lazy ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "the",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "word",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "quick",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "word",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "fox",
+%       "start_offset" : 10,
+%       "end_offset" : 13,
+%       "type" : "word",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "jumps",
+%       "start_offset" : 14,
+%       "end_offset" : 19,
+%       "type" : "word",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "lazy",
+%       "start_offset" : 24,
+%       "end_offset" : 28,
+%       "type" : "word",
+%       "position" : 5
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-unique-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `unique` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `unique` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT custom_unique_example

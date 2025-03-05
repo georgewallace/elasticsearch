@@ -1,7 +1,5 @@
 ---
 navigation_title: "Pattern"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
 ---
 
 # Pattern analyzer [analysis-pattern-analyzer]
@@ -22,7 +20,7 @@ Read more about [pathological regular expressions and how to avoid them](https:/
 
 
 
-## Example output [_example_output_3]
+## Example output [_example_output_3] 
 
 ```console
 POST _analyze
@@ -32,6 +30,100 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "the",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "2",
+%       "start_offset": 4,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "quick",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "foxes",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 4
+%     },
+%     {
+%       "token": "jumped",
+%       "start_offset": 24,
+%       "end_offset": 30,
+%       "type": "word",
+%       "position": 5
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 31,
+%       "end_offset": 35,
+%       "type": "word",
+%       "position": 6
+%     },
+%     {
+%       "token": "the",
+%       "start_offset": 36,
+%       "end_offset": 39,
+%       "type": "word",
+%       "position": 7
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 40,
+%       "end_offset": 44,
+%       "type": "word",
+%       "position": 8
+%     },
+%     {
+%       "token": "dog",
+%       "start_offset": 45,
+%       "end_offset": 48,
+%       "type": "word",
+%       "position": 9
+%     },
+%     {
+%       "token": "s",
+%       "start_offset": 49,
+%       "end_offset": 50,
+%       "type": "word",
+%       "position": 10
+%     },
+%     {
+%       "token": "bone",
+%       "start_offset": 51,
+%       "end_offset": 55,
+%       "type": "word",
+%       "position": 11
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following terms:
 
 ```text
@@ -39,7 +131,7 @@ The above sentence would produce the following terms:
 ```
 
 
-## Configuration [_configuration_4]
+## Configuration [_configuration_4] 
 
 The `pattern` analyzer accepts the following parameters:
 
@@ -58,10 +150,10 @@ The `pattern` analyzer accepts the following parameters:
 `stopwords_path`
 :   The path to a file containing stop words.
 
-See the [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) for more information about stop word configuration.
+See the [Stop Token Filter](analysis-stop-tokenfilter.md) for more information about stop word configuration.
 
 
-## Example configuration [_example_configuration_3]
+## Example configuration [_example_configuration_3] 
 
 In this example, we configure the `pattern` analyzer to split email addresses on non-word characters or on underscores (`\W|_`), and to lower-case the result:
 
@@ -91,6 +183,51 @@ POST my-index-000001/_analyze
 1. The backslashes in the pattern need to be escaped when specifying the pattern as a JSON string.
 
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "john",
+%       "start_offset": 0,
+%       "end_offset": 4,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "smith",
+%       "start_offset": 5,
+%       "end_offset": 10,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "foo",
+%       "start_offset": 11,
+%       "end_offset": 14,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "bar",
+%       "start_offset": 15,
+%       "end_offset": 18,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "com",
+%       "start_offset": 19,
+%       "end_offset": 22,
+%       "type": "word",
+%       "position": 4
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following terms:
 
 ```text
@@ -98,7 +235,7 @@ The above example produces the following terms:
 ```
 
 
-### CamelCase tokenizer [_camelcase_tokenizer]
+### CamelCase tokenizer [_camelcase_tokenizer] 
 
 The following more complicated example splits CamelCase text into tokens:
 
@@ -124,6 +261,58 @@ GET my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "moose",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "x",
+%       "start_offset": 5,
+%       "end_offset": 6,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "ftp",
+%       "start_offset": 8,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "class",
+%       "start_offset": 11,
+%       "end_offset": 16,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "2",
+%       "start_offset": 16,
+%       "end_offset": 17,
+%       "type": "word",
+%       "position": 4
+%     },
+%     {
+%       "token": "beta",
+%       "start_offset": 18,
+%       "end_offset": 22,
+%       "type": "word",
+%       "position": 5
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following terms:
 
 ```text
@@ -132,7 +321,7 @@ The above example produces the following terms:
 
 The regex above is easier to understand as:
 
-```text
+```regex
   ([^\p{L}\d]+)                 # swallow non letters and numbers,
 | (?<=\D)(?=\d)                 # or non-number followed by number,
 | (?<=\d)(?=\D)                 # or number followed by non-number,
@@ -145,17 +334,17 @@ The regex above is easier to understand as:
 ```
 
 
-## Definition [_definition_3]
+## Definition [_definition_3] 
 
 The `pattern` analyzer consists of:
 
 Tokenizer
-:   * [Pattern Tokenizer](/reference/data-analysis/text-analysis/analysis-pattern-tokenizer.md)
+:   * [Pattern Tokenizer](analysis-pattern-tokenizer.md)
 
 
 Token Filters
-:   * [Lower Case Token Filter](/reference/data-analysis/text-analysis/analysis-lowercase-tokenfilter.md)
-* [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) (disabled by default)
+:   * [Lower Case Token Filter](analysis-lowercase-tokenfilter.md)
+* [Stop Token Filter](analysis-stop-tokenfilter.md) (disabled by default)
 
 
 If you need to customize the `pattern` analyzer beyond the configuration parameters then you need to recreate it as a `custom` analyzer and modify it, usually by adding token filters. This would recreate the built-in `pattern` analyzer and you can use it as a starting point for further customization:
@@ -183,6 +372,8 @@ PUT /pattern_example
   }
 }
 ```
+
+%  TEST[s/\n$/\nstartyaml\n  - compare_analyzers: {index: pattern_example, first: pattern, second: rebuilt_pattern}\nendyaml\n/]
 
 1. The default pattern is `\W+` which splits on non-word characters and this is where you’d change it.
 2. You’d add other token filters after `lowercase`.

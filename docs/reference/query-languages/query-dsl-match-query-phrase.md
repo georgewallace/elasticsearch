@@ -1,7 +1,5 @@
 ---
 navigation_title: "Match phrase"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase.html
 ---
 
 # Match phrase query [query-dsl-match-query-phrase]
@@ -27,7 +25,7 @@ GET /_search
 
 
 `analyzer`
-:   (Optional, string) [Analyzer](docs-content://manage-data/data-store/text-analysis.md) used to convert the text in the `query` value into tokens. Defaults to the [index-time analyzer](docs-content://manage-data/data-store/text-analysis/specify-an-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
+:   (Optional, string) [Analyzer](analysis.md) used to convert the text in the `query` value into tokens. Defaults to the [index-time analyzer](specify-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
 
 `slop`
 :   (Optional, integer) Maximum number of positions allowed between matching tokens. Defaults to `0`. Transposed terms have a slop of `2`.
@@ -39,7 +37,7 @@ GET /_search
 :   No documents are returned if the `analyzer` removes all tokens.
 
 `all`
-:   Returns all documents, similar to a [`match_all`](/reference/query-languages/query-dsl-match-all-query.md) query.
+:   Returns all documents, similar to a [`match_all`](query-dsl-match-all-query.md) query.
 
 
 A phrase query matches terms up to a configurable `slop` (which defaults to 0) in any order. Transposed terms have a slop of 2.

@@ -1,33 +1,51 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html
-navigation_title: General
----
 # Index modules [index-modules]
 
-Index modules are modules created per index and control all aspects related to an index.
+Index Modules are modules created per index and control all aspects related to an index.
 
-## Static index settings [_static_index_settings]
 
-The following list contains all *static* index settings that are not associated with any specific index module:
+## Index settings [index-modules-settings] 
 
-$$$index-number-of-shards$$$
+%  tag::index-modules-settings-description-tag[]
+
+Index level settings can be set per-index. Settings may be:
+
+*static*
+:   They can only be set at index creation time or on a [closed index](indices-open-close.md), or by using the [update-index-settings](indices-update-settings.md) API with the `reopen` query parameter set to `true` (which automatically closes and reopens impacted indices).
+
+*dynamic*
+:   They can be changed on a live index using the [update-index-settings](indices-update-settings.md) API.
+
+%  end::index-modules-settings-description-tag[]
+
+::::{caution} 
+You can change any documented index settings on closed indices. However, changing undocumented index settings on closed indices is unsupported and might result in errors.
+::::
+
+
+
+### Static index settings [_static_index_settings] 
+
+Below is a list of all *static* index settings that are not associated with any specific index module:
+
+%  tag::index-number-of-shards-tag[]
 
 `index.number_of_shards`
 :   The number of primary shards that an index should have. Defaults to `1`. This setting can only be set at index creation time. It cannot be changed on a closed index.
 
-    ::::{note}
+    ::::{note} 
     The number of shards are limited to `1024` per index. This limitation is a safety limit to prevent accidental creation of indices that can destabilize a cluster due to resource allocation. The limit can be modified by specifying `export ES_JAVA_OPTS="-Des.index.max_number_of_shards=128"` system property on every node that is part of the cluster.
     ::::
 
 
+%  end::index-number-of-shards-tag[]
+
 $$$index-number-of-routing-shards$$$
 
 `index.number_of_routing_shards`
-:   :::::{admonition}
-Integer value used with [`index.number_of_shards`](index-modules.md#index-number-of-shards) to route documents to a primary shard. See [`_routing` field](/reference/elasticsearch/mapping-reference/mapping-routing-field.md).
+:   :::::{admonition} 
+Integer value used with [`index.number_of_shards`](index-modules.md#index-number-of-shards) to route documents to a primary shard. See [`_routing` field](mapping-routing-field.md).
 
-{{es}} uses this value when splitting an index. For example, a 5 shard index with `number_of_routing_shards` set to `30` (`5 x 2 x 3`) could be split by a factor of `2` or `3`. In other words, it could be split as follows:
+{{es}} uses this value when [splitting](indices-split-index.md) an index. For example, a 5 shard index with `number_of_routing_shards` set to `30` (`5 x 2 x 3`) could be split by a factor of `2` or `3`. In other words, it could be split as follows:
 
 * `5` → `10` → `30`  (split by 2, then by 3)
 * `5` → `15` → `30` (split by 3, then by 2)
@@ -35,7 +53,7 @@ Integer value used with [`index.number_of_shards`](index-modules.md#index-number
 
 This setting’s default value depends on the number of primary shards in the index. The default is designed to allow you to split by factors of 2 up to a maximum of 1024 shards.
 
-::::{note}
+::::{note} 
 In {{es}} 7.0.0 and later versions, this setting affects how documents are distributed across shards. When reindexing an older index with custom routing, you must explicitly set `index.number_of_routing_shards` to maintain the same document distribution. See the [related breaking change](https://www.elastic.co/guide/en/elasticsearch/reference/7.0/breaking-changes-7.0.html#_document_distribution_changes).
 ::::
 
@@ -45,7 +63,7 @@ In {{es}} 7.0.0 and later versions, this setting affects how documents are distr
 
 
 $$$index-codec$$$ `index.codec`
-:   The `default` value compresses stored data with LZ4 compression, but this can be set to `best_compression` which uses [ZSTD](https://en.wikipedia.org/wiki/Zstd) for a higher compression ratio, at the expense of slower stored fields read performance. If you are updating the compression type, the new one will be applied after segments are merged. Segment merging can be forced using [force merge](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-forcemerge). Experiments with indexing log datasets have shown that `best_compression` gives up to ~28% lower storage usage and similar indexing throughput (sometimes a bit slower or faster depending on other used options) compared to `default` while affecting get by id latencies between ~10% and ~33%. The higher get by id latencies is not a concern for many use cases like logging or metrics, since these don’t really rely on get by id functionality (Get APIs or searching by _id).
+:   The `default` value compresses stored data with LZ4 compression, but this can be set to `best_compression` which uses [ZSTD](https://en.wikipedia.org/wiki/Zstd) for a higher compression ratio, at the expense of slower stored fields read performance. If you are updating the compression type, the new one will be applied after segments are merged. Segment merging can be forced using [force merge](indices-forcemerge.md). Experiments with indexing log datasets have shown that `best_compression` gives up to ~28% lower storage usage and similar indexing throughput (sometimes a bit slower or faster depending on other used options) compared to `default` while affecting get by id latencies between ~10% and ~33%. The higher get by id latencies is not a concern for many use cases like logging or metrics, since these don’t really rely on get by id functionality (Get APIs or searching by _id).
 
 $$$index-mode-setting$$$ `index.mode`
 :   The `index.mode` setting is used to control settings applied in specific domains like ingestion of time series data or logs. Different mutually exclusive modes exist, which are used to apply settings or default values controlling indexing of documents, sorting and other parameters whose value affects indexing or query performance.
@@ -73,31 +91,35 @@ Index mode supports the following values:
 :   Standard indexing with default settings.
 
 `time_series`
-:   *(data streams only)* Index mode optimized for storage of metrics. For more information, see [Time series index settings](time-series.md).
+:   *(data streams only)* Index mode optimized for storage of metrics. For more information, see [Time series index settings](tsds-index-settings.md).
 
 `logsdb`
-:   *(data streams only)* Index mode optimized for [logs](docs-content://manage-data/data-store/data-streams/logs-data-stream.md).
+:   *(data streams only)* Index mode optimized for [logs](logs-data-stream.md).
 
 
 $$$routing-partition-size$$$ `index.routing_partition_size`
-:   The number of shards a custom routing value can go to. Defaults to 1 and can only be set at index creation time. This value must be less than the `index.number_of_routing_shards` unless the `index.number_of_routing_shards` value is also 1. for more details about how this setting is used, refer to [](/reference/elasticsearch/mapping-reference/mapping-routing-field.md#routing-index-partition).
+:   The number of shards a custom [routing](mapping-routing-field.md) value can go to. Defaults to 1 and can only be set at index creation time. This value must be less than the `index.number_of_routing_shards` unless the `index.number_of_routing_shards` value is also 1. See [Routing to an index partition](mapping-routing-field.md#routing-index-partition) for more details about how this setting is used.
 
-$$$ccr-index-soft-deletes$$$
+%  tag::ccr-index-soft-deletes-tag[]
 
 `index.soft_deletes.enabled`
 :   [7.6.0] Indicates whether soft deletes are enabled on the index. Soft deletes can only be configured at index creation and only on indices created on or after {{es}} 6.5.0. Defaults to `true`.
 
-$$$ccr-index-soft-deletes-retention-period$$$
+%  end::ccr-index-soft-deletes-tag[]
+
+% tag::ccr-index-soft-deletes-retention-tag[]
 
 `index.soft_deletes.retention_lease.period`
 :   The maximum period to retain a shard history retention lease before it is considered expired. Shard history retention leases ensure that soft deletes are retained during merges on the Lucene index. If a soft delete is merged away before it can be replicated to a follower the following process will fail due to incomplete history on the leader. Defaults to `12h`.
 
+% end::ccr-index-soft-deletes-retention-tag[]
+
 $$$load-fixed-bitset-filters-eagerly$$$ `index.load_fixed_bitset_filters_eagerly`
-:   Indicates whether [cached filters](/reference/query-languages/query-filter-context.md) are pre-loaded for nested queries. Possible values are `true` (default) and `false`.
+:   Indicates whether [cached filters](query-filter-context.md) are pre-loaded for nested queries. Possible values are `true` (default) and `false`.
 
 $$$index-shard-check-on-startup$$$ `index.shard.check_on_startup`
-:   :::::{admonition}
-::::{warning}
+:   :::::{admonition} 
+::::{warning} 
 Expert users only. This setting enables some very expensive processing at shard startup and is only ever useful while diagnosing a problem in your cluster. If you do use it, you should do so only temporarily and remove it once it is no longer needed.
 ::::
 
@@ -120,7 +142,7 @@ This setting determines whether {{es}} performs additional integrity checks whil
 
 
 
-## Dynamic index settings [dynamic-index-settings]
+### Dynamic index settings [dynamic-index-settings] 
 
 Below is a list of all *dynamic* index settings that are not associated with any specific index module:
 
@@ -138,9 +160,9 @@ $$$dynamic-index-number-of-replicas$$$
 $$$dynamic-index-auto-expand-replicas$$$
 
 `index.auto_expand_replicas`
-:   Auto-expand the number of replicas based on the number of data nodes in the cluster. Set to a dash delimited lower and upper bound (e.g. `0-5`) or use `all` for the upper bound (e.g. `0-all`). Defaults to `false` (i.e. disabled). Note that the auto-expanded number of replicas only takes [allocation filtering](shard-allocation.md) rules into account, but ignores other allocation rules such as [total shards per node](total-shards-per-node.md), and this can lead to the cluster health becoming `YELLOW` if the applicable rules prevent all the replicas from being allocated.
+:   Auto-expand the number of replicas based on the number of data nodes in the cluster. Set to a dash delimited lower and upper bound (e.g. `0-5`) or use `all` for the upper bound (e.g. `0-all`). Defaults to `false` (i.e. disabled). Note that the auto-expanded number of replicas only takes [allocation filtering](shard-allocation-filtering.md) rules into account, but ignores other allocation rules such as [total shards per node](allocation-total-shards.md), and this can lead to the cluster health becoming `YELLOW` if the applicable rules prevent all the replicas from being allocated.
 
-    If the upper bound is `all` then shard allocation awareness and `cluster.routing.allocation.same_shard.host` are ignored for this index. For more information about this setting, refer to [](/reference/elasticsearch/configuration-reference/cluster-level-shard-allocation-routing-settings.md)
+    If the upper bound is `all` then [shard allocation awareness](shard-allocation-awareness.md) and [`cluster.routing.allocation.same_shard.host`](modules-cluster.md#cluster-routing-allocation-same-shard-host) are ignored for this index.
 
 
 $$$dynamic-index-search-idle-after$$$
@@ -156,7 +178,7 @@ $$$index-refresh-interval-setting$$$
 $$$index-max-result-window$$$
 
 `index.max_result_window`
-:   The maximum value of `from + size` for searches to this index. Defaults to `10000`. Search requests take heap memory and time proportional to `from + size` and this limits that memory. See [Scroll](/reference/elasticsearch/rest-apis/paginate-search-results.md#scroll-search-results) or [Search After](/reference/elasticsearch/rest-apis/paginate-search-results.md#search-after) for a more efficient alternative to raising this.
+:   The maximum value of `from + size` for searches to this index. Defaults to `10000`. Search requests take heap memory and time proportional to `from + size` and this limits that memory. See [Scroll](paginate-search-results.md#scroll-search-results) or [Search After](paginate-search-results.md#search-after) for a more efficient alternative to raising this.
 
 `index.max_inner_result_window`
 :   The maximum value of `from + size` for inner hits definition and top hits aggregations to this index. Defaults to `100`. Inner hits and top hits aggregation take heap memory and time proportional to `from + size` and this limits that memory.
@@ -178,10 +200,10 @@ $$$index-max-ngram-diff$$$
 $$$index-max-shingle-diff$$$
 
 `index.max_shingle_diff`
-:   The maximum allowed difference between max_shingle_size and min_shingle_size for the [`shingle` token filter](/reference/data-analysis/text-analysis/analysis-shingle-tokenfilter.md). Defaults to `3`.
+:   The maximum allowed difference between max_shingle_size and min_shingle_size for the [`shingle` token filter](analysis-shingle-tokenfilter.md). Defaults to `3`.
 
 `index.max_refresh_listeners`
-:   Maximum number of refresh listeners available on each shard of the index. These listeners are used to implement `refresh=wait_for`.
+:   Maximum number of refresh listeners available on each shard of the index. These listeners are used to implement [`refresh=wait_for`](docs-refresh.md).
 
 `index.analyze.max_token_count`
 :   The maximum number of tokens that can be produced using _analyze API. Defaults to `10000`.
@@ -206,12 +228,12 @@ $$$index-query-default-field$$$
 `index.query.default_field`
 :   (string or array of strings) Wildcard (`*`) patterns matching one or more fields. The following query types search these matching fields by default:
 
-* [More like this](/reference/query-languages/query-dsl-mlt-query.md)
-* [Multi-match](/reference/query-languages/query-dsl-multi-match-query.md)
-* [Query string](/reference/query-languages/query-dsl-query-string-query.md)
-* [Simple query string](/reference/query-languages/query-dsl-simple-query-string-query.md)
+* [More like this](query-dsl-mlt-query.md)
+* [Multi-match](query-dsl-multi-match-query.md)
+* [Query string](query-dsl-query-string-query.md)
+* [Simple query string](query-dsl-simple-query-string-query.md)
 
-Defaults to `*`, which matches all fields eligible for [term-level queries](/reference/query-languages/term-level-queries.md), excluding metadata fields.
+Defaults to `*`, which matches all fields eligible for [term-level queries](term-level-queries.md), excluding metadata fields.
 
 
 $$$index-routing-allocation-enable-setting$$$
@@ -235,22 +257,64 @@ $$$index-routing-allocation-enable-setting$$$
 
 
 `index.gc_deletes`
-:   The length of time that a deleted document's version number remains available for further versioned operations. Defaults to `60s`.
+:   The length of time that a [deleted document’s version number](docs-delete.md#delete-versioning) remains available for [further versioned operations](docs-index_.md#index-versioning). Defaults to `60s`.
 
 $$$index-default-pipeline$$$
 
 `index.default_pipeline`
-:   Default ingest pipeline for the index. Index requests will fail if the default pipeline is set and the pipeline does not exist. The default may be overridden using the `pipeline` parameter. The special pipeline name `_none` indicates no default ingest pipeline will run.
+:   Default [ingest pipeline](ingest.md) for the index. Index requests will fail if the default pipeline is set and the pipeline does not exist. The default may be overridden using the `pipeline` parameter. The special pipeline name `_none` indicates no default ingest pipeline will run.
 
 $$$index-final-pipeline$$$
 
 `index.final_pipeline`
-:   Final ingest pipeline for the index. Indexing requests will fail if the final pipeline is set and the pipeline does not exist. The final pipeline always runs after the request pipeline (if specified) and the default pipeline (if it exists). The special pipeline name `_none` indicates no final ingest pipeline will run.
+:   Final [ingest pipeline](ingest.md) for the index. Indexing requests will fail if the final pipeline is set and the pipeline does not exist. The final pipeline always runs after the request pipeline (if specified) and the default pipeline (if it exists). The special pipeline name `_none` indicates no final ingest pipeline will run.
 
-    ::::{note}
+    ::::{note} 
     You can’t use a final pipeline to change the `_index` field. If the pipeline attempts to change the `_index` field, the indexing request will fail.
     ::::
 
 
 $$$index-hidden$$$ `index.hidden`
 :   Indicates whether the index should be hidden by default. Hidden indices are not returned by default when using a wildcard expression. This behavior is controlled per request through the use of the `expand_wildcards` parameter. Possible values are `true` and `false` (default).
+
+
+### Settings in other index modules [_settings_in_other_index_modules] 
+
+Other index settings are available in index modules:
+
+[Analysis](analysis.md)
+:   Settings to define analyzers, tokenizers, token filters and character filters.
+
+[Index shard allocation](index-modules-allocation.md)
+:   Control over where, when, and how shards are allocated to nodes.
+
+[Mapping](index-modules-mapper.md)
+:   Enable or disable dynamic mapping for an index.
+
+[Merging](index-modules-merge.md)
+:   Control over how shards are merged by the background merge process.
+
+[Similarities](index-modules-similarity.md)
+:   Configure custom similarity settings to customize how search results are scored.
+
+[Slowlog](index-modules-slowlog.md)
+:   Control over how slow queries and fetch requests are logged.
+
+[Store](index-modules-store.md)
+:   Configure the type of filesystem used to access shard data.
+
+[Translog](index-modules-translog.md)
+:   Control over the transaction log and background flush operations.
+
+[History retention](index-modules-history-retention.md)
+:   Control over the retention of a history of operations in the index.
+
+[Indexing pressure](index-modules-indexing-pressure.md)
+:   Configure indexing back pressure limits.
+
+
+### {{xpack}} index settings [x-pack-index-settings] 
+
+[{{ilm-cap}}](ilm-settings.md)
+:   Specify the lifecycle policy and rollover alias for an index.
+

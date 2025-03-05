@@ -1,13 +1,11 @@
 ---
 navigation_title: "Normalize"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-normalize-aggregation.html
 ---
 
 # Normalize aggregation [search-aggregations-pipeline-normalize-aggregation]
 
 
-A parent pipeline aggregation which calculates the specific normalized/rescaled value for a specific bucket value. Values that cannot be normalized, will be skipped using the [skip gap policy](/reference/data-analysis/aggregations/pipeline.md#gap-policy).
+A parent pipeline aggregation which calculates the specific normalized/rescaled value for a specific bucket value. Values that cannot be normalized, will be skipped using the [skip gap policy](search-aggregations-pipeline.md#gap-policy).
 
 ## Syntax [_syntax_20]
 
@@ -22,12 +20,14 @@ A `normalize` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$normalize_pipeline-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | The path to the buckets we wish to normalize (see [`buckets_path` syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details) | Required |  |
-| `method` | The specific [method](#normalize_pipeline-method) to apply | Required |  |
+| `buckets_path` | The path to the buckets we wish to normalize (see [`buckets_path` syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details) | Required |  |
+| `method` | The specific [method](search-aggregations-pipeline-normalize-aggregation.md#normalize_pipeline-method) to apply | Required |  |
 | `format` | [DecimalFormat pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/DecimalFormat.md) for theoutput value. If specified, the formatted value is returned in the aggregation’s`value_as_string` property | Optional | `null` |
 
 
@@ -136,6 +136,8 @@ POST /sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
 1. `buckets_path` instructs this normalize aggregation to use the output of the `sales` aggregation for rescaling
 2. `method` sets which rescaling to apply. In this case, `percent_of_sum` will calculate the sales value as a percent of all sales in the parent bucket
 3. `format` influences how to format the metric as a string using Java’s `DecimalFormat` pattern. In this case, multiplying by 100 and adding a *%*
@@ -193,5 +195,11 @@ And the following may be the response:
    }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
 
 

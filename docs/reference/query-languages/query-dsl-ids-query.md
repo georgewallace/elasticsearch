@@ -1,13 +1,11 @@
 ---
 navigation_title: "IDs"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
 ---
 
 # IDs [query-dsl-ids-query]
 
 
-Returns documents based on their IDs. This query uses document IDs stored in the [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md) field.
+Returns documents based on their IDs. This query uses document IDs stored in the [`_id`](mapping-id-field.md) field.
 
 ## Example request [_example_request_3]
 
@@ -26,6 +24,6 @@ GET /_search
 ## Top-level parameters for `ids` [ids-query-top-level-parameters]
 
 `values`
-:   (Required, array of strings) An array of [document IDs](/reference/elasticsearch/mapping-reference/mapping-id-field.md).
+:   (Required, array of strings) An array of [document IDs](mapping-id-field.md).
 
 

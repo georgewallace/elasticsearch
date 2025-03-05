@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-lexical-structure.html
----
-
 # Lexical Structure [sql-lexical-structure]
 
 This section covers the major lexical structure of SQL, which for the most part, is going to resemble that of ANSI SQL itself hence why low-levels details are not discussed in depth.
@@ -21,7 +16,7 @@ SELECT * FROM table
 
 This query has four tokens: `SELECT`, `*`, `FROM` and `table`. The first three, namely `SELECT`, `*` and `FROM` are *key words* meaning words that have a fixed meaning in SQL. The token `table` is an *identifier* meaning it identifies (by name) an entity inside SQL such as a table (in this case), a column, etc…​
 
-As one can see, both key words and identifiers have the *same* lexical structure and thus one cannot know whether a token is one or the other without knowing the SQL language; the complete list of key words is available in the [reserved appendix](/reference/query-languages/sql-syntax-reserved.md). Do note that key words are case-insensitive meaning the previous example can be written as:
+As one can see, both key words and identifiers have the *same* lexical structure and thus one cannot know whether a token is one or the other without knowing the SQL language; the complete list of key words is available in the [reserved appendix](sql-syntax-reserved.md). Do note that key words are case-insensitive meaning the previous example can be written as:
 
 ```sql
 select * fRoM table;
@@ -40,7 +35,7 @@ Identifiers can be of two types: *quoted* and *unquoted*:
 SELECT ip_address FROM "hosts-*"
 ```
 
-This query has two identifiers, `ip_address` and `hosts-*` (an [index pattern](/reference/elasticsearch/rest-apis/api-conventions.md#api-multi-index)). As `ip_address` does not clash with any key words it can be used verbatim, `hosts-*` on the other hand cannot as it clashes with `-` (minus operation) and `*` hence the double quotes.
+This query has two identifiers, `ip_address` and `hosts-*` (an [index pattern](api-conventions.md#api-multi-index)). As `ip_address` does not clash with any key words it can be used verbatim, `hosts-*` on the other hand cannot as it clashes with `-` (minus operation) and `*` hence the double quotes.
 
 Another example:
 
@@ -48,7 +43,7 @@ Another example:
 SELECT "from" FROM "<logstash-{now/d}>"
 ```
 
-The first identifier from needs to quoted as otherwise it clashes with the `FROM` key word (which is case insensitive as thus can be written as `from`) while the second identifier using {{es}} [Date math support in index and index alias names](/reference/elasticsearch/rest-apis/api-conventions.md#api-date-math-index-names) would have otherwise confuse the parser.
+The first identifier from needs to quoted as otherwise it clashes with the `FROM` key word (which is case insensitive as thus can be written as `from`) while the second identifier using {{es}} [Date math support in index and index alias names](api-conventions.md#api-date-math-index-names) would have otherwise confuse the parser.
 
 Hence why in general, **especially** when dealing with user input it is **highly** recommended to use quotes for identifiers. It adds minimal increase to your queries and in return offers clarity and disambiguation.
 
@@ -58,17 +53,17 @@ Hence why in general, **especially** when dealing with user input it is **highly
 Elasticsearch SQL supports two kind of *implicitly-typed* literals: strings and numbers.
 
 
-#### String Literals [sql-syntax-string-literals]
+#### String Literals [sql-syntax-string-literals] 
 
 A string literal is an arbitrary number of characters bounded by single quotes `'`: `'Giant Robot'`. To include a single quote in the string, escape it using another single quote: `'Captain EO''s Voyage'`.
 
-::::{note}
+::::{note} 
 An escaped single quote is **not** a double quote (`"`), but a single quote `'` *repeated* (`''`).
 ::::
 
 
 
-#### Numeric Literals [_numeric_literals]
+#### Numeric Literals [_numeric_literals] 
 
 Numeric literals are accepted both in decimal and scientific notation with exponent marker (`e` or `E`), starting either with a digit or decimal point `.`:
 
@@ -83,9 +78,9 @@ Numeric literals are accepted both in decimal and scientific notation with expon
 Numeric literals that contain a decimal point are always interpreted as being of type `double`. Those without are considered `integer` if they fit otherwise their type is `long` (or `BIGINT` in ANSI SQL types).
 
 
-#### Generic Literals [sql-syntax-generic-literals]
+#### Generic Literals [sql-syntax-generic-literals] 
 
-When dealing with arbitrary type literal, one creates the object by casting, typically, the string representation to the desired type. This can be achieved through the dedicated [cast operator](/reference/query-languages/sql-operators-cast.md) and [functions](/reference/query-languages/sql-functions-type-conversion.md):
+When dealing with arbitrary type literal, one creates the object by casting, typically, the string representation to the desired type. This can be achieved through the dedicated [cast operator](sql-operators-cast.md) and [functions](sql-functions-type-conversion.md):
 
 ```sql
 123::LONG                                   -- cast 123 to a LONG
@@ -98,7 +93,7 @@ Do note that Elasticsearch SQL provides functions that out of the box return pop
 
 ## Single vs Double Quotes [sql-syntax-single-vs-double-quotes]
 
-It is worth pointing out that in SQL, single quotes `'` and double quotes `"` have different meaning and **cannot** be used interchangeably. Single quotes are used to declare a [string literal](#sql-syntax-string-literals) while double quotes for [identifiers](#sql-syntax-identifiers).
+It is worth pointing out that in SQL, single quotes `'` and double quotes `"` have different meaning and **cannot** be used interchangeably. Single quotes are used to declare a [string literal](sql-lexical-structure.md#sql-syntax-string-literals) while double quotes for [identifiers](sql-lexical-structure.md#sql-syntax-identifiers).
 
 To wit:
 
@@ -113,7 +108,7 @@ SELECT "first_name" <1>
 2. Single quotes `'` used for a string literal
 
 
-::::{note}
+::::{note} 
 To escape single or double quotes, one needs to use that specific quote one more time. For example, the literal `John's` can be escaped like `SELECT 'John''s' AS name`. The same goes for double quotes escaping - `SELECT 123 AS "test""number"` will display as a result a column with the name `test"number`.
 ::::
 

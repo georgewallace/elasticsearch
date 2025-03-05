@@ -1,15 +1,13 @@
 ---
 navigation_title: "Rank features"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/rank-features.html
 ---
 
 # Rank features field type [rank-features]
 
 
-A `rank_features` field can index numeric feature vectors, so that they can later be used to boost documents in queries with a [`rank_feature`](/reference/query-languages/query-dsl-rank-feature-query.md) query.
+A `rank_features` field can index numeric feature vectors, so that they can later be used to boost documents in queries with a [`rank_feature`](query-dsl-rank-feature-query.md) query.
 
-It is analogous to the [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) data type but is better suited when the list of features is sparse so that it wouldn’t be reasonable to add one field to the mappings for each of them.
+It is analogous to the [`rank_feature`](rank-feature.md) data type but is better suited when the list of features is sparse so that it wouldn’t be reasonable to add one field to the mappings for each of them.
 
 ```console
 PUT my-index-000001
@@ -87,25 +85,25 @@ GET my-index-000001/_search
 6. This query returns documents that store the "economics" feature in the "topics" field.
 
 
-::::{note}
+::::{note} 
 `rank_features` fields only support single-valued features and strictly positive values. Multi-valued fields and zero or negative values will be rejected.
 ::::
 
 
-::::{note}
-`rank_features` fields do not support sorting or aggregating and may only be queried using [`rank_feature`](/reference/query-languages/query-dsl-rank-feature-query.md) or [`term`](/reference/query-languages/query-dsl-term-query.md) queries.
+::::{note} 
+`rank_features` fields do not support sorting or aggregating and may only be queried using [`rank_feature`](query-dsl-rank-feature-query.md) or [`term`](query-dsl-term-query.md) queries.
 ::::
 
 
-::::{note}
-[`term`](/reference/query-languages/query-dsl-term-query.md) queries on `rank_features` fields are scored by multiplying the matched stored feature value by the provided `boost`.
+::::{note} 
+[`term`](query-dsl-term-query.md) queries on `rank_features` fields are scored by multiplying the matched stored feature value by the provided `boost`.
 ::::
 
 
-::::{note}
+::::{note} 
 `rank_features` fields only preserve 9 significant bits for the precision, which translates to a relative error of about 0.4%.
 ::::
 
 
-Rank features that correlate negatively with the score should set `positive_score_impact` to `false` (defaults to `true`). This will be used by the [`rank_feature`](/reference/query-languages/query-dsl-rank-feature-query.md) query to modify the scoring formula in such a way that the score decreases with the value of the feature instead of increasing.
+Rank features that correlate negatively with the score should set `positive_score_impact` to `false` (defaults to `true`). This will be used by the [`rank_feature`](query-dsl-rank-feature-query.md) query to modify the scoring formula in such a way that the score decreases with the value of the feature instead of increasing.
 

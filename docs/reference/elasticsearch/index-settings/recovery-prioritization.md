@@ -1,10 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/recovery-prioritization.html
-navigation_title: Index recovery prioritization
----
-
-# Index recovery prioritization settings [recovery-prioritization]
+# Index recovery prioritization [recovery-prioritization]
 
 Unallocated shards are recovered in order of priority, whenever possible. Indices are sorted into priority order as follows:
 
@@ -43,7 +37,7 @@ In the above example:
 * `index_2` will be recovered next because it was created more recently.
 * `index_1` will be recovered last.
 
-This setting accepts an integer, and can be updated on a live index with the [update index settings API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-settings):
+This setting accepts an integer, and can be updated on a live index with the [update index settings API](indices-update-settings.md):
 
 ```console
 PUT index_4/_settings
@@ -51,4 +45,6 @@ PUT index_4/_settings
   "index.priority": 1
 }
 ```
+
+%  TEST[continued]
 

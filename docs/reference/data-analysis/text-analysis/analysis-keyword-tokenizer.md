@@ -1,7 +1,5 @@
 ---
 navigation_title: "Keyword"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-keyword-tokenizer.html
 ---
 
 # Keyword tokenizer [analysis-keyword-tokenizer]
@@ -10,7 +8,7 @@ mapped_pages:
 The `keyword` tokenizer is a noop tokenizer that accepts whatever text it is given and outputs the exact same text as a single term. It can be combined with token filters to normalise output, e.g. lower-casing email addresses.
 
 
-## Example output [_example_output_10]
+## Example output [_example_output_10] 
 
 ```console
 POST _analyze
@@ -20,6 +18,23 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "New York",
+%       "start_offset": 0,
+%       "end_offset": 8,
+%       "type": "word",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following term:
 
 ```text
@@ -27,11 +42,11 @@ The above sentence would produce the following term:
 ```
 
 
-## Combine with token filters [analysis-keyword-tokenizer-token-filters]
+## Combine with token filters [analysis-keyword-tokenizer-token-filters] 
 
 You can combine the `keyword` tokenizer with token filters to normalise structured data, such as product IDs or email addresses.
 
-For example, the following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `keyword` tokenizer and [`lowercase`](/reference/data-analysis/text-analysis/analysis-lowercase-tokenfilter.md) filter to convert an email address to lowercase.
+For example, the following [analyze API](indices-analyze.md) request uses the `keyword` tokenizer and [`lowercase`](analysis-lowercase-tokenfilter.md) filter to convert an email address to lowercase.
 
 ```console
 POST _analyze
@@ -42,6 +57,23 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "[john.smith@example.com](mailto:john.smith@example.com)",
+%       "start_offset": 0,
+%       "end_offset": 22,
+%       "type": "word",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The request produces the following token:
 
 ```text
@@ -49,7 +81,7 @@ The request produces the following token:
 ```
 
 
-## Configuration [_configuration_11]
+## Configuration [_configuration_11] 
 
 The `keyword` tokenizer accepts the following parameters:
 

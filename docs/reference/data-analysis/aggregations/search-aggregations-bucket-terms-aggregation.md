@@ -1,13 +1,55 @@
 ---
 navigation_title: "Terms"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
 ---
 
 # Terms aggregation [search-aggregations-bucket-terms-aggregation]
 
 
 A multi-bucket value source based aggregation where buckets are dynamically built - one per unique value.
+
+% 
+% [source,console]
+% --------------------------------------------------
+% PUT /products
+% {
+%   "mappings": {
+%     "properties": {
+%       "genre": {
+%         "type": "keyword"
+%       },
+%       "product": {
+%         "type": "keyword"
+%       }
+%     }
+%   }
+% }
+% 
+% POST /products/_bulk?refresh
+% {"index":{"_id":0}}
+% {"genre": "rock", "product": "Product A"}
+% {"index":{"_id":1}}
+% {"genre": "rock", "product": "Product B"}
+% {"index":{"_id":2}}
+% {"genre": "rock", "product": "Product C"}
+% {"index":{"_id":3}}
+% {"genre": "jazz", "product": "Product D"}
+% {"index":{"_id":4}}
+% {"genre": "jazz", "product": "Product E"}
+% {"index":{"_id":5}}
+% {"genre": "electronic", "product": "Anthology A"}
+% {"index":{"_id":6}}
+% {"genre": "electronic", "product": "Anthology A"}
+% {"index":{"_id":7}}
+% {"genre": "electronic", "product": "Product F"}
+% {"index":{"_id":8}}
+% {"genre": "electronic", "product": "Product G"}
+% {"index":{"_id":9}}
+% {"genre": "electronic", "product": "Product H"}
+% {"index":{"_id":10}}
+% {"genre": "electronic", "product": "Product I"}
+% -------------------------------------------------
+% // TESTSETUP
+% 
 
 Example:
 
@@ -23,6 +65,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 Response:
 
@@ -52,24 +96,26 @@ Response:
 }
 ```
 
-1. an upper bound of the error on the document counts for each term, see [below](#terms-agg-doc-count-error)
+%  TESTRESPONSE[s/\.\.\.//]
+
+1. an upper bound of the error on the document counts for each term, see [below](search-aggregations-bucket-terms-aggregation.md#terms-agg-doc-count-error)
 2. when there are lots of unique terms, Elasticsearch only returns the top terms; this number is the sum of the document counts for all buckets that are not part of the response
-3. the list of the top buckets, the meaning of `top` being defined by the [order](#search-aggregations-bucket-terms-aggregation-order)
+3. the list of the top buckets, the meaning of `top` being defined by the [order](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order)
 
 
 $$$search-aggregations-bucket-terms-aggregation-types$$$
-The `field` can be [Keyword](/reference/elasticsearch/mapping-reference/keyword.md), [Numeric](/reference/elasticsearch/mapping-reference/number.md), [`ip`](/reference/elasticsearch/mapping-reference/ip.md), [`boolean`](/reference/elasticsearch/mapping-reference/boolean.md), or [`binary`](/reference/elasticsearch/mapping-reference/binary.md).
+The `field` can be [Keyword](keyword.md), [Numeric](number.md), [`ip`](ip.md), [`boolean`](boolean.md), or [`binary`](binary.md).
 
-::::{note}
-By default, you cannot run a `terms` aggregation on a `text` field. Use a `keyword` [sub-field](/reference/elasticsearch/mapping-reference/multi-fields.md) instead. Alternatively, you can enable [`fielddata`](/reference/elasticsearch/mapping-reference/text.md#fielddata-mapping-param) on the `text` field to create buckets for the field’s [analyzed](docs-content://manage-data/data-store/text-analysis.md) terms. Enabling `fielddata` can significantly increase memory usage.
+::::{note} 
+By default, you cannot run a `terms` aggregation on a `text` field. Use a `keyword` [sub-field](multi-fields.md) instead. Alternatively, you can enable [`fielddata`](text.md#fielddata-mapping-param) on the `text` field to create buckets for the field’s [analyzed](analysis.md) terms. Enabling `fielddata` can significantly increase memory usage.
 ::::
 
 
 ## Size [search-aggregations-bucket-terms-aggregation-size]
 
-By default, the `terms` aggregation returns the top ten terms with the most documents. Use the `size` parameter to return more terms, up to the [search.max_buckets](/reference/elasticsearch/configuration-reference/search-settings.md#search-settings-max-buckets) limit.
+By default, the `terms` aggregation returns the top ten terms with the most documents. Use the `size` parameter to return more terms, up to the [search.max_buckets](search-settings.md#search-settings-max-buckets) limit.
 
-If your data contains 100 or 1000 unique terms, you can increase the `size` of the `terms` aggregation to return them all. If you have more unique terms and you need them all, use the [composite aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-composite-aggregation.md) instead.
+If your data contains 100 or 1000 unique terms, you can increase the `size` of the `terms` aggregation to return them all. If you have more unique terms and you need them all, use the [composite aggregation](search-aggregations-bucket-composite-aggregation.md) instead.
 
 Larger values of `size` use more memory to compute and, push the whole aggregation close to the `max_buckets` limit. You’ll know you’ve gone too large if the request fails with a message about `max_buckets`.
 
@@ -82,12 +128,12 @@ This is to handle the case when one term has many documents on one shard but is 
 
 You can increase `shard_size` to better account for these disparate doc counts and improve the accuracy of the selection of top terms. It is much cheaper to increase the `shard_size` than to increase the `size`. However, it still takes more bytes over the wire and waiting in memory on the coordinating node.
 
-::::{important}
-This guidance only applies if you’re using the `terms` aggregation’s default sort `order`. If you’re sorting by anything other than document count in descending order, see [Order](#search-aggregations-bucket-terms-aggregation-order).
+::::{important} 
+This guidance only applies if you’re using the `terms` aggregation’s default sort `order`. If you’re sorting by anything other than document count in descending order, see [Order](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order).
 ::::
 
 
-::::{note}
+::::{note} 
 `shard_size` cannot be smaller than `size` (as it doesn’t make much sense). When it is, Elasticsearch will override it and reset it to be equal to `size`.
 ::::
 
@@ -123,17 +169,19 @@ GET /_search
 }
 ```
 
+%  TEST[s/_search/_search\?filter_path=aggregations/]
+
 These errors can only be calculated in this way when the terms are ordered by descending document count. When the aggregation is ordered by the terms values themselves (either ascending or descending) there is no error in the document count since if a shard does not return a particular term which appears in the results from another shard, it must not have that term in its index. When the aggregation is either sorted by a sub aggregation or in order of ascending document count, the error in the document counts cannot be determined and is given a value of -1 to indicate this.
 
 
 ## Order [search-aggregations-bucket-terms-aggregation-order]
 
-By default, the `terms` aggregation orders terms by descending document `_count`.  This produces a bounded [document count](#terms-agg-doc-count-error) error that {{es}} can report.
+By default, the `terms` aggregation orders terms by descending document `_count`.  This produces a bounded [document count](search-aggregations-bucket-terms-aggregation.md#terms-agg-doc-count-error) error that {{es}} can report.
 
 You can use the `order` parameter to specify a different sort order, but we don’t recommend it.  It is extremely easy to create a terms ordering that will just return wrong results, and not obvious to see when you have done so. Change this only with caution.
 
-::::{warning}
-Especially avoid using `"order": { "_count": "asc" }`. If you need to find rare terms, use the [`rare_terms`](/reference/data-analysis/aggregations/search-aggregations-bucket-rare-terms-aggregation.md) aggregation instead. Due to the way the `terms` aggregation [gets terms from shards](#search-aggregations-bucket-terms-aggregation-shard-size), sorting by ascending doc count often produces inaccurate results.
+::::{warning} 
+Especially avoid using `"order": { "_count": "asc" }`. If you need to find rare terms, use the [`rare_terms`](search-aggregations-bucket-rare-terms-aggregation.md) aggregation instead. Due to the way the `terms` aggregation [gets terms from shards](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-shard-size), sorting by ascending doc count often produces inaccurate results.
 ::::
 
 
@@ -162,8 +210,8 @@ GET /_search
 
 ### Ordering by a sub aggregation [_ordering_by_a_sub_aggregation]
 
-::::{warning}
-Sorting by a sub aggregation generally produces incorrect ordering, due to the way the `terms` aggregation [gets results from shards](#search-aggregations-bucket-terms-aggregation-shard-size).
+::::{warning} 
+Sorting by a sub aggregation generally produces incorrect ordering, due to the way the `terms` aggregation [gets results from shards](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-shard-size).
 ::::
 
 
@@ -216,7 +264,7 @@ GET /_search
 ::::{admonition} Pipeline aggs cannot be used for sorting
 :class: note
 
-[Pipeline aggregations](/reference/data-analysis/aggregations/pipeline.md) are run during the reduce phase after all other aggregations have already completed. For this reason, they cannot be used for ordering.
+[Pipeline aggregations](search-aggregations-pipeline.md) are run during the reduce phase after all other aggregations have already completed. For this reason, they cannot be used for ordering.
 
 ::::
 
@@ -224,6 +272,8 @@ GET /_search
 It is also possible to order the buckets based on a "deeper" aggregation in the hierarchy. This is supported as long as the aggregations path are of a single-bucket type, where the last aggregation in the path may either be a single-bucket one or a metrics one. If it’s a single-bucket type, the order will be defined by the number of docs in the bucket (i.e. `doc_count`), in case it’s a metrics one, the same rules as above apply (where the path must indicate the metric name to sort by in case of a multi-value metrics aggregation, and in case of a single-value metrics aggregation the sort will be applied on that value).
 
 The path must be defined in the following form:
+
+%  {{wikipedia}}/Extended_Backus%E2%80%93Naur_Form
 
 ```ebnf
 AGG_SEPARATOR       =  '>' ;
@@ -287,7 +337,7 @@ GET /_search
 
 The above will sort the artist’s countries buckets based on the average play count among the rock songs and then by their `doc_count` in descending order.
 
-::::{note}
+::::{note} 
 In the event that two buckets share the same values for all order criteria the bucket’s term value is used as a tie-breaker in ascending alphabetical order to prevent non-deterministic ordering of buckets.
 ::::
 
@@ -341,14 +391,18 @@ Terms are collected and ordered on a shard level and merged with the terms colle
 
 ### `shard_min_doc_count` [search-aggregations-bucket-terms-shard-min-doc-count]
 
+%  tag::min-doc-count[]
+
 The parameter `shard_min_doc_count` regulates the *certainty* a shard has if the term should actually be added to the candidate list or not with respect to the `min_doc_count`. Terms will only be considered if their local shard frequency within the set is higher than the `shard_min_doc_count`. If your dictionary contains many low frequent terms and you are not interested in those (for example misspellings), then you can set the `shard_min_doc_count` parameter to filter out candidate terms on a shard level that will with a reasonable certainty not reach the required `min_doc_count` even after merging the local counts. `shard_min_doc_count` is set to `0` per default and has no effect unless you explicitly set it.
 
-::::{note}
+%  end::min-doc-count[]
+
+::::{note} 
 Setting `min_doc_count`=`0` will also return buckets for terms that didn’t match any hit. However, some of the returned terms which have a document count of zero might only belong to deleted documents or documents from other types, so there is no warranty that a `match_all` query would find a positive document count for those terms.
 ::::
 
 
-::::{warning}
+::::{warning} 
 When NOT sorting on `doc_count` descending, high values of `min_doc_count` may return a number of buckets which is less than `size` because not enough data was gathered from the shards. Missing buckets can be back by increasing `shard_size`. Setting `shard_min_doc_count` too high will cause terms to be filtered out on a shard level. This value should be set much lower than `min_doc_count/#shards`.
 ::::
 
@@ -357,7 +411,7 @@ When NOT sorting on `doc_count` descending, high values of `min_doc_count` may r
 
 ## Script [search-aggregations-bucket-terms-aggregation-script]
 
-Use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) if the data in your documents doesn’t exactly match what you’d like to aggregate. If, for example, "anthologies" need to be in a special category then you could run this:
+Use a [runtime field](runtime.md) if the data in your documents doesn’t exactly match what you’d like to aggregate. If, for example, "anthologies" need to be in a special category then you could run this:
 
 $$$terms-aggregation-script-example$$$
 
@@ -420,7 +474,11 @@ Which will look like:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": "$body.took", "timed_out": false, "_shards": "$body._shards", "hits": "$body.hits"/]
+
 This is a little slower because the runtime field has to access two fields instead of one and because there are some optimizations that work on non-runtime `keyword` fields that we have to give up for for runtime `keyword` fields. If you need the speed, you can index the `normalized_genre` field.
+
+%  TODO when we have calculated fields we can link to them here.
 
 
 ## Filtering Values [_filtering_values_4]
@@ -448,7 +506,7 @@ GET /_search
 
 In the above example, buckets will be created for all the tags that has the word `sport` in them, except those starting with `water_` (so the tag `water_sports` will not be aggregated). The `include` regular expression will determine what values are "allowed" to be aggregated, while the `exclude` determines the values that should not be aggregated. When both are defined, the `exclude` has precedence, meaning, the `include` is evaluated first and only then the `exclude`.
 
-The syntax is the same as [regexp queries](/reference/query-languages/regexp-syntax.md).
+The syntax is the same as [regexp queries](regexp-syntax.md).
 
 
 ### Filtering Values with exact values [_filtering_values_with_exact_values_2]
@@ -529,7 +587,7 @@ If we have a circuit-breaker error we are trying to do too much in one request a
 
 Ultimately this is a balancing act between managing the Elasticsearch resources required to process a single request and the volume of requests that the client application must issue to complete a task.
 
-::::{warning}
+::::{warning} 
 Partitions cannot be used together with an `exclude` parameter.
 ::::
 
@@ -538,17 +596,17 @@ Partitions cannot be used together with an `exclude` parameter.
 
 ## Multi-field terms aggregation [_multi_field_terms_aggregation]
 
-The `terms` aggregation does not support collecting terms from multiple fields in the same document. The reason is that the `terms` agg doesn’t collect the string term values themselves, but rather uses [global ordinals](#search-aggregations-bucket-terms-aggregation-execution-hint) to produce a list of all of the unique values in the field. Global ordinals results in an important performance boost which would not be possible across multiple fields.
+The `terms` aggregation does not support collecting terms from multiple fields in the same document. The reason is that the `terms` agg doesn’t collect the string term values themselves, but rather uses [global ordinals](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-execution-hint) to produce a list of all of the unique values in the field. Global ordinals results in an important performance boost which would not be possible across multiple fields.
 
 There are three approaches that you can use to perform a `terms` agg across multiple fields:
 
-[Script](#search-aggregations-bucket-terms-aggregation-script)
+[Script](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-script)
 :   Use a script to retrieve terms from multiple fields. This disables the global ordinals optimization and will be slower than collecting terms from a single field, but it gives you the flexibility to implement this option at search time.
 
-[`copy_to` field](/reference/elasticsearch/mapping-reference/copy-to.md)
+[`copy_to` field](copy-to.md)
 :   If you know ahead of time that you want to collect the terms from two or more fields, then use `copy_to` in your mapping to create a new dedicated field at index time which contains the values from both fields. You can aggregate on this single field, which will benefit from the global ordinals optimization.
 
-[`multi_terms` aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-multi-terms-aggregation.md)
+[`multi_terms` aggregation](search-aggregations-bucket-multi-terms-aggregation.md)
 :   Use multi_terms aggregation to combine terms from multiple fields into a compound key. This also disables the global ordinals and will be slower than collecting terms from a single field. It is faster but less flexible than using a script.
 
 
@@ -584,7 +642,7 @@ GET /_search
 
 Even though the number of actors may be comparatively small and we want only 50 result buckets there is a combinatorial explosion of buckets during calculation - a single actor can produce n² buckets where n is the number of actors. The sane option would be to first determine the 10 most popular actors and only then examine the top co-stars for these 10 actors. This alternative strategy is what we call the `breadth_first` collection mode as opposed to the `depth_first` mode.
 
-::::{note}
+::::{note} 
 The `breadth_first` is the default mode for fields with a cardinality bigger than the requested size or when the cardinality is unknown (numeric fields or scripts for instance). It is possible to override the default heuristic and to provide a collect mode directly in the request:
 ::::
 
@@ -619,7 +677,7 @@ GET /_search
 
 When using `breadth_first` mode the set of documents that fall into the uppermost buckets are cached for subsequent replay so there is a memory overhead in doing this which is linear with the number of matching documents. Note that the `order` parameter can still be used to refer to data from a child aggregation when using the `breadth_first` setting - the parent aggregation understands that this child aggregation will need to be called first before any of the other child aggregations.
 
-::::{warning}
+::::{warning} 
 Nested aggregations such as `top_hits` which require access to score information under an aggregation that uses the `breadth_first` collection mode need to replay the query on the second pass but only for the documents belonging to the top buckets.
 ::::
 
@@ -686,19 +744,19 @@ GET /_search
 
 ## Mixing field types [_mixing_field_types_2]
 
-::::{warning}
+::::{warning} 
 When aggregating on multiple indices the type of the aggregated field may not be the same in all indices. Some types are compatible with each other (`integer` and `long` or `float` and `double`) but when the types are a mix of decimal and non-decimal number the terms aggregation will promote the non-decimal numbers to decimal numbers. This can result in a loss of precision in the bucket values.
 ::::
 
 
 
-### Troubleshooting [search-aggregations-bucket-terms-aggregation-troubleshooting]
+### Troubleshooting [search-aggregations-bucket-terms-aggregation-troubleshooting] 
 
 ### Failed Trying to Format Bytes [_failed_trying_to_format_bytes]
 
 When running a terms aggregation (or other aggregation, but in practice usually terms) over multiple indices, you may get an error that starts with "Failed trying to format bytes…​".  This is usually caused by two of the indices not having the same mapping type for the field being aggregated.
 
-**Use an explicit `value_type`** Although it’s best to correct the mappings, you can work around this issue if the field is unmapped in one of the indices.  Setting the `value_type` parameter can resolve the issue by coercing the unmapped field into the correct type.
+***Use an explicit `value_type`*** Although it’s best to correct the mappings, you can work around this issue if the field is unmapped in one of the indices.  Setting the `value_type` parameter can resolve the issue by coercing the unmapped field into the correct type.
 
 $$$terms-aggregation-value_type-example$$$
 
@@ -716,3 +774,8 @@ GET /_search
   }
 }
 ```
+
+%  PREVIEW
+
+
+

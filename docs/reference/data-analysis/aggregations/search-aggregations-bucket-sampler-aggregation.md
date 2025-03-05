@@ -1,7 +1,5 @@
 ---
 navigation_title: "Sampler"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-sampler-aggregation.html
 ---
 
 # Sampler aggregation [search-aggregations-bucket-sampler-aggregation]
@@ -44,6 +42,8 @@ POST /stackoverflow/_search?size=0
 }
 ```
 
+%  TEST[setup:stackoverflow]
+
 Response:
 
 ```console-result
@@ -75,6 +75,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 1. 200 documents were sampled in total. The cost of performing the nested significant_terms aggregation was therefore limited rather than unbounded.
 
 
@@ -101,6 +103,8 @@ POST /stackoverflow/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:stackoverflow]
 
 Response:
 
@@ -135,6 +139,12 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+%  TESTRESPONSE[s/0.02777/$body.aggregations.low_quality_keywords.buckets.0.score/]
+
+%  TESTRESPONSE[s/0.0069/$body.aggregations.low_quality_keywords.buckets.2.score/]
 
 ## shard_size [_shard_size_2]
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Regexp"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html
 ---
 
 # Regexp query [query-dsl-regexp-query]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Returns documents that contain terms matching a [regular expression](https://en.wikipedia.org/wiki/Regular_expression).
 
-A regular expression is a way to match patterns in data using placeholder characters, called operators. For a list of operators supported by the `regexp` query, see [Regular expression syntax](/reference/query-languages/regexp-syntax.md).
+A regular expression is a way to match patterns in data using placeholder characters, called operators. For a list of operators supported by the `regexp` query, see [Regular expression syntax](regexp-syntax.md).
 
 ## Example request [regexp-query-ex-request]
 
@@ -42,18 +40,18 @@ GET /_search
 ## Parameters for `<field>` [regexp-query-field-params]
 
 `value`
-:   (Required, string) Regular expression for terms you wish to find in the provided `<field>`. For a list of supported operators, see [Regular expression syntax](/reference/query-languages/regexp-syntax.md).
+:   (Required, string) Regular expression for terms you wish to find in the provided `<field>`. For a list of supported operators, see [Regular expression syntax](regexp-syntax.md).
 
-    By default, regular expressions are limited to 1,000 characters. You can change this limit using the [`index.max_regex_length`](/reference/elasticsearch/index-settings/index-modules.md#index-max-regex-length) setting.
+    By default, regular expressions are limited to 1,000 characters. You can change this limit using the [`index.max_regex_length`](index-modules.md#index-max-regex-length) setting.
 
-    ::::{warning}
+    ::::{warning} 
     The performance of the `regexp` query can vary based on the regular expression provided. To improve performance, avoid using wildcard patterns, such as `.*` or `.*?+`, without a prefix or suffix.
 
     ::::
 
 
 `flags`
-:   (Optional, string) Enables optional operators for the regular expression. For valid values and more information, see [Regular expression syntax](/reference/query-languages/regexp-syntax.md#regexp-optional-operators).
+:   (Optional, string) Enables optional operators for the regular expression. For valid values and more information, see [Regular expression syntax](regexp-syntax.md#regexp-optional-operators).
 
 `case_insensitive` [7.10.0]
 :   (Optional, Boolean) Allows case insensitive matching of the regular expression value with the indexed field values when set to true. Default is false which means the case sensitivity of matching depends on the underlying field’s mapping.
@@ -67,14 +65,14 @@ You can use this parameter to prevent that conversion from unintentionally consu
 
 
 `rewrite`
-:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](/reference/query-languages/query-dsl-multi-term-rewrite.md).
+:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](query-dsl-multi-term-rewrite.md).
 
 
 ## Notes [regexp-query-notes]
 
 ### Allow expensive queries [_allow_expensive_queries_6]
 
-Regexp queries will not be executed if [`search.allow_expensive_queries`](/reference/query-languages/querydsl.md#query-dsl-allow-expensive-queries) is set to false.
+Regexp queries will not be executed if [`search.allow_expensive_queries`](query-dsl.md#query-dsl-allow-expensive-queries) is set to false.
 
 
 

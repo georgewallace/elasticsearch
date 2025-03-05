@@ -1,20 +1,18 @@
 ---
 navigation_title: "Geotile grid"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geotilegrid-aggregation.html
 ---
 
 # Geotile grid aggregation [search-aggregations-bucket-geotilegrid-aggregation]
 
 
-A multi-bucket aggregation that groups [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) and [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) values into buckets that represent a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell corresponds to a [map tile](https://en.wikipedia.org/wiki/Tiled_web_map) as used by many online map sites. Each cell is labeled using a `"{{zoom}}/{x}/{{y}}"` format, where zoom is equal to the user-specified precision.
+A multi-bucket aggregation that groups [`geo_point`](geo-point.md) and [`geo_shape`](geo-shape.md) values into buckets that represent a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell corresponds to a [map tile](https://en.wikipedia.org/wiki/Tiled_web_map) as used by many online map sites. Each cell is labeled using a "{{zoom}}/{x}/{{y}}" format, where zoom is equal to the user-specified precision.
 
 * High precision keys have a larger range for x and y, and represent tiles that cover only a small area.
 * Low precision keys have a smaller range for x and y, and represent tiles that each cover a large area.
 
 See [zoom level documentation](https://wiki.openstreetmap.org/wiki/Zoom_levels) on how precision (zoom) correlates to size on the ground. Precision for this aggregation can be between 0 and 29, inclusive.
 
-::::{warning}
+::::{warning} 
 The highest-precision geotile of length 29 produces cells that cover less than a 10cm by 10cm of land and so high-precision requests can be very costly in terms of RAM and result sizes. Please see the example below on how to first filter the aggregation to a smaller geographic area before requesting high-levels of detail.
 ::::
 
@@ -90,10 +88,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
 
 ## High-precision requests [geotilegrid-high-precision]
 
-When requesting detailed buckets (typically for displaying a "zoomed in" map), a filter like [geo_bounding_box](/reference/query-languages/query-dsl-geo-bounding-box-query.md) should be applied to narrow the subject area. Otherwise, potentially millions of buckets will be created and returned.
+When requesting detailed buckets (typically for displaying a "zoomed in" map), a filter like [geo_bounding_box](query-dsl-geo-bounding-box-query.md) should be applied to narrow the subject area. Otherwise, potentially millions of buckets will be created and returned.
 
 $$$geotilegrid-high-precision-ex$$$
 
@@ -122,6 +122,8 @@ POST /museums/_search?size=0
   }
 }
 ```
+
+%  TEST[continued]
 
 Response:
 
@@ -152,10 +154,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
+
 
 ## Requests with additional bounding box filtering [geotilegrid-addtl-bounding-box-filtering]
 
-The `geotile_grid` aggregation supports an optional `bounds` parameter that restricts the cells considered to those that intersect the provided bounds. The `bounds` parameter accepts the same [bounding box formats](/reference/query-languages/query-dsl-geo-bounding-box-query.md#query-dsl-geo-bounding-box-query-accepted-formats) as the geo-bounding box query. This bounding box can be used with or without an additional `geo_bounding_box` query for filtering the points prior to aggregating. It is an independent bounding box that can intersect with, be equal to, or be disjoint to any additional `geo_bounding_box` queries defined in the context of the aggregation.
+The `geotile_grid` aggregation supports an optional `bounds` parameter that restricts the cells considered to those that intersect the provided bounds. The `bounds` parameter accepts the same [bounding box formats](query-dsl-geo-bounding-box-query.md#query-dsl-geo-bounding-box-query-accepted-formats) as the geo-bounding box query. This bounding box can be used with or without an additional `geo_bounding_box` query for filtering the points prior to aggregating. It is an independent bounding box that can intersect with, be equal to, or be disjoint to any additional `geo_bounding_box` queries defined in the context of the aggregation.
 
 $$$geotilegrid-aggregation-with-bounds$$$
 
@@ -176,6 +180,8 @@ POST /museums/_search?size=0
   }
 }
 ```
+
+%  TEST[continued]
 
 Response:
 
@@ -203,24 +209,26 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
-### Aggregating `geo_shape` fields [geotilegrid-aggregating-geo-shape]
 
-Aggregating on [Geoshape](/reference/elasticsearch/mapping-reference/geo-shape.md) fields works almost as it does for points, except that a single shape can be counted for in multiple tiles. A shape will contribute to the count of matching values if any part of its shape intersects with that tile. Below is an image that demonstrates this:
+### Aggregating `geo_shape` fields [geotilegrid-aggregating-geo-shape] 
 
-![geoshape grid](../../../images/geoshape_grid.png "")
+Aggregating on [Geoshape](geo-shape.md) fields works almost as it does for points, except that a single shape can be counted for in multiple tiles. A shape will contribute to the count of matching values if any part of its shape intersects with that tile. Below is an image that demonstrates this:
+
+![geoshape grid](images/geoshape_grid.png "")
 
 
 ## Options [_options_5]
 
 field
-:   (Required, string) Field containing indexed geo-point or geo-shape values. Must be explicitly mapped as a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) or a [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) field. If the field contains an array, `geotile_grid` aggregates all array values.
+:   (Required, string) Field containing indexed geo-point or geo-shape values. Must be explicitly mapped as a [`geo_point`](geo-point.md) or a [`geo_shape`](geo-shape.md) field. If the field contains an array, `geotile_grid` aggregates all array values.
 
 precision
 :   (Optional, integer) Integer zoom of the key used to define cells/buckets in the results. Defaults to `7`. Values outside of [`0`,`29`] will be rejected.
 
 bounds
-:   (Optional, object) Bounding box used to filter the geo-points or geo-shapes in each bucket. Accepts the same bounding box formats as the [geo-bounding box query](/reference/query-languages/query-dsl-geo-bounding-box-query.md#query-dsl-geo-bounding-box-query-accepted-formats).
+:   (Optional, object) Bounding box used to filter the geo-points or geo-shapes in each bucket. Accepts the same bounding box formats as the [geo-bounding box query](query-dsl-geo-bounding-box-query.md#query-dsl-geo-bounding-box-query-accepted-formats).
 
 size
 :   (Optional, integer) Maximum number of buckets to return. Defaults to 10,000. When results are trimmed, buckets are prioritized based on the volume of documents they contain.

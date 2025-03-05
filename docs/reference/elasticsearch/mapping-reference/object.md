@@ -1,7 +1,5 @@
 ---
 navigation_title: "Object"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/object.html
 ---
 
 # Object field type [object]
@@ -38,6 +36,8 @@ Internally, this document is indexed as a simple, flat list of key-value pairs, 
   "manager.name.last":  "Smith"
 }
 ```
+
+%  NOTCONSOLE
 
 An explicit mapping for the above document could look like this:
 
@@ -76,20 +76,20 @@ You are not required to set the field `type` to `object` explicitly, as this is 
 
 The following parameters are accepted by `object` fields:
 
-[`dynamic`](/reference/elasticsearch/mapping-reference/dynamic.md)
+[`dynamic`](dynamic.md)
 :   Whether or not new `properties` should be added dynamically to an existing object. Accepts `true` (default), `runtime`, `false` and `strict`.
 
-[`enabled`](/reference/elasticsearch/mapping-reference/enabled.md)
+[`enabled`](enabled.md)
 :   Whether the JSON value given for the object field should be parsed and indexed (`true`, default) or completely ignored (`false`).
 
-[`subobjects`](/reference/elasticsearch/mapping-reference/subobjects.md)
+[`subobjects`](subobjects.md)
 :   Whether the object can hold subobjects (`true`, default) or not (`false`). If not, sub-fields with dots in their names will be treated as leaves instead, otherwise their field names would be expanded to their corresponding object structure.
 
-[`properties`](/reference/elasticsearch/mapping-reference/properties.md)
-:   The fields within the object, which can be of any [data type](/reference/elasticsearch/mapping-reference/field-data-types.md), including `object`. New properties may be added to an existing object.
+[`properties`](properties.md)
+:   The fields within the object, which can be of any [data type](mapping-types.md), including `object`. New properties may be added to an existing object.
 
-::::{important}
-If you need to index arrays of objects instead of single objects, read [Nested](/reference/elasticsearch/mapping-reference/nested.md) first.
+::::{important} 
+If you need to index arrays of objects instead of single objects, read [Nested](nested.md) first.
 ::::
 
 

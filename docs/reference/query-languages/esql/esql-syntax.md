@@ -1,16 +1,14 @@
 ---
 navigation_title: "Syntax reference"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/esql-syntax.html
 ---
 
 # {{esql}} syntax reference [esql-syntax]
 
 
 
-## Basic syntax [esql-basic-syntax]
+## Basic syntax [esql-basic-syntax] 
 
-An {{esql}} query is composed of a [source command](/reference/query-languages/esql/esql-commands.md) followed by an optional series of [processing commands](/reference/query-languages/esql/esql-commands.md), separated by a pipe character: `|`. For example:
+An {{esql}} query is composed of a [source command](esql-commands.md) followed by an optional series of [processing commands](esql-commands.md), separated by a pipe character: `|`. For example:
 
 ```esql
 source-command
@@ -20,9 +18,9 @@ source-command
 
 The result of a query is the table produced by the final processing command.
 
-For an overview of all supported commands, functions, and operators, refer to [Commands](/reference/query-languages/esql/esql-commands.md) and [Functions and operators](/reference/query-languages/esql/esql-functions-operators.md).
+For an overview of all supported commands, functions, and operators, refer to [Commands](esql-commands.md) and [Functions and operators](esql-functions-operators.md).
 
-::::{note}
+::::{note} 
 For readability, this documentation puts each processing command on a new line. However, you can write an {{esql}} query as a single line. The following query is identical to the previous one:
 
 ```esql
@@ -33,7 +31,7 @@ source-command | processing-command1 | processing-command2
 
 
 
-### Identifiers [esql-identifiers]
+### Identifiers [esql-identifiers] 
 
 Identifiers need to be quoted with backticks (```) if:
 
@@ -56,17 +54,17 @@ FROM index
 ```
 
 
-### Literals [esql-literals]
+### Literals [esql-literals] 
 
 {{esql}} currently supports numeric and string literals.
 
 
-#### String literals [esql-string-literals]
+#### String literals [esql-string-literals] 
 
 A string literal is a sequence of unicode characters delimited by double quotes (`"`).
 
 ```esql
-// Filter by a string value
+//  Filter by a string value
 FROM index
 | WHERE first_name == "Georgi"
 ```
@@ -80,7 +78,7 @@ ROW name = """Indiana "Indy" Jones"""
 The special characters CR, LF and TAB can be provided with the usual escaping: `\r`, `\n`, `\t`, respectively.
 
 
-#### Numerical literals [esql-numeric-literals]
+#### Numerical literals [esql-numeric-literals] 
 
 The numeric literals are accepted in decimal and in the scientific notation with the exponent marker (`e` or `E`), starting either with a digit, decimal point `.` or the negative sign `-`:
 
@@ -97,10 +95,10 @@ The integer numeric literals are implicitly converted to the `integer`, `long` o
 
 The floating point literals are implicitly converted the `double` type.
 
-To obtain constant values of different types, use one of the numeric [conversion functions](/reference/query-languages/esql/esql-functions-operators.md#esql-type-conversion-functions).
+To obtain constant values of different types, use one of the numeric [conversion functions](esql-functions-operators.md#esql-type-conversion-functions).
 
 
-### Comments [esql-comments]
+### Comments [esql-comments] 
 
 {{esql}} uses C++ style comments:
 
@@ -108,7 +106,7 @@ To obtain constant values of different types, use one of the numeric [conversion
 * `/*` and `*/` for block comments
 
 ```esql
-// Query the employees index
+//  Query the employees index
 FROM employees
 | WHERE height > 2
 ```
@@ -127,9 +125,9 @@ FROM employees
 ```
 
 
-### Timespan literals [esql-timespan-literals]
+### Timespan literals [esql-timespan-literals] 
 
-Datetime intervals and timespans can be expressed using timespan literals. Timespan literals are a combination of a number and a temporal unit. The supported temporal units are listed in [time span unit](/reference/query-languages/esql/esql-time-spans.md#esql-time-spans-table). More examples of the usages of time spans can be found in [Use time spans in ES|QL](/reference/query-languages/esql/esql-time-spans.md).
+Datetime intervals and timespans can be expressed using timespan literals. Timespan literals are a combination of a number and a temporal unit. The supported temporal units are listed in [time span unit](esql-time-spans.md#esql-time-spans-table). More examples of the usages of time spans can be found in [Use time spans in ES|QL](esql-time-spans.md).
 
 Timespan literals are not whitespace sensitive. These expressions are all valid:
 
@@ -138,9 +136,9 @@ Timespan literals are not whitespace sensitive. These expressions are all valid:
 * `1       day`
 
 
-### Function named parameters [esql-function-named-params]
+### Function named parameters [esql-function-named-params] 
 
-Some functions like [match](/reference/query-languages/esql/esql-functions-operators.md#esql-match) use named parameters to provide additional options.
+Some functions like [match](esql-functions-operators.md#esql-match) use named parameters to provide additional options.
 
 Named parameters allow specifying name value pairs, using the following syntax:
 
@@ -148,7 +146,7 @@ Named parameters allow specifying name value pairs, using the following syntax:
 
 Valid value types are strings, numbers and booleans.
 
-An example using [match](/reference/query-languages/esql/esql-functions-operators.md#esql-match):
+An example using [match](esql-functions-operators.md#esql-match):
 
 ```console
 POST /_query
@@ -161,7 +159,9 @@ FROM library
 }
 ```
 
-You can also use [query parameters](docs-content://explore-analyze/query-filter/languages/esql-rest.md#esql-rest-params) in function named parameters:
+%  TEST[setup:library]
+
+You can also use [query parameters](esql-rest.md#esql-rest-params) in function named parameters:
 
 ```console
 POST /_query
@@ -175,4 +175,6 @@ FROM library
 "params": [300, "Frank Herbert", 2]
 }
 ```
+
+%  TEST[setup:library]
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Match"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
 ---
 
 # Match query [query-dsl-match-query]
@@ -11,7 +9,7 @@ Returns documents that match a provided text, number, date or boolean value. The
 
 The `match` query is the standard query for performing a full-text search, including options for fuzzy matching.
 
-`Match` will also work against [semantic_text](/reference/elasticsearch/mapping-reference/semantic-text.md) fields, however when performing `match` queries against `semantic_text` fields options that specifically target lexical search such as `fuzziness` or `analyzer` will be ignored.
+`Match` will also work against [semantic_text](semantic-text.md) fields, however when performing `match` queries against `semantic_text` fields options that specifically target lexical search such as `fuzziness` or `analyzer` will be ignored.
 
 ## Example request [match-query-ex-request]
 
@@ -40,26 +38,26 @@ GET /_search
 `query`
 :   (Required) Text, number, boolean value or date you wish to find in the provided `<field>`.
 
-The `match` query [analyzes](docs-content://manage-data/data-store/text-analysis.md) any provided text before performing a search. This means the `match` query can search [`text`](/reference/elasticsearch/mapping-reference/text.md) fields for analyzed tokens rather than an exact term.
+The `match` query [analyzes](analysis.md) any provided text before performing a search. This means the `match` query can search [`text`](text.md) fields for analyzed tokens rather than an exact term.
 
 
 `analyzer`
-:   (Optional, string) [Analyzer](docs-content://manage-data/data-store/text-analysis.md) used to convert the text in the `query` value into tokens. Defaults to the [index-time analyzer](docs-content://manage-data/data-store/text-analysis/specify-an-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
+:   (Optional, string) [Analyzer](analysis.md) used to convert the text in the `query` value into tokens. Defaults to the [index-time analyzer](specify-analyzer.md#specify-index-time-analyzer) mapped for the `<field>`. If no analyzer is mapped, the index’s default analyzer is used.
 
 `auto_generate_synonyms_phrase_query`
-:   (Optional, Boolean) If `true`, [match phrase](/reference/query-languages/query-dsl-match-query-phrase.md) queries are automatically created for multi-term synonyms. Defaults to `true`.
+:   (Optional, Boolean) If `true`, [match phrase](query-dsl-match-query-phrase.md) queries are automatically created for multi-term synonyms. Defaults to `true`.
 
-See [Use synonyms with match query](#query-dsl-match-query-synonyms) for an example.
+See [Use synonyms with match query](query-dsl-match-query.md#query-dsl-match-query-synonyms) for an example.
 
 
 `boost`
-:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) of the query. Defaults to `1.0`.
+:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](query-filter-context.md#relevance-scores) of the query. Defaults to `1.0`.
 
 Boost values are relative to the default value of `1.0`. A boost value between `0` and `1.0` decreases the relevance score. A value greater than `1.0` increases the relevance score.
 
 
 `fuzziness`
-:   (Optional, string) Maximum edit distance allowed for matching. See [Fuzziness](/reference/elasticsearch/rest-apis/common-options.md#fuzziness) for valid values and more information. See [Fuzziness in the match query](#query-dsl-match-query-fuzziness) for an example.
+:   (Optional, string) Maximum edit distance allowed for matching. See [Fuzziness](common-options.md#fuzziness) for valid values and more information. See [Fuzziness in the match query](query-dsl-match-query.md#query-dsl-match-query-fuzziness) for an example.
 
 `max_expansions`
 :   (Optional, integer) Maximum number of terms to which the query will expand. Defaults to `50`.
@@ -71,13 +69,13 @@ Boost values are relative to the default value of `1.0`. A boost value between `
 :   (Optional, Boolean) If `true`, edits for fuzzy matching include transpositions of two adjacent characters (ab → ba). Defaults to `true`.
 
 `fuzzy_rewrite`
-:   (Optional, string) Method used to rewrite the query. See the [`rewrite` parameter](/reference/query-languages/query-dsl-multi-term-rewrite.md) for valid values and more information.
+:   (Optional, string) Method used to rewrite the query. See the [`rewrite` parameter](query-dsl-multi-term-rewrite.md) for valid values and more information.
 
 If the `fuzziness` parameter is not `0`, the `match` query uses a `fuzzy_rewrite` method of `top_terms_blended_freqs_${max_expansions}` by default.
 
 
 `lenient`
-:   (Optional, Boolean) If `true`, format-based errors, such as providing a text `query` value for a [numeric](/reference/elasticsearch/mapping-reference/number.md) field, are ignored. Defaults to `false`.
+:   (Optional, Boolean) If `true`, format-based errors, such as providing a text `query` value for a [numeric](number.md) field, are ignored. Defaults to `false`.
 
 `operator`
 :   (Optional, string) Boolean logic used to interpret text in the `query` value. Valid values are:
@@ -90,7 +88,7 @@ If the `fuzziness` parameter is not `0`, the `match` query uses a `fuzzy_rewrite
 
 
 `minimum_should_match`
-:   (Optional, string) Minimum number of clauses that must match for a document to be returned. See the [`minimum_should_match` parameter](/reference/query-languages/query-dsl-minimum-should-match.md) for valid values and more information.
+:   (Optional, string) Minimum number of clauses that must match for a document to be returned. See the [`minimum_should_match` parameter](query-dsl-minimum-should-match.md) for valid values and more information.
 
 
 `zero_terms_query`
@@ -100,9 +98,9 @@ If the `fuzziness` parameter is not `0`, the `match` query uses a `fuzzy_rewrite
 :   No documents are returned if the `analyzer` removes all tokens.
 
 `all`
-:   Returns all documents, similar to a [`match_all`](/reference/query-languages/query-dsl-match-all-query.md) query.
+:   Returns all documents, similar to a [`match_all`](query-dsl-match-all-query.md) query.
 
-See [Zero terms query](#query-dsl-match-query-zero) for an example.
+See [Zero terms query](query-dsl-match-query.md#query-dsl-match-query-zero) for an example.
 
 
 
@@ -126,7 +124,7 @@ GET /_search
 
 ### How the match query works [query-dsl-match-query-boolean]
 
-The `match` query is of type `boolean`. It means that the text provided is analyzed and the analysis process constructs a boolean query from the provided text. The `operator` parameter can be set to `or` or `and` to control the boolean clauses (defaults to `or`). The minimum number of optional `should` clauses to match can be set using the [`minimum_should_match`](/reference/query-languages/query-dsl-minimum-should-match.md) parameter.
+The `match` query is of type `boolean`. It means that the text provided is analyzed and the analysis process constructs a boolean query from the provided text. The `operator` parameter can be set to `or` or `and` to control the boolean clauses (defaults to `or`). The minimum number of optional `should` clauses to match can be set using the [`minimum_should_match`](query-dsl-minimum-should-match.md) parameter.
 
 Here is an example with the `operator` parameter:
 
@@ -151,13 +149,13 @@ The `lenient` parameter can be set to `true` to ignore exceptions caused by data
 
 ### Fuzziness in the match query [query-dsl-match-query-fuzziness]
 
-`fuzziness` allows *fuzzy matching* based on the type of field being queried. See [Fuzziness](/reference/elasticsearch/rest-apis/common-options.md#fuzziness) for allowed settings.
+`fuzziness` allows *fuzzy matching* based on the type of field being queried. See [Fuzziness](common-options.md#fuzziness) for allowed settings.
 
-The `prefix_length` and `max_expansions` can be set in this case to control the fuzzy process. If the fuzzy option is set the query will use `top_terms_blended_freqs_${max_expansions}` as its [rewrite method](/reference/query-languages/query-dsl-multi-term-rewrite.md) the `fuzzy_rewrite` parameter allows to control how the query will get rewritten.
+The `prefix_length` and `max_expansions` can be set in this case to control the fuzzy process. If the fuzzy option is set the query will use `top_terms_blended_freqs_${max_expansions}` as its [rewrite method](query-dsl-multi-term-rewrite.md) the `fuzzy_rewrite` parameter allows to control how the query will get rewritten.
 
 Fuzzy transpositions (`ab` → `ba`) are allowed by default but can be disabled by setting `fuzzy_transpositions` to `false`.
 
-::::{note}
+::::{note} 
 Fuzzy matching is not applied to terms with synonyms or in cases where the analysis process produces multiple tokens at the same position. Under the hood these terms are expanded to a special synonym query that blends term frequencies, which does not support fuzzy expansion.
 ::::
 
@@ -199,7 +197,7 @@ GET /_search
 
 ### Synonyms [query-dsl-match-query-synonyms]
 
-The `match` query supports multi-terms synonym expansion with the [synonym_graph](/reference/data-analysis/text-analysis/analysis-synonym-graph-tokenfilter.md) token filter. When this filter is used, the parser creates a phrase query for each multi-terms synonyms. For example, the following synonym: `"ny, new york"` would produce:
+The `match` query supports multi-terms synonym expansion with the [synonym_graph](analysis-synonym-graph-tokenfilter.md) token filter. When this filter is used, the parser creates a phrase query for each multi-terms synonyms. For example, the following synonym: `"ny, new york"` would produce:
 
 `(ny OR ("new york"))`
 

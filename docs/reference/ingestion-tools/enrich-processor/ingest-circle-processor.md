@@ -1,7 +1,5 @@
 ---
 navigation_title: "Circle"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-circle-processor.html
 ---
 
 # Circle processor [ingest-circle-processor]
@@ -19,12 +17,12 @@ $$$circle-processor-options$$$
 | `error_distance` | yes | - | The difference between the resulting inscribed distance from center to side and the circle’s radius (measured in meters for `geo_shape`, unit-less for `shape`) |
 | `shape_type` | yes | - | Which field mapping type is to be used when processing the circle: `geo_shape` or `shape` |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
-![error distance](../../../images/error_distance.png "")
+![error distance](images/error_distance.png "")
 
 ```console
 PUT circles
@@ -55,7 +53,7 @@ PUT _ingest/pipeline/polygonize_circles
 
 Using the above pipeline, we can attempt to index a document into the `circles` index. The circle can be represented as either a WKT circle or a GeoJSON circle. The resulting polygon will be represented and indexed using the same format as the input circle. WKT will be translated to a WKT polygon, and GeoJSON circles will be translated to GeoJSON polygons.
 
-::::{important}
+::::{important} 
 Circles that contain a pole are not supported.
 ::::
 
@@ -73,6 +71,8 @@ PUT circles/_doc/1?pipeline=polygonize_circles
 GET circles/_doc/1
 ```
 
+%  TEST[continued]
+
 The response from the above index request:
 
 ```console-result
@@ -88,6 +88,8 @@ The response from the above index request:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term": 1/"_primary_term" : $body._primary_term/]
 
 
 ## Example: Circle defined in GeoJSON [_example_circle_defined_in_geojson]
@@ -106,6 +108,8 @@ PUT circles/_doc/2?pipeline=polygonize_circles
 
 GET circles/_doc/2
 ```
+
+%  TEST[continued]
 
 The response from the above index request:
 
@@ -134,6 +138,8 @@ The response from the above index request:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term": 1/"_primary_term" : $body._primary_term/]
 
 
 ## Notes on Accuracy [circle-processor-notes]

@@ -1,15 +1,10 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/properties.html
----
+# `properties` [properties]
 
-# properties [properties]
+Type mappings, [`object` fields](object.md) and [`nested` fields](nested.md) contain sub-fields, called `properties`. These properties may be of any [data type](mapping-types.md), including `object` and `nested`. Properties can be added:
 
-Type mappings, [`object` fields](/reference/elasticsearch/mapping-reference/object.md) and [`nested` fields](/reference/elasticsearch/mapping-reference/nested.md) contain sub-fields, called `properties`. These properties may be of any [data type](/reference/elasticsearch/mapping-reference/field-data-types.md), including `object` and `nested`. Properties can be added:
-
-* explicitly by defining them when [creating an index](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create).
-* explicitly by defining them when adding or updating a mapping type with the [update mapping](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping) API.
-* [dynamically](docs-content://manage-data/data-store/mapping/dynamic-mapping.md) just by indexing documents containing new fields.
+* explicitly by defining them when [creating an index](indices-create-index.md).
+* explicitly by defining them when adding or updating a mapping type with the [update mapping](indices-put-mapping.md) API.
+* [dynamically](dynamic-mapping.md) just by indexing documents containing new fields.
 
 Below is an example of adding `properties` to a mapping type, an `object` field, and a `nested` field:
 
@@ -61,8 +56,8 @@ PUT my-index-000001/_doc/1 <4>
 4. An example document which corresponds to the above mapping.
 
 
-::::{tip}
-The `properties` setting is allowed to have different settings for fields of the same name in the same index. New properties can be added to existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+::::{tip} 
+The `properties` setting is allowed to have different settings for fields of the same name in the same index. New properties can be added to existing fields using the [update mapping API](indices-put-mapping.md).
 ::::
 
 
@@ -96,7 +91,9 @@ GET my-index-000001/_search
 }
 ```
 
-::::{important}
+%  TEST[continued]
+
+::::{important} 
 The full path to the inner field must be specified.
 ::::
 

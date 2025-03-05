@@ -1,7 +1,5 @@
 ---
 navigation_title: "Common grams"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-common-grams-tokenfilter.html
 ---
 
 # Common grams token filter [analysis-common-grams-tokenfilter]
@@ -11,13 +9,13 @@ Generates [bigrams](https://en.wikipedia.org/wiki/Bigram) for a specified set of
 
 For example, you can specify `is` and `the` as common words. This filter then converts the tokens `[the, quick, fox, is, brown]` to `[the, the_quick, quick, fox, fox_is, is, is_brown, brown]`.
 
-You can use the `common_grams` filter in place of the [stop token filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) when you don’t want to completely ignore common words.
+You can use the `common_grams` filter in place of the [stop token filter](analysis-stop-tokenfilter.md) when you don’t want to completely ignore common words.
 
-This filter uses Lucene’s [CommonGramsFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/commongrams/CommonGramsFilter.md).
+This filter uses Lucene’s [CommonGramsFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/commongrams/CommonGramsFilter.md).
 
 ## Example [analysis-common-grams-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request creates bigrams for `is` and `the`:
+The following [analyze API](indices-analyze.md) request creates bigrams for `is` and `the`:
 
 ```console
 GET /_analyze
@@ -39,10 +37,77 @@ The filter produces the following tokens:
 [ the, the_quick, quick, fox, fox_is, is, is_brown, brown ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "the",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "word",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "the_quick",
+%       "start_offset" : 0,
+%       "end_offset" : 9,
+%       "type" : "gram",
+%       "position" : 0,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "quick",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "word",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "fox",
+%       "start_offset" : 10,
+%       "end_offset" : 13,
+%       "type" : "word",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "fox_is",
+%       "start_offset" : 10,
+%       "end_offset" : 16,
+%       "type" : "gram",
+%       "position" : 2,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "is",
+%       "start_offset" : 14,
+%       "end_offset" : 16,
+%       "type" : "word",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "is_brown",
+%       "start_offset" : 14,
+%       "end_offset" : 22,
+%       "type" : "gram",
+%       "position" : 3,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "brown",
+%       "start_offset" : 17,
+%       "end_offset" : 22,
+%       "type" : "word",
+%       "position" : 4
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-common-grams-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `common_grams` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md):
+The following [create index API](indices-create-index.md) request uses the `common_grams` filter to configure a new [custom analyzer](analysis-custom-analyzer.md):
 
 ```console
 PUT /common_grams_example
@@ -92,7 +157,7 @@ Either this or the `common_words` parameter is required.
 * Unigrams for common words
 * Unigrams for terms followed by common words
 
-Defaults to `false`. We recommend enabling this parameter for [search analyzers](/reference/elasticsearch/mapping-reference/search-analyzer.md).
+Defaults to `false`. We recommend enabling this parameter for [search analyzers](search-analyzer.md).
 
 For example, you can enable this parameter and specify `is` and `the` as common words. This filter converts the tokens `[the, quick, fox, is, brown]` to `[the_quick, quick, fox_is, is_brown,]`.
 

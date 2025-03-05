@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-show-catalogs.html
----
-
 # SHOW CATALOGS [sql-syntax-show-catalogs]
 
 ```sql

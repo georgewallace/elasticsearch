@@ -1,7 +1,5 @@
 ---
 navigation_title: "Foreach"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/foreach-processor.html
 ---
 
 # Foreach processor [foreach-processor]
@@ -21,37 +19,37 @@ $$$foreach-options$$$
 | `processor` | yes | - | Ingest processor to run on eachelement. |
 | `ignore_missing` | no | false | If `true`, the processor silentlyexits without changing the document if the `field` is `null` or missing. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 
-## Access keys and values [foreach-keys-values]
+## Access keys and values [foreach-keys-values] 
 
-When iterating through an array or object, the `foreach` processor stores the current element’s value in the `_ingest._value` [ingest metadata](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#access-ingest-metadata) field. `_ingest._value` contains the entire element value, including any child fields. You can access child field values using dot notation on the `_ingest._value` field.
+When iterating through an array or object, the `foreach` processor stores the current element’s value in the `_ingest._value` [ingest metadata](ingest.md#access-ingest-metadata) field. `_ingest._value` contains the entire element value, including any child fields. You can access child field values using dot notation on the `_ingest._value` field.
 
 When iterating through an object, the `foreach` processor also stores the current element’s key as a string in `_ingest._key`.
 
-You can access and change `_ingest._key` and `_ingest._value` in the `processor`. For an example, see the [object example](#foreach-object-ex).
+You can access and change `_ingest._key` and `_ingest._value` in the `processor`. For an example, see the [object example](foreach-processor.md#foreach-object-ex).
 
 
-## Failure handling [foreach-failure-handling]
+## Failure handling [foreach-failure-handling] 
 
 If the `foreach` processor fails to process an element and no `on_failure` processor is specified, the `foreach` processor silently exits. This leaves the entire array or object value unchanged.
 
 
-## Examples [foreach-examples]
+## Examples [foreach-examples] 
 
 The following examples show how you can use the `foreach` processor with different data types and options:
 
-* [Array](#foreach-array-ex)
-* [Array of objects](#foreach-array-objects-ex)
-* [Object](#foreach-object-ex)
-* [Failure handling](#failure-handling-ex)
+* [Array](foreach-processor.md#foreach-array-ex)
+* [Array of objects](foreach-processor.md#foreach-array-objects-ex)
+* [Object](foreach-processor.md#foreach-object-ex)
+* [Failure handling](foreach-processor.md#failure-handling-ex)
 
 
-### Array [foreach-array-ex]
+### Array [foreach-array-ex] 
 
 Assume the following document:
 
@@ -60,6 +58,8 @@ Assume the following document:
   "values" : ["foo", "bar", "baz"]
 }
 ```
+
+%  NOTCONSOLE
 
 When this `foreach` processor operates on this sample document:
 
@@ -76,6 +76,8 @@ When this `foreach` processor operates on this sample document:
 }
 ```
 
+%  NOTCONSOLE
+
 Then the document will look like this after processing:
 
 ```js
@@ -84,8 +86,10 @@ Then the document will look like this after processing:
 }
 ```
 
+%  NOTCONSOLE
 
-### Array of objects [foreach-array-objects-ex]
+
+### Array of objects [foreach-array-objects-ex] 
 
 Assume the following document:
 
@@ -104,6 +108,8 @@ Assume the following document:
 }
 ```
 
+%  NOTCONSOLE
+
 In this case, the `id` field needs to be removed, so the following `foreach` processor is used:
 
 ```js
@@ -118,6 +124,8 @@ In this case, the `id` field needs to be removed, so the following `foreach` pro
   }
 }
 ```
+
+%  NOTCONSOLE
 
 After processing the result is:
 
@@ -134,10 +142,12 @@ After processing the result is:
 }
 ```
 
-For another array of objects example, refer to the [attachment processor documentation](/reference/ingestion-tools/enrich-processor/attachment.md#attachment-with-arrays).
+%  NOTCONSOLE
+
+For another array of objects example, refer to the [attachment processor documentation](attachment.md#attachment-with-arrays).
 
 
-### Object [foreach-object-ex]
+### Object [foreach-object-ex] 
 
 You can also use the `foreach` processor on object fields. For example, the following document contains a `products` field with object values.
 
@@ -163,6 +173,8 @@ You can also use the `foreach` processor on object fields. For example, the foll
 }
 ```
 
+%  NOTCONSOLE
+
 The following `foreach` processor changes the value of `products.display_name` to uppercase.
 
 ```js
@@ -177,6 +189,8 @@ The following `foreach` processor changes the value of `products.display_name` t
   }
 }
 ```
+
+%  NOTCONSOLE
 
 When run on the document, the `foreach` processor returns:
 
@@ -202,6 +216,8 @@ When run on the document, the `foreach` processor returns:
 }
 ```
 
+%  NOTCONSOLE
+
 The following `foreach` processor sets each element’s key to the value of `products.display_name`. If `products.display_name` contains an empty string, the processor deletes the element.
 
 ```js
@@ -217,6 +233,8 @@ The following `foreach` processor sets each element’s key to the value of `pro
   }
 }
 ```
+
+%  NOTCONSOLE
 
 When run on the previous document, the `foreach` processor returns:
 
@@ -237,8 +255,10 @@ When run on the previous document, the `foreach` processor returns:
 }
 ```
 
+%  NOTCONSOLE
 
-### Failure handling [failure-handling-ex]
+
+### Failure handling [failure-handling-ex] 
 
 The wrapped processor can have a `on_failure` definition. For example, the `id` field may not exist on all person objects. Instead of failing the index request, you can use an `on_failure` block to send the document to the *failure_index* index for later inspection:
 
@@ -262,6 +282,8 @@ The wrapped processor can have a `on_failure` definition. For example, the `id` 
   }
 }
 ```
+
+%  NOTCONSOLE
 
 In this example, if the `remove` processor does fail, then the array elements that have been processed thus far will be updated.
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Lowercase"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lowercase-tokenfilter.html
 ---
 
 # Lowercase token filter [analysis-lowercase-tokenfilter]
@@ -13,7 +11,7 @@ In addition to a default filter, the `lowercase` token filter provides access to
 
 ## Example [analysis-lowercase-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the default `lowercase` filter to change the `THE Quick FoX JUMPs` to lowercase:
+The following [analyze API](indices-analyze.md) request uses the default `lowercase` filter to change the `THE Quick FoX JUMPs` to lowercase:
 
 ```console
 GET _analyze
@@ -30,10 +28,46 @@ The filter produces the following tokens:
 [ the, quick, fox, jumps ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "the",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "quick",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "fox",
+%       "start_offset" : 10,
+%       "end_offset" : 13,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "jumps",
+%       "start_offset" : 14,
+%       "end_offset" : 19,
+%       "type" : "<ALPHANUM>",
+%       "position" : 3
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-lowercase-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `lowercase` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `lowercase` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT lowercase_example
@@ -58,15 +92,15 @@ PUT lowercase_example
 :   (Optional, string) Language-specific lowercase token filter to use. Valid values include:
 
 `greek`
-:   Uses Lucene’s [GreekLowerCaseFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/el/GreekLowerCaseFilter.md)
+:   Uses Lucene’s [GreekLowerCaseFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/el/GreekLowerCaseFilter.md)
 
 `irish`
-:   Uses Lucene’s [IrishLowerCaseFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/ga/IrishLowerCaseFilter.md)
+:   Uses Lucene’s [IrishLowerCaseFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/ga/IrishLowerCaseFilter.md)
 
 `turkish`
-:   Uses Lucene’s [TurkishLowerCaseFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/tr/TurkishLowerCaseFilter.md)
+:   Uses Lucene’s [TurkishLowerCaseFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/tr/TurkishLowerCaseFilter.md)
 
-If not specified, defaults to Lucene’s [LowerCaseFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/core/LowerCaseFilter.md).
+If not specified, defaults to Lucene’s [LowerCaseFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/core/LowerCaseFilter.md).
 
 
 

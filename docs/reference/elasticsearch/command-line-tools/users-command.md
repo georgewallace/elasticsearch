@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/users-command.html
----
-
 # elasticsearch-users [users-command]
 
 If you use file-based user authentication, the `elasticsearch-users` command enables you to add and remove users, assign user roles, and manage passwords per node.
 
 
-## Synopsis [_synopsis_13]
+## Synopsis [_synopsis_13] 
 
 ```shell
 bin/elasticsearch-users
@@ -20,7 +15,7 @@ bin/elasticsearch-users
 ```
 
 
-## Description [_description_20]
+## Description [_description_20] 
 
 If you use the built-in `file` internal realm, users are defined in local files on each node in the cluster.
 
@@ -28,18 +23,21 @@ Usernames and roles must be at least 1 and no more than 1024 characters. They ca
 
 Passwords must be at least 6 characters long.
 
-For more information, see [File-based user authentication](docs-content://deploy-manage/users-roles/cluster-or-deployment-auth/file-based.md).
+For more information, see [File-based user authentication](file-realm.md).
 
-::::{tip}
+::::{tip} 
 To ensure that {{es}} can read the user and role information at startup, run `elasticsearch-users useradd` as the same user you use to run {{es}}. Running the command as root or some other user updates the permissions for the `users` and `users_roles` files and prevents {{es}} from accessing them.
 ::::
 
 
 
-## Parameters [users-command-parameters]
+## Parameters [users-command-parameters] 
 
 `-a <roles>`
 :   If used with the `roles` parameter, adds a comma-separated list of roles to a user.
+
+// `-h, --help`
+
 
 `list`
 :   List the users that are registered with the `file` realm on the local node. If you also specify a user name, the command provides information for that user.
@@ -47,7 +45,7 @@ To ensure that {{es}} can read the user and role information at startup, run `el
 `-p <password>`
 :   Specifies the user’s password. If you do not specify this parameter, the command prompts you for the password.
 
-    ::::{tip}
+    ::::{tip} 
     Omit the `-p` option to keep plaintext passwords out of the terminal session’s command history.
     ::::
 
@@ -63,14 +61,24 @@ To ensure that {{es}} can read the user and role information at startup, run `el
 `roles`
 :   Manages the roles of a particular user. You can combine adding and removing roles within the same command to change a user’s roles.
 
+// `-s, --silent`
+
+
 `useradd <username>`
 :   Adds a user to your local node.
 
 `userdel <username>`
 :   Deletes a user from your local node.
 
+// `-v, --verbose`
 
-## Examples [_examples_24]
+
+% [discrete]
+
+% === Authorization
+
+
+## Examples [_examples_24] 
 
 The following example adds a new user named `jacknich` to the `file` realm. The password for this user is `theshining`, and this user is associated with the `network` and `monitoring` roles.
 

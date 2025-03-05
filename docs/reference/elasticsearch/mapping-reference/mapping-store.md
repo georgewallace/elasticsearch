@@ -1,13 +1,8 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-store.html
----
+# `store` [mapping-store]
 
-# store [mapping-store]
+By default, field values are [indexed](mapping-index.md) to make them searchable, but they are not *stored*. This means that the field can be queried, but the original field value cannot be retrieved.
 
-By default, field values are [indexed](/reference/elasticsearch/mapping-reference/mapping-index.md) to make them searchable, but they are not *stored*. This means that the field can be queried, but the original field value cannot be retrieved.
-
-Usually this doesn’t matter. The field value is already part of the [`_source` field](/reference/elasticsearch/mapping-reference/mapping-source-field.md), which is stored by default. If you only want to retrieve the value of a single field or of a few fields, instead of the whole `_source`, then this can be achieved with [source filtering](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#source-filtering).
+Usually this doesn’t matter. The field value is already part of the [`_source` field](mapping-source-field.md), which is stored by default. If you only want to retrieve the value of a single field or of a few fields, instead of the whole `_source`, then this can be achieved with [source filtering](search-fields.md#source-filtering).
 
 In certain situations it can make sense to `store` a field. For instance, if you have a document with a `title`, a `date`, and a very large `content` field, you may want to retrieve just the `title` and the `date` without having to extract those fields from a large `_source` field:
 

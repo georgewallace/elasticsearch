@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-croneval.html
----
-
 # elasticsearch-croneval [elasticsearch-croneval]
 
-Validates and evaluates a [cron expression](/reference/elasticsearch/rest-apis/api-conventions.md#api-cron-expressions).
+Validates and evaluates a [cron expression](api-conventions.md#api-cron-expressions).
 
 
-## Synopsis [_synopsis_4]
+## Synopsis [_synopsis_4] 
 
 ```shell
 bin/elasticsearch-croneval <expression>
@@ -17,14 +12,14 @@ bin/elasticsearch-croneval <expression>
 ```
 
 
-## Description [_description_11]
+## Description [_description_11] 
 
 This command enables you to verify that your cron expressions are valid for use with {{es}} and produce the expected results.
 
 This command is provided in the `$ES_HOME/bin` directory.
 
 
-## Parameters [elasticsearch-croneval-parameters]
+## Parameters [elasticsearch-croneval-parameters] 
 
 `-c, --count` <Integer>
 :   The number of future times this expression will be triggered. The default value is `10`.
@@ -42,7 +37,7 @@ This command is provided in the `$ES_HOME/bin` directory.
 :   Shows verbose output.
 
 
-## Example [_example_11]
+## Example [_example_11] 
 
 If the cron expression is valid, the following command displays the next 20 times that the schedule will be triggered:
 

@@ -1,17 +1,40 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters.html
-navigation_title: Suggesters
-applies_to:
-  stack: all
----
-# Suggester examples [search-suggesters]
+# Suggesters [search-suggesters]
+
+Suggests similar looking terms based on a provided text by using a suggester.
+
+::::{admonition} New API reference
+For the most up-to-date API details, refer to [Search APIs](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-search).
+
+::::
+
+
+```console
+POST my-index-000001/_search
+{
+  "query" : {
+    "match": {
+      "message": "tring out Elasticsearch"
+    }
+  },
+  "suggest" : {
+    "my-suggestion" : {
+      "text" : "tring out Elasticsearch",
+      "term" : {
+        "field" : "message"
+      }
+    }
+  }
+}
+```
+
+%  TEST[setup:messages]
+
+## {{api-request-title}} [search-suggesters-api-request]
 
 The suggest feature suggests similar looking terms based on a provided text by using a suggester. The suggest request part is defined alongside the query part in a `_search` request. If the query part is left out, only suggestions are returned.
 
-::::{note}
-For the most up-to-date details, refer to [Search APIs](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-search).
-::::
+
+## {{api-examples-title}} [search-suggesters-api-example]
 
 Several suggestions can be specified per request. Each suggestion is identified with an arbitrary name. In the example below two suggestions are requested. Both `my-suggest-1` and `my-suggest-2` suggestions use the `term` suggester, but have a different `text`.
 
@@ -35,7 +58,11 @@ POST _search
 }
 ```
 
-The following suggest response example includes the suggestion response for `my-suggest-1` and `my-suggest-2`. Each suggestion part contains entries. Each entry is effectively a token from the suggest text and contains the suggestion entry text, the original start offset and length in the suggest text and if found an arbitrary number of options.
+%  TEST[setup:messages]
+
+%  TEST[s/^/PUT my-index-000001\/_mapping\n{"properties":{"user":{"properties":{"id":{"type":"keyword"}}}}}\n/]
+
+The below suggest response example includes the suggestion response for `my-suggest-1` and `my-suggest-2`. Each suggestion part contains entries. Each entry is effectively a token from the suggest text and contains the suggestion entry text, the original start offset and length in the suggest text and if found an arbitrary number of options.
 
 ```console-result
 {
@@ -65,12 +92,20 @@ The following suggest response example includes the suggestion response for `my-
 }
 ```
 
-Each options array contains an option object that includes the suggested text, its document frequency and score compared to the suggest entry text. The meaning of the score depends on the used suggester. The term suggester's score is based on the edit distance.
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": "$body._shards",/]
+
+%  TESTRESPONSE[s/"hits": …​/"hits": "$body.hits",/]
+
+%  TESTRESPONSE[s/"took": 2,/"took": "$body.took",/]
+
+%  TESTRESPONSE[s/"my-suggest-2": \.\.\./"my-suggest-2": "$body.suggest.my-suggest-2"/]
+
+Each options array contains an option object that includes the suggested text, its document frequency and score compared to the suggest entry text. The meaning of the score depends on the used suggester. The term suggester’s score is based on the edit distance.
 
 
-## Global suggest text [global-suggest] 
+#### Global suggest text [global-suggest] 
 
-To avoid repetition of the suggest text, it is possible to define a global text. In the following example the suggest text is defined globally and applies to the `my-suggest-1` and `my-suggest-2` suggestions.
+To avoid repetition of the suggest text, it is possible to define a global text. In the example below the suggest text is defined globally and applies to the `my-suggest-1` and `my-suggest-2` suggestions.
 
 ```console
 POST _search
@@ -93,12 +128,12 @@ POST _search
 
 The suggest text can in the above example also be specified as suggestion specific option. The suggest text specified on suggestion level override the suggest text on the global level.
 
+
 ## Term suggester [term-suggester]
 
-The `term` suggester suggests terms based on edit distance. The provided suggest text is analyzed before terms are suggested. The suggested terms are provided per analyzed suggest text token. The `term` suggester doesn't take the query into account that is part of request.
+The `term` suggester suggests terms based on edit distance. The provided suggest text is analyzed before terms are suggested. The suggested terms are provided per analyzed suggest text token. The `term` suggester doesn’t take the query into account that is part of request.
 
-$$$_common_suggest_options$$$
-Common suggest options include:
+### Common suggest options: [_common_suggest_options]
 
 `text`
 :   The suggest text. The suggest text is a required option that needs to be set globally or per suggestion.
@@ -118,6 +153,7 @@ Common suggest options include:
     * `score`:     Sort by score first, then document frequency and then the term itself.
     * `frequency`: Sort by document frequency first, then similarity score and then the term itself.
 
+
 `suggest_mode`
 :   The suggest mode controls what suggestions are included or controls for what suggest text terms, suggestions should be suggested. Three possible values can be specified:
 
@@ -125,42 +161,48 @@ Common suggest options include:
     * `popular`:  Only suggest suggestions that occur in more docs than the original suggest text term.
     * `always`:   Suggest any matching suggestions based on terms in the suggest text.
 
-% TBD: If these are covered in the API reference, we can cover only the 'common' ones here
-% ### Other term suggest options: [_other_term_suggest_options]
-% 
-% `max_edits`
-% :   The maximum edit distance candidate suggestions can have in order to be considered as a suggestion. Can % only be a value between 1 and 2. Any other value results in a bad request error being thrown. Defaults to 2.
-% 
-% `prefix_length`
-% :   The number of minimal prefix characters that must match in order be a candidate for suggestions. Defaults to 1. Increasing this number improves spellcheck performance. Usually misspellings don't occur in the beginning of terms.
-% 
-% `min_word_length`
-% :   The minimum length a suggest text term must have in order to be included. Defaults to `4`.
-% 
-% `shard_size`
-% :   Sets the maximum number of suggestions to be retrieved from each individual shard. During the reduce phase only the top N suggestions are returned based on the `size` option. Defaults to the `size` option. Setting this to a value higher than the `size` can be useful in order to get a more accurate document frequency for spelling corrections at the cost of performance. Due to the fact that terms are partitioned amongst shards, the shard level document frequencies of spelling corrections may not be precise. Increasing this will make these document frequencies more precise.
-% 
-% `max_inspections`
-% :   A factor that is used to multiply with the `shard_size` in order to inspect more candidate spelling corrections on the shard level. Can improve accuracy at the cost of performance. Defaults to 5.
-% 
-% `min_doc_freq`
-% :   The minimal threshold in number of documents a suggestion should appear in. This can be specified as an absolute number or as a relative percentage of number of documents. This can improve quality by only suggesting high frequency terms. Defaults to 0f and is not enabled. If a value higher than 1 is specified, then the number cannot be fractional. The shard level document frequencies are used for this option.
-%
-% `max_term_freq`
-% :   The maximum threshold in number of documents in which a suggest text token can exist in order to be included. Can be a relative percentage number (e.g., 0.4) or an absolute number to represent document frequencies. If a value higher than 1 is specified, then fractional can not be specified. Defaults to 0.01f. This can be used to exclude high frequency terms — which are usually spelled correctly — from being spellchecked. This also improves the spellcheck performance. The shard level document frequencies are used for this option.
-% 
-% `string_distance`
-% :   Which string distance implementation to use for comparing how similar suggested terms are. Five possible values can be specified:
-% 
-%     * `internal`: The default based on damerau_levenshtein but highly optimized for comparing string distance for terms inside the index.
-%     * `damerau_levenshtein`: String distance algorithm based on Damerau-Levenshtein algorithm.
-%     * `levenshtein`: String distance algorithm based on Levenshtein edit distance algorithm.
-%     * `jaro_winkler`: String distance algorithm based on Jaro-Winkler algorithm.
-%     * `ngram`: String distance algorithm based on character n-grams. -->
 
-## Phrase suggester [phrase-suggester]
+
+### Other term suggest options: [_other_term_suggest_options]
+
+`max_edits`
+:   The maximum edit distance candidate suggestions can have in order to be considered as a suggestion. Can only be a value between 1 and 2. Any other value results in a bad request error being thrown. Defaults to 2.
+
+`prefix_length`
+:   The number of minimal prefix characters that must match in order be a candidate for suggestions. Defaults to 1. Increasing this number improves spellcheck performance. Usually misspellings don’t occur in the beginning of terms.
+
+`min_word_length`
+:   The minimum length a suggest text term must have in order to be included. Defaults to `4`.
+
+`shard_size`
+:   Sets the maximum number of suggestions to be retrieved from each individual shard. During the reduce phase only the top N suggestions are returned based on the `size` option. Defaults to the `size` option. Setting this to a value higher than the `size` can be useful in order to get a more accurate document frequency for spelling corrections at the cost of performance. Due to the fact that terms are partitioned amongst shards, the shard level document frequencies of spelling corrections may not be precise. Increasing this will make these document frequencies more precise.
+
+`max_inspections`
+:   A factor that is used to multiply with the `shard_size` in order to inspect more candidate spelling corrections on the shard level. Can improve accuracy at the cost of performance. Defaults to 5.
+
+`min_doc_freq`
+:   The minimal threshold in number of documents a suggestion should appear in. This can be specified as an absolute number or as a relative percentage of number of documents. This can improve quality by only suggesting high frequency terms. Defaults to 0f and is not enabled. If a value higher than 1 is specified, then the number cannot be fractional. The shard level document frequencies are used for this option.
+
+`max_term_freq`
+:   The maximum threshold in number of documents in which a suggest text token can exist in order to be included. Can be a relative percentage number (e.g., 0.4) or an absolute number to represent document frequencies. If a value higher than 1 is specified, then fractional can not be specified. Defaults to 0.01f. This can be used to exclude high frequency terms — which are usually spelled correctly — from being spellchecked. This also improves the spellcheck performance. The shard level document frequencies are used for this option.
+
+`string_distance`
+:   Which string distance implementation to use for comparing how similar suggested terms are. Five possible values can be specified:
+
+    * `internal`: The default based on damerau_levenshtein but highly optimized for comparing string distance for terms inside the index.
+    * `damerau_levenshtein`: String distance algorithm based on Damerau-Levenshtein algorithm.
+    * `levenshtein`: String distance algorithm based on Levenshtein edit distance algorithm.
+    * `jaro_winkler`: String distance algorithm based on Jaro-Winkler algorithm.
+    * `ngram`: String distance algorithm based on character n-grams.
+
+
+
+
+## Phrase Suggester [phrase-suggester]
 
 The `term` suggester provides a very convenient API to access word alternatives on a per token basis within a certain string distance. The API allows accessing each token in the stream individually while suggest-selection is left to the API consumer. Yet, often pre-selected suggestions are required in order to present to the end-user. The `phrase` suggester adds additional logic on top of the `term` suggester to select entire corrected phrases instead of individual tokens weighted based on `ngram-language` models. In practice this suggester will be able to make better decisions about which tokens to pick based on co-occurrence and frequencies.
+
+### API Example [_api_example]
 
 In general the `phrase` suggester requires special mapping up front to work. The `phrase` suggester examples on this page need the following mapping to work. The `reverse` analyzer is used only in the last example.
 
@@ -217,7 +259,9 @@ POST test/_doc?refresh=true
 {"title": "nobel prize"}
 ```
 
-Once you have the analyzers and mappings set up you can use the `phrase` suggester in the same spot you'd use the `term` suggester:
+%  TESTSETUP
+
+Once you have the analyzers and mappings set up you can use the `phrase` suggester in the same spot you’d use the `term` suggester:
 
 ```console
 POST test/_search
@@ -268,14 +312,20 @@ The response contains suggestions scored by the most likely spelling correction 
 }
 ```
 
-$$$_basic_phrase_suggest_api_parameters$$$
-Basic phrase suggest API parameters include:
+%  TESTRESPONSE[s/"_shards": …​/"_shards": "$body._shards",/]
+
+%  TESTRESPONSE[s/"hits": …​/"hits": "$body.hits",/]
+
+%  TESTRESPONSE[s/"took": 3,/"took": "$body.took",/]
+
+
+### Basic Phrase suggest API parameters [_basic_phrase_suggest_api_parameters]
 
 `field`
 :   The name of the field used to do n-gram lookups for the language model, the suggester will use this field to gain statistics to score corrections. This field is mandatory.
 
 `gram_size`
-:   Sets max size of the n-grams (shingles) in the `field`. If the field doesn't contain n-grams (shingles), this should be omitted or set to `1`. Note that Elasticsearch tries to detect the gram size based on the specified `field`. If the field uses a `shingle` filter, the `gram_size` is set to the `max_shingle_size` if not explicitly set.
+:   Sets max size of the n-grams (shingles) in the `field`. If the field doesn’t contain n-grams (shingles), this should be omitted or set to `1`. Note that Elasticsearch tries to detect the gram size based on the specified `field`. If the field uses a `shingle` filter, the `gram_size` is set to the `max_shingle_size` if not explicitly set.
 
 `real_word_error_likelihood`
 :   The likelihood of a term being misspelled even if the term exists in the dictionary. The default is `0.95`, meaning 5% of the real words are misspelled.
@@ -305,7 +355,7 @@ Basic phrase suggest API parameters include:
 :   Sets up suggestion highlighting. If not provided then no `highlighted` field is returned. If provided must contain exactly `pre_tag` and `post_tag`, which are wrapped around the changed tokens. If multiple tokens in a row are changed the entire phrase of changed tokens is wrapped rather than each token.
 
 `collate`
-:   Checks each suggestion against the specified `query` to prune suggestions for which no matching docs exist in the index. The collate query for a suggestion is run only on the local shard from which the suggestion has been generated from. The `query` must be specified and it can be templated. Refer to [Search templates](docs-content://solutions/search/search-templates.md). The current suggestion is automatically made available as the `{{suggestion}}` variable, which should be used in your query. You can still specify your own template `params` — the `suggestion` value will be added to the variables you specify. Additionally, you can specify a `prune` to control if all phrase suggestions will be returned; when set to `true` the suggestions will have an additional option `collate_match`, which will be `true` if matching documents for the phrase was found, `false` otherwise. The default value for `prune` is `false`.
+:   Checks each suggestion against the specified `query` to prune suggestions for which no matching docs exist in the index. The collate query for a suggestion is run only on the local shard from which the suggestion has been generated from. The `query` must be specified and it can be templated. See [Search templates](search-template.md). The current suggestion is automatically made available as the `{{suggestion}}` variable, which should be used in your query. You can still specify your own template `params` — the `suggestion` value will be added to the variables you specify. Additionally, you can specify a `prune` to control if all phrase suggestions will be returned; when set to `true` the suggestions will have an additional option `collate_match`, which will be `true` if matching documents for the phrase was found, `false` otherwise. The default value for `prune` is `false`.
 
 ```console
 POST test/_search
@@ -343,7 +393,9 @@ POST test/_search
 3. An additional `field_name` variable has been specified in `params` and is used by the `match` query.
 4. All suggestions will be returned with an extra `collate_match` option indicating whether the generated phrase matched any document.
 
-### Smoothing models [_smoothing_models]
+
+
+### Smoothing Models [_smoothing_models]
 
 The `phrase` suggester supports multiple smoothing models to balance weight between infrequent grams (grams (shingles) are not existing in the index) and frequent grams (appear at least once in the index). The smoothing model can be selected by setting the `smoothing` parameter to one of the following options. Each smoothing model supports specific properties that can be configured.
 
@@ -354,7 +406,7 @@ The `phrase` suggester supports multiple smoothing models to balance weight betw
 :   A smoothing model that uses an additive smoothing where a constant (typically `1.0` or smaller) is added to all counts to balance weights. The default `alpha` is `0.5`.
 
 `linear_interpolation`
-:   A smoothing model that takes the weighted mean of the unigrams, bigrams, and trigrams based on user supplied weights (lambdas). Linear Interpolation doesn't have any default values. All parameters (`trigram_lambda`, `bigram_lambda`, `unigram_lambda`) must be supplied.
+:   A smoothing model that takes the weighted mean of the unigrams, bigrams, and trigrams based on user supplied weights (lambdas). Linear Interpolation doesn’t have any default values. All parameters (`trigram_lambda`, `bigram_lambda`, `unigram_lambda`) must be supplied.
 
 ```console
 POST test/_search
@@ -377,16 +429,16 @@ POST test/_search
 ```
 
 
-### Candidate generators [_candidate_generators]
+### Candidate Generators [_candidate_generators]
 
 The `phrase` suggester uses candidate generators to produce a list of possible terms per term in the given text. A single candidate generator is similar to a `term` suggester called for each individual term in the text. The output of the generators is subsequently scored in combination with the candidates from the other terms for suggestion candidates.
 
-Currently only one type of candidate generator is supported, the `direct_generator`. The phrase suggest API accepts a list of generators under the key `direct_generator`; each of the generators in the list is called per term in the original text.
+Currently only one type of candidate generator is supported, the `direct_generator`. The Phrase suggest API accepts a list of generators under the key `direct_generator`; each of the generators in the list is called per term in the original text.
 
 
-### Direct generators [_direct_generators]
+### Direct Generators [_direct_generators]
 
-The parameters that direct generators support include:
+The direct generators support the following parameters:
 
 `field`
 :   The field to fetch the candidate suggestions from. This is a required option that either needs to be set globally or per suggestion.
@@ -401,11 +453,12 @@ The parameters that direct generators support include:
     * `popular`: Only suggest terms that occur in more docs on the shard than the original term.
     * `always`: Suggest any matching suggestions based on terms in the suggest text.
 
+
 `max_edits`
 :   The maximum edit distance candidate suggestions can have in order to be considered as a suggestion. Can only be a value between 1 and 2. Any other value results in a bad request error being thrown. Defaults to 2.
 
 `prefix_length`
-:   The number of minimal prefix characters that must match in order be a candidate suggestions. Defaults to 1. Increasing this number improves spellcheck performance. Usually misspellings don't occur in the beginning of terms.
+:   The number of minimal prefix characters that must match in order be a candidate suggestions. Defaults to 1. Increasing this number improves spellcheck performance. Usually misspellings don’t occur in the beginning of terms.
 
 `min_word_length`
 :   The minimum length a suggest text term must have in order to be included. Defaults to 4.
@@ -453,7 +506,9 @@ POST test/_search
 
 `pre_filter` and `post_filter` can also be used to inject synonyms after candidates are generated. For instance for the query `captain usq` we might generate a candidate `usa` for the term `usq`, which is a synonym for `america`. This allows us to present `captain america` to the user if this phrase scores high enough.
 
-## Completion suggester [completion-suggester]
+
+
+## Completion Suggester [completion-suggester]
 
 The `completion` suggester provides auto-complete/search-as-you-type functionality. This is a navigational feature to guide users to relevant results as they are typing, improving search precision. It is not meant for spell correction or did-you-mean functionality like the `term` or `phrase` suggesters.
 
@@ -476,13 +531,16 @@ PUT music
 }
 ```
 
-$$$_parameters_for_completion_fields_2$$$
-The parameters that are accepted by `completion` fields include:
 
-[`analyzer`](/reference/elasticsearch/mapping-reference/analyzer.md)
+
+## Parameters for `completion` fields [_parameters_for_completion_fields_2]
+
+The following parameters are accepted by `completion` fields:
+
+[`analyzer`](analyzer.md)
 :   The index analyzer to use, defaults to `simple`.
 
-[`search_analyzer`](/reference/elasticsearch/mapping-reference/search-analyzer.md)
+[`search_analyzer`](search-analyzer.md)
 :   The search analyzer to use, defaults to value of `analyzer`.
 
 `preserve_separators`
@@ -492,11 +550,26 @@ The parameters that are accepted by `completion` fields include:
 :   Enables position increments, defaults to `true`. If disabled and using stopwords analyzer, you could get a field starting with `The Beatles`, if you suggest for `b`. **Note**: You could also achieve this by indexing two inputs, `Beatles` and `The Beatles`, no need to change a simple analyzer, if you are able to enrich your data.
 
 `max_input_length`
-:   Limits the length of a single input, defaults to `50` UTF-16 code points. This limit is only used at index time to reduce the total number of characters per input string in order to prevent massive inputs from bloating the underlying datastructure. Most use cases won't be influenced by the default value since prefix completions seldom grow beyond prefixes longer than a handful of characters.
+:   Limits the length of a single input, defaults to `50` UTF-16 code points. This limit is only used at index time to reduce the total number of characters per input string in order to prevent massive inputs from bloating the underlying datastructure. Most use cases won’t be influenced by the default value since prefix completions seldom grow beyond prefixes longer than a handful of characters.
 
 ### Indexing [indexing]
 
 You index suggestions like any other field. A suggestion is made of an `input` and an optional `weight` attribute. An `input` is the expected text to be matched by a suggestion query and the `weight` determines how the suggestions will be scored. Indexing a suggestion is as follows:
+
+% [source,console]
+% --------------------------------------------------
+% PUT music
+% {
+%   "mappings": {
+%     "properties": {
+%       "suggest": {
+%         "type": "completion"
+%       }
+%     }
+%   }
+% }
+% --------------------------------------------------
+% // TESTSETUP
 
 ```console
 PUT music/_doc/1?refresh
@@ -508,7 +581,9 @@ PUT music/_doc/1?refresh
 }
 ```
 
-The supported parameters include:
+%  TEST
+
+The following parameters are supported:
 
 `input`
 :   The input to store, this can be an array of strings or just a string. This field is mandatory.
@@ -544,6 +619,8 @@ PUT music/_doc/1?refresh
 }
 ```
 
+%  TEST[continued]
+
 You can use the following shorthand form. Note that you can not specify a weight with suggestion(s) in the shorthand form.
 
 ```console
@@ -553,10 +630,12 @@ PUT music/_doc/1?refresh
 }
 ```
 
+%  TEST[continued]
+
 
 ### Querying [querying]
 
-Suggesting works as usual, except that you have to specify the suggest type as `completion`. Suggestions are near real-time, which means new suggestions can be made visible by [refresh](https://www.elastic.co/docs/api/doc/elasticsearch/v8/operation/operation-indices-refresh) and documents once deleted are never shown. This request:
+Suggesting works as usual, except that you have to specify the suggest type as `completion`. Suggestions are near real-time, which means new suggestions can be made visible by [refresh](indices-refresh.md) and documents once deleted are never shown. This request:
 
 ```console
 POST music/_search?pretty
@@ -572,11 +651,14 @@ POST music/_search?pretty
 }
 ```
 
+%  TEST[continued]
+
 1. Prefix used to search for suggestions
 2. Type of suggestions
 3. Name of the field to search for suggestions in
 
-It returns this response:
+
+returns this response:
 
 ```console-result
 {
@@ -608,11 +690,16 @@ It returns this response:
 }
 ```
 
+%  TESTRESPONSE[s/"hits": …​/"hits": "$body.hits",/]
+
+%  TESTRESPONSE[s/"took": 2,/"took": "$body.took",/]
+
 ::::{important} 
 `_source` metadata field must be enabled, which is the default behavior, to enable returning `_source` with suggestions.
 ::::
 
-The configured weight for a suggestion is returned as `_score`. The `text` field uses the `input` of your indexed suggestion. Suggestions return the full document `_source` by default. The size of the `_source` can impact performance due to disk fetch and network transport overhead. To save some network overhead, filter out unnecessary fields from the `_source` using source filtering to minimize `_source` size. Note that the _suggest endpoint doesn't support source filtering but using suggest on the `_search` endpoint does:
+
+The configured weight for a suggestion is returned as `_score`. The `text` field uses the `input` of your indexed suggestion. Suggestions return the full document `_source` by default. The size of the `_source` can impact performance due to disk fetch and network transport overhead. To save some network overhead, filter out unnecessary fields from the `_source` using [source filtering](search-fields.md#source-filtering) to minimize `_source` size. Note that the _suggest endpoint doesn’t support source filtering but using suggest on the `_search` endpoint does:
 
 ```console
 POST music/_search
@@ -629,6 +716,8 @@ POST music/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 1. Filter the source to return only the `suggest` field
 2. Name of the field to search for suggestions in
@@ -674,7 +763,9 @@ Which should look like:
 }
 ```
 
-The supported parameters for a basic completion suggester query include:
+%  TESTRESPONSE[s/"took": 6,/"took": $body.took,/]
+
+The basic completion suggester query supports the following parameters:
 
 `field`
 :   The name of the field on which to run the query (required).
@@ -686,13 +777,15 @@ The supported parameters for a basic completion suggester query include:
 :   Whether duplicate suggestions should be filtered out (defaults to `false`).
 
 ::::{note} 
-The completion suggester considers all documents in the index. See [Context suggester](search-suggesters.md#context-suggester) for an explanation of how to query a subset of documents instead.
+The completion suggester considers all documents in the index. See [Context Suggester](search-suggesters.md#context-suggester) for an explanation of how to query a subset of documents instead.
 ::::
 
 
 ::::{note} 
 In case of completion queries spanning more than one shard, the suggest is executed in two phases, where the last phase fetches the relevant documents from shards, implying executing completion requests against a single shard is more performant due to the document fetch overhead when the suggest spans multiple shards. To get best performance for completions, it is recommended to index completions into a single shard index. In case of high heap usage due to shard size, it is still recommended to break index into multiple shards instead of optimizing for completion performance.
 ::::
+
+
 
 ### Skip duplicate suggestions [skip_duplicates]
 
@@ -717,6 +810,8 @@ POST music/_search?pretty
 When set to true, this option can slow down search because more suggestions need to be visited to find the top N.
 ::::
 
+
+
 ### Fuzzy queries [fuzzy]
 
 The completion suggester also supports fuzzy queries — this means you can have a typo in your search and still get results back.
@@ -740,13 +835,13 @@ POST music/_search?pretty
 
 Suggestions that share the longest prefix to the query `prefix` will be scored higher.
 
-The fuzzy query can take specific fuzzy parameters. For example:
+The fuzzy query can take specific fuzzy parameters. The following parameters are supported:
 
 `fuzziness`
 :   The fuzziness factor, defaults to `AUTO`. See  [Fuzziness](common-options.md#fuzziness) for allowed settings.
 
 `transpositions`
-:   If set to `true`, transpositions are counted as one change instead of two, defaults to `true`
+:   if set to `true`, transpositions are counted as one change instead of two, defaults to `true`
 
 `min_length`
 :   Minimum length of the input before fuzzy suggestions are returned, defaults `3`
@@ -760,6 +855,8 @@ The fuzzy query can take specific fuzzy parameters. For example:
 ::::{note} 
 If you want to stick with the default values, but still use fuzzy, you can either use `fuzzy: {}` or `fuzzy: true`.
 ::::
+
+
 
 ### Regex queries [regex]
 
@@ -779,15 +876,17 @@ POST music/_search?pretty
 }
 ```
 
-The regex query can take specific regex parameters. For example:
+The regex query can take specific regex parameters. The following parameters are supported:
 
 `flags`
-:   Possible flags are `ALL` (default), `ANYSTRING`, `COMPLEMENT`, `EMPTY`, `INTERSECTION`, `INTERVAL`, or `NONE`. See [regexp-syntax](/reference/query-languages/query-dsl-regexp-query.md) for their meaning
+:   Possible flags are `ALL` (default), `ANYSTRING`, `COMPLEMENT`, `EMPTY`, `INTERSECTION`, `INTERVAL`, or `NONE`. See [regexp-syntax](query-dsl-regexp-query.md) for their meaning
 
 `max_determinized_states`
-:   Regular expressions are dangerous because it's easy to accidentally create an innocuous looking one that requires an exponential number of internal determinized automaton states (and corresponding RAM and CPU) for Lucene to execute. Lucene prevents these using the `max_determinized_states` setting (defaults to 10000). You can raise this limit to allow more complex regular expressions to execute.
+:   Regular expressions are dangerous because it’s easy to accidentally create an innocuous looking one that requires an exponential number of internal determinized automaton states (and corresponding RAM and CPU) for Lucene to execute. Lucene prevents these using the `max_determinized_states` setting (defaults to 10000). You can raise this limit to allow more complex regular expressions to execute.
 
-## Context suggester [context-suggester]
+
+
+## Context Suggester [context-suggester]
 
 The completion suggester considers all documents in the index, but it is often desirable to serve suggestions filtered and/or boosted by some criteria. For example, you want to suggest song titles filtered by certain artists or you want to boost song titles based on their genre.
 
@@ -795,11 +894,15 @@ To achieve suggestion filtering and/or boosting, you can add context mappings wh
 
 ::::{note} 
 It is mandatory to provide a context when indexing and querying a context enabled completion field.
+::::
 
+
+::::{note} 
 The maximum allowed number of completion field context mappings is 10.
 ::::
 
-The following example defines types, each with two context mappings for a completion field:
+
+The following defines types, each with two context mappings for a completion field:
 
 ```console
 PUT place
@@ -851,6 +954,8 @@ PUT place_path_category
 }
 ```
 
+%  TESTSETUP
+
 1. Defines a `category` context named *place_type* where the categories must be sent with the suggestions.
 2. Defines a `geo` context named *location* where the categories must be sent with the suggestions.
 3. Defines a `category` context named *place_type* where the categories are read from the `cat` field.
@@ -858,10 +963,12 @@ PUT place_path_category
 
 
 ::::{note} 
-Adding context mappings increases the index size for completion field. The completion index is entirely heap resident, you can monitor the completion field index size using [index statistics](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-stats).
+Adding context mappings increases the index size for completion field. The completion index is entirely heap resident, you can monitor the completion field index size using [Index stats](indices-stats.md).
 ::::
 
-### Category context [suggester-context-category] 
+
+
+#### Category Context [suggester-context-category] 
 
 The `category` context allows you to associate one or more categories with suggestions at index time. At query time, suggestions can be filtered and boosted by their associated categories.
 
@@ -881,6 +988,7 @@ PUT place/_doc/1
 
 1. These suggestions will be associated with *cafe* and *food* category.
 
+
 If the mapping had a `path` then the following index request would be enough to add the categories:
 
 ```console
@@ -893,11 +1001,14 @@ PUT place_path_category/_doc/1
 
 1. These suggestions will be associated with *cafe* and *food* category.
 
+
 ::::{note} 
 If context mapping references another field and the categories are explicitly indexed, the suggestions are indexed with both set of categories.
 ::::
 
-#### Category query [_category_query] 
+
+
+##### Category Query [_category_query] 
 
 Suggestions can be filtered by one or more categories. The following filters suggestions by multiple categories:
 
@@ -919,11 +1030,14 @@ POST place/_search?pretty
 }
 ```
 
+%  TEST[continued]
+
 ::::{note} 
 If multiple categories or category contexts are set on the query they are merged as a disjunction. This means that suggestions match if they contain at least one of the provided context values.
 ::::
 
-Suggestions with certain categories can be boosted higher than others. The following example filters suggestions by categories and additionally boosts suggestions associated with some categories:
+
+Suggestions with certain categories can be boosted higher than others. The following filters suggestions by categories and additionally boosts suggestions associated with some categories:
 
 ```console
 POST place/_search?pretty
@@ -946,10 +1060,12 @@ POST place/_search?pretty
 }
 ```
 
+%  TEST[continued]
+
 1. The context query filter suggestions associated with categories *cafe* and *restaurants* and boosts the suggestions associated with *restaurants* by a factor of `2`
 
-In addition to accepting category values, a context query can be composed of multiple category context clauses.
-The parameters that are supported for a `category` context clause include:
+
+In addition to accepting category values, a context query can be composed of multiple category context clauses. The following parameters are supported for a `category` context clause:
 
 `context`
 :   The value of the category to filter/boost on. This is mandatory.
@@ -964,15 +1080,18 @@ The parameters that are supported for a `category` context clause include:
 If a suggestion entry matches multiple contexts the final score is computed as the maximum score produced by any matching contexts.
 ::::
 
-### Geo location context [suggester-context-geo] 
+
+
+#### Geo location Context [suggester-context-geo] 
 
 A `geo` context allows you to associate one or more geo points or geohashes with suggestions at index time. At query time, suggestions can be filtered and boosted if they are within a certain distance of a specified geo location.
 
 Internally, geo points are encoded as geohashes with the specified precision.
 
-#### Geo mapping [_geo_mapping] 
 
-In addition to the `path` setting, `geo` context mapping accepts settings such as:
+##### Geo Mapping [_geo_mapping] 
+
+In addition to the `path` setting, `geo` context mapping accepts the following settings:
 
 `precision`
 :   This defines the precision of the geohash to be indexed and can be specified as a distance value (`5m`, `10km` etc.), or as a raw geohash precision (`1`..`12`). Defaults to a raw geohash precision value of `6`.
@@ -981,7 +1100,9 @@ In addition to the `path` setting, `geo` context mapping accepts settings such a
 The index time `precision` setting sets the maximum geohash precision that can be used at query time.
 ::::
 
-#### Indexing geo contexts [_indexing_geo_contexts] 
+
+
+##### Indexing geo contexts [_indexing_geo_contexts] 
 
 `geo` contexts can be explicitly set with suggestions or be indexed from a geo point field in the document via the `path` parameter, similar to `category` contexts. Associating multiple geo location context with a suggestion, will index the suggestion for every geo location. The following indexes a suggestion with two geo location contexts:
 
@@ -1006,7 +1127,8 @@ PUT place/_doc/1
 }
 ```
 
-#### Geo location query [_geo_location_query] 
+
+##### Geo location Query [_geo_location_query] 
 
 Suggestions can be filtered and boosted with respect to how close they are to one or more geo points. The following filters suggestions that fall within the area represented by the encoded geohash of a geo point:
 
@@ -1031,11 +1153,17 @@ POST place/_search
 }
 ```
 
+%  TEST[continued]
+
 ::::{note} 
 When a location with a lower precision at query time is specified, all suggestions that fall within the area will be considered.
+::::
 
+
+::::{note} 
 If multiple categories or category contexts are set on the query they are merged as a disjunction. This means that suggestions match if they contain at least one of the provided context values.
 ::::
+
 
 Suggestions that are within an area represented by a geohash can also be boosted higher than others, as shown by the following:
 
@@ -1070,14 +1198,17 @@ POST place/_search?pretty
 }
 ```
 
+%  TEST[continued]
+
 1. The context query filters for suggestions that fall under the geo location represented by a geohash of *(43.662, -79.380)* with a precision of *2* and boosts suggestions that fall under the geohash representation of *(43.6624803, -79.3863353)* with a default precision of *6* by a factor of `2`
+
 
 ::::{note} 
 If a suggestion entry matches multiple contexts the final score is computed as the maximum score produced by any matching contexts.
 ::::
 
-In addition to accepting context values, a context query can be composed of multiple context clauses.
-The parameters that are supported for a `geo` context clause include:
+
+In addition to accepting context values, a context query can be composed of multiple context clauses. The following parameters are supported for a `geo` context clause:
 
 `context`
 :   A geo point object or a geo hash string to filter or boost the suggestion by. This is mandatory.
@@ -1091,13 +1222,15 @@ The parameters that are supported for a `geo` context clause include:
 `neighbours`
 :   Accepts an array of precision values at which neighbouring geohashes should be taken into account. precision value can be a distance value (`5m`, `10km` etc.) or a raw geohash precision (`1`..`12`). Defaults to generating neighbours for index time precision level.
 
-::::{note}
+::::{note} 
 The precision field does not result in a distance match. Specifying a distance value like `10km` only results in a geohash precision value that represents tiles of that size. The precision will be used to encode the search geo point into a geohash tile for completion matching. A consequence of this is that points outside that tile, even if very close to the search point, will not be matched. Reducing the precision, or increasing the distance, can reduce the risk of this happening, but not entirely remove it.
 ::::
 
+
+
 ## Returning the type of the suggester [return-suggesters-type]
 
-Sometimes you need to know the exact type of a suggester in order to parse its results. The `typed_keys` parameter can be used to change the suggester's name in the response so that it will be prefixed by its type.
+Sometimes you need to know the exact type of a suggester in order to parse its results. The `typed_keys` parameter can be used to change the suggester’s name in the response so that it will be prefixed by its type.
 
 Considering the following example with two suggesters `term` and `phrase`:
 
@@ -1119,6 +1252,8 @@ POST _search?typed_keys
   }
 }
 ```
+
+%  TEST[setup:messages]
 
 In the response, the suggester names will be changed to respectively `term#my-first-suggester` and `phrase#my-second-suggester`, reflecting the types of each suggestion:
 
@@ -1169,5 +1304,14 @@ In the response, the suggester names will be changed to respectively `term#my-fi
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": "$body.took", "timed_out": false, "_shards": "$body._shards", "hits": "$body.hits"/]
+
+%  TESTRESPONSE[s/"score": 0.8333333/"score": $body.suggest.term#my-first-suggester.2.options.0.score/]
+
+%  TESTRESPONSE[s/"score": 0.030227963/"score": $body.suggest.phrase#my-second-suggester.0.options.0.score/]
+
 1. The name `my-first-suggester` now contains the `term` prefix.
 2. The name `my-second-suggester` now contains the `phrase` prefix.
+
+
+

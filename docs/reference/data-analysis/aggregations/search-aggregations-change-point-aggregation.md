@@ -1,20 +1,18 @@
 ---
 navigation_title: "Change point"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-change-point-aggregation.html
 ---
 
 # Change point aggregation [search-aggregations-change-point-aggregation]
 
 
-::::{warning}
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
 A sibling pipeline that detects, spikes, dips, and change points in a metric. Given a distribution of values provided by the sibling multi-bucket aggregation, this aggregation indicates the bucket of any spike or dip and/or the bucket at which the largest change in the distribution of values, if they are statistically significant.
 
-::::{tip}
+::::{tip} 
 It is recommended to use the change point aggregation to detect changes in time-based data, however, you can use any metric to create buckets.
 ::::
 
@@ -22,7 +20,7 @@ It is recommended to use the change point aggregation to detect changes in time-
 ## Parameters [change-point-agg-syntax]
 
 `buckets_path`
-:   (Required, string) Path to the buckets that contain one set of values in which to detect a change point. There must be at least 22 bucketed values. Fewer than 1,000 is preferred. For syntax, see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax).
+:   (Required, string) Path to the buckets that contain one set of values in which to detect a change point. There must be at least 22 bucketed values. Fewer than 1,000 is preferred. For syntax, see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax).
 
 
 ## Syntax [_syntax_11]
@@ -36,6 +34,8 @@ A `change_point` aggregation looks like this in isolation:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 1. The buckets containing the values to test against.
 
@@ -99,6 +99,8 @@ GET kibana_sample_data_logs/_search
 }
 ```
 
+%  NOTCONSOLE
+
 1. A date histogram aggregation that creates buckets with one day long interval.
 2. A sibling aggregation of the `date` aggregation that calculates the average value of the `bytes` field within every bucket.
 3. The change point detection aggregation configuration object.
@@ -124,6 +126,8 @@ The request returns a response that is similar to the following:
       }
     }
 ```
+
+%  NOTCONSOLE
 
 1. The bucket key that is the change point.
 2. The number of documents in that bucket.

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Attachment"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/attachment.html
 ---
 
 # Attachment processor [attachment]
@@ -27,7 +25,7 @@ $$$attachment-options$$$
 | `resource_name` | no |  | Field containing the name of the resource to decode. If specified, the processor passes this resource name to the underlying Tika library to enable [Resource Name Based Detection](https://tika.apache.org/1.24.1/detection.md#Resource_Name_Based_Detection). |
 
 
-### Example [attachment-json-ex]
+### Example [attachment-json-ex] 
 
 If attaching files to JSON documents, you must first encode the file as a base64 string. On Unix-like systems, you can do this using a `base64` command:
 
@@ -79,6 +77,8 @@ The document’s `attachment` object contains extracted properties for the file:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
 
 
 ## Exported fields [attachment-fields]
@@ -132,7 +132,7 @@ PUT _ingest/pipeline/attachment
 }
 ```
 
-::::{note}
+::::{note} 
 Extracting contents from binary data is a resource intensive operation and consumes a lot of resources. It is highly recommended to run pipelines using this processor in a dedicated ingest node.
 ::::
 
@@ -184,6 +184,8 @@ The document’s `_source` object includes the original binary field:
 }
 ```
 
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
+
 
 ## Use the attachment processor with CBOR [attachment-cbor]
 
@@ -206,7 +208,7 @@ PUT _ingest/pipeline/cbor-attachment
 
 The following Python script passes CBOR data to an HTTP indexing request that includes the `cbor-attachment` pipeline. The HTTP request headers use a `content-type` of `application/cbor`.
 
-::::{note}
+::::{note} 
 Not all {{es}} clients support custom HTTP request headers.
 ::::
 
@@ -281,6 +283,8 @@ Returns this:
 }
 ```
 
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
+
 ```console
 PUT _ingest/pipeline/attachment
 {
@@ -326,10 +330,12 @@ Returns this:
 }
 ```
 
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
+
 
 ## Using the attachment processor with arrays [attachment-with-arrays]
 
-To use the attachment processor within an array of attachments the [foreach processor](/reference/ingestion-tools/enrich-processor/foreach-processor.md) is required. This enables the attachment processor to be run on the individual elements of the array.
+To use the attachment processor within an array of attachments the [foreach processor](https://www.elastic.co/guide/en/elasticsearch/reference/current/foreach-processor.html) is required. This enables the attachment processor to be run on the individual elements of the array.
 
 For example, given the following source:
 
@@ -347,6 +353,8 @@ For example, given the following source:
   ]
 }
 ```
+
+%  NOTCONSOLE
 
 In this case, we want to process the data field in each element of the attachments field and insert the properties into the document so the following `foreach` processor is used:
 
@@ -419,6 +427,8 @@ Returns this:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"_seq_no" : \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
 
 Note that the `target_field` needs to be set, otherwise the default value is used which is a top level field `attachment`. The properties on this top level field will contain the value of the first attachment only. However, by specifying the `target_field` on to a value on `_ingest._value` it will correctly associate the properties with the correct attachment.
 

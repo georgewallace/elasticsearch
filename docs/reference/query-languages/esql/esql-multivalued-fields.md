@@ -1,7 +1,5 @@
 ---
 navigation_title: "Multivalued fields"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/esql-multivalued-fields.html
 ---
 
 # {{esql}} multivalued fields [esql-multivalued-fields]
@@ -41,12 +39,14 @@ Multivalued fields come back as a JSON array:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
+
 The relative order of values in a multivalued field is undefined. They’ll frequently be in ascending order but don’t rely on that.
 
 
-## Duplicate values [esql-multivalued-fields-dups]
+## Duplicate values [esql-multivalued-fields-dups] 
 
-Some field types, like [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md#keyword-field-type) remove duplicate values on write:
+Some field types, like [`keyword`](keyword.md#keyword-field-type) remove duplicate values on write:
 
 $$$esql-multivalued-fields-kwdups$$$
 
@@ -88,6 +88,8 @@ And {{esql}} sees that removal:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
 
 But other types, like `long` don’t remove duplicates.
 
@@ -132,6 +134,8 @@ And {{esql}} also sees that:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
+
 This is all at the storage layer. If you store duplicate `long`s and then convert them to strings the duplicates will stay:
 
 $$$esql-multivalued-fields-longdups-tostring$$$
@@ -173,8 +177,10 @@ POST /_query
 }
 ```
 
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
 
-## `null` in a list [esql-multivalued-nulls]
+
+## `null` in a list [esql-multivalued-nulls] 
 
 `null` values in a list are not preserved at the storage layer:
 
@@ -203,8 +209,10 @@ POST /_query
 }
 ```
 
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
 
-## Functions [esql-multivalued-fields-functions]
+
+## Functions [esql-multivalued-fields-functions] 
 
 Unless otherwise documented functions will return `null` when applied to a multivalued field.
 
@@ -225,6 +233,16 @@ POST /_query
 }
 ```
 
+%  TEST[continued]
+
+%  TEST[warning:Line 1:16: evaluation of [b + 2] failed, treating result as null. Only first 20 failures recorded.]
+
+%  TEST[warning:Line 1:16: java.lang.IllegalArgumentException: single-value function encountered multi-value]
+
+%  TEST[warning:Line 1:23: evaluation of [a + b] failed, treating result as null. Only first 20 failures recorded.]
+
+%  TEST[warning:Line 1:23: java.lang.IllegalArgumentException: single-value function encountered multi-value]
+
 ```console-result
 {
   "took": 28,
@@ -242,15 +260,17 @@ POST /_query
 }
 ```
 
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
+
 Work around this limitation by converting the field to single value with one of:
 
-* [`MV_AVG`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_avg)
-* [`MV_CONCAT`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_concat)
-* [`MV_COUNT`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_count)
-* [`MV_MAX`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_max)
-* [`MV_MEDIAN`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_median)
-* [`MV_MIN`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_min)
-* [`MV_SUM`](/reference/query-languages/esql/esql-functions-operators.md#esql-mv_sum)
+* [`MV_AVG`](esql-functions-operators.md#esql-mv_avg)
+* [`MV_CONCAT`](esql-functions-operators.md#esql-mv_concat)
+* [`MV_COUNT`](esql-functions-operators.md#esql-mv_count)
+* [`MV_MAX`](esql-functions-operators.md#esql-mv_max)
+* [`MV_MEDIAN`](esql-functions-operators.md#esql-mv_median)
+* [`MV_MIN`](esql-functions-operators.md#esql-mv_min)
+* [`MV_SUM`](esql-functions-operators.md#esql-mv_sum)
 
 ```console
 POST /_query
@@ -258,6 +278,8 @@ POST /_query
   "query": "FROM mv | EVAL b=MV_MIN(b) | EVAL b + 2, a + b | LIMIT 4"
 }
 ```
+
+%  TEST[continued]
 
 ```console-result
 {
@@ -275,4 +297,6 @@ POST /_query
   ]
 }
 ```
+
+%  TESTRESPONSE[s/"took": 28/"took": "$body.took"/]
 

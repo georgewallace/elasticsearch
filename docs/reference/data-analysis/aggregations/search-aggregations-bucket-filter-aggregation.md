@@ -1,13 +1,11 @@
 ---
 navigation_title: "Filter"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filter-aggregation.html
 ---
 
 # Filter aggregation [search-aggregations-bucket-filter-aggregation]
 
 
-A single bucket aggregation that narrows the set of documents to those that match a [query](/reference/query-languages/querydsl.md).
+A single bucket aggregation that narrows the set of documents to those that match a [query](query-dsl.md).
 
 Example:
 
@@ -27,6 +25,8 @@ POST /sales/_search?size=0&filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 The previous example calculates the average price of all sales as well as the average price of all T-shirt sales.
 
@@ -62,6 +62,17 @@ POST /sales/_search?size=0&filter_path=aggregations
 }
 ```
 
+%  TEST[setup:sales]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "avg_price": { "value": 128.33333333333334 }
+%   }
+% }
+% ----
+
 Instead of this:
 
 $$$filter-aggregation-top-bad$$$
@@ -80,10 +91,24 @@ POST /sales/_search?size=0&filter_path=aggregations
 }
 ```
 
+%  TEST[setup:sales]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "t_shirts": {
+%       "doc_count": 3,
+%       "avg_price": { "value": 128.33333333333334 }
+%     }
+%   }
+% }
+% ----
+
 
 ## Use the `filters` aggregation for multiple filters [use-filters-agg-for-multiple-filters]
 
-To group documents using multiple filters, use the [`filters` aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-filters-aggregation.md). This is faster than multiple `filter` aggregations.
+To group documents using multiple filters, use the [`filters` aggregation](search-aggregations-bucket-filters-aggregation.md). This is faster than multiple `filter` aggregations.
 
 For example, use this:
 
@@ -108,6 +133,28 @@ POST /sales/_search?size=0&filter_path=aggregations
 }
 ```
 
+%  TEST[setup:sales]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "f": {
+%       "buckets": {
+%         "hats": {
+%           "doc_count": 3,
+%           "avg_price": { "value": 150.0 }
+%         },
+%         "t_shirts": {
+%           "doc_count": 3,
+%           "avg_price": { "value": 128.33333333333334 }
+%         }
+%       }
+%     }
+%   }
+% }
+% ----
+
 Instead of this:
 
 $$$filter-aggregation-many-bad$$$
@@ -131,5 +178,23 @@ POST /sales/_search?size=0&filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:sales]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "hats": {
+%       "doc_count": 3,
+%       "avg_price": { "value": 150.0 }
+%     },
+%     "t_shirts": {
+%       "doc_count": 3,
+%       "avg_price": { "value": 128.33333333333334 }
+%     }
+%   }
+% }
+% ----
 
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Mapping"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-mapping-charfilter.html
 ---
 
 # Mapping character filter [analysis-mapping-charfilter]
@@ -11,11 +9,11 @@ The `mapping` character filter accepts a map of keys and values. Whenever it enc
 
 Matching is greedy; the longest pattern matching at a given point wins. Replacements are allowed to be the empty string.
 
-The `mapping` filter uses Lucene’s [MappingCharFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/charfilter/MappingCharFilter.md).
+The `mapping` filter uses Lucene’s [MappingCharFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/charfilter/MappingCharFilter.md).
 
 ## Example [analysis-mapping-charfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `mapping` filter to convert Hindu-Arabic numerals (٠‎١٢٣٤٥٦٧٨‎٩‎) into their Arabic-Latin equivalents (0123456789), changing the text `My license plate is ٢٥٠١٥` to `My license plate is 25015`.
+The following [analyze API](indices-analyze.md) request uses the `mapping` filter to convert Hindu-Arabic numerals (٠‎١٢٣٤٥٦٧٨‎٩‎) into their Arabic-Latin equivalents (0123456789), changing the text `My license plate is ٢٥٠١٥` to `My license plate is 25015`.
 
 ```console
 GET /_analyze
@@ -48,6 +46,21 @@ The filter produces the following text:
 [ My license plate is 25015 ]
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "My license plate is 25015",
+%       "start_offset": 0,
+%       "end_offset": 25,
+%       "type": "word",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----
+
 
 ## Configurable parameters [analysis-mapping-charfilter-configure-parms]
 
@@ -70,7 +83,7 @@ The filter produces the following text:
 
 To customize the `mappings` filter, duplicate it to create the basis for a new custom character filter. You can modify the filter using its configurable parameters.
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request configures a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md) using a custom `mappings` filter, `my_mappings_char_filter`.
+The following [create index API](indices-create-index.md) request configures a new [custom analyzer](analysis-custom-analyzer.md) using a custom `mappings` filter, `my_mappings_char_filter`.
 
 The `my_mappings_char_filter` filter replaces the `:)` and `:(` emoticons with a text equivalent.
 
@@ -101,7 +114,7 @@ PUT /my-index-000001
 }
 ```
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the custom `my_mappings_char_filter` to replace `:(` with `_sad_` in the text `I'm delighted about it :(`.
+The following [analyze API](indices-analyze.md) request uses the custom `my_mappings_char_filter` to replace `:(` with `_sad_` in the text `I'm delighted about it :(`.
 
 ```console
 GET /my-index-000001/_analyze
@@ -112,10 +125,27 @@ GET /my-index-000001/_analyze
 }
 ```
 
+%  TEST[continued]
+
 The filter produces the following text:
 
 ```text
 [ I'm delighted about it _sad_ ]
 ```
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "I’m delighted about it *sad*",
+%       "start_offset": 0,
+%       "end_offset": 25,
+%       "type": "word",
+%       "position": 0
+%     }
+%   ]
+% }
+% ----
 
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Top metrics"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-top-metrics.html
 ---
 
 # Top metrics aggregation [search-aggregations-metrics-top-metrics]
@@ -44,13 +42,15 @@ Which returns:
 }
 ```
 
-`top_metrics` is fairly similar to [`top_hits`](/reference/data-analysis/aggregations/search-aggregations-metrics-top-hits-aggregation.md) in spirit but because it is more limited it is able to do its job using less memory and is often faster.
+%  TESTRESPONSE
+
+`top_metrics` is fairly similar to [`top_hits`](search-aggregations-metrics-top-hits-aggregation.md) in spirit but because it is more limited it is able to do its job using less memory and is often faster.
 
 ## `sort` [_sort]
 
-The `sort` field in the metric request functions exactly the same as the `sort` field in the [search](/reference/elasticsearch/rest-apis/sort-search-results.md) request except:
+The `sort` field in the metric request functions exactly the same as the `sort` field in the [search](sort-search-results.md) request except:
 
-* It can’t be used on [binary](/reference/elasticsearch/mapping-reference/binary.md), [flattened](/reference/elasticsearch/mapping-reference/flattened.md), [ip](/reference/elasticsearch/mapping-reference/ip.md), [keyword](/reference/elasticsearch/mapping-reference/keyword.md), or [text](/reference/elasticsearch/mapping-reference/text.md) fields.
+* It can’t be used on [binary](binary.md), [flattened](flattened.md), [ip](ip.md), [keyword](keyword.md), or [text](text.md) fields.
 * It only supports a single sort value so which document wins ties is not specified.
 
 The metrics that the aggregation returns is the first hit that would be returned by the search request. So,
@@ -74,12 +74,12 @@ The metrics that the aggregation returns is the first hit that would be returned
 
 `metrics.field` supports the following field types:
 
-* [`boolean`](/reference/elasticsearch/mapping-reference/boolean.md)
-* [`ip`](/reference/elasticsearch/mapping-reference/ip.md)
-* [keywords](/reference/elasticsearch/mapping-reference/keyword.md)
-* [numbers](/reference/elasticsearch/mapping-reference/number.md)
+* [`boolean`](boolean.md)
+* [`ip`](ip.md)
+* [keywords](keyword.md)
+* [numbers](number.md)
 
-Except for keywords, [runtime fields](docs-content://manage-data/data-store/mapping/runtime-fields.md) for corresponding types are also supported. `metrics.field` doesn’t support fields with [array values](/reference/elasticsearch/mapping-reference/array.md). A `top_metric` aggregation on array values may return inconsistent results.
+Except for keywords, [runtime fields](runtime.md) for corresponding types are also supported. `metrics.field` doesn’t support fields with [array values](array.md). A `top_metric` aggregation on array values may return inconsistent results.
 
 The following example runs a `top_metrics` aggregation on several field types.
 
@@ -138,6 +138,8 @@ Which returns:
   }
 }
 ```
+
+%  TESTRESPONSE
 
 
 ## `missing` [_missing]
@@ -249,7 +251,9 @@ Which returns:
 }
 ```
 
-The default `size` is 1. The maximum default size is `10` because the aggregation’s working storage is "dense", meaning we allocate `size` slots for every bucket. `10` is a **very** conservative default maximum and you can raise it if you need to by changing the `top_metrics_max_size` index setting. But know that large sizes can take a fair bit of memory, especially if they are inside of an aggregation which makes many buckes like a large [terms aggregation](#search-aggregations-metrics-top-metrics-example-terms). If you till want to raise it, use something like:
+%  TESTRESPONSE
+
+The default `size` is 1. The maximum default size is `10` because the aggregation’s working storage is "dense", meaning we allocate `size` slots for every bucket. `10` is a **very** conservative default maximum and you can raise it if you need to by changing the `top_metrics_max_size` index setting. But know that large sizes can take a fair bit of memory, especially if they are inside of an aggregation which makes many buckes like a large [terms aggregation](search-aggregations-metrics-top-metrics.md#search-aggregations-metrics-top-metrics-example-terms). If you till want to raise it, use something like:
 
 ```console
 PUT /test/_settings
@@ -258,7 +262,9 @@ PUT /test/_settings
 }
 ```
 
-::::{note}
+%  TEST[continued]
+
+::::{note} 
 If `size` is more than `1` the `top_metrics` aggregation can’t be the **target** of a sort.
 ::::
 
@@ -268,7 +274,7 @@ If `size` is more than `1` the `top_metrics` aggregation can’t be the **target
 
 ### Use with terms [search-aggregations-metrics-top-metrics-example-terms]
 
-This aggregation should be quite useful inside of [`terms`](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md) aggregation, to, say, find the last value reported by each server.
+This aggregation should be quite useful inside of [`terms`](search-aggregations-bucket-terms-aggregation.md) aggregation, to, say, find the last value reported by each server.
 
 $$$search-aggregations-metrics-top-metrics-terms$$$
 
@@ -338,6 +344,8 @@ Which returns:
 }
 ```
 
+%  TESTRESPONSE
+
 Unlike `top_hits`, you can sort buckets by the results of this metric:
 
 ```console
@@ -361,6 +369,8 @@ POST /node/_search?filter_path=aggregations
   }
 }
 ```
+
+%  TEST[continued]
 
 Which returns:
 
@@ -390,6 +400,8 @@ Which returns:
   }
 }
 ```
+
+%  TESTRESPONSE
 
 
 ### Mixed sort types [_mixed_sort_types]
@@ -431,6 +443,8 @@ Which returns:
 }
 ```
 
+%  TESTRESPONSE
+
 While this is better than an error it **probably** isn’t what you were going for. While it does lose some precision, you can explicitly cast the whole number fields to floating points with something like:
 
 ```console
@@ -447,6 +461,8 @@ POST /test*/_search?filter_path=aggregations
 }
 ```
 
+%  TEST[continued]
+
 Which returns the much more expected:
 
 ```js
@@ -458,6 +474,8 @@ Which returns the much more expected:
   }
 }
 ```
+
+%  TESTRESPONSE
 
 
 ### Use in pipeline aggregations [_use_in_pipeline_aggregations_2]
@@ -493,6 +511,8 @@ POST /test*/_search?filter_path=aggregations
   }
 }
 ```
+
+%  TEST[continued]
 
 The `bucket_path` uses the `top_metrics` name `tm` and a keyword for the metric providing the aggregate value, namely `m`.
 

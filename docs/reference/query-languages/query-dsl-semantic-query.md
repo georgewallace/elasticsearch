@@ -1,21 +1,19 @@
 ---
 navigation_title: "Semantic"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-semantic-query.html
 ---
 
 # Semantic query [query-dsl-semantic-query]
 
 
-::::{warning}
+::::{warning} 
 This functionality is in beta and is subject to change. The design and code is less mature than official GA features and is being provided as-is with no warranties. Beta features are not subject to the support SLA of official GA features.
 ::::
 
 
-The `semantic` query type enables you to perform [semantic search](docs-content://solutions/search/semantic-search.md) on data stored in a [`semantic_text`](/reference/elasticsearch/mapping-reference/semantic-text.md) field.
+The `semantic` query type enables you to perform [semantic search](semantic-search.md) on data stored in a [`semantic_text`](semantic-text.md) field.
 
 
-## Example request [semantic-query-example]
+## Example request [semantic-query-example] 
 
 ```console
 GET my-index-000001/_search
@@ -29,8 +27,10 @@ GET my-index-000001/_search
 }
 ```
 
+%  TEST[skip: Requires inference endpoints]
 
-## Top-level parameters for `semantic` [semantic-query-params]
+
+## Top-level parameters for `semantic` [semantic-query-params] 
 
 `field`
 :   (Required, string) The `semantic_text` field to perform the query on.
@@ -38,10 +38,10 @@ GET my-index-000001/_search
 `query`
 :   (Required, string) The query text to be searched for on the field.
 
-Refer to [this tutorial](docs-content://solutions/search/semantic-search/semantic-search-semantic-text.md) to learn more about semantic search using `semantic_text` and `semantic` query.
+Refer to [this tutorial](semantic-search-semantic-text.md) to learn more about semantic search using `semantic_text` and `semantic` query.
 
 
-## Hybrid search with the `semantic` query [hybrid-search-semantic]
+## Hybrid search with the `semantic` query [hybrid-search-semantic] 
 
 The `semantic` query can be used as a part of a hybrid search where the `semantic` query is combined with lexical queries. For example, the query below finds documents with the `title` field matching "mountain lake", and combines them with results from a semantic search on the field `title_semantic`, that is a `semantic_text` field. The combined documents are then scored, and the top 3 top scored documents are returned.
 
@@ -73,7 +73,9 @@ POST my-index/_search
 }
 ```
 
-You can also use semantic_text as part of [Reciprocal Rank Fusion](/reference/elasticsearch/rest-apis/reciprocal-rank-fusion.md) to make ranking relevant results easier:
+%  TEST[skip: Requires inference endpoints]
+
+You can also use semantic_text as part of [Reciprocal Rank Fusion](rrf.md) to make ranking relevant results easier:
 
 ```console
 GET my-index/_search
@@ -107,4 +109,6 @@ GET my-index/_search
   }
 }
 ```
+
+%  TEST[skip: Requires inference endpoints]
 

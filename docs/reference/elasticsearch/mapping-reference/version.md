@@ -1,7 +1,5 @@
 ---
 navigation_title: "Version"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/version.html
 ---
 
 # Version field type [version]
@@ -29,26 +27,26 @@ The field offers the same search capabilities as a regular keyword field. It can
 Software versions are expected to follow the [Semantic Versioning rules](https://semver.org/) schema and precedence rules with the notable exception that more or less than three main version identifiers are allowed (i.e. "1.2" or "1.2.3.4" qualify as valid versions while they wouldn’t under strict Semver rules). Version strings that are not valid under the Semver definition (e.g. "1.2.alpha.4") can still be indexed and retrieved as exact matches, however they will all appear *after* any valid version with regular alphabetical ordering. The empty String "" is considered invalid and sorted after all valid versions, but before other invalid ones.
 
 
-### Parameters for version fields [version-params]
+### Parameters for version fields [version-params] 
 
 The following parameters are accepted by `version` fields:
 
-[`meta`](/reference/elasticsearch/mapping-reference/mapping-field-meta.md)
+[`meta`](mapping-field-meta.md)
 :   Metadata about the field.
 
 
-### Limitations [_limitations_3]
+### Limitations [_limitations_3] 
 
 This field type isn’t optimized for heavy wildcard, regex, or fuzzy searches. While those types of queries work in this field, you should consider using a regular `keyword` field if you strongly rely on these kinds of queries.
 
 ## Synthetic `_source` [version-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices, synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-`version` fields support [synthetic `_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md#synthetic-source) in their default configuration..
+`version` fields support [synthetic `_source`](mapping-source-field.md#synthetic-source) in their default configuration..
 
 Synthetic source may sort `version` field values and remove duplicates. For example:
 
@@ -78,6 +76,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -85,5 +85,7 @@ Will become:
   "versions": ["0.90.12", "1.3.4", "2.6.1", "8.0.0-beta1", "8.5.0"]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 

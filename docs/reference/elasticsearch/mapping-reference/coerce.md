@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/coerce.html
----
-
-# coerce [coerce]
+# `coerce` [coerce]
 
 Data is not always clean. Depending on how it is produced a number might be rendered in the JSON body as a true JSON number, e.g. `5`, but it might also be rendered as a string, e.g. `"5"`. Alternatively, a number that should be an integer might instead be rendered as a floating point, e.g. `5.0`, or even `"5.0"`.
 
@@ -41,12 +36,14 @@ PUT my-index-000001/_doc/2
 }
 ```
 
+%  TEST[catch:bad_request]
+
 1. The `number_one` field will contain the integer `10`.
 2. This document will be rejected because coercion is disabled.
 
 
-::::{tip}
-The `coerce` setting value can be updated on existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+::::{tip} 
+The `coerce` setting value can be updated on existing fields using the [update mapping API](indices-put-mapping.md).
 ::::
 
 
@@ -79,6 +76,8 @@ PUT my-index-000001/_doc/1
 PUT my-index-000001/_doc/2
 { "number_two": "10" } <2>
 ```
+
+%  TEST[catch:bad_request]
 
 1. The `number_one` field overrides the index level setting to enable coercion.
 2. This document will be rejected because the `number_two` field inherits the index-level coercion setting.

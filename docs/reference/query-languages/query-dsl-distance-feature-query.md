@@ -1,29 +1,27 @@
 ---
 navigation_title: "Distance feature"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-distance-feature-query.html
 ---
 
 # Distance feature query [query-dsl-distance-feature-query]
 
 
-Boosts the [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores) of documents closer to a provided `origin` date or point. For example, you can use this query to give more weight to documents closer to a certain date or location.
+Boosts the [relevance score](query-filter-context.md#relevance-scores) of documents closer to a provided `origin` date or point. For example, you can use this query to give more weight to documents closer to a certain date or location.
 
-You can use the `distance_feature` query to find the nearest neighbors to a location. You can also use the query in a [`bool`](/reference/query-languages/query-dsl-bool-query.md) search’s `should` filter to add boosted relevance scores to the `bool` query’s scores.
+You can use the `distance_feature` query to find the nearest neighbors to a location. You can also use the query in a [`bool`](query-dsl-bool-query.md) search’s `should` filter to add boosted relevance scores to the `bool` query’s scores.
 
 ## Example request [distance-feature-query-ex-request]
 
 ### Index setup [distance-feature-index-setup]
 
-To use the `distance_feature` query, your index must include a [`date`](/reference/elasticsearch/mapping-reference/date.md), [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) or [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) field.
+To use the `distance_feature` query, your index must include a [`date`](date.md), [`date_nanos`](date_nanos.md) or [`geo_point`](geo-point.md) field.
 
 To see how you can set up an index for the `distance_feature` query, try the following example.
 
 1. Create an `items` index with the following field mapping:
 
-    * `name`, a [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) field
-    * `production_date`, a [`date`](/reference/elasticsearch/mapping-reference/date.md) field
-    * `location`, a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) field
+    * `name`, a [`keyword`](keyword.md) field
+    * `production_date`, a [`date`](date.md) field
+    * `location`, a [`geo_point`](geo-point.md) field
 
     ```console
     PUT /items
@@ -43,6 +41,8 @@ To see how you can set up an index for the `distance_feature` query, try the fol
       }
     }
     ```
+
+    %  TESTSETUP
 
 2. Index several documents to this index.
 
@@ -135,29 +135,29 @@ GET /items/_search
 `field`
 :   (Required, string) Name of the field used to calculate distances. This field must meet the following criteria:
 
-    * Be a [`date`](/reference/elasticsearch/mapping-reference/date.md), [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) or [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) field
-    * Have an [`index`](/reference/elasticsearch/mapping-reference/mapping-index.md) mapping parameter value of `true`, which is the default
-    * Have an [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) mapping parameter value of `true`, which is the default
+    * Be a [`date`](date.md), [`date_nanos`](date_nanos.md) or [`geo_point`](geo-point.md) field
+    * Have an [`index`](mapping-index.md) mapping parameter value of `true`, which is the default
+    * Have an [`doc_values`](doc-values.md) mapping parameter value of `true`, which is the default
 
 
 `origin`
 :   (Required, string) Date or point of origin used to calculate distances.
 
-If the `field` value is a [`date`](/reference/elasticsearch/mapping-reference/date.md) or [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) field, the `origin` value must be a [date](/reference/data-analysis/aggregations/search-aggregations-bucket-daterange-aggregation.md#date-format-pattern). [Date Math](/reference/elasticsearch/rest-apis/common-options.md#date-math), such as `now-1h`, is supported.
+If the `field` value is a [`date`](date.md) or [`date_nanos`](date_nanos.md) field, the `origin` value must be a [date](search-aggregations-bucket-daterange-aggregation.md#date-format-pattern). [Date Math](common-options.md#date-math), such as `now-1h`, is supported.
 
-If the `field` value is a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) field, the `origin` value must be a geopoint.
+If the `field` value is a [`geo_point`](geo-point.md) field, the `origin` value must be a geopoint.
 
 
 `pivot`
-:   (Required, [time unit](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) or [distance unit](/reference/elasticsearch/rest-apis/api-conventions.md#distance-units)) Distance from the `origin` at which relevance scores receive half of the `boost` value.
+:   (Required, [time unit](api-conventions.md#time-units) or [distance unit](api-conventions.md#distance-units)) Distance from the `origin` at which relevance scores receive half of the `boost` value.
 
-If the `field` value is a [`date`](/reference/elasticsearch/mapping-reference/date.md) or [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) field, the `pivot` value must be a [time unit](/reference/elasticsearch/rest-apis/api-conventions.md#time-units), such as `1h` or `10d`.
+If the `field` value is a [`date`](date.md) or [`date_nanos`](date_nanos.md) field, the `pivot` value must be a [time unit](api-conventions.md#time-units), such as `1h` or `10d`.
 
-If the `field` value is a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) field, the `pivot` value must be a [distance unit](/reference/elasticsearch/rest-apis/api-conventions.md#distance-units), such as `1km` or `12m`.
+If the `field` value is a [`geo_point`](geo-point.md) field, the `pivot` value must be a [distance unit](api-conventions.md#distance-units), such as `1km` or `12m`.
 
 
 `boost`
-:   (Optional, float) Floating point number used to multiply the [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores) of matching documents. This value cannot be negative. Defaults to `1.0`.
+:   (Optional, float) Floating point number used to multiply the [relevance score](query-filter-context.md#relevance-scores) of matching documents. This value cannot be negative. Defaults to `1.0`.
 
 
 
@@ -165,9 +165,9 @@ If the `field` value is a [`geo_point`](/reference/elasticsearch/mapping-referen
 
 ### How the `distance_feature` query calculates relevance scores [distance-feature-calculation]
 
-The `distance_feature` query dynamically calculates the distance between the `origin` value and a document’s field values. It then uses this distance as a feature to boost the [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores) of closer documents.
+The `distance_feature` query dynamically calculates the distance between the `origin` value and a document’s field values. It then uses this distance as a feature to boost the [relevance score](query-filter-context.md#relevance-scores) of closer documents.
 
-The `distance_feature` query calculates a document’s [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores) as follows:
+The `distance_feature` query calculates a document’s [relevance score](query-filter-context.md#relevance-scores) as follows:
 
 ```
 relevance score = boost * pivot / (pivot + distance)
@@ -178,4 +178,7 @@ The `distance` is the absolute difference between the `origin` value and a docum
 
 ### Skip non-competitive hits [distance-feature-skip-hits]
 
-Unlike the [`function_score`](/reference/query-languages/query-dsl-function-score-query.md) query or other ways to change [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores), the `distance_feature` query efficiently skips non-competitive hits when the [`track_total_hits`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) parameter is **not** `true`.
+Unlike the [`function_score`](query-dsl-function-score-query.md) query or other ways to change [relevance scores](query-filter-context.md#relevance-scores), the `distance_feature` query efficiently skips non-competitive hits when the [`track_total_hits`](search-search.md) parameter is ***not*** `true`.
+
+
+

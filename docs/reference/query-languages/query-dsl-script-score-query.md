@@ -1,13 +1,11 @@
 ---
 navigation_title: "Script score"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html
 ---
 
 # Script score query [query-dsl-script-score-query]
 
 
-Uses a [script](docs-content://explore-analyze/scripting.md) to provide a custom score for returned documents.
+Uses a [script](modules-scripting.md) to provide a custom score for returned documents.
 
 The `script_score` query is useful if, for example, a scoring function is expensive and you only need to calculate the score of a filtered set of documents.
 
@@ -38,9 +36,9 @@ GET /_search
 :   (Required, query object) Query used to return documents.
 
 `script`
-:   (Required, [script object](docs-content://explore-analyze/scripting/modules-scripting-using.md)) Script used to compute the score of documents returned by the `query`.
+:   (Required, [script object](modules-scripting-using.md)) Script used to compute the score of documents returned by the `query`.
 
-::::{important}
+::::{important} 
 Final relevance scores from the `script_score` query cannot be negative. To support certain search optimizations, Lucene requires scores be positive or `0`.
 ::::
 
@@ -57,25 +55,25 @@ Final relevance scores from the `script_score` query cannot be negative. To supp
 
 ### Use relevance scores in a script [script-score-access-scores]
 
-Within a script, you can [access](docs-content://explore-analyze/scripting/modules-scripting-fields.md#scripting-score) the `_score` variable which represents the current relevance score of a document.
+Within a script, you can [access](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-fields.html#scripting-score) the `_score` variable which represents the current relevance score of a document.
 
 
 ### Use term statistics in a script [script-score-access-term-statistics]
 
-Within a script, you can [access](docs-content://explore-analyze/scripting/modules-scripting-fields.md#scripting-term-statistics) the `_termStats` variable which provides statistical information about the terms used in the child query of the `script_score` query.
+Within a script, you can [access](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-fields.html#scripting-term-statistics) the `_termStats` variable which provides statistical information about the terms used in the child query of the `script_score` query.
 
 
 ### Predefined functions [script-score-predefined-functions]
 
-You can use any of the available [painless functions](/reference/scripting-languages/painless/painless-contexts.md) in your `script`. You can also use the following predefined functions to customize scoring:
+You can use any of the available [painless functions](https://www.elastic.co/guide/en/elasticsearch/painless/current/painless-contexts.html) in your `script`. You can also use the following predefined functions to customize scoring:
 
-* [Saturation](#script-score-saturation)
-* [Sigmoid](#script-score-sigmoid)
-* [Random score function](#random-score-function)
-* [Decay functions for numeric fields](#decay-functions-numeric-fields)
-* [Decay functions for geo fields](#decay-functions-geo-fields)
-* [Decay functions for date fields](#decay-functions-date-fields)
-* [Functions for vector fields](#script-score-functions-vector-fields)
+* [Saturation](query-dsl-script-score-query.md#script-score-saturation)
+* [Sigmoid](query-dsl-script-score-query.md#script-score-sigmoid)
+* [Random score function](query-dsl-script-score-query.md#random-score-function)
+* [Decay functions for numeric fields](query-dsl-script-score-query.md#decay-functions-numeric-fields)
+* [Decay functions for geo fields](query-dsl-script-score-query.md#decay-functions-geo-fields)
+* [Decay functions for date fields](query-dsl-script-score-query.md#decay-functions-date-fields)
+* [Functions for vector fields](query-dsl-script-score-query.md#script-score-functions-vector-fields)
 
 We suggest using these predefined functions instead of writing your own. These functions take advantage of efficiencies from {{es}}' internal mechanisms.
 
@@ -89,6 +87,8 @@ We suggest using these predefined functions instead of writing your own. These f
 }
 ```
 
+%  NOTCONSOLE
+
 
 #### Sigmoid [script-score-sigmoid]
 
@@ -99,6 +99,8 @@ We suggest using these predefined functions instead of writing your own. These f
     "source" : "sigmoid(doc['my-int'].value, 2, 1)"
 }
 ```
+
+%  NOTCONSOLE
 
 
 #### Random score function [random-score-function]
@@ -113,6 +115,8 @@ We suggest using these predefined functions instead of writing your own. These f
 }
 ```
 
+%  NOTCONSOLE
+
 If the `fieldName` parameter is omitted, the internal Lucene document ids will be used as a source of randomness. This is very efficient, but unfortunately not reproducible since documents might be renumbered by merges.
 
 ```js
@@ -121,12 +125,14 @@ If the `fieldName` parameter is omitted, the internal Lucene document ids will b
 }
 ```
 
+%  NOTCONSOLE
+
 Note that documents that are within the same shard and have the same value for field will get the same score, so it is usually desirable to use a field that has unique values for all documents across a shard. A good default choice might be to use the `_seq_no` field, whose only drawback is that scores will change if the document is updated since update operations also update the value of the `_seq_no` field.
 
 
 #### Decay functions for numeric fields [decay-functions-numeric-fields]
 
-You can read more about decay functions [here](/reference/query-languages/query-dsl-function-score-query.md#function-decay).
+You can read more about decay functions [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay).
 
 * `double decayNumericLinear(double origin, double scale, double offset, double decay, double docValue)`
 * `double decayNumericExp(double origin, double scale, double offset, double decay, double docValue)`
@@ -143,6 +149,8 @@ You can read more about decay functions [here](/reference/query-languages/query-
     }
 }
 ```
+
+%  NOTCONSOLE
 
 1. Using `params` allows to compile the script only once, even if params change.
 
@@ -166,6 +174,8 @@ You can read more about decay functions [here](/reference/query-languages/query-
 }
 ```
 
+%  NOTCONSOLE
+
 
 #### Decay functions for date fields [decay-functions-date-fields]
 
@@ -185,7 +195,9 @@ You can read more about decay functions [here](/reference/query-languages/query-
 }
 ```
 
-::::{note}
+%  NOTCONSOLE
+
+::::{note} 
 Decay functions on dates are limited to dates in the default format and default time zone. Also calculations with `now` are not supported.
 ::::
 
@@ -193,34 +205,34 @@ Decay functions on dates are limited to dates in the default format and default 
 
 #### Functions for vector fields [script-score-functions-vector-fields]
 
-[Functions for vector fields](#vector-functions) are accessible through `script_score` query.
+[Functions for vector fields](query-dsl-script-score-query.md#vector-functions) are accessible through `script_score` query.
 
 
 
 ### Allow expensive queries [_allow_expensive_queries_5]
 
-Script score queries will not be executed if [`search.allow_expensive_queries`](/reference/query-languages/querydsl.md#query-dsl-allow-expensive-queries) is set to false.
+Script score queries will not be executed if [`search.allow_expensive_queries`](query-dsl.md#query-dsl-allow-expensive-queries) is set to false.
 
 
 ### Faster alternatives [script-score-faster-alt]
 
 The `script_score` query calculates the score for every matching document, or hit. There are faster alternative query types that can efficiently skip non-competitive hits:
 
-* If you want to boost documents on some static fields, use the [`rank_feature`](/reference/query-languages/query-dsl-rank-feature-query.md) query.
-* If you want to boost documents closer to a date or geographic point, use the [`distance_feature`](/reference/query-languages/query-dsl-distance-feature-query.md) query.
+* If you want to boost documents on some static fields, use the [`rank_feature`](query-dsl-rank-feature-query.md) query.
+* If you want to boost documents closer to a date or geographic point, use the [`distance_feature`](query-dsl-distance-feature-query.md) query.
 
 
 ### Transition from the function score query [script-score-function-score-transition]
 
-We recommend using the `script_score` query instead of [`function_score`](/reference/query-languages/query-dsl-function-score-query.md) query for the simplicity of the `script_score` query.
+We recommend using the `script_score` query instead of [`function_score`](query-dsl-function-score-query.md) query for the simplicity of the `script_score` query.
 
 You can implement the following functions of the `function_score` query using the `script_score` query:
 
-* [`script_score`](#script-score)
-* [`weight`](#weight)
-* [`random_score`](#random-score)
-* [`field_value_factor`](#field-value-factor)
-* [`decay` functions](#decay-functions)
+* [`script_score`](query-dsl-script-score-query.md#script-score)
+* [`weight`](query-dsl-script-score-query.md#weight)
+* [`random_score`](query-dsl-script-score-query.md#random-score)
+* [`field_value_factor`](query-dsl-script-score-query.md#field-value-factor)
+* [`decay` functions](query-dsl-script-score-query.md#decay-functions)
 
 #### `script_score` [script-score]
 
@@ -240,10 +252,12 @@ What you used in `script_score` of the Function Score query, you can copy into t
 }
 ```
 
+%  NOTCONSOLE
+
 
 #### `random_score` [random-score]
 
-Use `randomScore` function as described in [random score function](#random-score-function).
+Use `randomScore` function as described in [random score function](query-dsl-script-score-query.md#random-score-function).
 
 
 #### `field_value_factor` [field-value-factor]
@@ -259,6 +273,8 @@ Use `randomScore` function as described in [random score function](#random-score
 }
 ```
 
+%  NOTCONSOLE
+
 For checking if a document has a missing value, you can use `doc['field'].size() == 0`. For example, this script will use a value `1` if a document doesn’t have a field `field`:
 
 ```js
@@ -269,6 +285,8 @@ For checking if a document has a missing value, you can use `doc['field'].size()
     }
 }
 ```
+
+%  NOTCONSOLE
 
 This table lists how `field_value_factor` modifiers can be implemented through a script:
 
@@ -288,34 +306,34 @@ This table lists how `field_value_factor` modifiers can be implemented through a
 
 #### `decay` functions [decay-functions]
 
-The `script_score` query has equivalent [decay functions](#decay-functions-numeric-fields) that can be used in scripts.
+The `script_score` query has equivalent [decay functions](query-dsl-script-score-query.md#decay-functions-numeric-fields) that can be used in scripts.
 
 
 
 ### Functions for vector fields [vector-functions]
 
-::::{note}
+::::{note} 
 During vector functions' calculation, all matched documents are linearly scanned. Thus, expect the query time grow linearly with the number of matched documents. For this reason, we recommend to limit the number of matched documents with a `query` parameter.
 ::::
 
 
 This is the list of available vector functions and vector access methods:
 
-1. [`cosineSimilarity`](#vector-functions-cosine) – calculates cosine similarity
-2. [`dotProduct`](#vector-functions-dot-product) – calculates dot product
-3. [`l1norm`](#vector-functions-l1) – calculates L1 distance
-4. [`hamming`](#vector-functions-hamming) – calculates Hamming distance
-5. [`l2norm`](#vector-functions-l2) - calculates L2 distance
-6. [`doc[<field>].vectorValue`](#vector-functions-accessing-vectors) – returns a vector’s value as an array of floats
-7. [`doc[<field>].magnitude`](#vector-functions-accessing-vectors) – returns a vector’s magnitude
+1. [`cosineSimilarity`](query-dsl-script-score-query.md#vector-functions-cosine) – calculates cosine similarity
+2. [`dotProduct`](query-dsl-script-score-query.md#vector-functions-dot-product) – calculates dot product
+3. [`l1norm`](query-dsl-script-score-query.md#vector-functions-l1) – calculates L1 distance
+4. [`hamming`](query-dsl-script-score-query.md#vector-functions-hamming) – calculates Hamming distance
+5. [`l2norm`](query-dsl-script-score-query.md#vector-functions-l2) - calculates L2 distance
+6. [`doc[<field>].vectorValue`](query-dsl-script-score-query.md#vector-functions-accessing-vectors) – returns a vector’s value as an array of floats
+7. [`doc[<field>].magnitude`](query-dsl-script-score-query.md#vector-functions-accessing-vectors) – returns a vector’s magnitude
 
-::::{note}
+::::{note} 
 The `cosineSimilarity` function is not supported for `bit` vectors.
 ::::
 
 
-::::{note}
-The recommended way to access dense vectors is through the `cosineSimilarity`, `dotProduct`, `l1norm` or `l2norm` functions. Please note however, that you should call these functions only once per script. For example, don’t use these functions in a loop to calculate the similarity between a document vector and multiple other vectors. If you need that functionality, reimplement these functions yourself by [accessing vector values directly](#vector-functions-accessing-vectors).
+::::{note} 
+The recommended way to access dense vectors is through the `cosineSimilarity`, `dotProduct`, `l1norm` or `l2norm` functions. Please note however, that you should call these functions only once per script. For example, don’t use these functions in a loop to calculate the similarity between a document vector and multiple other vectors. If you need that functionality, reimplement these functions yourself by [accessing vector values directly](query-dsl-script-score-query.md#vector-functions-accessing-vectors).
 ::::
 
 
@@ -361,6 +379,8 @@ PUT my-index-000001/_doc/2
 POST my-index-000001/_refresh
 ```
 
+%  TESTSETUP
+
 #### Cosine similarity [vector-functions-cosine]
 
 The `cosineSimilarity` function calculates the measure of cosine similarity between a given query vector and document vectors.
@@ -395,7 +415,7 @@ GET my-index-000001/_search
 3. To take advantage of the script optimizations, provide a query vector as a script parameter.
 
 
-::::{note}
+::::{note} 
 If a document’s dense vector field has a number of dimensions different from the query’s vector, an error will be thrown.
 ::::
 
@@ -543,6 +563,8 @@ You can check if a document has a value for the field `my_vector` with `doc['my_
 "source": "doc['my_vector'].size() == 0 ? 0 : cosineSimilarity(params.queryVector, 'my_vector')"
 ```
 
+%  NOTCONSOLE
+
 
 #### Accessing vectors directly [vector-functions-accessing-vectors]
 
@@ -550,14 +572,14 @@ You can access vector values directly through the following functions:
 
 * `doc[<field>].vectorValue` – returns a vector’s value as an array of floats
 
-::::{note}
+::::{note} 
 For `bit` vectors, it does return a `float[]`, where each element represents 8 bits.
 ::::
 
 
 * `doc[<field>].magnitude` – returns a vector’s magnitude as a float (for vectors created prior to version 7.5 the magnitude is not stored. So this function calculates it anew every time it is called).
 
-::::{note}
+::::{note} 
 For `bit` vectors, this is just the square root of the sum of `1` bits.
 ::::
 
@@ -603,12 +625,12 @@ GET my-index-000001/_search
 
 When using `bit` vectors, not all the vector functions are available. The supported functions are:
 
-* [`hamming`](#vector-functions-hamming) – calculates Hamming distance, the sum of the bitwise XOR of the two vectors
-* [`l1norm`](#vector-functions-l1) – calculates L1 distance, this is simply the `hamming` distance
-* [`l2norm`](#vector-functions-l2) - calculates L2 distance, this is the square root of the `hamming` distance
-* [`dotProduct`](#vector-functions-dot-product) – calculates dot product. When comparing two `bit` vectors, this is the sum of the bitwise AND of the two vectors. If providing `float[]` or `byte[]`, who has `dims` number of elements, as a query vector, the `dotProduct` is the sum of the floating point values using the stored `bit` vector as a mask.
+* [`hamming`](query-dsl-script-score-query.md#vector-functions-hamming) – calculates Hamming distance, the sum of the bitwise XOR of the two vectors
+* [`l1norm`](query-dsl-script-score-query.md#vector-functions-l1) – calculates L1 distance, this is simply the `hamming` distance
+* [`l2norm`](query-dsl-script-score-query.md#vector-functions-l2) - calculates L2 distance, this is the square root of the `hamming` distance
+* [`dotProduct`](query-dsl-script-score-query.md#vector-functions-dot-product) – calculates dot product. When comparing two `bit` vectors, this is the sum of the bitwise AND of the two vectors. If providing `float[]` or `byte[]`, who has `dims` number of elements, as a query vector, the `dotProduct` is the sum of the floating point values using the stored `bit` vector as a mask.
 
-::::{note}
+::::{note} 
 When comparing `floats` and `bytes` with `bit` vectors, the `bit` vector is treated as a mask in big-endian order. For example, if the `bit` vector is `10100001` (e.g. the single byte value `161`) and its compared with array of values `[1, 2, 3, 4, 5, 6, 7, 8]` the `dotProduct` will be `1 + 3 + 8 = 16`.
 ::::
 
@@ -648,6 +670,8 @@ PUT my-index-bit-vectors/_doc/3
 POST my-index-bit-vectors/_refresh
 ```
 
+%  TEST[continued]
+
 1. The number of dimensions or bits for the `bit` vector.
 2. This vector represents 5 bytes, or `5 * 8 = 40` bits, which equals the configured dimensions
 
@@ -671,6 +695,8 @@ GET my-index-bit-vectors/_search
 }
 ```
 
+%  TEST[continued]
+
 1. This vector is 40 bits, and thus will compute a bitwise `&` operation with the stored vectors.
 
 
@@ -693,6 +719,8 @@ GET my-index-bit-vectors/_search
 }
 ```
 
+%  TEST[continued]
+
 1. This vector is 40 individual dimensions, and thus will sum the floating point values using the stored `bit` vector as a mask.
 
 
@@ -702,7 +730,7 @@ Currently, the `cosineSimilarity` function is not supported for `bit` vectors.
 
 ### Explain request [score-explanation]
 
-Using an [explain request](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-explain) provides an explanation of how the parts of a score were computed. The `script_score` query can add its own explanation by setting the `explanation` parameter:
+Using an [explain request](search-explain.md) provides an explanation of how the parts of a score were computed. The `script_score` query can add its own explanation by setting the `explanation` parameter:
 
 ```console
 GET /my-index-000001/_explain/0
@@ -726,6 +754,8 @@ GET /my-index-000001/_explain/0
   }
 }
 ```
+
+%  TEST[setup:my_index]
 
 Note that the `explanation` will be null when using in a normal `_search` request, so having a conditional guard is best practice.
 

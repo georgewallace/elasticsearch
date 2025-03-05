@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/saml-metadata.html
----
-
 # elasticsearch-saml-metadata [saml-metadata]
 
 The `elasticsearch-saml-metadata` command can be used to generate a SAML 2.0 Service Provider Metadata file.
 
 
-## Synopsis [_synopsis_8]
+## Synopsis [_synopsis_8] 
 
 ```shell
 bin/elasticsearch-saml-metadata
@@ -24,7 +19,7 @@ bin/elasticsearch-saml-metadata
 ```
 
 
-## Description [_description_15]
+## Description [_description_15] 
 
 The SAML 2.0 specification provides a mechanism for Service Providers to describe their capabilities and configuration using a *metadata file*.
 
@@ -37,7 +32,7 @@ You can optionally select to digitally sign the metadata file in order to ensure
 If your {{es}} keystore is password protected, you are prompted to enter the password when you run the `elasticsearch-saml-metadata` command.
 
 
-## Parameters [saml-metadata-parameters]
+## Parameters [saml-metadata-parameters] 
 
 `--attribute <name>`
 :   Specifies a SAML attribute that should be included as a `<RequestedAttribute>` element in the metadata. Any attribute configured in the {{es}} realm is automatically included and does not need to be specified as a commandline option.
@@ -94,7 +89,7 @@ If your {{es}} keystore is password protected, you are prompted to enter the pas
 :   Shows verbose output.
 
 
-## Examples [_examples_20]
+## Examples [_examples_20] 
 
 The following command generates a default metadata file for the `saml1` realm:
 

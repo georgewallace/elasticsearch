@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-run-from-source.html
----
-
 # Running from the source code [es-connectors-run-from-source]
 
 The basic way to run connectors is to clone the repository and run the code locally. This is a good option if you are comfortable with Python and want to iterate quickly.
 
 
-## Initial setup in Kibana [es-connectors-run-from-source-setup-kibana]
+## Initial setup in Kibana [es-connectors-run-from-source-setup-kibana] 
 
 Follow the **Connector** workflow in the Kibana UI to select the **Connector** ingestion method.
 
@@ -31,7 +26,7 @@ Next, complete these steps:
 
 
 
-#### Clone the repository and edit `config.yml` [es-connectors-run-from-source-source-clone]
+#### Clone the repository and edit `config.yml` [es-connectors-run-from-source-source-clone] 
 
 Once you’ve created an index, and entered the access details for your data source, you’re ready to deploy the connector service.
 
@@ -60,10 +55,10 @@ Follow these steps:
       - connector_id: abcd # No explicit api key specified, so this connector will use <key1>
     ```
 
-    ::::{note}
+    ::::{note} 
     :name: es-connectors-run-from-source-api-keys
 
-    **API keys for connectors**
+    ***API keys for connectors***
 
     You can configure multiple connectors in your `config.yml` file.
 
@@ -80,9 +75,9 @@ Follow these steps:
 
 
 
-#### Run the connector service [es-connectors-run-from-source-run]
+#### Run the connector service [es-connectors-run-from-source-run] 
 
-::::{note}
+::::{note} 
 You need Python version `3.10` or `3.11` to run the connectors service from source.
 
 ::::
@@ -104,3 +99,4 @@ In your terminal or IDE:
 The connector service should now be running. The UI will let you know that the connector has successfully connected to your Elasticsearch instance.
 
 As a reminder, here we’re working locally. In a production setup, you’ll deploy the connector service to your own infrastructure.
+

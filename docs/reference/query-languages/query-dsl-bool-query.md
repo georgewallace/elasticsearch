@@ -1,7 +1,5 @@
 ---
 navigation_title: "Boolean"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
 ---
 
 # Boolean query [query-dsl-bool-query]
@@ -13,8 +11,8 @@ A query that matches documents matching boolean combinations of other queries. T
 | --- | --- |
 | `must` | The clause (query) must appear in matching documents and willcontribute to the score. Each query defined under a `must` acts as a logical "AND", returning only documents that match *all* the specified queries. |
 | `should` | The clause (query) should appear in the matching document. Each query defined under a `should` acts as a logical "OR", returning documents that match *any* of the specified queries. |
-| `filter` | The clause (query) must appear in matching documents. However unlike`must` the score of the query will be ignored. Filter clauses are executedin [filter context](/reference/query-languages/query-filter-context.md), meaning that scoring is ignoredand clauses are considered for caching. Each query defined under a `filter` acts as a logical "AND", returning only documents that match *all* the specified queries. |
-| `must_not` | The clause (query) must not appear in the matchingdocuments. Clauses are executed in [filter context](/reference/query-languages/query-filter-context.md) meaningthat scoring is ignored and clauses are considered for caching. Because scoring isignored, a score of `0` for all documents is returned. Each query defined under a `must_not` acts as a logical "NOT", returning only documents that do not match any of the specified queries. |
+| `filter` | The clause (query) must appear in matching documents. However unlike`must` the score of the query will be ignored. Filter clauses are executedin [filter context](query-filter-context.md), meaning that scoring is ignoredand clauses are considered for caching. Each query defined under a `filter` acts as a logical "AND", returning only documents that match *all* the specified queries. |
+| `must_not` | The clause (query) must not appear in the matchingdocuments. Clauses are executed in [filter context](query-filter-context.md) meaningthat scoring is ignored and clauses are considered for caching. Because scoring isignored, a score of `0` for all documents is returned. Each query defined under a `must_not` acts as a logical "NOT", returning only documents that do not match any of the specified queries. |
 
 The `must` and `should` clauses function as logical AND, OR operators, contributing to the scoring of results. However, these results will not be cached for faster retrieval. In contrast, the `filter` and `must_not` clauses are used to include or exclude results without impacting the score, unless used within a `constant_score` query.
 
@@ -53,7 +51,7 @@ You can use the `minimum_should_match` parameter to specify the number or percen
 
 If the `bool` query includes at least one `should` clause and no `must` or `filter` clauses, the default value is `1`. Otherwise, the default value is `0`.
 
-For other valid values, see the [`minimum_should_match` parameter](/reference/query-languages/query-dsl-minimum-should-match.md).
+For other valid values, see the [`minimum_should_match` parameter](query-dsl-minimum-should-match.md).
 
 
 ## Scoring with `bool.filter` [score-bool-filter]
@@ -119,7 +117,7 @@ GET _search
 
 Each query accepts a `_name` in its top level definition. You can use named queries to track which queries matched returned documents. If named queries are used, the response includes a `matched_queries` property for each hit.
 
-::::{note}
+::::{note} 
 Supplying duplicate `_name` values in the same request results in undefined behavior. Queries with duplicate names may overwrite each other. Query names are assumed to be unique within a single request.
 ::::
 
@@ -146,7 +144,7 @@ GET /_search
 
 The request parameter named `include_named_queries_score` controls whether scores associated with the matched queries are returned or not. When set, the response includes a `matched_queries` map that contains the name of the query that matched as a key and its associated score as the value.
 
-::::{warning}
+::::{warning} 
 Note that the score might not have contributed to the final score of the document, for instance named queries that appear in a filter or must_not contexts, or inside a clause that ignores or modifies the score like `constant_score` or `function_score_query`.
 ::::
 
@@ -171,7 +169,7 @@ GET /_search?include_named_queries_score
 }
 ```
 
-::::{note}
+::::{note} 
 This functionality reruns each named query on every hit in a search response. Typically, this adds a small overhead to a request. However, using computationally expensive named queries on a large number of hits may add significant overhead. For example, named queries in combination with a `top_hits` aggregation on many buckets may lead to longer response times.
 ::::
 

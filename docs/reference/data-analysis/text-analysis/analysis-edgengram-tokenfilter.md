@@ -1,7 +1,5 @@
 ---
 navigation_title: "Edge n-gram"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-edgengram-tokenfilter.html
 ---
 
 # Edge n-gram token filter [analysis-edgengram-tokenfilter]
@@ -13,17 +11,17 @@ For example, you can use the `edge_ngram` token filter to change `quick` to `qu`
 
 When not customized, the filter creates 1-character edge n-grams by default.
 
-This filter uses Lucene’s [EdgeNGramTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/ngram/EdgeNGramTokenFilter.md).
+This filter uses Lucene’s [EdgeNGramTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/ngram/EdgeNGramTokenFilter.md).
 
-::::{note}
-The `edge_ngram` filter is similar to the [`ngram` token filter](/reference/data-analysis/text-analysis/analysis-ngram-tokenizer.md). However, the `edge_ngram` only outputs n-grams that start at the beginning of a token. These edge n-grams are useful for [search-as-you-type](/reference/elasticsearch/mapping-reference/search-as-you-type.md) queries.
+::::{note} 
+The `edge_ngram` filter is similar to the [`ngram` token filter](analysis-ngram-tokenizer.md). However, the `edge_ngram` only outputs n-grams that start at the beginning of a token. These edge n-grams are useful for [search-as-you-type](search-as-you-type.md) queries.
 
 ::::
 
 
 ## Example [analysis-edgengram-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `edge_ngram` filter to convert `the quick brown fox jumps` to 1-character and 2-character edge n-grams:
+The following [analyze API](indices-analyze.md) request uses the `edge_ngram` filter to convert `the quick brown fox jumps` to 1-character and 2-character edge n-grams:
 
 ```console
 GET _analyze
@@ -45,10 +43,88 @@ The filter produces the following tokens:
 [ t, th, q, qu, b, br, f, fo, j, ju ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "t",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "th",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "q",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "qu",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "b",
+%       "start_offset" : 10,
+%       "end_offset" : 15,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "br",
+%       "start_offset" : 10,
+%       "end_offset" : 15,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "f",
+%       "start_offset" : 16,
+%       "end_offset" : 19,
+%       "type" : "<ALPHANUM>",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "fo",
+%       "start_offset" : 16,
+%       "end_offset" : 19,
+%       "type" : "<ALPHANUM>",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "j",
+%       "start_offset" : 20,
+%       "end_offset" : 25,
+%       "type" : "<ALPHANUM>",
+%       "position" : 4
+%     },
+%     {
+%       "token" : "ju",
+%       "start_offset" : 20,
+%       "end_offset" : 25,
+%       "type" : "<ALPHANUM>",
+%       "position" : 4
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-edgengram-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `edge_ngram` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `edge_ngram` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT edge_ngram_example
@@ -72,7 +148,7 @@ PUT edge_ngram_example
 `max_gram`
 :   (Optional, integer) Maximum character length of a gram. For custom token filters, defaults to `2`. For the built-in `edge_ngram` filter, defaults to `1`.
 
-See [Limitations of the `max_gram` parameter](#analysis-edgengram-tokenfilter-max-gram-limits).
+See [Limitations of the `max_gram` parameter](analysis-edgengram-tokenfilter.md#analysis-edgengram-tokenfilter-max-gram-limits).
 
 
 `min_gram`
@@ -122,7 +198,7 @@ The `edge_ngram` filter’s `max_gram` value limits the character length of toke
 
 For example, if the `max_gram` is `3`, searches for `apple` won’t match the indexed term `app`.
 
-To account for this, you can use the [`truncate`](/reference/data-analysis/text-analysis/analysis-truncate-tokenfilter.md) filter with a search analyzer to shorten search terms to the `max_gram` character length. However, this could return irrelevant results.
+To account for this, you can use the [`truncate`](analysis-truncate-tokenfilter.md) filter with a search analyzer to shorten search terms to the `max_gram` character length. However, this could return irrelevant results.
 
 For example, if the `max_gram` is `3` and search terms are truncated to three characters, the search term `apple` is shortened to `app`. This means searches for `apple` return any indexed terms matching `app`, such as `apply`, `snapped`, and `apple`.
 

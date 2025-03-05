@@ -1,7 +1,5 @@
 ---
 navigation_title: "Reverse"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-reverse-tokenfilter.html
 ---
 
 # Reverse token filter [analysis-reverse-tokenfilter]
@@ -11,11 +9,11 @@ Reverses each token in a stream. For example, you can use the `reverse` filter t
 
 Reversed tokens are useful for suffix-based searches, such as finding words that end in `-ion` or searching file names by their extension.
 
-This filter uses Lucene’s [ReverseStringFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/reverse/ReverseStringFilter.md).
+This filter uses Lucene’s [ReverseStringFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/reverse/ReverseStringFilter.md).
 
 ## Example [analysis-reverse-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `reverse` filter to reverse each token in `quick fox jumps`:
+The following [analyze API](indices-analyze.md) request uses the `reverse` filter to reverse each token in `quick fox jumps`:
 
 ```console
 GET _analyze
@@ -32,10 +30,39 @@ The filter produces the following tokens:
 [ kciuq, xof, spmuj ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "kciuq",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "xof",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "spmuj",
+%       "start_offset" : 10,
+%       "end_offset" : 15,
+%       "type" : "<ALPHANUM>",
+%       "position" : 2
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-reverse-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `reverse` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `reverse` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT reverse_example

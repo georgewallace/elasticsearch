@@ -1,7 +1,5 @@
 ---
 navigation_title: "Join"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/parent-join.html
 ---
 
 # Join field type [parent-join]
@@ -9,10 +7,14 @@ mapped_pages:
 
 The `join` data type is a special field that creates parent/child relation within documents of the same index. The `relations` section defines a set of possible relations within the documents, each relation being a parent name and a child name.
 
-::::{warning}
+%  tag::multi-level-join-warning[]
+
+::::{warning} 
 We don’t recommend using multiple levels of relations to replicate a relational model. Each level of relation adds an overhead at query time in terms of memory and computation. For better search performance, denormalize your data instead.
 ::::
 
+
+%  end::multi-level-join-warning[]
 
 A parent/child relation can be defined as follows:
 
@@ -61,6 +63,8 @@ PUT my-index-000001/_doc/2?refresh
 }
 ```
 
+%  TEST[continued]
+
 1. This document is a `question` document.
 
 
@@ -82,12 +86,14 @@ PUT my-index-000001/_doc/2?refresh
 }
 ```
 
+%  TEST[continued]
+
 1. Simpler notation for a parent document just uses the relation name.
 
 
 When indexing a child, the name of the relation as well as the parent id of the document must be added in the `_source`.
 
-::::{warning}
+::::{warning} 
 It is required to index the lineage of a parent in the same shard so you must always route child documents using their greater parent id.
 ::::
 
@@ -116,6 +122,8 @@ PUT my-index-000001/_doc/4?routing=1&refresh
 }
 ```
 
+%  TEST[continued]
+
 1. The routing value is mandatory because parent and child documents must be indexed on the same shard
 2. `answer` is the name of the join for this document
 3. The parent id of this child document
@@ -123,7 +131,7 @@ PUT my-index-000001/_doc/4?routing=1&refresh
 
 ## Parent-join and performance [_parent_join_and_performance]
 
-The join field shouldn’t be used like joins in a relation database. In Elasticsearch the key to good performance is to de-normalize your data into documents. Each join field, `has_child` or `has_parent` query adds a significant tax to your query performance. It can also trigger [global ordinals](/reference/elasticsearch/mapping-reference/eager-global-ordinals.md) to be built.
+The join field shouldn’t be used like joins in a relation database. In Elasticsearch the key to good performance is to de-normalize your data into documents. Each join field, `has_child` or `has_parent` query adds a significant tax to your query performance. It can also trigger [global ordinals](eager-global-ordinals.md) to be built.
 
 The only case where the join field makes sense is if your data contains a one-to-many relationship where one entity significantly outnumbers the other entity. An example of such case is a use case with products and offers for these products. In the case that offers significantly outnumbers the number of products then it makes sense to model the product as parent document and the offer as child document.
 
@@ -131,7 +139,7 @@ The only case where the join field makes sense is if your data contains a one-to
 ## Parent-join restrictions [_parent_join_restrictions]
 
 * Only one `join` field mapping is allowed per index.
-* Parent and child documents must be indexed on the same shard. This means that the same `routing` value needs to be provided when [getting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get), [deleting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-delete), or [updating](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update) a child document.
+* Parent and child documents must be indexed on the same shard. This means that the same `routing` value needs to be provided when [getting](docs-get.md), [deleting](docs-delete.md), or [updating](docs-update.md) a child document.
 * An element can have multiple children but only one parent.
 * It is possible to add a new relation to an existing `join` field.
 * It is also possible to add a child to an existing element but only if the element is already a parent.
@@ -156,6 +164,8 @@ GET my-index-000001/_search
   "sort": ["my_id"]
 }
 ```
+
+%  TEST[continued]
 
 Will return:
 
@@ -234,6 +244,8 @@ Will return:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"timed_out": false, "took": $body.took, "_shards": $body._shards/]
+
 1. This document belongs to the `question` join
 2. This document belongs to the `question` join
 3. This document belongs to the `answer` join
@@ -243,9 +255,9 @@ Will return:
 
 ## Parent-join queries and aggregations [_parent_join_queries_and_aggregations]
 
-See the [`has_child`](/reference/query-languages/query-dsl-has-child-query.md) and [`has_parent`](/reference/query-languages/query-dsl-has-parent-query.md) queries, the [`children`](/reference/data-analysis/aggregations/search-aggregations-bucket-children-aggregation.md) aggregation, and [inner hits](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md#parent-child-inner-hits) for more information.
+See the [`has_child`](query-dsl-has-child-query.md) and [`has_parent`](query-dsl-has-parent-query.md) queries, the [`children`](search-aggregations-bucket-children-aggregation.md) aggregation, and [inner hits](inner-hits.md#parent-child-inner-hits) for more information.
 
-The value of the `join` field is accessible in aggregations and scripts, and may be queried with the [`parent_id` query](/reference/query-languages/query-dsl-parent-id-query.md):
+The value of the `join` field is accessible in aggregations and scripts, and may be queried with the [`parent_id` query](query-dsl-parent-id-query.md):
 
 ```console
 GET my-index-000001/_search
@@ -278,15 +290,63 @@ GET my-index-000001/_search
 }
 ```
 
-1. Querying the `parent id` field (also see the [`has_parent` query](/reference/query-languages/query-dsl-has-parent-query.md) and the [`has_child` query](/reference/query-languages/query-dsl-has-child-query.md))
-2. Aggregating on the `parent id` field (also see the [`children`](/reference/data-analysis/aggregations/search-aggregations-bucket-children-aggregation.md) aggregation)
+%  TEST[continued]
+
+%  TEST[s/_search/_search?filter_path=aggregations,hits.hits&sort=my_id/]
+
+1. Querying the `parent id` field (also see the [`has_parent` query](query-dsl-has-parent-query.md) and the [`has_child` query](query-dsl-has-child-query.md))
+2. Aggregating on the `parent id` field (also see the [`children`](search-aggregations-bucket-children-aggregation.md) aggregation)
 3. Accessing the `parent id` field in scripts.
 
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "parents": {
+%       "doc_count_error_upper_bound": 0,
+%       "sum_other_doc_count": 0,
+%       "buckets": [
+%         {
+%           "key": "1",
+%           "doc_count": 2
+%         }
+%       ]
+%     }
+%   },
+%   "hits": {
+%     "hits": [
+%       {
+%         "_id": "3",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_routing": "1",
+%         "_source": $body.hits.hits.0._source,
+%         "fields": {
+%           "parent": [1]
+%         },
+%         "sort": ["3"]
+%       },
+%       {
+%         "_id": "4",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_routing": "1",
+%         "_source": $body.hits.hits.1._source,
+%         "fields": {
+%           "parent": [1]
+%         },
+%         "sort": ["4"]
+%       }
+%     ]
+%   }
+% }
+% ----
 
 
 ## Global ordinals [_global_ordinals]
 
-The `join` field uses [global ordinals](/reference/elasticsearch/mapping-reference/eager-global-ordinals.md) to speed up joins. Global ordinals need to be rebuilt after any change to a shard. The more parent id values are stored in a shard, the longer it takes to rebuild the global ordinals for the `join` field.
+The `join` field uses [global ordinals](eager-global-ordinals.md) to speed up joins. Global ordinals need to be rebuilt after any change to a shard. The more parent id values are stored in a shard, the longer it takes to rebuild the global ordinals for the `join` field.
 
 Global ordinals, by default, are built eagerly: if the index has changed, global ordinals for the `join` field will be rebuilt as part of the refresh. This can add significant time to the refresh. However most of the times this is the right trade-off, otherwise global ordinals are rebuilt when the first parent-join query or aggregation is used. This can introduce a significant latency spike for your users and usually this is worse as multiple global ordinals for the `join` field may be attempt rebuilt within a single refresh interval when many writes are occurring.
 
@@ -319,6 +379,8 @@ GET _stats/fielddata?human&fields=my_join_field#question
 GET _nodes/stats/indices/fielddata?human&fields=my_join_field#question
 ```
 
+%  TEST[continued]
+
 
 ## Multiple children per parent [_multiple_children_per_parent]
 
@@ -346,7 +408,7 @@ PUT my-index-000001
 
 ## Multiple levels of parent join [_multiple_levels_of_parent_join]
 
-::::{warning}
+::::{warning} 
 We don’t recommend using multiple levels of relations to replicate a relational model. Each level of relation adds an overhead at query time in terms of memory and computation. For better search performance, denormalize your data instead.
 ::::
 
@@ -397,6 +459,8 @@ PUT my-index-000001/_doc/3?routing=1&refresh <1>
   }
 }
 ```
+
+%  TEST[continued]
 
 1. This child document must be on the same shard than its grand-parent and parent
 2. The parent id of this document (must points to an `answer` document)

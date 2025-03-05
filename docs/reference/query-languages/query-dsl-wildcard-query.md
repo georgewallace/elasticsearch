@@ -1,7 +1,5 @@
 ---
 navigation_title: "Wildcard"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html
 ---
 
 # Wildcard query [query-dsl-wildcard-query]
@@ -40,7 +38,7 @@ GET /_search
 ## Parameters for `<field>` [wildcard-query-field-params]
 
 `boost`
-:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) of a query. Defaults to `1.0`.
+:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](query-filter-context.md#relevance-scores) of a query. Defaults to `1.0`.
 
     You can use the `boost` parameter to adjust relevance scores for searches containing two or more queries.
 
@@ -51,7 +49,7 @@ GET /_search
 :   (Optional, Boolean) Allows case insensitive matching of the pattern with the indexed field values when set to true. Default is false which means the case sensitivity of matching depends on the underlying field’s mapping.
 
 `rewrite`
-:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](/reference/query-languages/query-dsl-multi-term-rewrite.md).
+:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](query-dsl-multi-term-rewrite.md).
 
 `value`
 :   (Required, string) Wildcard pattern for terms you wish to find in the provided `<field>`.
@@ -61,7 +59,7 @@ GET /_search
     * `?`, which matches any single character
     * `*`, which can match zero or more characters, including an empty one
 
-    ::::{warning}
+    ::::{warning} 
     Avoid beginning patterns with `*` or `?`. This can increase the iterations needed to find matching terms and slow search performance.
     ::::
 
@@ -72,11 +70,11 @@ GET /_search
 
 ## Notes [wildcard-query-notes]
 
-Wildcard queries using `*` can be resource-intensive, particularly with leading wildcards. To improve performance, minimize their use and consider alternatives like the [n-gram tokenizer](/reference/data-analysis/text-analysis/analysis-ngram-tokenizer.md). While this allows for more efficient searching, it may increase index size. For better performance and accuracy, combine wildcard queries with other query types like [`match`](/reference/query-languages/query-dsl-match-query.md) or [`bool`](/reference/query-languages/query-dsl-bool-query.md) to first narrow down results.
+Wildcard queries using `*` can be resource-intensive, particularly with leading wildcards. To improve performance, minimize their use and consider alternatives like the [n-gram tokenizer](analysis-ngram-tokenizer.md). While this allows for more efficient searching, it may increase index size. For better performance and accuracy, combine wildcard queries with other query types like [`match`](query-dsl-match-query.md) or [`bool`](query-dsl-bool-query.md) to first narrow down results.
 
 ### Allow expensive queries [_allow_expensive_queries_7]
 
-Wildcard queries will not be executed if [`search.allow_expensive_queries`](/reference/query-languages/querydsl.md#query-dsl-allow-expensive-queries) is set to false.
+Wildcard queries will not be executed if [`search.allow_expensive_queries`](query-dsl.md#query-dsl-allow-expensive-queries) is set to false.
 
 
 

@@ -1,13 +1,11 @@
 ---
 navigation_title: "Date histogram"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html
 ---
 
 # Date histogram aggregation [search-aggregations-bucket-datehistogram-aggregation]
 
 
-This multi-bucket aggregation is similar to the normal [histogram](/reference/data-analysis/aggregations/search-aggregations-bucket-histogram-aggregation.md), but it can only be used with date or date range values. Because dates are represented internally in Elasticsearch as long values, it is possible, but not as accurate, to use the normal `histogram` on dates as well. The main difference in the two APIs is that here the interval can be specified using date/time expressions. Time-based data requires special support because time-based intervals are not always a fixed length.
+This multi-bucket aggregation is similar to the normal [histogram](search-aggregations-bucket-histogram-aggregation.md), but it can only be used with date or date range values. Because dates are represented internally in Elasticsearch as long values, it is possible, but not as accurate, to use the normal `histogram` on dates as well. The main difference in the two APIs is that here the interval can be specified using date/time expressions. Time-based data requires special support because time-based intervals are not always a fixed length.
 
 Like the histogram, values are rounded **down** into the closest bucket. For example, if the interval is a calendar day, `2020-01-03T07:00:01Z` is rounded to `2020-01-03T00:00:00Z`. Values are rounded as follows:
 
@@ -43,7 +41,7 @@ The accepted calendar intervals are:
 :   One week is the interval between the start day_of_week:hour:minute:second and the same day of the week and time of the following week in the specified time zone.
 
 `month`, `1M`
-:   One month is the interval between the start day of the month and time of day and the same day of the month and time of the following month in the specified time zone, so that the day of the month and time of day are the same at the start and end. Note that the day may differ if an [`offset` is used that is longer than a month](#search-aggregations-bucket-datehistogram-offset-months).
+:   One month is the interval between the start day of the month and time of day and the same day of the month and time of the following month in the specified time zone, so that the day of the month and time of day are the same at the start and end. Note that the day may differ if an [`offset` is used that is longer than a month](search-aggregations-bucket-datehistogram-aggregation.md#search-aggregations-bucket-datehistogram-offset-months).
 
 `quarter`, `1q`
 :   One quarter is the interval between the start day of the month and time of day and the same day of the month and time of day three months later, so that the day of the month and time of day are the same at the start and end.<br>
@@ -71,6 +69,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 If you attempt to use multiples of calendar units, the aggregation will fail because only singular calendar units are supported:
 
 $$$datehistogram-aggregation-calendar-interval-multiples-example$$$
@@ -89,6 +89,10 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[catch:bad_request]
+
 ```js
 {
   "error" : {
@@ -103,6 +107,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  NOTCONSOLE
 
 
 
@@ -151,6 +157,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 But if we try to use a calendar unit that is not supported, such as weeks, we’ll get an exception:
 
 $$$datehistogram-aggregation-fixed-interval-unsupported-example$$$
@@ -169,6 +177,10 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[catch:bad_request]
+
 ```js
 {
   "error" : {
@@ -184,6 +196,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  NOTCONSOLE
+
 
 
 ## Date histogram usage notes [datehistogram-aggregation-notes]
@@ -194,18 +208,18 @@ Widely distributed applications must also consider vagaries such as countries th
 
 As always, rigorous testing, especially around time-change events, will ensure that your time interval specification is what you intend it to be.
 
-::::{warning}
+::::{warning} 
 To avoid unexpected results, all connected servers and clients must sync to a reliable network time service.
 ::::
 
 
-::::{note}
+::::{note} 
 Fractional time values are not supported, but you can address this by shifting to another time unit (e.g., `1.5h` could instead be specified as `90m`).
 ::::
 
 
-::::{note}
-You can also specify time values using abbreviations supported by [time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) parsing.
+::::{note} 
+You can also specify time values using abbreviations supported by [time units](api-conventions.md#time-units) parsing.
 ::::
 
 
@@ -214,8 +228,8 @@ You can also specify time values using abbreviations supported by [time units](/
 
 Internally, a date is represented as a 64 bit number representing a timestamp in milliseconds-since-the-epoch (01/01/1970 midnight UTC). These timestamps are returned as the `key` name of the bucket. The `key_as_string` is the same timestamp converted to a formatted date string using the `format` parameter specification:
 
-::::{tip}
-If you don’t specify `format`, the first date [format](/reference/elasticsearch/mapping-reference/mapping-date-format.md) specified in the field mapping is used.
+::::{tip} 
+If you don’t specify `format`, the first date [format](mapping-date-format.md) specified in the field mapping is used.
 ::::
 
 
@@ -236,7 +250,9 @@ POST /sales/_search?size=0
 }
 ```
 
-1. Supports expressive date [format pattern](/reference/data-analysis/aggregations/search-aggregations-bucket-daterange-aggregation.md#date-format-pattern)
+%  TEST[setup:sales]
+
+1. Supports expressive date [format pattern](search-aggregations-bucket-daterange-aggregation.md#date-format-pattern)
 
 
 Response:
@@ -267,6 +283,8 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 
 ## Time zone [datehistogram-aggregation-time-zone]
@@ -336,6 +354,8 @@ If you don’t specify a time zone, UTC is used. This would result in both of th
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 If you specify a `time_zone` of `-01:00`, midnight in that time zone is one hour before midnight UTC:
 
 ```console
@@ -352,6 +372,8 @@ GET my-index-000001/_search?size=0
   }
 }
 ```
+
+%  TEST[continued]
 
 Now the first document falls into the bucket for 30 September 2015, while the second document falls into the bucket for 1 October 2015:
 
@@ -377,10 +399,12 @@ Now the first document falls into the bucket for 30 September 2015, while the se
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 1. The `key_as_string` value represents midnight on each day in the specified time zone.
 
 
-::::{warning}
+::::{warning} 
 Many time zones shift their clocks for daylight savings time. Buckets close to the moment when those changes happen can have slightly different sizes than you would expect from the `calendar_interval` or `fixed_interval`. For example, consider a DST start in the `CET` time zone: on 27 March 2016 at 2am, clocks were turned forward 1 hour to 3am local time. If you use `day` as the `calendar_interval`, the bucket covering that day will only hold data for 23 hours instead of the usual 24 hours for other buckets. The same is true for shorter intervals, like a `fixed_interval` of `12h`, where you’ll have only a 11h bucket on the morning of 27 March when the DST shift happens.
 ::::
 
@@ -388,9 +412,13 @@ Many time zones shift their clocks for daylight savings time. Buckets close to t
 
 ## Offset [search-aggregations-bucket-datehistogram-offset]
 
-Use the `offset` parameter to change the start value of each bucket by the specified positive (`+`) or negative offset (`-`) duration, such as `1h` for an hour, or `1d` for a day. See [Time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) for more possible time duration options.
+%  tag::offset-explanation[]
+
+Use the `offset` parameter to change the start value of each bucket by the specified positive (`+`) or negative offset (`-`) duration, such as `1h` for an hour, or `1d` for a day. See [Time units](api-conventions.md#time-units) for more possible time duration options.
 
 For example, when using an interval of `day`, each bucket runs from midnight to midnight. Setting the `offset` parameter to `+6h` changes each bucket to run from 6am to 6am:
+
+%  end::offset-explanation[]
 
 $$$datehistogram-aggregation-offset-example$$$
 
@@ -419,7 +447,11 @@ GET my-index-000001/_search?size=0
 }
 ```
 
+%  tag::offset-result-intro[]
+
 Instead of a single bucket starting at midnight, the above request groups the documents into buckets starting at 6am:
+
+%  end::offset-result-intro[]
 
 ```console-result
 {
@@ -443,10 +475,16 @@ Instead of a single bucket starting at midnight, the above request groups the do
 }
 ```
 
-::::{note}
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+%  tag::offset-note[]
+
+::::{note} 
 The start `offset` of each bucket is calculated after `time_zone` adjustments have been made.
 ::::
 
+
+%  end::offset-note[]
 
 ### Long offsets over calendar intervals [search-aggregations-bucket-datehistogram-offset-months]
 
@@ -471,6 +509,8 @@ $$$datehistogram-aggregation-offset-example-19d$$$
 ]
 ```
 
+%  TESTRESPONSE[skip:no setup made for this example yet]
+
 Increasing the offset to `+20d`, each document will appear in a bucket for the previous month, with all bucket keys ending with the same day of the month, as normal. However, further increasing to `+28d`, what used to be a February bucket has now become `"2022-03-01"`.
 
 $$$datehistogram-aggregation-offset-example-28d$$$
@@ -488,6 +528,8 @@ $$$datehistogram-aggregation-offset-example-28d$$$
 ]
 ```
 
+%  TESTRESPONSE[skip:no setup made for this example yet]
+
 If we continue to increase the offset, the 30-day months will also shift into the next month, so that 3 of the 8 buckets have different days than the other five. In fact if we keep going, we will find cases where two documents appear in the same month. Documents that were originally 30 days apart can be shifted into the same 31-day month bucket.
 
 For example, for `+50d` we see:
@@ -503,6 +545,8 @@ $$$datehistogram-aggregation-offset-example-50d$$$
   { "key_as_string": "2022-08-20", "key": 1660953600000, "doc_count": 1 }
 ]
 ```
+
+%  TESTRESPONSE[skip:no setup made for this example yet]
 
 It is therefore always important when using `offset` with `calendar_interval` bucket sizes to understand the consequences of using offsets larger than the interval size.
 
@@ -535,6 +579,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 Response:
 
 ```console-result
@@ -564,10 +610,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 
 ## Scripts [date-histogram-scripts]
 
-If the data in your documents doesn’t exactly match what you’d like to aggregate, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) . For example, if the revenue for promoted sales should be recognized a day after the sale date:
+If the data in your documents doesn’t exactly match what you’d like to aggregate, use a [runtime field](runtime.md) . For example, if the revenue for promoted sales should be recognized a day after the sale date:
 
 $$$datehistogram-aggregation-runtime-field$$$
 
@@ -597,10 +645,43 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
+% 
+% [source,console-result]
+% ----
+% {
+%   …​
+%   "aggregations": {
+%     "sales_over_time": {
+%       "buckets": [
+%         {
+%           "key_as_string": "2015-01-01T00:00:00.000Z",
+%           "key": 1420070400000,
+%           "doc_count": 3
+%         },
+%         {
+%           "key_as_string": "2015-02-01T00:00:00.000Z",
+%           "key": 1422748800000,
+%           "doc_count": 2
+%         },
+%         {
+%           "key_as_string": "2015-03-01T00:00:00.000Z",
+%           "key": 1425168000000,
+%           "doc_count": 2
+%         }
+%       ]
+%     }
+%   }
+% }
+% ----
+% // TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+% 
+
 
 ## Parameters [date-histogram-params]
 
-You can control the order of the returned buckets using the `order` settings and filter the returned buckets based on a `min_doc_count` setting (by default all buckets between the first bucket that matches documents and the last one are returned). This histogram also supports the `extended_bounds` setting, which enables extending the bounds of the histogram beyond the data itself, and `hard_bounds` that limits the histogram to specified bounds. For more information, see [`Extended Bounds`](/reference/data-analysis/aggregations/search-aggregations-bucket-histogram-aggregation.md#search-aggregations-bucket-histogram-aggregation-extended-bounds) and [`Hard Bounds`](/reference/data-analysis/aggregations/search-aggregations-bucket-histogram-aggregation.md#search-aggregations-bucket-histogram-aggregation-hard-bounds).
+You can control the order of the returned buckets using the `order` settings and filter the returned buckets based on a `min_doc_count` setting (by default all buckets between the first bucket that matches documents and the last one are returned). This histogram also supports the `extended_bounds` setting, which enables extending the bounds of the histogram beyond the data itself, and `hard_bounds` that limits the histogram to specified bounds. For more information, see [`Extended Bounds`](search-aggregations-bucket-histogram-aggregation.md#search-aggregations-bucket-histogram-aggregation-extended-bounds) and [`Hard Bounds`](search-aggregations-bucket-histogram-aggregation.md#search-aggregations-bucket-histogram-aggregation-hard-bounds).
 
 ### Missing value [date-histogram-missing-value]
 
@@ -623,18 +704,20 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 1. Documents without a value in the `date` field will fall into the same bucket as documents that have the value `2000-01-01`.
 
 
 
 ### Order [date-histogram-order]
 
-By default the returned buckets are sorted by their `key` ascending, but you can control the order using the `order` setting. This setting supports the same `order` functionality as [`Terms Aggregation`](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order).
+By default the returned buckets are sorted by their `key` ascending, but you can control the order using the `order` setting. This setting supports the same `order` functionality as [`Terms Aggregation`](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order).
 
 
 ### Using a script to aggregate by day of the week [date-histogram-aggregate-scripts]
 
-When you need to aggregate the results by day of the week, run a `terms` aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) that returns the day of the week:
+When you need to aggregate the results by day of the week, run a `terms` aggregation on a [runtime field](runtime.md) that returns the day of the week:
 
 $$$datehistogram-aggregation-day-of-week-runtime-field$$$
 
@@ -654,6 +737,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 Response:
 
@@ -678,6 +763,8 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 The response will contain all the buckets having the relative day of the week as key : 1 for Monday, 2 for Tuesday…​ 7 for Sunday.
 

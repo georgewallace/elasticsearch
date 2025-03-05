@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-malformed.html
----
+# `ignore_malformed` [ignore-malformed]
 
-# ignore_malformed [ignore-malformed]
-
-Sometimes you don’t have much control over the data that you receive. One user may send a `login` field that is a [`date`](/reference/elasticsearch/mapping-reference/date.md), and another sends a `login` field that is an email address.
+Sometimes you don’t have much control over the data that you receive. One user may send a `login` field that is a [`date`](date.md), and another sends a `login` field that is an email address.
 
 Trying to index the wrong data type into a field throws an exception by default, and rejects the whole document. The `ignore_malformed` parameter, if set to `true`, allows the exception to be ignored. The malformed field is not indexed, but other fields in the document are processed normally.
 
@@ -40,35 +35,37 @@ PUT my-index-000001/_doc/2
 }
 ```
 
+%  TEST[catch:bad_request]
+
 1. This document will have the `text` field indexed, but not the `number_one` field.
 2. This document will be rejected because `number_two` does not allow malformed values.
 
 
-The `ignore_malformed` setting is currently supported by the following [mapping types](/reference/elasticsearch/mapping-reference/field-data-types.md):
+The `ignore_malformed` setting is currently supported by the following [mapping types](mapping-types.md):
 
-[Numeric](/reference/elasticsearch/mapping-reference/number.md)
+[Numeric](number.md)
 :   `long`, `integer`, `short`, `byte`, `double`, `float`, `half_float`, `scaled_float`
 
-[Boolean](/reference/elasticsearch/mapping-reference/boolean.md)
+[Boolean](boolean.md)
 :   `boolean`
 
-[Date](/reference/elasticsearch/mapping-reference/date.md)
+[Date](date.md)
 :   `date`
 
-[Date nanoseconds](/reference/elasticsearch/mapping-reference/date_nanos.md)
+[Date nanoseconds](date_nanos.md)
 :   `date_nanos`
 
-[Geopoint](/reference/elasticsearch/mapping-reference/geo-point.md)
+[Geopoint](geo-point.md)
 :   `geo_point` for lat/lon points
 
-[Geoshape](/reference/elasticsearch/mapping-reference/geo-shape.md)
+[Geoshape](geo-shape.md)
 :   `geo_shape` for complex shapes like polygons
 
-[IP](/reference/elasticsearch/mapping-reference/ip.md)
+[IP](ip.md)
 :   `ip` for IPv4 and IPv6 addresses
 
-::::{tip}
-The `ignore_malformed` setting value can be updated on existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+::::{tip} 
+The `ignore_malformed` setting value can be updated on existing fields using the [update mapping API](indices-put-mapping.md).
 ::::
 
 
@@ -103,16 +100,16 @@ PUT my-index-000001
 
 ## Dealing with malformed fields [_dealing_with_malformed_fields]
 
-Malformed fields are silently ignored at indexing time when `ignore_malformed` is turned on. Whenever possible it is recommended to keep the number of documents that have a malformed field contained, or queries on this field will become meaningless. Elasticsearch makes it easy to check how many documents have malformed fields by using `exists`,`term` or `terms` queries on the special [`_ignored`](/reference/elasticsearch/mapping-reference/mapping-ignored-field.md) field.
+Malformed fields are silently ignored at indexing time when `ignore_malformed` is turned on. Whenever possible it is recommended to keep the number of documents that have a malformed field contained, or queries on this field will become meaningless. Elasticsearch makes it easy to check how many documents have malformed fields by using `exists`,`term` or `terms` queries on the special [`_ignored`](mapping-ignored-field.md) field.
 
 
 ## Limits for JSON Objects [json-object-limits]
 
 You can’t use `ignore_malformed` with the following data types:
 
-* [Nested data type](/reference/elasticsearch/mapping-reference/nested.md)
-* [Object data type](/reference/elasticsearch/mapping-reference/object.md)
-* [Range data types](/reference/elasticsearch/mapping-reference/range.md)
+* [Nested data type](nested.md)
+* [Object data type](object.md)
+* [Range data types](range.md)
 
 You also can’t use `ignore_malformed` to ignore JSON objects submitted to fields of the wrong data type. A JSON object is any data surrounded by curly brackets `"{}"` and includes data mapped to the nested, object, and range data types.
 

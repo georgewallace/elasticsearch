@@ -1,7 +1,5 @@
 ---
 navigation_title: "Point"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/point.html
 ---
 
 # Point field type [point]
@@ -9,9 +7,9 @@ mapped_pages:
 
 The `point` data type facilitates the indexing of and searching arbitrary `x, y` pairs that fall in a 2-dimensional planar coordinate system.
 
-You can query documents using this type using [shape Query](/reference/query-languages/query-dsl-shape-query.md).
+You can query documents using this type using [shape Query](query-dsl-shape-query.md).
 
-As with [geo_shape](/reference/elasticsearch/mapping-reference/geo-shape.md) and [geo_point](/reference/elasticsearch/mapping-reference/geo-point.md), `point` can be specified in [GeoJSON](http://geojson.org) and [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) formats. However, there are a number of additional formats that are supported for convenience and historical reasons. In total there are five ways that a cartesian point may be specified, as demonstrated below:
+As with [geo_shape](geo-shape.md) and [geo_point](geo-point.md), `point` can be specified in [GeoJSON](http://geojson.org) and [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) formats. However, there are a number of additional formats that are supported for convenience and historical reasons. In total there are five ways that a cartesian point may be specified, as demonstrated below:
 
 ```console
 PUT my-index-000001
@@ -69,8 +67,8 @@ PUT my-index-000001/_doc/5
 5. Point expressed as a string with the format: `"x,y"`.
 
 
-::::{note}
-Unlike the case with the [geo-point](/reference/elasticsearch/mapping-reference/geo-point.md) field type, the order of the coordinates `x` and `y` is the same for all formats above.
+::::{note} 
+Unlike the case with the [geo-point](https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html) field type, the order of the coordinates `x` and `y` is the same for all formats above.
 ::::
 
 
@@ -80,13 +78,13 @@ The coordinates provided to the indexer are single precision floating point valu
 
 The following parameters are accepted by `point` fields:
 
-[`ignore_malformed`](/reference/elasticsearch/mapping-reference/ignore-malformed.md)
+[`ignore_malformed`](ignore-malformed.md)
 :   If `true`, malformed points are ignored. If `false` (default), malformed points throw an exception and reject the whole document.
 
 `ignore_z_value`
 :   If `true` (default) three dimension points will be accepted (stored in source) but only x and y values will be indexed; the third dimension is ignored. If `false`, points containing any more than x and y (two dimensions) values throw an exception and reject the whole document.
 
-[`null_value`](/reference/elasticsearch/mapping-reference/null-value.md)
+[`null_value`](null-value.md)
 :   Accepts an point value which is substituted for any explicit `null` values. Defaults to `null`, which means the field is treated as missing.
 
 

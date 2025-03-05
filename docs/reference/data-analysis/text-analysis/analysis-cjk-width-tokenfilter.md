@@ -1,7 +1,5 @@
 ---
 navigation_title: "CJK width"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-cjk-width-tokenfilter.html
 ---
 
 # CJK width token filter [analysis-cjk-width-tokenfilter]
@@ -12,10 +10,10 @@ Normalizes width differences in CJK (Chinese, Japanese, and Korean) characters a
 * Folds full-width ASCII character variants into the equivalent basic Latin characters
 * Folds half-width Katakana character variants into the equivalent Kana characters
 
-This filter is included in {{es}}'s built-in [CJK language analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#cjk-analyzer). It uses Lucene’s [CJKWidthFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/cjk/CJKWidthFilter.md).
+This filter is included in {{es}}'s built-in [CJK language analyzer](analysis-lang-analyzer.md#cjk-analyzer). It uses Lucene’s [CJKWidthFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/cjk/CJKWidthFilter.md).
 
-::::{note}
-This token filter can be viewed as a subset of NFKC/NFKD Unicode normalization. See the [`analysis-icu` plugin](/reference/elasticsearch-plugins/analysis-icu-normalization-charfilter.md) for full normalization support.
+::::{note} 
+This token filter can be viewed as a subset of NFKC/NFKD Unicode normalization. See the [`analysis-icu` plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu-normalization-charfilter.html) for full normalization support.
 ::::
 
 
@@ -36,10 +34,25 @@ The filter produces the following token:
 シーサイドライナー
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "シーサイドライナー",
+%       "start_offset" : 0,
+%       "end_offset" : 10,
+%       "type" : "<KATAKANA>",
+%       "position" : 0
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-cjk-width-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the CJK width token filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the CJK width token filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /cjk_width_example

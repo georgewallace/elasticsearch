@@ -1,7 +1,5 @@
 ---
 navigation_title: "Pattern capture"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-capture-tokenfilter.html
 ---
 
 # Pattern capture token filter [analysis-pattern-capture-tokenfilter]

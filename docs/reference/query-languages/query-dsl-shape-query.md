@@ -1,7 +1,5 @@
 ---
 navigation_title: "Shape"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-shape-query.html
 ---
 
 # Shape query [query-dsl-shape-query]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Queries documents that contain fields indexed using the `shape` type.
 
-Requires the [`shape` Mapping](/reference/elasticsearch/mapping-reference/shape.md).
+Requires the [`shape` Mapping](shape.md).
 
 The query supports two ways of defining the target shape, either by providing a whole shape definition, or by referencing the name, or id, of a shape pre-indexed in another index. Both formats are defined below with examples.
 
@@ -41,6 +39,8 @@ PUT /example/_doc/1?refresh=wait_for
 }
 ```
 
+%  TESTSETUP
+
 The following query will find the point using the Elasticsearch’s `envelope` GeoJSON extension:
 
 ```console
@@ -59,6 +59,45 @@ GET /example/_search
   }
 }
 ```
+
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "took": 3,
+%   "timed_out": false,
+%   "_shards": {
+%     "total": 1,
+%     "successful": 1,
+%     "skipped": 0,
+%     "failed": 0
+%   },
+%   "hits": {
+%     "total": {
+%       "value": 1,
+%       "relation": "eq"
+%     },
+%     "max_score": 0.0,
+%     "hits": [
+%       {
+%         "_index": "example",
+%         "_id": "1",
+%         "_score": 0.0,
+%         "_source": {
+%           "name": "Lucky Landing",
+%           "geometry": {
+%             "type": "point",
+%             "coordinates": [
+%               1355.400544,
+%               5255.530286
+%             ]
+%           }
+%         }
+%       }
+%     ]
+%   }
+% }
+% --------------------------------------------------
+% // TESTRESPONSE[s/"took": 3/"took": $body.took/]
 
 
 ## Pre-Indexed Shape [_pre_indexed_shape_2]
@@ -119,7 +158,7 @@ The following is a complete list of spatial relation operators available:
 * `CONTAINS` - Return all documents whose `shape` field contains the query geometry.
 
 
-### Ignore Unmapped [_ignore_unmapped_5]
+### Ignore Unmapped [_ignore_unmapped_5] 
 
 When set to `true` the `ignore_unmapped` option will ignore an unmapped field and will not match any documents for this query. This can be useful when querying multiple indexes which might have different mappings. When set to `false` (the default value) the query will throw an exception if the field is not mapped.
 

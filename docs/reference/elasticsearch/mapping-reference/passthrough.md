@@ -1,13 +1,11 @@
 ---
 navigation_title: "Pass-through object"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/passthrough.html
 ---
 
 # Pass-through object field type [passthrough]
 
 
-Pass-through objects extend the functionality of [objects](/reference/elasticsearch/mapping-reference/object.md) by allowing to access their subfields without including the name of the pass-through object as prefix. For instance:
+Pass-through objects extend the functionality of [objects](object.md) by allowing to access their subfields without including the name of the pass-through object as prefix. For instance:
 
 ```console
 PUT my-index-000001
@@ -120,7 +118,7 @@ It’s possible for conflicting names to arise, for fields that are defined with
 
 ## Defining sub-fields as time-series dimensions [passthrough-dimensions]
 
-It is possible to configure a pass-through field as a container for  [time-series dimensions](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-dimension). In this case, all sub-fields get annotated with the same parameter under the covers, and they’re also included in [routing path](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#dimension-based-routing) and [tsid](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#tsid) calculations, thus simplifying the [TSDS](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md) setup:
+It is possible to configure a pass-through field as a container for  [time-series dimensions](tsds.md#time-series-dimension). In this case, all sub-fields get annotated with the same parameter under the covers, and they’re also included in [routing path](tsds.md#dimension-based-routing) and [tsid](tsds.md#tsid) calculations, thus simplifying the [TSDS](tsds.md) setup:
 
 ```console
 PUT _index_template/my-metrics
@@ -164,35 +162,37 @@ POST metrics-mymetrics-test/_doc
 }
 ```
 
+%  TEST[skip: The @timestamp value won’t match an accepted range in the TSDS]
+
 In the example above, `attributes` is defined as a dimension container. Its sub-fields `host.name` (static) and `zone` (dynamic) get included in the routing path and tsid, and can be referenced in queries without the `attributes.` prefix.
 
 
 ## Sub-field auto-flattening [passthrough-flattening]
 
-Pass-through fields apply [auto-flattening](/reference/elasticsearch/mapping-reference/subobjects.md#subobjects-auto-flattening) to sub-fields by default, to reduce dynamic mapping conflicts. As a consequence, no sub-object definitions are allowed within pass-through fields.
+Pass-through fields apply [auto-flattening](subobjects.md#subobjects-auto-flattening) to sub-fields by default, to reduce dynamic mapping conflicts. As a consequence, no sub-object definitions are allowed within pass-through fields.
 
 
 ## Parameters for `passthrough` fields [passthrough-params]
 
 The following parameters are accepted by `passthrough` fields:
 
-[`priority`](#passthrough-conflicts)
+[`priority`](passthrough.md#passthrough-conflicts)
 :   (Required) used for naming conflict resolution between pass-through fields. The field with the highest value wins. Accepts non-negative integer values.
 
-[`time_series_dimension`](#passthrough-dimensions)
-:   Whether or not to treat sub-fields as [time-series dimensions](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-dimension). Accepts `false` (default) or `true`.
+[`time_series_dimension`](passthrough.md#passthrough-dimensions)
+:   Whether or not to treat sub-fields as [time-series dimensions](tsds.md#time-series-dimension). Accepts `false` (default) or `true`.
 
-[`dynamic`](/reference/elasticsearch/mapping-reference/dynamic.md)
+[`dynamic`](dynamic.md)
 :   Whether or not new `properties` should be added dynamically to an existing object. Accepts `true` (default), `runtime`, `false` and `strict`.
 
-[`enabled`](/reference/elasticsearch/mapping-reference/enabled.md)
+[`enabled`](enabled.md)
 :   Whether the JSON value given for the object field should be parsed and indexed (`true`, default) or completely ignored (`false`).
 
-[`properties`](/reference/elasticsearch/mapping-reference/properties.md)
-:   The fields within the object, which can be of any [data type](/reference/elasticsearch/mapping-reference/field-data-types.md), including `object`. New properties may be added to an existing object.
+[`properties`](properties.md)
+:   The fields within the object, which can be of any [data type](mapping-types.md), including `object`. New properties may be added to an existing object.
 
-::::{important}
-If you need to index arrays of objects instead of single objects, read [Nested](/reference/elasticsearch/mapping-reference/nested.md) first.
+::::{important} 
+If you need to index arrays of objects instead of single objects, read [Nested](nested.md) first.
 ::::
 
 

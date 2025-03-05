@@ -1,7 +1,5 @@
 ---
 navigation_title: "Bucket count K-S test"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-count-ks-test-aggregation.html
 ---
 
 # Bucket count K-S test correlation aggregation [search-aggregations-bucket-count-ks-test-aggregation]
@@ -12,7 +10,7 @@ A sibling pipeline aggregation which executes a two sample Kolmogorov–Smirnov 
 ## Parameters [bucket-count-ks-test-agg-syntax]
 
 `buckets_path`
-:   (Required, string) Path to the buckets that contain one set of values to correlate. Must be a `_count` path For syntax, see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax).
+:   (Required, string) Path to the buckets that contain one set of values to correlate. Must be a `_count` path For syntax, see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax).
 
 `alternative`
 :   (Optional, list) A list of string values indicating which K-S test alternative to calculate. The valid values are: "greater", "less", "two_sided". This parameter is key for determining the K-S statistic used when calculating the K-S test. Default value is all possible alternative hypotheses.
@@ -38,6 +36,8 @@ A `bucket_count_ks_test` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 1. The buckets containing the values to test against.
 2. The alternatives to calculate.
 3. The sampling method for the K-S statistic.
@@ -46,7 +46,7 @@ A `bucket_count_ks_test` aggregation looks like this in isolation:
 
 ## Example [bucket-count-ks-test-agg-example]
 
-The following snippet runs the `bucket_count_ks_test` on the individual terms in the field `version` against a uniform distribution. The uniform distribution reflects the `latency` percentile buckets. Not shown is the pre-calculation of the `latency` indicator values, which was done utilizing the [percentiles](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md) aggregation.
+The following snippet runs the `bucket_count_ks_test` on the individual terms in the field `version` against a uniform distribution. The uniform distribution reflects the `latency` percentile buckets. Not shown is the pre-calculation of the `latency` indicator values, which was done utilizing the [percentiles](search-aggregations-metrics-percentile-aggregation.md) aggregation.
 
 This example is only using the deciles of `latency`.
 
@@ -89,6 +89,8 @@ POST correlate_latency/_search?size=0&filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:correlate_latency]
 
 1. The term buckets containing a range aggregation and the bucket correlation aggregation. Both are utilized to calculate the correlation of the term values with the latency.
 2. The range aggregation on the latency field. The ranges were created referencing the percentiles of the latency field.

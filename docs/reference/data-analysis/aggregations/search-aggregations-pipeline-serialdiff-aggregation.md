@@ -1,7 +1,5 @@
 ---
 navigation_title: "Serial differencing"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-serialdiff-aggregation.html
 ---
 
 # Serial differencing aggregation [search-aggregations-pipeline-serialdiff-aggregation]
@@ -15,7 +13,7 @@ Single periods are also useful for transforming data into a stationary series. I
 
 By calculating the first-difference, we de-trend the data (e.g. remove a constant, linear trend). We can see that the data becomes a stationary series (e.g. the first difference is randomly distributed around zero, and doesn’t seem to exhibit any pattern/behavior). The transformation reveals that the dataset is following a random-walk; the value is the previous value +/- a random amount. This insight allows selection of further tools for analysis.
 
-:::{image} ../../../images/dow.png
+:::{image} images/dow.png
 :alt: dow
 :title: Dow Jones plotted and made stationary with first-differencing
 :name: serialdiff_dow
@@ -25,7 +23,7 @@ Larger periods can be used to remove seasonal / cyclic behavior. In this example
 
 The first-difference removes the constant trend, leaving just a sine wave. The 30th-difference is then applied to the first-difference to remove the cyclic behavior, leaving a stationary series which is amenable to other analysis.
 
-:::{image} ../../../images/lemmings.png
+:::{image} images/lemmings.png
 :alt: lemmings
 :title: Lemmings data plotted made stationary with 1st and 30th difference
 :name: serialdiff_lemmings
@@ -44,11 +42,13 @@ A `serial_diff` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$serial-diff-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | Path to the metric of interest (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details | Required |  |
+| `buckets_path` | Path to the metric of interest (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details | Required |  |
 | `lag` | The historical bucket to subtract from the current value. E.g. a lag of 7 will subtract the current value from the value 7 buckets ago. Must be a positive, non-zero integer | Optional | `1` |
 | `gap_policy` | Determines what should happen when a gap in the data is encountered. | Optional | `insert_zeros` |
 | `format` | [DecimalFormat pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/DecimalFormat.md) for theoutput value. If specified, the formatted value is returned in the aggregation’s`value_as_string` property | Optional | `null` |
@@ -88,6 +88,6 @@ POST /_search
 3. Finally, we specify a `serial_diff` aggregation which uses "the_sum" metric as its input.
 
 
-Serial differences are built by first specifying a `histogram` or `date_histogram` over a field. You can then optionally add normal metrics, such as a `sum`, inside of that histogram. Finally, the `serial_diff` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at one of the sibling metrics inside of the histogram (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`.
+Serial differences are built by first specifying a `histogram` or `date_histogram` over a field. You can then optionally add normal metrics, such as a `sum`, inside of that histogram. Finally, the `serial_diff` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at one of the sibling metrics inside of the histogram (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`.
 
 

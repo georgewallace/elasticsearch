@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-tier-field.html
----
-
-# _tier field [mapping-tier-field]
+# `_tier` field [mapping-tier-field]
 
 When performing queries across multiple indexes, it is sometimes desirable to target indexes held on nodes of a given data tier (`data_hot`, `data_warm`, `data_cold` or `data_frozen`). The `_tier` field allows matching on the `tier_preference` setting of the index a document was indexed into. The preferred value is accessible in certain queries :
 

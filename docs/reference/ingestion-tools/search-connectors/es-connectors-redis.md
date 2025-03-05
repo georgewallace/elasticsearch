@@ -1,55 +1,57 @@
 ---
 navigation_title: "Redis"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-redis.html
 ---
 
 # Redis connector reference [es-connectors-redis]
 
 
-The Redis connector is built with the Elastic connectors Python framework and is available as a self-managed [self-managed connector](/reference/ingestion-tools/search-connectors/self-managed-connectors.md). View the [**source code** for this connector](https://github.com/elastic/connectors/tree/main/connectors/sources/redis.py) (branch *main*, compatible with Elastic *9.0*).
+%  Attributes (AKA variables) used in this file
+
+The Redis connector is built with the Elastic connectors Python framework and is available as a self-managed [self-managed connector](es-build-connector.md). View the [**source code** for this connector](https://github.com/elastic/connectors/tree/main/connectors/sources/redis.py) (branch *main*, compatible with Elastic *9.0*).
 
 
-## Availability and prerequisites [es-connectors-redis-connector-availability-and-prerequisites]
+## Availability and prerequisites [es-connectors-redis-connector-availability-and-prerequisites] 
 
 This connector was introduced in Elastic **8.13.0**, available as a **self-managed** self-managed connector.
 
-To use this connector, satisfy all [self-managed connector prerequisites](/reference/ingestion-tools/search-connectors/self-managed-connectors.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
+To use this connector, satisfy all [self-managed connector prerequisites](es-build-connector.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
 
-* [Run connectors service from source](/reference/ingestion-tools/search-connectors/es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
-* [Run connectors service in Docker](/reference/ingestion-tools/search-connectors/es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
+* [Run connectors service from source](es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
+* [Run connectors service in Docker](es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
 
-::::{note}
+::::{note} 
 This connector is in **technical preview** and is subject to change. The design and code is less mature than official GA features and is being provided as-is with no warranties. Technical preview features are not subject to the support SLA of official GA features.
 
 ::::
 
 
 
-## Usage [es-connectors-redis-connector-usage]
+## Usage [es-connectors-redis-connector-usage] 
 
 To set up this connector in the UI, select the **Redis** tile when creating a new connector under **Search → Connectors**.
 
-For additional operations, see [*Connectors UI in {{kib}}*](/reference/ingestion-tools/search-connectors/connectors-ui-in-kibana.md).
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
 
 
-## Deploy with Docker [es-connectors-redis-connector-docker]
+## Deploy with Docker [es-connectors-redis-connector-docker] 
 
 You can deploy the Redis connector as a self-managed connector using Docker. Follow these instructions.
 
-::::{dropdown} Step 1: Download sample configuration file
+::::{dropdown} **Step 1: Download sample configuration file**
 Download the sample configuration file. You can either download it manually or run the following command:
 
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
 
+%  NOTCONSOLE
+
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
 ::::
 
 
-::::{dropdown} Step 2: Update the configuration file for your self-managed connector
+::::{dropdown} **Step 2: Update the configuration file for your self-managed connector**
 Update the configuration file with the following settings to match your environment:
 
 * `elasticsearch.host`
@@ -77,7 +79,7 @@ Note: You can change other default configurations by simply uncommenting specifi
 ::::
 
 
-::::{dropdown} Step 3: Run the Docker image
+::::{dropdown} **Step 3: Run the Docker image**
 Run the Docker image with the Connector Service using the following command:
 
 ```sh
@@ -86,7 +88,7 @@ docker run \
 --network "elastic" \
 --tty \
 --rm \
-docker.elastic.co/integrations/elastic-connectors:9.0.0 \
+docker.elastic.co/integrations/elastic-connectors:9.0.0-beta1.0 \
 /app/bin/elastic-ingest \
 -c /config/config.yml
 ```
@@ -98,14 +100,14 @@ Refer to [`DOCKER.md`](https://github.com/elastic/connectors/tree/main/docs/DOCK
 
 Find all available Docker images in the [official registry](https://www.docker.elastic.co/r/integrations/elastic-connectors).
 
-::::{tip}
+::::{tip} 
 We also have a quickstart self-managed option using Docker Compose, so you can spin up all required services at once: Elasticsearch, Kibana, and the connectors service. Refer to this [README](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
 
 ::::
 
 
 
-## Configuration [es-connectors-redis-connector-configuration]
+## Configuration [es-connectors-redis-connector-configuration] 
 
 `host` (required)
 :   The IP of your Redis server/cloud. Example:
@@ -138,7 +140,7 @@ We also have a quickstart self-managed option using Docker Compose, so you can s
     * `0,1,2`
     * `*`
 
-        ::::{note}
+        ::::{note} 
         This field is ignored when using advanced sync rules.
 
         ::::
@@ -157,27 +159,27 @@ We also have a quickstart self-managed option using Docker Compose, so you can s
 :   Specifies the client private key. The value of the key is used to validate the connection in the Redis instance. Depends on `mutual_tls_enabled`.
 
 
-## Documents and syncs [es-connectors-redis-connector-documents-and-syncs]
+## Documents and syncs [es-connectors-redis-connector-documents-and-syncs] 
 
 The connector syncs the following objects and entities:
 
 * KEYS and VALUES of every database index
 
-::::{note}
+::::{note} 
 * Permissions are not synced. **All documents** indexed to an Elastic deployment will be visible to **all users with access** to the relevant Elasticsearch index.
 
 ::::
 
 
 
-## Sync rules [es-connectors-redis-connector-sync-rules]
+## Sync rules [es-connectors-redis-connector-sync-rules] 
 
-[Basic sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
 
 
-## Advanced Sync Rules [es-connectors-redis-connector-advanced-sync-rules]
+## Advanced Sync Rules [es-connectors-redis-connector-advanced-sync-rules] 
 
-[Advanced sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-advanced) are defined through a source-specific DSL JSON snippet.
+[Advanced sync rules](es-sync-rules.md#es-sync-rules-advanced) are defined through a source-specific DSL JSON snippet.
 
 Use advanced sync rules to filter data at the Redis source, without needing to index all data into Elasticsearch.
 
@@ -197,17 +199,17 @@ They take the following parameters:
     * `ZSET`
 
 
-::::{note}
+::::{note} 
 Provide at least one of the following: `key_pattern` or `type`, or both.
 
 ::::
 
 
 
-### Advanced sync rules examples [es-connectors-redis-connector-advanced-sync-rules-examples]
+### Advanced sync rules examples [es-connectors-redis-connector-advanced-sync-rules-examples] 
 
 
-#### Example 1 [es-connectors-redis-connector-advanced-sync-rules-example-1]
+#### Example 1 [es-connectors-redis-connector-advanced-sync-rules-example-1] 
 
 **Fetch database records where keys start with `alpha`**:
 
@@ -220,8 +222,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-#### Example 2 [es-connectors-redis-connector-advanced-sync-rules-example-2]
+
+#### Example 2 [es-connectors-redis-connector-advanced-sync-rules-example-2] 
 
 **Fetch database records with exact match by specifying the full key name:**
 
@@ -234,8 +238,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-#### Example 3 [es-connectors-redis-connector-advanced-sync-rules-example-3]
+
+#### Example 3 [es-connectors-redis-connector-advanced-sync-rules-example-3] 
 
 **Fetch database records where keys start with `test1`, `test2` or `test3`:**
 
@@ -247,8 +253,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
   }
 ```
 
+%  NOTCONSOLE
 
-#### Example 4 [es-connectors-redis-connector-advanced-sync-rules-example-4]
+
+#### Example 4 [es-connectors-redis-connector-advanced-sync-rules-example-4] 
 
 **Exclude database records where keys start with `test1`, `test2` or `test3`:**
 
@@ -261,8 +269,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-#### Example 5 [es-connectors-redis-connector-advanced-sync-rules-example-5]
+
+#### Example 5 [es-connectors-redis-connector-advanced-sync-rules-example-5] 
 
 **Fetch all database records:**
 
@@ -275,8 +285,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-#### Example 6 [es-connectors-redis-connector-advanced-sync-rules-example-6]
+
+#### Example 6 [es-connectors-redis-connector-advanced-sync-rules-example-6] 
 
 **Fetch all database records where type is `SET`:**
 
@@ -290,8 +302,10 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-#### Example 7 [es-connectors-redis-connector-advanced-sync-rules-example-7]
+
+#### Example 7 [es-connectors-redis-connector-advanced-sync-rules-example-7] 
 
 **Fetch database records where type is `SET`**:
 
@@ -304,15 +318,17 @@ Provide at least one of the following: `key_pattern` or `type`, or both.
 ]
 ```
 
+%  NOTCONSOLE
 
-## Connector Client operations [es-connectors-redis-connector-connector-client-operations]
+
+## Connector Client operations [es-connectors-redis-connector-connector-client-operations] 
 
 
-### End-to-end Testing [es-connectors-redis-connector-end-to-end-testing]
+### End-to-end Testing [es-connectors-redis-connector-end-to-end-testing] 
 
 The connector framework enables operators to run functional tests against a real data source, using Docker Compose. You don’t need a running Elasticsearch instance or Redis source to run this test.
 
-Refer to [Connector testing](/reference/ingestion-tools/search-connectors/self-managed-connectors.md#es-build-connector-testing) for more details.
+Refer to [Connector testing](es-build-connector.md#es-build-connector-testing) for more details.
 
 To perform E2E testing for the Redis connector, run the following command:
 
@@ -329,19 +345,19 @@ make ftest NAME=redis DATA_SIZE=small
 By default, `DATA_SIZE=MEDIUM`.
 
 
-## Known issues [es-connectors-redis-connector-known-issues]
+## Known issues [es-connectors-redis-connector-known-issues] 
 
 * The last modified time is unavailable when retrieving keys/values from the Redis database. As a result, **all objects** are indexed each time an advanced sync rule query is executed.
 
-Refer to [Known issues](/release-notes/known-issues.md) for a list of known issues for all connectors.
+Refer to [Known issues](es-connectors-known-issues.md) for a list of known issues for all connectors.
 
 
-## Troubleshooting [es-connectors-redis-connector-troubleshooting]
+## Troubleshooting [es-connectors-redis-connector-troubleshooting] 
 
-See [Troubleshooting](/reference/ingestion-tools/search-connectors/es-connectors-troubleshooting.md).
+See [Troubleshooting](es-connectors-troubleshooting.md).
 
 
-## Security [es-connectors-redis-connector-security]
+## Security [es-connectors-redis-connector-security] 
 
-See [Security](/reference/ingestion-tools/search-connectors/es-connectors-security.md).
+See [Security](es-connectors-security.md).
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Shingle"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-shingle-tokenfilter.html
 ---
 
 # Shingle token filter [analysis-shingle-tokenfilter]
@@ -11,16 +9,16 @@ Add shingles, or word [n-grams](https://en.wikipedia.org/wiki/N-gram), to a toke
 
 For example, many tokenizers convert `the lazy dog` to `[ the, lazy, dog ]`. You can use the `shingle` filter to add two-word shingles to this stream: `[ the, the lazy, lazy, lazy dog, dog ]`.
 
-::::{tip}
-Shingles are often used to help speed up phrase queries, such as [`match_phrase`](/reference/query-languages/query-dsl-match-query-phrase.md). Rather than creating shingles using the `shingles` filter, we recommend you use the [`index-phrases`](/reference/elasticsearch/mapping-reference/index-phrases.md) mapping parameter on the appropriate [text](/reference/elasticsearch/mapping-reference/text.md) field instead.
+::::{tip} 
+Shingles are often used to help speed up phrase queries, such as [`match_phrase`](query-dsl-match-query-phrase.md). Rather than creating shingles using the `shingles` filter, we recommend you use the [`index-phrases`](index-phrases.md) mapping parameter on the appropriate [text](text.md) field instead.
 ::::
 
 
-This filter uses Lucene’s [ShingleFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/shingle/ShingleFilter.md).
+This filter uses Lucene’s [ShingleFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/shingle/ShingleFilter.md).
 
 ## Example [analysis-shingle-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `shingle` filter to add two-word shingles to the token stream for `quick brown fox jumps`:
+The following [analyze API](indices-analyze.md) request uses the `shingle` filter to add two-word shingles to the token stream for `quick brown fox jumps`:
 
 ```console
 GET /_analyze
@@ -36,6 +34,66 @@ The filter produces the following tokens:
 ```text
 [ quick, quick brown, brown, brown fox, fox, fox jumps, jumps ]
 ```
+
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "quick brown",
+%       "start_offset": 0,
+%       "end_offset": 11,
+%       "type": "shingle",
+%       "position": 0,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "brown fox",
+%       "start_offset": 6,
+%       "end_offset": 15,
+%       "type": "shingle",
+%       "position": 1,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 12,
+%       "end_offset": 15,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "fox jumps",
+%       "start_offset": 12,
+%       "end_offset": 21,
+%       "type": "shingle",
+%       "position": 2,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "jumps",
+%       "start_offset": 16,
+%       "end_offset": 21,
+%       "type": "word",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----
 
 To produce shingles of 2-3 words, add the following arguments to the analyze API request:
 
@@ -63,6 +121,82 @@ The filter produces the following tokens:
 [ quick, quick brown, quick brown fox, brown, brown fox, brown fox jumps, fox, fox jumps, jumps ]
 ```
 
+% [source, console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "quick brown",
+%       "start_offset": 0,
+%       "end_offset": 11,
+%       "type": "shingle",
+%       "position": 0,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "quick brown fox",
+%       "start_offset": 0,
+%       "end_offset": 15,
+%       "type": "shingle",
+%       "position": 0,
+%       "positionLength": 3
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "brown fox",
+%       "start_offset": 6,
+%       "end_offset": 15,
+%       "type": "shingle",
+%       "position": 1,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "brown fox jumps",
+%       "start_offset": 6,
+%       "end_offset": 21,
+%       "type": "shingle",
+%       "position": 1,
+%       "positionLength": 3
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 12,
+%       "end_offset": 15,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "fox jumps",
+%       "start_offset": 12,
+%       "end_offset": 21,
+%       "type": "shingle",
+%       "position": 2,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "jumps",
+%       "start_offset": 16,
+%       "end_offset": 21,
+%       "type": "word",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----
+
 To only include shingles in the output, add an `output_unigrams` argument of `false` to the request.
 
 ```console
@@ -87,10 +221,55 @@ The filter produces the following tokens:
 [ quick brown, quick brown fox, brown fox, brown fox jumps, fox jumps ]
 ```
 
+% [source, console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "quick brown",
+%       "start_offset": 0,
+%       "end_offset": 11,
+%       "type": "shingle",
+%       "position": 0
+%     },
+%     {
+%       "token": "quick brown fox",
+%       "start_offset": 0,
+%       "end_offset": 15,
+%       "type": "shingle",
+%       "position": 0,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "brown fox",
+%       "start_offset": 6,
+%       "end_offset": 15,
+%       "type": "shingle",
+%       "position": 1
+%     },
+%     {
+%       "token": "brown fox jumps",
+%       "start_offset": 6,
+%       "end_offset": 21,
+%       "type": "shingle",
+%       "position": 1,
+%       "positionLength": 2
+%     },
+%     {
+%       "token": "fox jumps",
+%       "start_offset": 12,
+%       "end_offset": 21,
+%       "type": "shingle",
+%       "position": 2
+%     }
+%   ]
+% }
+% ----
+
 
 ## Add to an analyzer [analysis-shingle-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `shingle` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `shingle` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /my-index-000001
@@ -114,16 +293,16 @@ PUT /my-index-000001
 `max_shingle_size`
 :   (Optional, integer) Maximum number of tokens to concatenate when creating shingles. Defaults to `2`.
 
-    ::::{note}
-    This value cannot be lower than the `min_shingle_size` argument, which defaults to `2`. The difference between this value and the `min_shingle_size` argument cannot exceed the [`index.max_shingle_diff`](/reference/elasticsearch/index-settings/index-modules.md#index-max-shingle-diff) index-level setting, which defaults to `3`.
+    ::::{note} 
+    This value cannot be lower than the `min_shingle_size` argument, which defaults to `2`. The difference between this value and the `min_shingle_size` argument cannot exceed the [`index.max_shingle_diff`](index-modules.md#index-max-shingle-diff) index-level setting, which defaults to `3`.
     ::::
 
 
 `min_shingle_size`
 :   (Optional, integer) Minimum number of tokens to concatenate when creating shingles. Defaults to `2`.
 
-    ::::{note}
-    This value cannot exceed the `max_shingle_size` argument, which defaults to `2`. The difference between the `max_shingle_size` argument and this value cannot exceed the [`index.max_shingle_diff`](/reference/elasticsearch/index-settings/index-modules.md#index-max-shingle-diff) index-level setting, which defaults to `3`.
+    ::::{note} 
+    This value cannot exceed the `max_shingle_size` argument, which defaults to `2`. The difference between the `max_shingle_size` argument and this value cannot exceed the [`index.max_shingle_diff`](index-modules.md#index-max-shingle-diff) index-level setting, which defaults to `3`.
     ::::
 
 
@@ -133,7 +312,7 @@ PUT /my-index-000001
 `output_unigrams_if_no_shingles`
 :   If `true`, the output includes the original input tokens only if no shingles are produced; if shingles are produced, the output only includes shingles. Defaults to `false`.
 
-    ::::{important}
+    ::::{important} 
     If both this and the `output_unigrams` parameter are `true`, only the `output_unigrams` argument is used.
     ::::
 
@@ -147,7 +326,7 @@ PUT /my-index-000001
 Some token filters, such as the `stop` filter, create empty positions when removing stop words with a position increment greater than one.
 
 ::::{dropdown} **Example**
-In the following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request, the `stop` filter removes the stop word `a` from `fox jumps a lazy dog`, creating an empty position. The subsequent `shingle` filter replaces this empty position with a plus sign (`+`) in shingles.
+In the following [analyze API](indices-analyze.md) request, the `stop` filter removes the stop word `a` from `fox jumps a lazy dog`, creating an empty position. The subsequent `shingle` filter replaces this empty position with a plus sign (`+`) in shingles.
 
 ```console
 GET /_analyze
@@ -173,6 +352,74 @@ The filter produces the following tokens:
 [ fox, fox jumps, jumps, jumps +, + lazy, lazy, lazy dog, dog ]
 ```
 
+% [source, console-result]
+% ----
+% {
+%   "tokens" : [
+%     {
+%       "token" : "fox",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "word",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "fox jumps",
+%       "start_offset" : 0,
+%       "end_offset" : 9,
+%       "type" : "shingle",
+%       "position" : 0,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "jumps",
+%       "start_offset" : 4,
+%       "end_offset" : 9,
+%       "type" : "word",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "jumps +",
+%       "start_offset" : 4,
+%       "end_offset" : 12,
+%       "type" : "shingle",
+%       "position" : 1,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "+ lazy",
+%       "start_offset" : 12,
+%       "end_offset" : 16,
+%       "type" : "shingle",
+%       "position" : 2,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "lazy",
+%       "start_offset" : 12,
+%       "end_offset" : 16,
+%       "type" : "word",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "lazy dog",
+%       "start_offset" : 12,
+%       "end_offset" : 20,
+%       "type" : "shingle",
+%       "position" : 3,
+%       "positionLength" : 2
+%     },
+%     {
+%       "token" : "dog",
+%       "start_offset" : 17,
+%       "end_offset" : 20,
+%       "type" : "word",
+%       "position" : 4
+%     }
+%   ]
+% }
+% ----
+
 ::::
 
 
@@ -182,7 +429,7 @@ The filter produces the following tokens:
 
 To customize the `shingle` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses a custom `shingle` filter, `my_shingle_filter`, to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+For example, the following [create index API](indices-create-index.md) request uses a custom `shingle` filter, `my_shingle_filter`, to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 The `my_shingle_filter` filter uses a `min_shingle_size` of `2` and a `max_shingle_size` of `5`, meaning it produces shingles of 2-5 words. The filter also includes a `output_unigrams` argument of `false`, meaning that only shingles are included in the output.
 

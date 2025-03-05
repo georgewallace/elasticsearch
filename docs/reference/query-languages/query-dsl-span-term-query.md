@@ -1,7 +1,5 @@
 ---
 navigation_title: "Span term"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-term-query.html
 ---
 
 # Span term query [query-dsl-span-term-query]

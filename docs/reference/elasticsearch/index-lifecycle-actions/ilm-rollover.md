@@ -1,32 +1,27 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-rollover.html
----
-
 # Rollover [ilm-rollover]
 
 Phases allowed: hot.
 
 Rolls over a target to a new index when the existing index satisfies the specified rollover conditions.
 
-::::{note}
-When an index is rolled over, the previous index’s age is updated to reflect the rollover time. This date, rather than the index’s `creation_date`, is used in {{ilm}} `min_age` phase calculations. [Learn more](docs-content://troubleshoot/elasticsearch/index-lifecycle-management-errors.md#min-age-calculation).
+::::{note} 
+When an index is rolled over, the previous index’s age is updated to reflect the rollover time. This date, rather than the index’s `creation_date`, is used in {{ilm}} `min_age` phase calculations. [Learn more](index-lifecycle-error-handling.md#min-age-calculation).
 
 ::::
 
 
-::::{important}
-If the rollover action is used on a [follower index](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-ccr-follow), policy execution waits until the leader index rolls over (or is [otherwise marked complete](docs-content://manage-data/lifecycle/index-lifecycle-management/skip-rollover.md)), then converts the follower index into a regular index with the [Unfollow action](/reference/elasticsearch/index-lifecycle-actions/ilm-unfollow.md).
+::::{important} 
+If the rollover action is used on a [follower index](ccr-put-follow.md), policy execution waits until the leader index rolls over (or is [otherwise marked complete](skipping-rollover.md)), then converts the follower index into a regular index with the [Unfollow action](ilm-unfollow.md).
 ::::
 
 
-A rollover target can be a [data stream](docs-content://manage-data/data-store/data-streams.md) or an [index alias](docs-content://manage-data/data-store/aliases.md). When targeting a data stream, the new index becomes the data stream’s write index and its generation is incremented.
+A rollover target can be a [data stream](data-streams.md) or an [index alias](aliases.md). When targeting a data stream, the new index becomes the data stream’s write index and its generation is incremented.
 
 To roll over an index alias, the alias and its write index must meet the following conditions:
 
 * The index name must match the pattern *^.*-\\d+$*, for example (`my-index-000001`).
 * The `index.lifecycle.rollover_alias` must be configured as the alias to roll over.
-* The index must be the [write index](docs-content://manage-data/data-store/aliases.md#write-index) for the alias.
+* The index must be the [write index](aliases.md#write-index) for the alias.
 
 For example, if `my-index-000001` has the alias `my_data`, the following settings must be configured.
 
@@ -51,57 +46,61 @@ A rollover action must specify at least one `max_*` condition, it may include ze
 
 The index will roll over once any `max_*` condition is satisfied and all `min_*` conditions are satisfied. Note, however, that empty indices are not rolled over by default.
 
+%  tag::rollover-conditions[]
+
 `max_age`
-:   (Optional,  [time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units)) Triggers rollover after the maximum elapsed time from index creation is reached. The elapsed time is always calculated since the index creation time, even if the index origination date is configured to a custom date, such as when using the [index.lifecycle.parse_origination_date](/reference/elasticsearch/configuration-reference/index-lifecycle-management-settings.md#index-lifecycle-parse-origination-date) or [index.lifecycle.origination_date](/reference/elasticsearch/configuration-reference/index-lifecycle-management-settings.md#index-lifecycle-origination-date) settings.
+:   (Optional,  [time units](api-conventions.md#time-units)) Triggers rollover after the maximum elapsed time from index creation is reached. The elapsed time is always calculated since the index creation time, even if the index origination date is configured to a custom date, such as when using the [index.lifecycle.parse_origination_date](ilm-settings.md#index-lifecycle-parse-origination-date) or [index.lifecycle.origination_date](ilm-settings.md#index-lifecycle-origination-date) settings.
 
 `max_docs`
 :   (Optional, integer) Triggers rollover after the specified maximum number of documents is reached. Documents added since the last refresh are not included in the document count. The document count does **not** include documents in replica shards.
 
 `max_size`
-:   (Optional, [byte units](/reference/elasticsearch/rest-apis/api-conventions.md#byte-units)) Triggers rollover when the index reaches a certain size. This is the total size of all primary shards in the index. Replicas are not counted toward the maximum index size.
+:   (Optional, [byte units](api-conventions.md#byte-units)) Triggers rollover when the index reaches a certain size. This is the total size of all primary shards in the index. Replicas are not counted toward the maximum index size.
 
-    ::::{tip}
-    To see the current index size, use the [_cat indices](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cat-indices) API. The `pri.store.size` value shows the combined size of all primary shards.
+    ::::{tip} 
+    To see the current index size, use the [_cat indices](cat-indices.md) API. The `pri.store.size` value shows the combined size of all primary shards.
     ::::
 
 
 `max_primary_shard_size`
-:   (Optional, [byte units](/reference/elasticsearch/rest-apis/api-conventions.md#byte-units)) Triggers rollover when the largest primary shard in the index reaches a certain size. This is the maximum size of the primary shards in the index. As with `max_size`, replicas are ignored.
+:   (Optional, [byte units](api-conventions.md#byte-units)) Triggers rollover when the largest primary shard in the index reaches a certain size. This is the maximum size of the primary shards in the index. As with `max_size`, replicas are ignored.
 
-    ::::{tip}
-    To see the current shard size, use the [_cat shards](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cat-shards) API. The `store` value shows the size each shard, and `prirep` indicates whether a shard is a primary (`p`) or a replica (`r`).
+    ::::{tip} 
+    To see the current shard size, use the [_cat shards](cat-shards.md) API. The `store` value shows the size each shard, and `prirep` indicates whether a shard is a primary (`p`) or a replica (`r`).
     ::::
 
 
 `max_primary_shard_docs`
 :   (Optional, integer) Triggers rollover when the largest primary shard in the index reaches a certain number of documents. This is the maximum docs of the primary shards in the index. As with `max_docs`, replicas are ignored.
 
-    ::::{tip}
-    To see the current shard docs, use the [_cat shards](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cat-shards) API. The `docs` value shows the number of documents each shard.
+    ::::{tip} 
+    To see the current shard docs, use the [_cat shards](cat-shards.md) API. The `docs` value shows the number of documents each shard.
     ::::
 
 
 `min_age`
-:   (Optional,  [time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units)) Prevents rollover until after the minimum elapsed time from index creation is reached. See notes on `max_age`.
+:   (Optional,  [time units](api-conventions.md#time-units)) Prevents rollover until after the minimum elapsed time from index creation is reached. See notes on `max_age`.
 
 `min_docs`
 :   (Optional, integer) Prevents rollover until after the specified minimum number of documents is reached. See notes on `max_docs`.
 
 `min_size`
-:   (Optional, [byte units](/reference/elasticsearch/rest-apis/api-conventions.md#byte-units)) Prevents rollover until the index reaches a certain size. See notes on `max_size`.
+:   (Optional, [byte units](api-conventions.md#byte-units)) Prevents rollover until the index reaches a certain size. See notes on `max_size`.
 
 `min_primary_shard_size`
-:   (Optional, [byte units](/reference/elasticsearch/rest-apis/api-conventions.md#byte-units)) Prevents rollover until the largest primary shard in the index reaches a certain size. See notes on `max_primary_shard_size`.
+:   (Optional, [byte units](api-conventions.md#byte-units)) Prevents rollover until the largest primary shard in the index reaches a certain size. See notes on `max_primary_shard_size`.
 
 `min_primary_shard_docs`
 :   (Optional, integer) Prevents rollover until the largest primary shard in the index reaches a certain number of documents. See notes on `max_primary_shard_docs`.
 
-::::{important}
+%  end::rollover-conditions[]
+
+::::{important} 
 Empty indices will not be rolled over, even if they have an associated `max_age` that would otherwise result in a roll over occurring. A policy can override this behavior, and explicitly opt in to rolling over empty indices, by adding a `"min_docs": 0` condition. This can also be disabled on a cluster-wide basis by setting `indices.lifecycle.rollover.only_if_has_documents` to `false`.
 ::::
 
 
-::::{important}
+::::{important} 
 The rollover action implicitly always rolls over a data stream or alias if one or more shards contain 200000000 or more documents. Normally a shard will reach 50GB long before it reaches 200M documents, but this isn’t the case for space efficient data sets. Search performance will very likely suffer if a shard contains more than 200M documents. This is the reason of the builtin limit.
 ::::
 

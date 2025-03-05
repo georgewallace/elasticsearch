@@ -1,7 +1,5 @@
 ---
 navigation_title: "URI parts"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/uri-parts-processor.html
 ---
 
 # URI parts processor [uri-parts-processor]
@@ -19,9 +17,9 @@ $$$uri-parts-options$$$
 | `remove_if_successful` | no | false | If `true`, the processor removesthe `field` after parsing the URI string. If parsing fails, the processor does notremove the `field`. |
 | `ignore_missing` | no | `false` | If `true` and `field` does not exist, the processor quietly exits without modifying the document |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 Here is an example definition of the URI parts processor:
@@ -42,6 +40,8 @@ Here is an example definition of the URI parts processor:
 }
 ```
 
+%  NOTCONSOLE
+
 When the above processor executes on the following document:
 
 ```js
@@ -51,6 +51,8 @@ When the above processor executes on the following document:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 It produces this result:
 
@@ -72,4 +74,6 @@ It produces this result:
   }
 }
 ```
+
+%  NOTCONSOLE
 

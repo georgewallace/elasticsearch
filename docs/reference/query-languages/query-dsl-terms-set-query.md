@@ -1,7 +1,5 @@
 ---
 navigation_title: "Terms set"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-set-query.html
 ---
 
 # Terms set query [query-dsl-terms-set-query]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Returns documents that contain a minimum number of **exact** terms in a provided field.
 
-The `terms_set` query is the same as the [`terms` query](/reference/query-languages/query-dsl-terms-query.md), except you can define the number of matching terms required to return a document. For example:
+The `terms_set` query is the same as the [`terms` query](query-dsl-terms-query.md), except you can define the number of matching terms required to return a document. For example:
 
 * A field, `programming_languages`, contains a list of known programming languages, such as `c++`, `java`, or `php` for job candidates. You can use the `terms_set` query to return documents that match at least two of these languages.
 * A field, `permissions`, contains a list of possible user permissions for an application. You can use the `terms_set` query to return documents that match a subset of these permissions.
@@ -18,15 +16,15 @@ The `terms_set` query is the same as the [`terms` query](/reference/query-langua
 
 ### Index setup [terms-set-query-ex-request-index-setup]
 
-In most cases, you’ll need to include a [numeric](/reference/elasticsearch/mapping-reference/number.md) field mapping in your index to use the `terms_set` query. This numeric field contains the number of matching terms required to return a document.
+In most cases, you’ll need to include a [numeric](number.md) field mapping in your index to use the `terms_set` query. This numeric field contains the number of matching terms required to return a document.
 
 To see how you can set up an index for the `terms_set` query, try the following example.
 
 1. Create an index, `job-candidates`, with the following field mappings:
 
-    * `name`, a [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) field. This field contains the name of the job candidate.
-    * `programming_languages`, a [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) field. This field contains programming languages known by the job candidate.
-    * `required_matches`, a [numeric](/reference/elasticsearch/mapping-reference/number.md) `long` field. This field contains the number of matching terms required to return a document.
+    * `name`, a [`keyword`](keyword.md) field. This field contains the name of the job candidate.
+    * `programming_languages`, a [`keyword`](keyword.md) field. This field contains programming languages known by the job candidate.
+    * `required_matches`, a [numeric](number.md) `long` field. This field contains the number of matching terms required to return a document.
 
     ```console
     PUT /job-candidates
@@ -46,6 +44,8 @@ To see how you can set up an index for the `terms_set` query, try the following 
       }
     }
     ```
+
+    %  TESTSETUP
 
 2. Index a document with an ID of `1` and the following values:
 
@@ -126,18 +126,18 @@ The required number of matching terms is defined in the `minimum_should_match`, 
 `minimum_should_match`
 :   (Optional) Specification for the number of matching terms required to return a document.
 
-For valid values, see [`minimum_should_match` parameter](/reference/query-languages/query-dsl-minimum-should-match.md).
+For valid values, see [`minimum_should_match` parameter](query-dsl-minimum-should-match.md).
 
 
 `minimum_should_match_field`
-:   (Optional, string) [Numeric](/reference/elasticsearch/mapping-reference/number.md) field containing the number of matching terms required to return a document.
+:   (Optional, string) [Numeric](number.md) field containing the number of matching terms required to return a document.
 
 `minimum_should_match_script`
 :   (Optional, string) Custom script containing the number of matching terms required to return a document.
 
-For parameters and valid values, see [Scripting](docs-content://explore-analyze/scripting.md).
+For parameters and valid values, see [Scripting](modules-scripting.md).
 
-For an example query using the `minimum_should_match_script` parameter, see [How to use the `minimum_should_match_script` parameter](#terms-set-query-script).
+For an example query using the `minimum_should_match_script` parameter, see [How to use the `minimum_should_match_script` parameter](query-dsl-terms-set-query.md#terms-set-query-script).
 
 
 

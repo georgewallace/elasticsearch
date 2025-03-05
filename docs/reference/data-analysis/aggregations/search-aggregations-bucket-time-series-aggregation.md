@@ -1,24 +1,62 @@
 ---
 navigation_title: "Time series"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-time-series-aggregation.html
 ---
 
 # Time series aggregation [search-aggregations-bucket-time-series-aggregation]
 
 
-::::{warning}
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-The time series aggregation queries data created using a [Time series data stream (TSDS)](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md). This is typically data such as metrics or other data streams with a time component, and requires creating an index using the time series mode.
+The time series aggregation queries data created using a [Time series data stream (TSDS)](tsds.md). This is typically data such as metrics or other data streams with a time component, and requires creating an index using the time series mode.
 
-::::{note}
-Refer to the [TSDS documentation](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#differences-from-regular-data-stream) to learn more about the key differences from regular data streams.
+::::{note} 
+Refer to the [TSDS documentation](tsds.md#differences-from-regular-data-stream) to learn more about the key differences from regular data streams.
 
 ::::
 
+
+% 
+% Creating a time series mapping
+% 
+% To create an index with the time series mapping, specify "mode" as "time_series" in the index settings,
+% "routing_path" specifying the a list of time series fields, and a start and end time for the series. Each of the
+% "routing_path" fields must be keyword fields with "time_series_dimension" set to true. Additionally, add a
+% date field used as the timestamp.
+% 
+% [source,js]
+% --------------------------------------------------
+% PUT /my-time-series-index
+% {
+%   "settings": {
+%     "index": {
+%       "number_of_shards": 3,
+%       "number_of_replicas": 2,
+%       "mode": "time_series",
+%       "routing_path": ["key"],
+%       "time_series": {
+%         "start_time": "2022-01-01T00:00:00Z",
+%         "end_time": "2023-01-01T00:00:00Z"
+%       }
+%     }
+%   },
+%   "mappings": {
+%     "properties": {
+%         "key": {
+%             "type": "keyword",
+%             "time_series_dimension": true
+%         },
+%         "@timestamp": {
+%           "type": "date"
+%         }
+%     }
+%   }
+% }
+% -------------------------------------------------
+% // NOTCONSOLE
+% 
 
 Data can be added to the time series index like other indices:
 
@@ -34,6 +72,8 @@ PUT /my-time-series-index-0/_bulk
 { "key": "b", "val": 3, "@timestamp": "2022-01-02T00:00:00Z" }
 ```
 
+%  NOTCONSOLE
+
 To perform a time series aggregation, specify "time_series" as the aggregation type. When the boolean "keyed" is true, each bucket is given a unique key.
 
 $$$time-series-aggregation-example$$$
@@ -48,6 +88,8 @@ GET /_search
   }
 }
 ```
+
+%  NOTCONSOLE
 
 This will return all results in the time series, however a more typical query will use sub aggregations to reduce the date returned to something more relevant.
 

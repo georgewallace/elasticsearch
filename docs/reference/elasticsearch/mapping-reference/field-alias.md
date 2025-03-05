@@ -1,13 +1,11 @@
 ---
 navigation_title: "Alias"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/field-alias.html
 ---
 
 # Alias field type [field-alias]
 
 
-An `alias` mapping defines an alternate name for a field in the index. The alias can be used in place of the target field in [search](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-search) requests, and selected other APIs like [field capabilities](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-field-caps).
+An `alias` mapping defines an alternate name for a field in the index. The alias can be used in place of the target field in [search](search.md) requests, and selected other APIs like [field capabilities](search-field-caps.md).
 
 ```console
 PUT trips
@@ -43,13 +41,15 @@ GET _search
 1. The path to the target field. Note that this must be the full path, including any parent objects (e.g. `object1.object2.field`).
 
 
-Almost all components of the search request accept field aliases. In particular, aliases can be used in queries, aggregations, and sort fields, as well as when requesting `docvalue_fields`, `stored_fields`, suggestions, and highlights. Scripts also support aliases when accessing field values. Please see the section on [unsupported APIs](#unsupported-apis) for exceptions.
+Almost all components of the search request accept field aliases. In particular, aliases can be used in queries, aggregations, and sort fields, as well as when requesting `docvalue_fields`, `stored_fields`, suggestions, and highlights. Scripts also support aliases when accessing field values. Please see the section on [unsupported APIs](field-alias.md#unsupported-apis) for exceptions.
 
 In some parts of the search request and when requesting field capabilities, field wildcard patterns can be provided. In these cases, the wildcard pattern will match field aliases in addition to concrete fields:
 
 ```console
 GET trips/_field_caps?fields=route_*,transit_mode
 ```
+
+%  TEST[continued]
 
 ## Alias targets [alias-targets]
 
@@ -61,7 +61,7 @@ There are a few restrictions on the target of an alias:
 
 Additionally, a field alias can only have one target. This means that it is not possible to use a field alias to query over multiple target fields in a single clause.
 
-An alias can be changed to refer to a new target through a mappings update. A known limitation is that if any stored percolator queries contain the field alias, they will still refer to its original target. More information can be found in the [percolator documentation](/reference/elasticsearch/mapping-reference/percolator.md).
+An alias can be changed to refer to a new target through a mappings update. A known limitation is that if any stored percolator queries contain the field alias, they will still refer to its original target. More information can be found in the [percolator documentation](percolator.md).
 
 
 ## Unsupported APIs [unsupported-apis]
@@ -80,7 +80,9 @@ GET /_search
 }
 ```
 
-Currently only the search and field capabilities APIs will accept and resolve field aliases. Other APIs that accept field names, such as [term vectors](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-termvectors), cannot be used with field aliases.
+%  TEST[continued]
+
+Currently only the search and field capabilities APIs will accept and resolve field aliases. Other APIs that accept field names, such as [term vectors](docs-termvectors.md), cannot be used with field aliases.
 
 Finally, some queries, such as `terms`, `geo_shape`, and `more_like_this`, allow for fetching query information from an indexed document. Because field aliases aren’t supported when fetching documents, the part of the query that specifies the lookup path cannot refer to a field by its alias.
 

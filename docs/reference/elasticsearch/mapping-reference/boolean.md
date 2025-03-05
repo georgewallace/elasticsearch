@@ -1,7 +1,5 @@
 ---
 navigation_title: "Boolean"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/boolean.html
 ---
 
 # Boolean field type [boolean]
@@ -44,11 +42,31 @@ GET my-index-000001/_search
 }
 ```
 
+%  TEST[s/_search/_search?filter_path=hits.hits/]
+
 1. Indexing a document with `"true"`, which is interpreted as `true`.
 2. Searching for documents with a JSON `true`.
 
 
-Aggregations like the [`terms` aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md)  use `1` and `0` for the `key`, and the strings `"true"` and `"false"` for the `key_as_string`. Boolean fields when used in scripts, return `true` and `false`:
+% [source,console-result]
+% ----
+% {
+%   "hits": {
+%     "hits": [
+%       {
+%         "_id": "1",
+%         "_index": "my-index-000001",
+%         "_score": "$body.hits.hits.0._score",
+%         "_source": {
+%           "is_published": "true"
+%         }
+%       }
+%     ]
+%   }
+% }
+% ----
+
+Aggregations like the [`terms` aggregation](search-aggregations-bucket-terms-aggregation.md)  use `1` and `0` for the `key`, and the strings `"true"` and `"false"` for the `key_as_string`. Boolean fields when used in scripts, return `true` and `false`:
 
 ```console
 POST my-index-000001/_doc/1?refresh
@@ -83,40 +101,90 @@ GET my-index-000001/_search
 }
 ```
 
+%  TEST[s/_search/_search?filter_path=aggregations,hits.hits/]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "publish_state": {
+%       "doc_count_error_upper_bound": 0,
+%       "sum_other_doc_count": 0,
+%       "buckets": [
+%         {
+%           "key": 0,
+%           "key_as_string": "false",
+%           "doc_count": 1
+%         },
+%         {
+%           "key": 1,
+%           "key_as_string": "true",
+%           "doc_count": 1
+%         }
+%       ]
+%     }
+%   },
+%   "hits": {
+%     "hits": [
+%       {
+%         "_id": "2",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_source": {
+%           "is_published": false
+%         },
+%         "sort": [0],
+%         "fields": {"weight": [0]}
+%       },
+%       {
+%         "_id": "1",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_source": {
+%           "is_published": true
+%         },
+%         "sort": [1],
+%         "fields": {"weight": [10]}
+%       }
+%     ]
+%   }
+% }
+% ----
+
 ## Parameters for `boolean` fields [boolean-params]
 
 The following parameters are accepted by `boolean` fields:
 
-[`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md)
+[`doc_values`](doc-values.md)
 :   Should the field be stored on disk in a column-stride fashion, so that it can later be used for sorting, aggregations, or scripting? Accepts `true` (default) or `false`.
 
-[`index`](/reference/elasticsearch/mapping-reference/mapping-index.md)
-:   Should the field be quickly searchable? Accepts `true` (default) and `false`. Fields that only have [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) enabled can still be queried using term or range-based queries, albeit slower.
+[`index`](mapping-index.md)
+:   Should the field be quickly searchable? Accepts `true` (default) and `false`. Fields that only have [`doc_values`](doc-values.md) enabled can still be queried using term or range-based queries, albeit slower.
 
-[`ignore_malformed`](/reference/elasticsearch/mapping-reference/ignore-malformed.md)
+[`ignore_malformed`](ignore-malformed.md)
 :   Trying to index the wrong data type into a field throws an exception by default, and rejects the whole document. If this parameter is set to true, it allows the exception to be ignored. The malformed field is not indexed, but other fields in the document are processed normally. Accepts `true` or `false`. Note that this cannot be set if the `script` parameter is used.
 
-[`null_value`](/reference/elasticsearch/mapping-reference/null-value.md)
+[`null_value`](null-value.md)
 :   Accepts any of the true or false values listed above. The value is substituted for any explicit `null` values. Defaults to `null`, which means the field is treated as missing. Note that this cannot be set if the `script` parameter is used.
 
 `on_script_error`
-:   Defines what to do if the script defined by the `script` parameter throws an error at indexing time. Accepts `fail` (default), which will cause the entire document to be rejected, and `continue`, which will register the field in the document’s [`_ignored`](/reference/elasticsearch/mapping-reference/mapping-ignored-field.md) metadata field and continue indexing. This parameter can only be set if the `script` field is also set.
+:   Defines what to do if the script defined by the `script` parameter throws an error at indexing time. Accepts `fail` (default), which will cause the entire document to be rejected, and `continue`, which will register the field in the document’s [`_ignored`](mapping-ignored-field.md) metadata field and continue indexing. This parameter can only be set if the `script` field is also set.
 
 `script`
-:   If this parameter is set, then the field will index values generated by this script, rather than reading the values directly from the source. If a value is set for this field on the input document, then the document will be rejected with an error. Scripts are in the same format as their [runtime equivalent](docs-content://manage-data/data-store/mapping/map-runtime-field.md).
+:   If this parameter is set, then the field will index values generated by this script, rather than reading the values directly from the source. If a value is set for this field on the input document, then the document will be rejected with an error. Scripts are in the same format as their [runtime equivalent](runtime-mapping-fields.md).
 
-[`store`](/reference/elasticsearch/mapping-reference/mapping-store.md)
-:   Whether the field value should be stored and retrievable separately from the [`_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field. Accepts `true` or `false` (default).
+[`store`](mapping-store.md)
+:   Whether the field value should be stored and retrievable separately from the [`_source`](mapping-source-field.md) field. Accepts `true` or `false` (default).
 
-[`meta`](/reference/elasticsearch/mapping-reference/mapping-field-meta.md)
+[`meta`](mapping-field-meta.md)
 :   Metadata about the field.
 
 `time_series_dimension`
 :   (Optional, Boolean)
 
-    Marks the field as a [time series dimension](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-dimension). Defaults to `false`.
+    Marks the field as a [time series dimension](tsds.md#time-series-dimension). Defaults to `false`.
 
-    The `index.mapping.dimension_fields.limit` [index setting](/reference/elasticsearch/index-settings/time-series.md) index setting limits the number of dimensions in an index.
+    The [`index.mapping.dimension_fields.limit`](tsds-index-settings.md#index-mapping-dimension-fields-limit) index setting limits the number of dimensions in an index.
 
     Dimension fields have the following constraints:
 
@@ -126,12 +194,12 @@ The following parameters are accepted by `boolean` fields:
 
 ## Synthetic `_source` [boolean-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-`boolean` fields support [synthetic `_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md#synthetic-source) in their default configuration.
+`boolean` fields support [synthetic `_source`](mapping-source-field.md#synthetic-source) in their default configuration.
 
 Synthetic source may sort `boolean` field values. For example:
 
@@ -161,6 +229,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -168,5 +238,7 @@ Will become:
   "bool": [false, false, true, true]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 

@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-index-field.html
----
-
-# _index field [mapping-index-field]
+# `_index` field [mapping-index-field]
 
 When performing queries across multiple indexes, it is sometimes desirable to add query clauses that are associated with documents of only certain indexes. The `_index` field allows matching on the index a document was indexed into. Its value is accessible in certain queries and aggregations, and when sorting or scripting:
 
@@ -61,7 +56,7 @@ The `_index` field is exposed virtually — it is not added to the Lucene in
 
 Queries on the `_index` field accept index aliases in addition to concrete index names.
 
-::::{note}
+::::{note} 
 When specifying a remote index name such as `cluster_1:index_3`, the query must contain the separator character `:`. For example, a `wildcard` query on `cluster_*:index_3` would match documents from the remote index. However, a query on `cluster*index_1` is only matched against local indices, since no separator is present. This behavior aligns with the usual resolution rules for remote index names.
 ::::
 

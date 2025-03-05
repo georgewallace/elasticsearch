@@ -1,26 +1,21 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
----
-
 # Query and filter context [query-filter-context]
 
 
-## Relevance scores [relevance-scores]
+## Relevance scores [relevance-scores] 
 
-By default, Elasticsearch sorts matching search results by **relevance score**, which measures how well each document matches a query.
+By default, Elasticsearch sorts matching search results by ***relevance score***, which measures how well each document matches a query.
 
-The relevance score is a positive floating point number, returned in the `_score` metadata field of the [search](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) API. The higher the `_score`, the more relevant the document. While each query type can calculate relevance scores differently, score calculation also depends on whether the query clause is run in a **query** or **filter** context.
+The relevance score is a positive floating point number, returned in the `_score` metadata field of the [search](search-search.md) API. The higher the `_score`, the more relevant the document. While each query type can calculate relevance scores differently, score calculation also depends on whether the query clause is run in a ***query*** or ***filter*** context.
 
 
-## Query context [query-context]
+## Query context [query-context] 
 
 In the query context, a query clause answers the question *How well does this document match this query clause?* Besides deciding whether or not the document matches, the query clause also calculates a relevance score in the `_score` metadata field.
 
-Query context is in effect whenever a query clause is passed to a `query` parameter, such as the `query` parameter in the [search](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search#request-body-search-query) API.
+Query context is in effect whenever a query clause is passed to a `query` parameter, such as the `query` parameter in the [search](search-search.md#request-body-search-query) API.
 
 
-## Filter context [filter-context]
+## Filter context [filter-context] 
 
 A filter answers the binary question “Does this document match this query clause?”. The answer is simply "yes" or "no". Filtering has several benefits:
 
@@ -49,14 +44,14 @@ Common filter applications include:
 
 Filter context applies when a query clause is passed to a `filter` parameter, such as:
 
-* `filter` or `must_not` parameters in [`bool`](/reference/query-languages/query-dsl-bool-query.md)  queries
-* `filter` parameter in [`constant_score`](/reference/query-languages/query-dsl-constant-score-query.md) queries
-* [`filter`](/reference/data-analysis/aggregations/search-aggregations-bucket-filter-aggregation.md) aggregations
+* `filter` or `must_not` parameters in [`bool`](query-dsl-bool-query.md)  queries
+* `filter` parameter in [`constant_score`](query-dsl-constant-score-query.md) queries
+* [`filter`](search-aggregations-bucket-filter-aggregation.md) aggregations
 
 Filters optimize query performance and efficiency, especially for structured data queries and when combined with full-text searches.
 
 
-## Example of query and filter contexts [query-filter-context-ex]
+## Example of query and filter contexts [query-filter-context-ex] 
 
 Below is an example of query clauses being used in query and filter context in the `search` API. This query will match documents where all of the following conditions are met:
 
@@ -88,11 +83,13 @@ GET /_search
 3. The `filter` parameter indicates filter context. Its `term` and `range` clauses are used in filter context. They will filter out documents which do not match, but they will not affect the score for matching documents.
 
 
-::::{warning}
+::::{warning} 
 Scores calculated for queries in query context are represented as single precision floating point numbers; they have only 24 bits for significand’s precision. Score calculations that exceed the significand’s precision will be converted to floats with loss of precision.
 ::::
 
 
-::::{tip}
+::::{tip} 
 Use query clauses in query context for conditions which should affect the score of matching documents (i.e. how well does the document match), and use all other query clauses in filter context.
 ::::
+
+

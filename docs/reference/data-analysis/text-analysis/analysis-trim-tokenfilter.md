@@ -1,7 +1,5 @@
 ---
 navigation_title: "Trim"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-trim-tokenfilter.html
 ---
 
 # Trim token filter [analysis-trim-tokenfilter]
@@ -9,10 +7,10 @@ mapped_pages:
 
 Removes leading and trailing whitespace from each token in a stream. While this can change the length of a token, the `trim` filter does *not* change a token’s offsets.
 
-The `trim` filter uses Lucene’s [TrimFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/TrimFilter.md).
+The `trim` filter uses Lucene’s [TrimFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/TrimFilter.md).
 
-::::{tip}
-Many commonly used tokenizers, such as the [`standard`](/reference/data-analysis/text-analysis/analysis-standard-tokenizer.md) or [`whitespace`](/reference/data-analysis/text-analysis/analysis-whitespace-tokenizer.md) tokenizer, remove whitespace by default. When using these tokenizers, you don’t need to add a separate `trim` filter.
+::::{tip} 
+Many commonly used tokenizers, such as the [`standard`](analysis-standard-tokenizer.md) or [`whitespace`](analysis-whitespace-tokenizer.md) tokenizer, remove whitespace by default. When using these tokenizers, you don’t need to add a separate `trim` filter.
 
 ::::
 
@@ -21,7 +19,7 @@ Many commonly used tokenizers, such as the [`standard`](/reference/data-analysis
 
 To see how the `trim` filter works, you first need to produce a token containing whitespace.
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the [`keyword`](/reference/data-analysis/text-analysis/analysis-keyword-tokenizer.md) tokenizer to produce a token for `" fox "`.
+The following [analyze API](indices-analyze.md) request uses the [`keyword`](analysis-keyword-tokenizer.md) tokenizer to produce a token for `" fox "`.
 
 ```console
 GET _analyze
@@ -77,7 +75,7 @@ The API returns the following response. The returned `fox` token does not includ
 
 ## Add to an analyzer [analysis-trim-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `trim` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `trim` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT trim_example

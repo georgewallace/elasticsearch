@@ -1,7 +1,5 @@
 ---
 navigation_title: "Missing"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-missing-aggregation.html
 ---
 
 # Missing aggregation [search-aggregations-bucket-missing-aggregation]
@@ -24,6 +22,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 In the above example, we get the total number of products that do not have a price.
 
 Response:
@@ -38,4 +38,6 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 

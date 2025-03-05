@@ -1,7 +1,5 @@
 ---
 navigation_title: "Set"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/set-processor.html
 ---
 
 # Set processor [set-processor]
@@ -13,16 +11,16 @@ $$$set-options$$$
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `field` | yes | - | The field to insert, upsert, or update. Supports [template snippets](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#template-snippets). |
-| `value` | yes* | - | The value to be set for the field. Supports [template snippets](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#template-snippets). May specify only one of `value` or `copy_from`. |
+| `field` | yes | - | The field to insert, upsert, or update. Supports [template snippets](ingest.md#template-snippets). |
+| `value` | yes* | - | The value to be set for the field. Supports [template snippets](ingest.md#template-snippets). May specify only one of `value` or `copy_from`. |
 | `copy_from` | no | - | The origin field which will be copied to `field`, cannot set `value` simultaneously. Supported data types are `boolean`, `number`, `array`, `object`, `string`, `date`, etc. |
 | `override` | no | `true` | If `true` processor will update fields with pre-existing non-null-valued field. When set to `false`, such fields will not be touched. |
-| `ignore_empty_value` | no | `false` | If `true` and used in combination with `value` which is a [template snippet](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#template-snippets) that evaluates to `null` or an empty string, the processor quietly exits without modifying the document. Similarly, if used in combination with `copy_from` it will quietly exit if the field does not exist or its value evaluates to `null` or an empty string. |
-| `media_type` | no | `application/json` | The media type for encoding `value`. Applies only when `value` is a [template snippet](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#template-snippets). Must be one of `application/json`, `text/plain`, or `application/x-www-form-urlencoded`. |
+| `ignore_empty_value` | no | `false` | If `true` and used in combination with `value` which is a [template snippet](ingest.md#template-snippets) that evaluates to `null` or an empty string, the processor quietly exits without modifying the document. Similarly, if used in combination with `copy_from` it will quietly exit if the field does not exist or its value evaluates to `null` or an empty string. |
+| `media_type` | no | `application/json` | The media type for encoding `value`. Applies only when `value` is a [template snippet](ingest.md#template-snippets). Must be one of `application/json`, `text/plain`, or `application/x-www-form-urlencoded`. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 ```js
@@ -34,6 +32,8 @@ $$$set-options$$$
   }
 }
 ```
+
+%  NOTCONSOLE
 
 This processor can also be used to copy data from one field to another. For example:
 
@@ -89,6 +89,8 @@ Result:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/2019-03-11T21:54:37.909224Z/$body.docs.0.doc._ingest.timestamp/]
 
 This processor can also access array fields using dot notation:
 
@@ -148,6 +150,8 @@ Result:
 }
 ```
 
+%  TESTRESPONSE[s/2023-05-05T16:04:16.456475214Z/$body.docs.0.doc._ingest.timestamp/]
+
 The contents of a field including complex values such as arrays and objects can be copied to another field using `copy_from`:
 
 ```console
@@ -198,4 +202,6 @@ Result:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/2020-09-30T12:55:17.742795Z/$body.docs.0.doc._ingest.timestamp/]
 

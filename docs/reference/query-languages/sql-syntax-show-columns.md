@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-show-columns.html
----
-
 # SHOW COLUMNS [sql-syntax-show-columns]
 
 ```sql
@@ -20,7 +15,7 @@ SHOW COLUMNS
 4. SQL LIKE pattern matching table names.
 
 
-See [index patterns](/reference/query-languages/sql-index-patterns.md) for more information about patterns.
+See [index patterns](sql-index-patterns.md) for more information about patterns.
 
 **Description**: List the columns in table and their data type (and other attributes).
 

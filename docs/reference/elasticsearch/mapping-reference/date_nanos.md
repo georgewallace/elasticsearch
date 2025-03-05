@@ -1,7 +1,5 @@
 ---
 navigation_title: "Date nanoseconds"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/date_nanos.html
 ---
 
 # Date nanoseconds field type [date_nanos]
@@ -16,6 +14,8 @@ Date formats can be customised, but if no `format` is specified then it uses the
 ```js
     "strict_date_optional_time_nanos||epoch_millis"
 ```
+
+%  NOTCONSOLE
 
 For instance:
 
@@ -60,18 +60,63 @@ GET my-index-000001/_search
 }
 ```
 
+%  TEST[s/_search/_search?filter_path=hits.hits/]
+
 1. The `date` field uses the default `format`.
 2. This document uses a plain date.
 3. This document includes a time.
 4. This document uses milliseconds-since-the-epoch.
 5. Note that the `sort` values that are returned are all in nanoseconds-since-the-epoch.
 6. Use `.nano` in scripts to return the nanosecond component of the date.
-7. You can specify the format when fetching data using the [`fields` parameter](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#search-fields-param). Use [`strict_date_optional_time_nanos`](/reference/elasticsearch/mapping-reference/mapping-date-format.md#strict-date-time-nanos) or you’ll get a rounded result.
+7. You can specify the format when fetching data using the [`fields` parameter](search-fields.md#search-fields-param). Use [`strict_date_optional_time_nanos`](mapping-date-format.md#strict-date-time-nanos) or you’ll get a rounded result.
 
+
+% [source,console-result]
+% ----
+% {
+%   "hits": {
+%     "hits": [
+%       {
+%         "_id": "1",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_source": {"date": "2015-01-01"},
+%         "fields": {
+%           "date": ["2015-01-01T00:00:00.000Z"],
+%           "date_has_nanos": [false]
+%         },
+%         "sort": [1420070400000000000]
+%       },
+%       {
+%         "_id": "3",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_source": {"date": 1420070400000},
+%         "fields": {
+%           "date": ["2015-01-01T00:00:00.000Z"],
+%           "date_has_nanos": [false]
+%         },
+%         "sort": [1420070400000000000]
+%       },
+%       {
+%         "_id": "2",
+%         "_index": "my-index-000001",
+%         "_score": null,
+%         "_source": {"date": "2015-01-01T12:10:30.123456789Z"},
+%         "fields": {
+%           "date": ["2015-01-01T12:10:30.123456789Z"],
+%           "date_has_nanos": [true]
+%         },
+%         "sort": [1420114230123456789]
+%       }
+%     ]
+%   }
+% }
+% ----
 
 You can also specify multiple date formats separated by `||`. The same mapping parameters than with the `date` field can be used.
 
-::::{warning}
+::::{warning} 
 Date nanoseconds will accept numbers with a decimal point like `{"date": 1618249875.123456}` but there are some cases ({{es-issue}}70085[#70085]) where we’ll lose precision on those dates so they should be avoided.
 
 ::::
@@ -79,13 +124,13 @@ Date nanoseconds will accept numbers with a decimal point like `{"date": 1618249
 
 ## Limitations [date-nanos-limitations]
 
-Aggregations are still on millisecond resolution, even when using a `date_nanos` field. This limitation also affects [{{transforms}}](docs-content://explore-analyze/transforms.md).
+Aggregations are still on millisecond resolution, even when using a `date_nanos` field. This limitation also affects [{{transforms}}](transforms.md).
 
 <hr>
 
 ## Synthetic `_source` [date-nanos-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
@@ -118,6 +163,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -125,5 +172,7 @@ Will become:
   "date": ["2014-01-01T12:10:30.000Z", "2015-01-01T12:10:30.000Z"]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 

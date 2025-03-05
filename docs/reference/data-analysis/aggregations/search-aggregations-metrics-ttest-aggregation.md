@@ -1,7 +1,5 @@
 ---
 navigation_title: "T-test"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-ttest-aggregation.html
 ---
 
 # T-test aggregation [search-aggregations-metrics-ttest-aggregation]
@@ -23,6 +21,8 @@ A `t_test` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 Assuming that we have a record of node start up times before and after upgrade, let’s look at a t-test to see if upgrade affected the node start up time in a meaningful way.
 
 ```console
@@ -40,6 +40,8 @@ GET node_upgrade/_search
   }
 }
 ```
+
+%  TEST[setup:node_upgrade]
 
 1. The field `startup_time_before` must be a numeric field.
 2. The field `startup_time_after` must be a numeric field.
@@ -59,6 +61,8 @@ The response will return the p-value or probability value for the test. It is th
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 1. The p-value.
 
@@ -112,6 +116,8 @@ GET node_upgrade/_search
 }
 ```
 
+%  TEST[setup:node_upgrade]
+
 1. The field `startup_time_before` must be a numeric field.
 2. Any query that separates two groups can be used here.
 3. We are using the same field
@@ -131,15 +137,17 @@ GET node_upgrade/_search
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 1. The p-value.
 
 
-Populations don’t have to be in the same index. If data sets are located in different indices, the term filter on the [`_index`](/reference/elasticsearch/mapping-reference/mapping-index-field.md) field can be used to select populations.
+Populations don’t have to be in the same index. If data sets are located in different indices, the term filter on the [`_index`](mapping-index-field.md) field can be used to select populations.
 
 
 ## Script [_script_15]
 
-If you need to run the `t_test` on values that aren’t represented cleanly by a field you should, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if you want to adjust out load times for the before values:
+If you need to run the `t_test` on values that aren’t represented cleanly by a field you should, run the aggregation on a [runtime field](runtime.md). For example, if you want to adjust out load times for the before values:
 
 ```console
 GET node_upgrade/_search
@@ -171,5 +179,20 @@ GET node_upgrade/_search
   }
 }
 ```
+
+%  TEST[setup:node_upgrade]
+
+%  TEST[s/_search/_search?filter_path=aggregations/]
+
+% [source,console-result]
+% ----
+% {
+%  "aggregations": {
+%     "startup_time_ttest": {
+%       "value": 0.9397399375119482
+%     }
+%   }
+% }
+% ----
 
 

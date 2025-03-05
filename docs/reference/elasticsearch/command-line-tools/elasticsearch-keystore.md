@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-keystore.html
----
-
 # elasticsearch-keystore [elasticsearch-keystore]
 
-The `elasticsearch-keystore` command manages [secure settings](docs-content://deploy-manage/security/secure-settings.md) in the {{es}} keystore.
+The `elasticsearch-keystore` command manages [secure settings](secure-settings.md) in the {{es}} keystore.
 
 
-## Synopsis [elasticsearch-keystore-synopsis]
+## Synopsis [elasticsearch-keystore-synopsis] 
 
 ```shell
 bin/elasticsearch-keystore
@@ -25,9 +20,9 @@ bin/elasticsearch-keystore
 ```
 
 
-## Description [elasticsearch-keystore-description]
+## Description [elasticsearch-keystore-description] 
 
-::::{important}
+::::{important} 
 This command should be run as the user that will run {{es}}.
 ::::
 
@@ -36,12 +31,12 @@ Currently, all secure settings are node-specific settings that must have the sam
 
 When the keystore is password-protected, you must supply the password each time {{es}} starts.
 
-Modifications to the keystore are not automatically applied to the running {{es}} node. Any changes to the keystore will take effect when you restart {{es}}. Some secure settings can be explicitly [reloaded](docs-content://deploy-manage/security/secure-settings.md#reloadable-secure-settings) without restart.
+Modifications to the keystore are not automatically applied to the running {{es}} node. Any changes to the keystore will take effect when you restart {{es}}. Some secure settings can be explicitly [reloaded](secure-settings.md#reloadable-secure-settings) without restart.
 
 Only some settings are designed to be read from the keystore. However, there is no validation to block unsupported settings from the keystore and they can cause {{es}} to fail to start. To see whether a setting is supported in the keystore, see the setting reference.
 
 
-## Parameters [elasticsearch-keystore-parameters]
+## Parameters [elasticsearch-keystore-parameters] 
 
 `add <settings>`
 :   Adds settings to the keystore. Multiple setting names can be specified as arguments to the `add` command. By default, you are prompted for the values of the settings. If the keystore is password protected, you are also prompted to enter the password. If a setting already exists in the keystore, you must confirm that you want to overwrite the current value. If the keystore does not exist, you must confirm that you want to create a keystore. To avoid these two confirmation prompts, use the `-f` parameter.
@@ -80,7 +75,7 @@ Only some settings are designed to be read from the keystore. However, there is 
 :   Shows minimal output.
 
 `-x, --stdin`
-:   When used with the `add` parameter, you can pass the settings values through standard input (stdin). Separate multiple values with carriage returns or newlines. See [Add settings to the keystore](#add-string-to-keystore).
+:   When used with the `add` parameter, you can pass the settings values through standard input (stdin). Separate multiple values with carriage returns or newlines. See [Add settings to the keystore](elasticsearch-keystore.md#add-string-to-keystore).
 
 `upgrade`
 :   Upgrades the internal format of the keystore.
@@ -89,10 +84,10 @@ Only some settings are designed to be read from the keystore. However, there is 
 :   Shows verbose output.
 
 
-## Examples [elasticsearch-keystore-examples]
+## Examples [elasticsearch-keystore-examples] 
 
 
-### Create the keystore [creating-keystore]
+### Create the keystore [creating-keystore] 
 
 To create the `elasticsearch.keystore`, use the `create` command:
 
@@ -103,7 +98,7 @@ bin/elasticsearch-keystore create -p
 You are prompted to enter the keystore password. A password-protected `elasticsearch.keystore` file is created alongside the `elasticsearch.yml` file.
 
 
-### Change the password of the keystore [changing-keystore-password]
+### Change the password of the keystore [changing-keystore-password] 
 
 To change the password of the `elasticsearch.keystore`, use the `passwd` command:
 
@@ -114,7 +109,7 @@ bin/elasticsearch-keystore passwd
 If the {{es}} keystore is password protected, you are prompted to enter the current password and then enter the new one. If it is not password protected, you are prompted to set a password.
 
 
-### List settings in the keystore [list-settings]
+### List settings in the keystore [list-settings] 
 
 To list the settings in the keystore, use the `list` command.
 
@@ -125,7 +120,7 @@ bin/elasticsearch-keystore list
 If the {{es}} keystore is password protected, you are prompted to enter the password.
 
 
-### Add settings to the keystore [add-string-to-keystore]
+### Add settings to the keystore [add-string-to-keystore] 
 
 Sensitive string settings, like authentication credentials for Cloud plugins, can be added with the `add` command:
 
@@ -154,7 +149,7 @@ cat /file/containing/setting/value | bin/elasticsearch-keystore add --stdin the.
 Values for multiple settings must be separated by carriage returns or newlines.
 
 
-### Add files to the keystore [add-file-to-keystore]
+### Add files to the keystore [add-file-to-keystore] 
 
 You can add sensitive files, like authentication key files for Cloud plugins, using the `add-file` command. Settings and file paths are specified in pairs consisting of `setting path`. The value of the setting will be the binary contents of the file path at the time the file is added to the keystore.
 
@@ -173,7 +168,7 @@ bin/elasticsearch-keystore add-file \
 If the {{es}} keystore is password protected, you are prompted to enter the password.
 
 
-### Show settings in the keystore [show-keystore-value]
+### Show settings in the keystore [show-keystore-value] 
 
 To display the value of a setting in the keystore use the `show` command:
 
@@ -190,7 +185,7 @@ bin/elasticsearch-keystore show -o my_file binary.setting.name
 If the {{es}} keystore is password protected, you are prompted to enter the password.
 
 
-### Remove settings from the keystore [remove-settings]
+### Remove settings from the keystore [remove-settings] 
 
 To remove a setting from the keystore, use the `remove` command:
 
@@ -209,7 +204,7 @@ bin/elasticsearch-keystore remove \
 If the {{es}} keystore is password protected, you are prompted to enter the password.
 
 
-### Upgrade the keystore [keystore-upgrade]
+### Upgrade the keystore [keystore-upgrade] 
 
 Occasionally, the internal format of the keystore changes. When {{es}} is installed from a package manager, an upgrade of the on-disk keystore to the new format is done during package upgrade. In other cases, {{es}} performs the upgrade during node startup. This requires that {{es}} has write permissions to the directory that contains the keystore. Alternatively, you can manually perform such an upgrade by using the `upgrade` command:
 

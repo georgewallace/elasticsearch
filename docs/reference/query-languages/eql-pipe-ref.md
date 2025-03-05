@@ -1,16 +1,14 @@
 ---
 navigation_title: "Pipe reference"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/eql-pipe-ref.html
 ---
 
 # EQL pipe reference [eql-pipe-ref]
 
 
-{{es}} supports the following [EQL pipes](/reference/query-languages/eql-syntax.md#eql-pipes).
+{{es}} supports the following [EQL pipes](eql-syntax.md#eql-pipes).
 
 
-## `head` [eql-pipe-head]
+## `head` [eql-pipe-head] 
 
 Returns up to a specified number of events or sequences, starting with the earliest matches. Works similarly to the [Unix head command](https://en.wikipedia.org/wiki/Head_(Unix)).
 
@@ -35,7 +33,7 @@ head <max>
 :   (Required, integer) Maximum number of matching events or sequences to return.
 
 
-## `tail` [eql-pipe-tail]
+## `tail` [eql-pipe-tail] 
 
 Returns up to a specified number of events or sequences, starting with the most recent matches. Works similarly to the [Unix tail command](https://en.wikipedia.org/wiki/Tail_(Unix)).
 

@@ -1,45 +1,44 @@
 ---
 navigation_title: "EQL"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/eql.html
 ---
 
 # EQL search [eql]
-
-:::{note}
-This section provides detailed **reference information**.
-
-Refer to [EQL overview](docs-content://explore-analyze/query-filter/languages/eql.md) in the **Explore and analyze** section for overview and conceptual information about the SQL query language.
-:::
 
 
 Event Query Language (EQL) is a query language for event-based time series data, such as logs, metrics, and traces.
 
 
-## Advantages of EQL [eql-advantages]
+## Advantages of EQL [eql-advantages] 
 
 * **EQL lets you express relationships between events.**<br> Many query languages allow you to match single events. EQL lets you match a sequence of events across different event categories and time spans.
-* **EQL has a low learning curve.**<br> [EQL syntax](/reference/query-languages/eql-syntax.md) looks like other common query languages, such as SQL. EQL lets you write and read queries intuitively, which makes for quick, iterative searching.
+* **EQL has a low learning curve.**<br> [EQL syntax](eql-syntax.md) looks like other common query languages, such as SQL. EQL lets you write and read queries intuitively, which makes for quick, iterative searching.
 * **EQL is designed for security use cases.**<br> While you can use it for any event-based data, we created EQL for threat hunting. EQL not only supports indicator of compromise (IOC) searches but can describe activity that goes beyond IOCs.
 
 
-## Required fields [eql-required-fields]
+## Required fields [eql-required-fields] 
 
-With the exception of sample queries, EQL searches require that the searched data stream or index  contains a *timestamp* field. By default, EQL uses the `@timestamp` field from the [Elastic Common Schema (ECS)][Elastic Common Schema (ECS)](ecs://reference/index.md)).
+With the exception of sample queries, EQL searches require that the searched data stream or index  contains a *timestamp* field. By default, EQL uses the `@timestamp` field from the [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}).
 
-EQL searches also require an *event category* field, unless you use the [`any` keyword](/reference/query-languages/eql-syntax.md#eql-syntax-match-any-event-category) to search for  documents without an event category field. By default, EQL uses the ECS `event.category` field.
+EQL searches also require an *event category* field, unless you use the [`any` keyword](eql-syntax.md#eql-syntax-match-any-event-category) to search for  documents without an event category field. By default, EQL uses the ECS `event.category` field.
 
-To use a different timestamp or event category field, see [Specify a timestamp or event category field](#specify-a-timestamp-or-event-category-field).
+To use a different timestamp or event category field, see [Specify a timestamp or event category field](eql.md#specify-a-timestamp-or-event-category-field).
 
-::::{tip}
-While no schema is required to use EQL, we recommend using the [ECS](ecs://reference/index.md). EQL searches are designed to work with core ECS fields by default.
+::::{tip} 
+While no schema is required to use EQL, we recommend using the [ECS](https://www.elastic.co/guide/en/ecs/{{ecs_version}}). EQL searches are designed to work with core ECS fields by default.
 ::::
 
 
 
-## Run an EQL search [run-an-eql-search]
+## Run an EQL search [run-an-eql-search] 
 
-Use the [EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) to run a [basic EQL query](/reference/query-languages/eql-syntax.md#eql-basic-syntax).
+Use the [EQL search API](eql-search-api.md) to run a [basic EQL query](eql-syntax.md#eql-basic-syntax).
+
+% [source,console]
+% ----
+% DELETE /_data_stream/*
+% DELETE /_index_template/*
+% ----
+% // TEARDOWN
 
 ```console
 GET /my-data-stream/_eql/search
@@ -49,6 +48,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 By default, basic EQL queries return the 10 most recent matching events in the `hits.events` property. These hits are sorted by timestamp, converted to milliseconds since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time), in ascending order.
 
@@ -105,6 +106,14 @@ By default, basic EQL queries return the 10 most recent matching events in the `
 }
 ```
 
+%  TESTRESPONSE[s/"took": 60/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "OQmfCaduce8zoHT93o4H"/"_id": $body.hits.events.0._id/]
+
+%  TESTRESPONSE[s/"_id": "xLkCaj4EujzdNSxfYLbO"/"_id": $body.hits.events.1._id/]
+
 Use the `size` parameter to get a smaller or larger set of hits:
 
 ```console
@@ -117,10 +126,12 @@ GET /my-data-stream/_eql/search
 }
 ```
 
+%  TEST[setup:sec_logs]
 
-## Search for a sequence of events [eql-search-sequence]
 
-Use EQL’s [sequence syntax](/reference/query-languages/eql-syntax.md#eql-sequences) to search for a series of ordered events. List the event items in ascending chronological order, with the most recent event listed last:
+## Search for a sequence of events [eql-search-sequence] 
+
+Use EQL’s [sequence syntax](eql-syntax.md#eql-sequences) to search for a series of ordered events. List the event items in ascending chronological order, with the most recent event listed last:
 
 ```console
 GET /my-data-stream/_eql/search
@@ -132,6 +143,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 The response’s `hits.sequences` property contains the 10 most recent matching sequences.
 
@@ -189,7 +202,17 @@ The response’s `hits.sequences` property contains the 10 most recent matching 
 }
 ```
 
-Use [`with maxspan`](/reference/query-languages/eql-syntax.md#eql-with-maxspan-keywords) to constrain matching sequences to a timespan:
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+
+%  TESTRESPONSE[s/"total": \.\.\.,/"total": { "value": 1, "relation": "eq" },/]
+
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.sequences.0.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "OQmfCaduce8zoHT93o4H"/"_id": $body.hits.sequences.0.events.0._id/]
+
+%  TESTRESPONSE[s/"_id": "yDwnGIJouOYGBzP0ZE9n"/"_id": $body.hits.sequences.0.events.1._id/]
+
+Use [`with maxspan`](eql-syntax.md#eql-with-maxspan-keywords) to constrain matching sequences to a timespan:
 
 ```console
 GET /my-data-stream/_eql/search
@@ -202,7 +225,9 @@ GET /my-data-stream/_eql/search
 }
 ```
 
-Use `!` to match [missing events](/reference/query-languages/eql-syntax.md#eql-missing-events): events in a sequence that do not meet a condition within a given timespan:
+%  TEST[setup:sec_logs]
+
+Use `!` to match [missing events](eql-syntax.md#eql-missing-events): events in a sequence that do not meet a condition within a given timespan:
 
 ```console
 GET /my-data-stream/_eql/search
@@ -215,6 +240,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 Missing events are indicated in the response as `missing": true`:
 
@@ -277,7 +304,17 @@ Missing events are indicated in the response as `missing": true`:
 }
 ```
 
-Use the [`by` keyword](/reference/query-languages/eql-syntax.md#eql-by-keyword) to match events that share the same field values:
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+
+%  TESTRESPONSE[s/"total": \.\.\.,/"total": { "value": 1, "relation": "eq" },/]
+
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2023.07.04-000001"/"_index": $body.hits.sequences.0.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "AnpTIYkBrVQ2QEgsWg94"/"_id": $body.hits.sequences.0.events.0._id/]
+
+%  TESTRESPONSE[s/"_id": "BHpTIYkBrVQ2QEgsWg94"/"_id": $body.hits.sequences.0.events.2._id/]
+
+Use the [`by` keyword](eql-syntax.md#eql-by-keyword) to match events that share the same field values:
 
 ```console
 GET /my-data-stream/_eql/search
@@ -289,6 +326,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 If a field value should be shared across all events, use the `sequence by` keyword. The following query is equivalent to the previous one.
 
@@ -302,6 +341,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 The `hits.sequences.join_keys` property contains the shared field values.
 
@@ -321,7 +362,13 @@ The `hits.sequences.join_keys` property contains the shared field values.
 }
 ```
 
-Use the [`until` keyword](/reference/query-languages/eql-syntax.md#eql-until-keyword) to specify an expiration event for sequences. Matching sequences must end before this event.
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+
+%  TESTRESPONSE[s/"hits": \.\.\.,/"hits": { "total": { "value": 1, "relation": "eq" },/]
+
+%  TESTRESPONSE[s/"events": \.\.\./"events": $body.hits.sequences.0.events/]
+
+Use the [`until` keyword](eql-syntax.md#eql-until-keyword) to specify an expiration event for sequences. Matching sequences must end before this event.
 
 ```console
 GET /my-data-stream/_eql/search
@@ -335,10 +382,12 @@ GET /my-data-stream/_eql/search
 }
 ```
 
+%  TEST[setup:sec_logs]
 
-## Sample chronologically unordered events [eql-search-sample]
 
-Use EQL’s [sample syntax](/reference/query-languages/eql-syntax.md#eql-samples) to search for events that match one or more join keys and a set of filters. Samples are similar to sequences, but do not return events in chronological order. In fact, sample queries can run on data without a timestamp. Sample queries can be useful to find correlations in events that don’t always occur in the same sequence, or that occur across long time spans.
+## Sample chronologically unordered events [eql-search-sample] 
+
+Use EQL’s [sample syntax](eql-syntax.md#eql-samples) to search for events that match one or more join keys and a set of filters. Samples are similar to sequences, but do not return events in chronological order. In fact, sample queries can run on data without a timestamp. Sample queries can be useful to find correlations in events that don’t always occur in the same sequence, or that occur across long time spans.
 
 ::::{dropdown} Click to show the sample data used in the examples below
 ```console
@@ -554,7 +603,7 @@ POST /my-index-000003/_bulk?refresh
 ::::
 
 
-A sample query specifies at least one join key, using the [`by` keyword](/reference/query-languages/eql-syntax.md#eql-by-keyword), and up to five filters:
+A sample query specifies at least one join key, using the [`by` keyword](eql-syntax.md#eql-by-keyword), and up to five filters:
 
 ```console
 GET /my-index*/_eql/search
@@ -567,6 +616,8 @@ GET /my-index*/_eql/search
   """
 }
 ```
+
+%  TEST[continued]
 
 By default, the response’s `hits.sequences` property contains up to 10 samples. Each sample has a set of `join_keys` and an array with one matching event for each of the filters. Events are returned in the order of the filters they match:
 
@@ -694,6 +745,8 @@ By default, the response’s `hits.sequences` property contains up to 10 samples
 }
 ```
 
+%  TESTRESPONSE[skip:Response is illustrative only]
+
 1. The events in the first sample have a value of `doom` for `host`.
 2. This event matches the first filter.
 3. This event matches the second filter.
@@ -714,6 +767,8 @@ GET /my-index*/_eql/search
   """
 }
 ```
+
+%  TEST[continued]
 
 This query will return samples where each of the events shares the same value for `os` or `op_sys`, as well as for `host`. For example:
 
@@ -844,6 +899,8 @@ This query will return samples where each of the events shares the same value fo
 }
 ```
 
+%  TESTRESPONSE[skip:Response is illustrative only]
+
 1. The events in this sample have a value of `doom` for `host` and a value of `redhat` for `os` or `op_sys`.
 
 
@@ -863,16 +920,18 @@ GET /my-index*/_eql/search
 }
 ```
 
+%  TEST[continued]
+
 1. Retrieve up to 2 samples per set of join keys.
 2. Retrieve up to 20 samples in total.
 
 
 
-## Retrieve selected fields [retrieve-selected-fields]
+## Retrieve selected fields [retrieve-selected-fields] 
 
 By default, each hit in the search response includes the document `_source`, which is the entire JSON object that was provided when indexing the document.
 
-You can use the [`filter_path`](/reference/elasticsearch/rest-apis/common-options.md#common-options-response-filtering) query parameter to filter the API response. For example, the following search returns only the timestamp and PID from the `_source` of each matching event.
+You can use the [`filter_path`](common-options.md#common-options-response-filtering) query parameter to filter the API response. For example, the following search returns only the timestamp and PID from the `_source` of each matching event.
 
 ```console
 GET /my-data-stream/_eql/search?filter_path=hits.events._source.@timestamp,hits.events._source.process.pid
@@ -882,6 +941,8 @@ GET /my-data-stream/_eql/search?filter_path=hits.events._source.@timestamp,hits.
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 The API returns the following response.
 
@@ -910,16 +971,16 @@ The API returns the following response.
 }
 ```
 
-You can also use the `fields` parameter to retrieve and format specific fields in the response. This field is identical to the search API’s [`fields` parameter](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md).
+You can also use the `fields` parameter to retrieve and format specific fields in the response. This field is identical to the search API’s [`fields` parameter](search-fields.md).
 
 Because it consults the index mappings, the `fields` parameter provides several advantages over referencing the `_source` directly. Specifically, the `fields` parameter:
 
 * Returns each value in a standardized way that matches its mapping type
-* Accepts [multi-fields](/reference/elasticsearch/mapping-reference/multi-fields.md) and [field aliases](/reference/elasticsearch/mapping-reference/field-alias.md)
+* Accepts [multi-fields](multi-fields.md) and [field aliases](field-alias.md)
 * Formats dates and spatial data types
-* Retrieves [runtime field values](docs-content://manage-data/data-store/mapping/retrieve-runtime-field.md)
+* Retrieves [runtime field values](runtime-retrieving-fields.md)
 * Returns fields calculated by a script at index time
-* Returns fields from related indices using [lookup runtime fields](docs-content://manage-data/data-store/mapping/retrieve-runtime-field.md#lookup-runtime-fields)
+* Returns fields from related indices using [lookup runtime fields](runtime-retrieving-fields.md#lookup-runtime-fields)
 
 The following search request uses the `fields` parameter to retrieve values for the `event.type` field, all fields starting with `process.`, and the `@timestamp` field. The request also uses the `filter_path` query parameter to exclude the `_source` of each hit.
 
@@ -939,6 +1000,8 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events._source
   ]
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 1. Both full field names and wildcard patterns are accepted.
 2. Use the `format` parameter to apply a custom format for the field’s values.
@@ -988,10 +1051,20 @@ The response includes values as a flat list in the `fields` section for each hit
 }
 ```
 
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
 
-## Use runtime fields [eql-use-runtime-fields]
+%  TESTRESPONSE[s/"total": \.\.\.,/"total": { "value": 2, "relation": "eq" },/]
 
-Use the `runtime_mappings` parameter to extract and create [runtime fields](docs-content://manage-data/data-store/mapping/runtime-fields.md) during a search. Use the `fields` parameter to include runtime fields in the response.
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "OQmfCaduce8zoHT93o4H"/"_id": $body.hits.events.0._id/]
+
+%  TESTRESPONSE[s/      \.\.\.\.\n/$body.hits.events.1/]
+
+
+## Use runtime fields [eql-use-runtime-fields] 
+
+Use the `runtime_mappings` parameter to extract and create [runtime fields](runtime.md) during a search. Use the `fields` parameter to include runtime fields in the response.
 
 The following search creates a `day_of_week` runtime field from the `@timestamp` and returns it in the response.
 
@@ -1013,6 +1086,8 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events._source
   ]
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 The API returns:
 
@@ -1040,10 +1115,20 @@ The API returns:
 }
 ```
 
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
 
-## Specify a timestamp or event category field [specify-a-timestamp-or-event-category-field]
+%  TESTRESPONSE[s/"total": \.\.\.,/"total": { "value": 2, "relation": "eq" },/]
 
-The EQL search API uses the `@timestamp` and `event.category` fields from the [ECS](ecs://reference/index.md) by default. To specify different fields, use the `timestamp_field` and `event_category_field` parameters:
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "OQmfCaduce8zoHT93o4H"/"_id": $body.hits.events.0._id/]
+
+%  TESTRESPONSE[s/      \.\.\.\.\n/$body.hits.events.1/]
+
+
+## Specify a timestamp or event category field [specify-a-timestamp-or-event-category-field] 
+
+The EQL search API uses the `@timestamp` and `event.category` fields from the [ECS](https://www.elastic.co/guide/en/ecs/{{ecs_version}}) by default. To specify different fields, use the `timestamp_field` and `event_category_field` parameters:
 
 ```console
 GET /my-data-stream/_eql/search
@@ -1056,16 +1141,18 @@ GET /my-data-stream/_eql/search
 }
 ```
 
-The event category field must be mapped as a [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) family field type. The timestamp field should be mapped as a [`date`](/reference/elasticsearch/mapping-reference/date.md) field type. [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) timestamp fields are not supported. You cannot use a [`nested`](/reference/elasticsearch/mapping-reference/nested.md) field or the sub-fields of a `nested` field as the timestamp or event category field.
+%  TEST[setup:sec_logs]
+
+The event category field must be mapped as a [`keyword`](keyword.md) family field type. The timestamp field should be mapped as a [`date`](date.md) field type. [`date_nanos`](date_nanos.md) timestamp fields are not supported. You cannot use a [`nested`](nested.md) field or the sub-fields of a `nested` field as the timestamp or event category field.
 
 
-## Specify a sort tiebreaker [eql-search-specify-a-sort-tiebreaker]
+## Specify a sort tiebreaker [eql-search-specify-a-sort-tiebreaker] 
 
 By default, the EQL search API returns matching hits by timestamp. If two or more events share the same timestamp, {{es}} uses a tiebreaker field value to sort the events in ascending order. {{es}} orders events with no tiebreaker value after events with a value.
 
 If you don’t specify a tiebreaker field or the events also share the same tiebreaker value, {{es}} considers the events concurrent and may not return them in a consistent sort order.
 
-To specify a tiebreaker field, use the `tiebreaker_field` parameter. If you use the [ECS](ecs://reference/index.md), we recommend using `event.sequence` as the tiebreaker field.
+To specify a tiebreaker field, use the `tiebreaker_field` parameter. If you use the [ECS](https://www.elastic.co/guide/en/ecs/{{ecs_version}}), we recommend using `event.sequence` as the tiebreaker field.
 
 ```console
 GET /my-data-stream/_eql/search
@@ -1077,10 +1164,12 @@ GET /my-data-stream/_eql/search
 }
 ```
 
+%  TEST[setup:sec_logs]
 
-## Filter using Query DSL [eql-search-filter-query-dsl]
 
-The `filter` parameter uses [Query DSL](/reference/query-languages/querydsl.md) to limit the documents on which an EQL query runs.
+## Filter using Query DSL [eql-search-filter-query-dsl] 
+
+The `filter` parameter uses [Query DSL](query-dsl.md) to limit the documents on which an EQL query runs.
 
 ```console
 GET /my-data-stream/_eql/search
@@ -1099,10 +1188,12 @@ GET /my-data-stream/_eql/search
 }
 ```
 
+%  TEST[setup:sec_logs]
 
-## Run an async EQL search [eql-search-async]
 
-By default, EQL search requests are synchronous and wait for complete results before returning a response. However, complete results can take longer for searches across large data sets or [frozen](docs-content://manage-data/lifecycle/data-tiers.md) data.
+## Run an async EQL search [eql-search-async] 
+
+By default, EQL search requests are synchronous and wait for complete results before returning a response. However, complete results can take longer for searches across large data sets or [frozen](data-tiers.md) data.
 
 To avoid long waits, run an async EQL search. Set `wait_for_completion_timeout` to a duration you’d like to wait for synchronous results.
 
@@ -1115,6 +1206,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:sec_logs]
 
 If the request doesn’t finish within the timeout period, the search becomes async and returns a response that includes:
 
@@ -1135,11 +1228,23 @@ The async search continues to run in the background without blocking other reque
 }
 ```
 
-To check the progress of an async search, use the [get async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) with the search ID. Specify how long you’d like for complete results in the `wait_for_completion_timeout` parameter.
+%  TESTRESPONSE[s/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=/$body.id/]
+
+%  TESTRESPONSE[s/"is_partial": true/"is_partial": $body.is_partial/]
+
+%  TESTRESPONSE[s/"is_running": true/"is_running": $body.is_running/]
+
+%  TESTRESPONSE[s/"took": 2000/"took": $body.took/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
+To check the progress of an async search, use the [get async EQL search API](get-async-eql-search-api.md) with the search ID. Specify how long you’d like for complete results in the `wait_for_completion_timeout` parameter.
 
 ```console
 GET /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=?wait_for_completion_timeout=2s
 ```
+
+%  TEST[skip: no access to search ID]
 
 If the response’s `is_running` value is `false`, the async search has finished. If the `is_partial` value is `false`, the returned search results are complete.
 
@@ -1154,11 +1259,19 @@ If the response’s `is_running` value is `false`, the async search has finished
 }
 ```
 
-Another more lightweight way to check the progress of an async search is to use the [get async EQL status API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-get-status) with the search ID.
+%  TESTRESPONSE[s/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=/$body.id/]
+
+%  TESTRESPONSE[s/"took": 2000/"took": $body.took/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
+Another more lightweight way to check the progress of an async search is to use the [get async EQL status API](get-async-eql-status-api.md) with the search ID.
 
 ```console
 GET /_eql/search/status/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=
 ```
+
+%  TEST[skip: no access to search ID]
 
 ```console-result
 {
@@ -1170,8 +1283,12 @@ GET /_eql/search/status/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FS
 }
 ```
 
+%  TESTRESPONSE[s/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=/$body.id/]
 
-## Change the search retention period [eql-search-store-async-eql-search]
+%  TESTRESPONSE[s/"expiration_time_in_millis": 1611690295000/"expiration_time_in_millis": $body.expiration_time_in_millis/]
+
+
+## Change the search retention period [eql-search-store-async-eql-search] 
 
 By default, the EQL search API stores async searches for five days. After this period, any searches and their results are deleted. Use the `keep_alive` parameter to change this retention period:
 
@@ -1186,20 +1303,26 @@ GET /my-data-stream/_eql/search
 }
 ```
 
-You can use the [get async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search)'s `keep_alive` parameter to later change the retention period. The new retention period starts after the get request runs.
+%  TEST[setup:sec_logs]
+
+You can use the [get async EQL search API](get-async-eql-search-api.md)'s `keep_alive` parameter to later change the retention period. The new retention period starts after the get request runs.
 
 ```console
 GET /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=?keep_alive=5d
 ```
 
-Use the [delete async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) to manually delete an async EQL search before the `keep_alive` period ends. If the search is still ongoing, {{es}} cancels the search request.
+%  TEST[skip: no access to search ID]
+
+Use the [delete async EQL search API](delete-async-eql-search-api.md) to manually delete an async EQL search before the `keep_alive` period ends. If the search is still ongoing, {{es}} cancels the search request.
 
 ```console
 DELETE /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=
 ```
 
+%  TEST[skip: no access to search ID]
 
-## Store synchronous EQL searches [eql-search-store-sync-eql-search]
+
+## Store synchronous EQL searches [eql-search-store-sync-eql-search] 
 
 By default, the EQL search API only stores async searches. To save a synchronous search, set `keep_on_completion` to `true`:
 
@@ -1214,6 +1337,8 @@ GET /my-data-stream/_eql/search
 }
 ```
 
+%  TEST[setup:sec_logs]
+
 The response includes a search ID. `is_partial` and `is_running` are `false`, indicating the EQL search was synchronous and returned complete results.
 
 ```console-result
@@ -1227,29 +1352,37 @@ The response includes a search ID. `is_partial` and `is_running` are `false`, in
 }
 ```
 
-Use the [get async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) to get the same results later:
+%  TESTRESPONSE[s/FjlmbndxNmJjU0RPdExBTGg0elNOOEEaQk9xSjJBQzBRMldZa1VVQ2pPa01YUToxMDY=/$body.id/]
+
+%  TESTRESPONSE[s/"took": 52/"took": $body.took/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
+Use the [get async EQL search API](get-async-eql-search-api.md) to get the same results later:
 
 ```console
 GET /_eql/search/FjlmbndxNmJjU0RPdExBTGg0elNOOEEaQk9xSjJBQzBRMldZa1VVQ2pPa01YUToxMDY=
 ```
 
+%  TEST[skip: no access to search ID]
+
 Saved synchronous searches are still subject to the `keep_alive` parameter’s retention period. When this period ends, the search and its results are deleted.
 
-You can also check only the status of the saved synchronous search without results by using [get async EQL status API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-get-status).
+You can also check only the status of the saved synchronous search without results by using [get async EQL status API](get-async-eql-status-api.md).
 
-You can also manually delete saved synchronous searches using the [delete async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search).
+You can also manually delete saved synchronous searches using the [delete async EQL search API](delete-async-eql-search-api.md).
 
 
-## Run an EQL search across clusters [run-eql-search-across-clusters]
+## Run an EQL search across clusters [run-eql-search-across-clusters] 
 
-::::{warning}
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-The EQL search API supports [cross-cluster search](docs-content://solutions/search/cross-cluster-search.md). However, the local and [remote clusters](docs-content://deploy-manage/remote-clusters/remote-clusters-self-managed.md) must use the same {{es}} version if they have versions prior to 7.17.7 (included) or prior to 8.5.1 (included).
+The EQL search API supports [cross-cluster search](modules-cross-cluster-search.md). However, the local and [remote clusters](remote-clusters.md) must use the same {{es}} version if they have versions prior to 7.17.7 (included) or prior to 8.5.1 (included).
 
-The following [cluster update settings](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cluster-put-settings) request adds two remote clusters: `cluster_one` and `cluster_two`.
+The following [cluster update settings](cluster-update-settings.md) request adds two remote clusters: `cluster_one` and `cluster_two`.
 
 ```console
 PUT /_cluster/settings
@@ -1273,6 +1406,10 @@ PUT /_cluster/settings
 }
 ```
 
+%  TEST[setup:host]
+
+%  TEST[s/127.0.0.1:930\d+/\${transport_host}/]
+
 To target a data stream or index on a remote cluster, use the `<cluster>:<target>` syntax.
 
 ```console
@@ -1284,8 +1421,14 @@ GET /cluster_one:my-data-stream,cluster_two:my-data-stream/_eql/search
 }
 ```
 
+%  TEST[continued]
 
-## EQL circuit breaker settings [eql-circuit-breaker]
+%  TEST[setup:sec_logs]
 
-The relevant circuit breaker settings can be found in the [Circuit Breakers page](/reference/elasticsearch/configuration-reference/circuit-breaker-settings.md#circuit-breakers-page-eql).
+%  TEST[teardown:data_stream_cleanup]
+
+
+## EQL circuit breaker settings [eql-circuit-breaker] 
+
+The relevant circuit breaker settings can be found in the [Circuit Breakers page](circuit-breaker.md#circuit-breakers-page-eql).
 

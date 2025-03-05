@@ -1,7 +1,5 @@
 ---
 navigation_title: "Fingerprint"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-fingerprint-tokenfilter.html
 ---
 
 # Fingerprint token filter [analysis-fingerprint-tokenfilter]
@@ -17,11 +15,11 @@ For example, this filter changes the `[ the, fox, was, very, very, quick ]` toke
 
 Output tokens produced by this filter are useful for fingerprinting and clustering a body of text as described in the [OpenRefine project](https://github.com/OpenRefine/OpenRefine/wiki/Clustering-In-Depth#fingerprint).
 
-This filter uses Lucene’s [FingerprintFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/FingerprintFilter.md).
+This filter uses Lucene’s [FingerprintFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/FingerprintFilter.md).
 
 ## Example [analysis-fingerprint-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `fingerprint` filter to create a single output token for the text `zebra jumps over resting resting dog`:
+The following [analyze API](indices-analyze.md) request uses the `fingerprint` filter to create a single output token for the text `zebra jumps over resting resting dog`:
 
 ```console
 GET _analyze
@@ -38,10 +36,25 @@ The filter produces the following token:
 [ dog jumps over resting zebra ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "dog jumps over resting zebra",
+%       "start_offset" : 0,
+%       "end_offset" : 36,
+%       "type" : "fingerprint",
+%       "position" : 0
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-fingerprint-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `fingerprint` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `fingerprint` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT fingerprint_example

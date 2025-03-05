@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-conditional.html
----
-
 # Conditional Functions And Expressions [sql-functions-conditional]
 
 Functions that return one of their arguments by evaluating in an if-else manner.
@@ -18,9 +13,9 @@ END
 
 **Input**:
 
-One or multiple *WHEN **condition** THEN **result** clauses are used and the expression can optionally have an *ELSE **default_result** clause. Every **condition** should be a boolean expression.
+One or multiple *WHEN **condition** THEN **result*** clauses are used and the expression can optionally have an *ELSE **default_result*** clause. Every **condition** should be a boolean expression.
 
-**Output**: one of the **result** expressions if the corresponding *WHEN **condition** evaluates to `true` or the **default_result** if all *WHEN **condition** clauses evaluate to `false`. If the optional *ELSE **default_result** clause is missing and all *WHEN **condition** clauses evaluate to `false` then `null` is returned.
+**Output**: one of the **result** expressions if the corresponding *WHEN **condition*** evaluates to `true` or the **default_result** if all *WHEN **condition*** clauses evaluate to `false`. If the optional *ELSE **default_result*** clause is missing and all *WHEN **condition*** clauses evaluate to `false` then `null` is returned.
 
 **Description**: The CASE expression is a generic conditional expression which simulates if/else statements of other programming languages If the condition’s result is true, the value of the result expression that follows the condition will be the returned the subsequent when clauses will be skipped and not processed.
 
@@ -101,7 +96,7 @@ SELECT CASE 5
 default
 ```
 
-::::{note}
+::::{note} 
 All result expressions must be of compatible data types. More specifically all result expressions should have a compatible data type with the 1st *non-null* result expression. E.g.:
 
 for the following query:
@@ -113,7 +108,7 @@ CASE WHEN a = 1 THEN null
 END
 ```
 
-an error message would be returned, mentioning that **foo** is of data type **keyword**, which does not match the expected data type **integer** (based on result **10**).
+an error message would be returned, mentioning that ***foo*** is of data type **keyword**, which does not match the expected data type **integer** (based on result **10**).
 
 ::::
 
@@ -156,7 +151,7 @@ COALESCE(
 
 …​
 
-**N**th expression
+***N***th expression
 
 COALESCE can take an arbitrary number of arguments.
 
@@ -198,7 +193,7 @@ GREATEST(
 
 …​
 
-**N**th expression
+***N***th expression
 
 GREATEST can take an arbitrary number of arguments and all of them must be of the same data type.
 
@@ -239,7 +234,7 @@ IFNULL(
 
 **Output**: 2nd expression if 1st expression is null, otherwise 1st expression.
 
-**Description**: Variant of [`COALESCE`](#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
+**Description**: Variant of [`COALESCE`](sql-functions-conditional.md#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
 
 ```sql
 SELECT IFNULL('elastic', null) AS "ifnull";
@@ -294,8 +289,8 @@ SELECT IIF(1 < 2, 'TRUE') AS result1, IIF(1 > 2 , 'TRUE') AS result2;
 TRUE           |null
 ```
 
-::::{tip}
-**IIF** functions can be combined to implement more complex logic simulating the [`CASE`](#sql-functions-conditional-case) expression. E.g.:
+::::{tip} 
+**IIF** functions can be combined to implement more complex logic simulating the [`CASE`](sql-functions-conditional.md#sql-functions-conditional-case) expression. E.g.:
 
 ```sql
 IIF(a = 1, 'one', IIF(a = 2, 'two', IIF(a = 3, 'three', 'many')))
@@ -321,7 +316,7 @@ ISNULL(
 
 **Output**: 2nd expression if 1st expression is null, otherwise 1st expression.
 
-**Description**: Variant of [`COALESCE`](#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
+**Description**: Variant of [`COALESCE`](sql-functions-conditional.md#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
 
 ```sql
 SELECT ISNULL('elastic', null) AS "isnull";
@@ -357,7 +352,7 @@ LEAST(
 
 …​
 
-**N**th expression
+***N***th expression
 
 LEAST can take an arbitrary number of arguments and all of them must be of the same data type.
 
@@ -432,7 +427,7 @@ NVL(
 
 **Output**: 2nd expression if 1st expression is null, otherwise 1st expression.
 
-**Description**: Variant of [`COALESCE`](#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
+**Description**: Variant of [`COALESCE`](sql-functions-conditional.md#sql-functions-conditional-coalesce) with only two arguments. Returns the first of its arguments that is not null. If all arguments are null, then it returns `null`.
 
 ```sql
 SELECT NVL('elastic', null) AS "nvl";
@@ -449,3 +444,5 @@ SELECT NVL(null, 'search') AS "nvl";
 ---------------
 search
 ```
+
+

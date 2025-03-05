@@ -1,13 +1,11 @@
 ---
 navigation_title: "Filters"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
 ---
 
 # Filters aggregation [search-aggregations-bucket-filters-aggregation]
 
 
-A multi-bucket aggregation where each bucket contains the documents that match a [query](/reference/query-languages/querydsl.md).
+A multi-bucket aggregation where each bucket contains the documents that match a [query](query-dsl.md).
 
 Example:
 
@@ -63,6 +61,12 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 9/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
 ## Anonymous filters [anonymous-filters]
 
 The filters field can also be provided as an array of filters, as in the following request:
@@ -86,6 +90,8 @@ GET logs/_search
 }
 ```
 
+%  TEST[continued]
+
 The filtered buckets are returned in the same order as provided in the request. The response for this example would be:
 
 ```console-result
@@ -108,6 +114,12 @@ The filtered buckets are returned in the same order as provided in the request. 
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 4/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
 
 
 ## `Other` Bucket [other-bucket]
@@ -149,6 +161,8 @@ GET logs/_search
 }
 ```
 
+%  TEST[continued]
+
 The response would be something like the following:
 
 ```console-result
@@ -175,10 +189,16 @@ The response would be something like the following:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 3/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
 
 ## Non-keyed Response [non-keyed-response]
 
-By default, the named filters aggregation returns the buckets as an object. But in some sorting cases, such as [bucket sort](/reference/data-analysis/aggregations/search-aggregations-pipeline-bucket-sort-aggregation.md), the JSON doesn’t guarantee the order of elements in the object. You can use the `keyed` parameter to specify the buckets as an array of objects. The value of this parameter can be as follows:
+By default, the named filters aggregation returns the buckets as an object. But in some sorting cases, such as [bucket sort](search-aggregations-pipeline-bucket-sort-aggregation.md), the JSON doesn’t guarantee the order of elements in the object. You can use the `keyed` parameter to specify the buckets as an array of objects. The value of this parameter can be as follows:
 
 `true`
 :   (Default) Returns the buckets as an object
@@ -186,8 +206,8 @@ By default, the named filters aggregation returns the buckets as an object. But 
 `false`
 :   Returns the buckets as an array of objects
 
-::::{note}
-This parameter is ignored by [Anonymous filters](#anonymous-filters).
+::::{note} 
+This parameter is ignored by [Anonymous filters](search-aggregations-bucket-filters-aggregation.md#anonymous-filters).
 ::::
 
 
@@ -217,6 +237,8 @@ POST /sales/_search?size=0&filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 Response:
 

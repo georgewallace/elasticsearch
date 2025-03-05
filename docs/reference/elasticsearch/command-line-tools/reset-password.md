@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/reset-password.html
----
-
 # elasticsearch-reset-password [reset-password]
 
 The `elasticsearch-reset-password` command resets the passwords of users in the native realm and built-in users.
 
 
-## Synopsis [_synopsis_7]
+## Synopsis [_synopsis_7] 
 
 ```shell
 bin/elasticsearch-reset-password
@@ -18,19 +13,19 @@ bin/elasticsearch-reset-password
 ```
 
 
-## Description [_description_14]
+## Description [_description_14] 
 
-Use this command to reset the password of any user in the native realm or any built-in user. By default, a strong password is generated for you. To explicitly set a password, run the tool in interactive mode with `-i`. The command generates (and subsequently removes) a temporary user in the [file realm](docs-content://deploy-manage/users-roles/cluster-or-deployment-auth/file-based.md) to run the request that changes the user password.
+Use this command to reset the password of any user in the native realm or any built-in user. By default, a strong password is generated for you. To explicitly set a password, run the tool in interactive mode with `-i`. The command generates (and subsequently removes) a temporary user in the [file realm](file-realm.md) to run the request that changes the user password.
 
-::::{important}
+::::{important} 
 You cannot use this tool if the file realm is disabled in your `elasticsearch.yml` file.
 ::::
 
 
-This command uses an HTTP connection to connect to the cluster and run the user management requests. The command automatically attempts to establish the connection over HTTPS by using the `xpack.security.http.ssl` settings in the `elasticsearch.yml` file. If you do not use the default configuration directory location, ensure that the `ES_PATH_CONF` environment variable returns the correct path before you run the `elasticsearch-reset-password` command. You can override settings in your `elasticsearch.yml` file by using the `-E` command option. For more information about debugging connection failures, see [Setup-passwords command fails due to connection failure](docs-content://troubleshoot/elasticsearch/security/trb-security-setup.md).
+This command uses an HTTP connection to connect to the cluster and run the user management requests. The command automatically attempts to establish the connection over HTTPS by using the `xpack.security.http.ssl` settings in the `elasticsearch.yml` file. If you do not use the default configuration directory location, ensure that the `ES_PATH_CONF` environment variable returns the correct path before you run the `elasticsearch-reset-password` command. You can override settings in your `elasticsearch.yml` file by using the `-E` command option. For more information about debugging connection failures, see [Setup-passwords command fails due to connection failure](trb-security-setup.md).
 
 
-## Parameters [reset-password-parameters]
+## Parameters [reset-password-parameters] 
 
 `-a, --auto`
 :   Resets the password of the specified user to an auto-generated strong password. (Default)
@@ -63,7 +58,7 @@ This command uses an HTTP connection to connect to the cluster and run the user 
 :   Shows verbose output in the console.
 
 
-## Examples [_examples_19]
+## Examples [_examples_19] 
 
 The following example resets the password of the `elastic` user to an auto-generated value and prints the new password in the console:
 

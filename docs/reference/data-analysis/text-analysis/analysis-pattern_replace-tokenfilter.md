@@ -1,7 +1,5 @@
 ---
 navigation_title: "Pattern replace"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern_replace-tokenfilter.html
 ---
 
 # Pattern replace token filter [analysis-pattern_replace-tokenfilter]
@@ -11,7 +9,7 @@ Uses a regular expression to match and replace token substrings.
 
 The `pattern_replace` filter uses [Java’s regular expression syntax](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.md). By default, the filter replaces matching substrings with an empty substring (`""`). Replacement substrings can use Java’s [`$g` syntax](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.md#appendReplacement-java.lang.StringBuffer-java.lang.String-) to reference capture groups from the original token text.
 
-::::{warning}
+::::{warning} 
 A poorly-written regular expression may run slowly or return a StackOverflowError, causing the node running the expression to exit suddenly.
 
 Read more about [pathological regular expressions and how to avoid them](https://www.regular-expressions.info/catastrophic.md).
@@ -19,11 +17,11 @@ Read more about [pathological regular expressions and how to avoid them](https:/
 ::::
 
 
-This filter uses Lucene’s [PatternReplaceFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/pattern/PatternReplaceFilter.md).
+This filter uses Lucene’s [PatternReplaceFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/pattern/PatternReplaceFilter.md).
 
 ## Example [analysis-pattern-replace-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `pattern_replace` filter to prepend `watch` to the substring `dog` in `foxes jump lazy dogs`.
+The following [analyze API](indices-analyze.md) request uses the `pattern_replace` filter to prepend `watch` to the substring `dog` in `foxes jump lazy dogs`.
 
 ```console
 GET /_analyze
@@ -46,6 +44,42 @@ The filter produces the following tokens.
 [ foxes, jump, lazy, watchdogs ]
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "foxes",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "jump",
+%       "start_offset": 6,
+%       "end_offset": 10,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 11,
+%       "end_offset": 15,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "watchdogs",
+%       "start_offset": 16,
+%       "end_offset": 20,
+%       "type": "word",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----
+
 
 ## Configurable parameters [analysis-pattern-replace-tokenfilter-configure-parms]
 
@@ -63,7 +97,7 @@ The filter produces the following tokens.
 
 To customize the `pattern_replace` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request configures a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md) using a custom `pattern_replace` filter, `my_pattern_replace_filter`.
+The following [create index API](indices-create-index.md) request configures a new [custom analyzer](analysis-custom-analyzer.md) using a custom `pattern_replace` filter, `my_pattern_replace_filter`.
 
 The `my_pattern_replace_filter` filter uses the regular expression `[£|€]` to match and remove the currency symbols `£` and `€`. The filter’s `all` parameter is `false`, meaning only the first matching symbol in each token is removed.
 

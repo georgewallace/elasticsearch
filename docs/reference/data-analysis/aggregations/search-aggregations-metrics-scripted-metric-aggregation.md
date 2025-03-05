@@ -1,7 +1,5 @@
 ---
 navigation_title: "Scripted metric"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-scripted-metric-aggregation.html
 ---
 
 # Scripted metric aggregation [search-aggregations-metrics-scripted-metric-aggregation]
@@ -9,13 +7,13 @@ mapped_pages:
 
 A metric aggregation that executes using scripts to provide a metric output.
 
-::::{warning}
+::::{warning} 
 `scripted_metric` is not available in {{serverless-full}}.
 ::::
 
 
-::::{warning}
-Using scripts can result in slower search speeds. See [Scripts, caching, and search speed](docs-content://explore-analyze/scripting/scripts-search-speed.md).  When using a scripted metric aggregation, its intermediate state is serialized into an in-memory byte array for transmission to other nodes during the aggregation process. Consequently, a complex scripted metric aggregation may also encounter the 2GB limitation imposed on Java arrays.
+::::{warning} 
+Using scripts can result in slower search speeds. See [Scripts, caching, and search speed](scripts-and-search-speed.md).  When using a scripted metric aggregation, its intermediate state is serialized into an in-memory byte array for transmission to other nodes during the aggregation process. Consequently, a complex scripted metric aggregation may also encounter the 2GB limitation imposed on Java arrays.
 ::::
 
 
@@ -40,6 +38,8 @@ POST ledger/_search?size=0
 }
 ```
 
+%  TEST[setup:ledger]
+
 1. `init_script` is an optional parameter, all other scripts are required.
 
 
@@ -58,6 +58,10 @@ The response for the above aggregation:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 218/"took": $body.took/]
+
+%  TESTRESPONSE[s/\.\.\./"_shards": $body._shards, "hits": $body.hits, "timed_out": false,/]
 
 The above example can also be specified using stored scripts as follows:
 
@@ -88,10 +92,29 @@ POST ledger/_search?size=0
 }
 ```
 
+%  TEST[setup:ledger,stored_scripted_metric_script]
+
 1. script parameters for `init`, `map` and `combine` scripts must be specified in a global `params` object so that it can be shared between the scripts.
 
 
-For more details on specifying scripts see [script documentation](docs-content://explore-analyze/scripting.md).
+% Verify this response as well but in a hidden block.
+% 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "took": 218,
+%   …​
+%   "aggregations": {
+%     "profit": {
+%       "value": 240.0
+%     }
+%   }
+% }
+% --------------------------------------------------
+% // TESTRESPONSE[s/"took": 218/"took": $body.took/]
+% // TESTRESPONSE[s/\.\.\./"_shards": $body._shards, "hits": $body.hits, "timed_out": false,/]
+
+For more details on specifying scripts see [script documentation](modules-scripting.md).
 
 ## Allowed return types [scripted-metric-aggregation-return-types]
 
@@ -158,6 +181,8 @@ Lets say that documents 1 and 3 end up on shard A and documents 2 and 4 end up o
 "state" : {}
 ```
 
+%  NOTCONSOLE
+
 
 ### After init_script [_after_init_script]
 
@@ -171,6 +196,8 @@ Shard A
 ```
 
 
+%  NOTCONSOLE
+
 Shard B
 :   ```js
 "state" : {
@@ -178,6 +205,8 @@ Shard B
 }
 ```
 
+
+%  NOTCONSOLE
 
 
 ### After map_script [_after_map_script]
@@ -192,6 +221,8 @@ Shard A
 ```
 
 
+%  NOTCONSOLE
+
 Shard B
 :   ```js
 "state" : {
@@ -199,6 +230,8 @@ Shard B
 }
 ```
 
+
+%  NOTCONSOLE
 
 
 ### After combine_script [_after_combine_script]
@@ -223,6 +256,8 @@ The reduce_script receives a `states` array containing the result of the combine
 ]
 ```
 
+%  NOTCONSOLE
+
 It reduces the responses for the shards down to a final overall profit figure (by summing the values) and returns this as the result of the aggregation to produce the response:
 
 ```js
@@ -237,6 +272,8 @@ It reduces the responses for the shards down to a final overall profit figure (b
 }
 ```
 
+%  NOTCONSOLE
+
 
 
 ## Other parameters [scripted-metric-aggregation-parameters]
@@ -248,6 +285,8 @@ params
     "params" : {}
     ```
 
+
+%  NOTCONSOLE
 
 
 ## Empty buckets [scripted-metric-aggregation-empty-buckets]

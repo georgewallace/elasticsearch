@@ -1,7 +1,5 @@
 ---
 navigation_title: "Community ID"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/community-id-processor.html
 ---
 
 # Community ID processor [community-id-processor]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Computes the Community ID for network flow data as defined in the [Community ID Specification](https://github.com/corelight/community-id-spec). You can use a community ID to correlate network events related to a single flow.
 
-The community ID processor reads network flow data from related [Elastic Common Schema (ECS)][Elastic Common Schema (ECS)](ecs://reference/index.md)) fields by default. If you use the ECS, no configuration is required.
+The community ID processor reads network flow data from related [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}) fields by default. If you use the ECS, no configuration is required.
 
 $$$community-id-options$$$
 
@@ -27,9 +25,9 @@ $$$community-id-options$$$
 | `seed` | no | `0` | Seed for the community ID hash. Must be between0 and 65535 (inclusive). The seed can prevent hash collisions between network domains, such asa staging and production network that use the same addressing scheme. |
 | `ignore_missing` | no | `true` | If `true` and any required fields are missing,the processor quietly exits without modifying the document. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 Here is an example definition of the community ID processor:
@@ -45,6 +43,8 @@ Here is an example definition of the community ID processor:
   ]
 }
 ```
+
+%  NOTCONSOLE
 
 When the above processor executes on the following document:
 
@@ -66,6 +66,8 @@ When the above processor executes on the following document:
 }
 ```
 
+%  NOTCONSOLE
+
 It produces this result:
 
 ```js
@@ -84,4 +86,6 @@ It produces this result:
   }
 }
 ```
+
+%  NOTCONSOLE
 

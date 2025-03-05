@@ -1,7 +1,5 @@
 ---
 navigation_title: "Truncate"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-truncate-tokenfilter.html
 ---
 
 # Truncate token filter [analysis-truncate-tokenfilter]
@@ -11,11 +9,11 @@ Truncates tokens that exceed a specified character limit. This limit defaults to
 
 For example, you can use the `truncate` filter to shorten all tokens to `3` characters or fewer, changing `jumping fox` to `jum fox`.
 
-This filter uses Lucene’s [TruncateTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/TruncateTokenFilter.md).
+This filter uses Lucene’s [TruncateTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/TruncateTokenFilter.md).
 
 ## Example [analysis-truncate-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `truncate` filter to shorten tokens that exceed 10 characters in `the quinquennial extravaganza carried on`:
+The following [analyze API](indices-analyze.md) request uses the `truncate` filter to shorten tokens that exceed 10 characters in `the quinquennial extravaganza carried on`:
 
 ```console
 GET _analyze
@@ -32,10 +30,53 @@ The filter produces the following tokens:
 [ the, quinquenni, extravagan, carried, on ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "the",
+%       "start_offset" : 0,
+%       "end_offset" : 3,
+%       "type" : "word",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "quinquenni",
+%       "start_offset" : 4,
+%       "end_offset" : 16,
+%       "type" : "word",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "extravagan",
+%       "start_offset" : 17,
+%       "end_offset" : 29,
+%       "type" : "word",
+%       "position" : 2
+%     },
+%     {
+%       "token" : "carried",
+%       "start_offset" : 30,
+%       "end_offset" : 37,
+%       "type" : "word",
+%       "position" : 3
+%     },
+%     {
+%       "token" : "on",
+%       "start_offset" : 38,
+%       "end_offset" : 40,
+%       "type" : "word",
+%       "position" : 4
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-truncate-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `truncate` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `truncate` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT custom_truncate_example

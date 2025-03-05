@@ -1,16 +1,14 @@
 ---
 navigation_title: "Path hierarchy"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pathhierarchy-tokenizer.html
 ---
 
 # Path hierarchy tokenizer [analysis-pathhierarchy-tokenizer]
 
 
-The `path_hierarchy` tokenizer takes a hierarchical value like a filesystem path, splits on the path separator, and emits a term for each component in the tree. The `path_hierarcy` tokenizer uses Lucene’s [PathHierarchyTokenizer](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/path/PathHierarchyTokenizer.md) underneath.
+The `path_hierarchy` tokenizer takes a hierarchical value like a filesystem path, splits on the path separator, and emits a term for each component in the tree. The `path_hierarcy` tokenizer uses Lucene’s [PathHierarchyTokenizer](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/path/PathHierarchyTokenizer.md) underneath.
 
 
-## Example output [_example_output_14]
+## Example output [_example_output_14] 
 
 ```console
 POST _analyze
@@ -20,6 +18,37 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "/one",
+%       "start_offset": 0,
+%       "end_offset": 4,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "/one/two",
+%       "start_offset": 0,
+%       "end_offset": 8,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "/one/two/three",
+%       "start_offset": 0,
+%       "end_offset": 14,
+%       "type": "word",
+%       "position": 2
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above text would produce the following terms:
 
 ```text
@@ -27,7 +56,7 @@ The above text would produce the following terms:
 ```
 
 
-## Configuration [_configuration_15]
+## Configuration [_configuration_15] 
 
 The `path_hierarchy` tokenizer accepts the following parameters:
 
@@ -41,13 +70,13 @@ The `path_hierarchy` tokenizer accepts the following parameters:
 :   The number of characters read into the term buffer in a single pass. Defaults to `1024`. The term buffer will grow by this size until all the text has been consumed. It is advisable not to change this setting.
 
 `reverse`
-:   If `true`, uses Lucene’s [ReversePathHierarchyTokenizer](http://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/path/ReversePathHierarchyTokenizer.md), which is suitable for domain–like hierarchies. Defaults to `false`.
+:   If `true`, uses Lucene’s [ReversePathHierarchyTokenizer](http://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/path/ReversePathHierarchyTokenizer.md), which is suitable for domain–like hierarchies. Defaults to `false`.
 
 `skip`
 :   The number of initial tokens to skip. Defaults to `0`.
 
 
-## Example configuration [_example_configuration_9]
+## Example configuration [_example_configuration_9] 
 
 In this example, we configure the `path_hierarchy` tokenizer to split on `-` characters, and to replace them with `/`. The first two tokens are skipped:
 
@@ -80,6 +109,37 @@ POST my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "/three",
+%       "start_offset": 7,
+%       "end_offset": 13,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "/three/four",
+%       "start_offset": 7,
+%       "end_offset": 18,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "/three/four/five",
+%       "start_offset": 7,
+%       "end_offset": 23,
+%       "type": "word",
+%       "position": 2
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following terms:
 
 ```text
@@ -93,7 +153,7 @@ If we were to set `reverse` to `true`, it would produce the following:
 ```
 
 
-## Detailed examples [analysis-pathhierarchy-tokenizer-detailed-examples]
+## Detailed examples [analysis-pathhierarchy-tokenizer-detailed-examples] 
 
 A common use-case for the `path_hierarchy` tokenizer is filtering results by file paths. If indexing a file path along with the data, the use of the `path_hierarchy` tokenizer to analyze the path allows filtering the results by different parts of the file path string.
 
@@ -183,6 +243,8 @@ GET file-path-test/_search
 }
 ```
 
+%  TEST[continued]
+
 It’s simple to match or filter documents with file paths that exist within a particular directory using the `file_path.tree` field.
 
 ```console
@@ -195,6 +257,8 @@ GET file-path-test/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 With the reverse parameter for this tokenizer, it’s also possible to match from the other end of the file path, such as individual file names or a deep level subdirectory. The following example shows a search for all files named `my_photo1.jpg` within any directory via the `file_path.tree_reversed` field configured to use the reverse parameter in the mapping.
 
@@ -211,6 +275,8 @@ GET file-path-test/_search
 }
 ```
 
+%  TEST[continued]
+
 Viewing the tokens generated with both forward and reverse is instructive in showing the tokens created for the same file path value.
 
 ```console
@@ -226,6 +292,8 @@ POST file-path-test/_analyze
   "text": "/User/alice/photos/2017/05/16/my_photo1.jpg"
 }
 ```
+
+%  TEST[continued]
 
 It’s also useful to be able to filter with file paths when combined with other types of searches, such as this example looking for any files paths with `16` that also must be in Alice’s photo directory.
 
@@ -244,4 +312,6 @@ GET file-path-test/_search
   }
 }
 ```
+
+%  TEST[continued]
 

@@ -1,20 +1,18 @@
 ---
 navigation_title: "Semantic text"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/semantic-text.html
 ---
 
 # Semantic text field type [semantic-text]
 
 
-::::{warning}
+::::{warning} 
 This functionality is in beta and is subject to change. The design and code is less mature than official GA features and is being provided as-is with no warranties. Beta features are not subject to the support SLA of official GA features.
 ::::
 
 
-The `semantic_text` field type automatically generates embeddings for text content using an inference endpoint. Long passages are [automatically chunked](#auto-text-chunking) to smaller sections to enable the processing of larger corpuses of text.
+The `semantic_text` field type automatically generates embeddings for text content using an inference endpoint. Long passages are [automatically chunked](semantic-text.md#auto-text-chunking) to smaller sections to enable the processing of larger corpuses of text.
 
-The `semantic_text` field type specifies an inference endpoint identifier that will be used to generate embeddings. You can create the inference endpoint by using the [Create {{infer}} API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-inference-put). This field type and the [`semantic` query](/reference/query-languages/query-dsl-semantic-query.md) type make it simpler to perform semantic search on your data. The `semantic_text` field type may also be queried with [match](/reference/query-languages/query-dsl-match-query.md), [sparse_vector](/reference/query-languages/query-dsl-sparse-vector-query.md) or [knn](/reference/query-languages/query-dsl-knn-query.md) queries.
+The `semantic_text` field type specifies an inference endpoint identifier that will be used to generate embeddings. You can create the inference endpoint by using the [Create {{infer}} API](put-inference-api.md). This field type and the [`semantic` query](query-dsl-semantic-query.md) type make it simpler to perform semantic search on your data. The `semantic_text` field type may also be queried with [match](query-dsl-match-query.md), [sparse_vector](query-dsl-sparse-vector-query.md) or [knn](query-dsl-knn-query.md) queries.
 
 If you don’t specify an inference endpoint, the `inference_id` field defaults to `.elser-2-elasticsearch`, a preconfigured endpoint for the elasticsearch service.
 
@@ -35,7 +33,7 @@ PUT my-index-000001
 }
 ```
 
-To use a custom {{infer}} endpoint instead of the default `.elser-2-elasticsearch`, you must [Create {{infer}} API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-inference-put) and specify its `inference_id` when setting up the `semantic_text` field type.
+To use a custom {{infer}} endpoint instead of the default `.elser-2-elasticsearch`, you must [Create {{infer}} API](put-inference-api.md) and specify its `inference_id` when setting up the `semantic_text` field type.
 
 ```console
 PUT my-index-000002
@@ -50,6 +48,8 @@ PUT my-index-000002
   }
 }
 ```
+
+%  TEST[skip:Requires inference endpoint]
 
 1. The `inference_id` of the {{infer}} endpoint to use to generate embeddings.
 
@@ -71,40 +71,42 @@ PUT my-index-000003
 }
 ```
 
+%  TEST[skip:Requires inference endpoint]
 
-## Parameters for `semantic_text` fields [semantic-text-params]
+
+## Parameters for `semantic_text` fields [semantic-text-params] 
 
 `inference_id`
-:   (Required, string) {{infer-cap}} endpoint that will be used to generate embeddings for the field. By default, `.elser-2-elasticsearch` is used. This parameter cannot be updated. Use the [Create {{infer}} API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-inference-put) to create the endpoint. If `search_inference_id` is specified, the {{infer}} endpoint will only be used at index time.
+:   (Required, string) {{infer-cap}} endpoint that will be used to generate embeddings for the field. By default, `.elser-2-elasticsearch` is used. This parameter cannot be updated. Use the [Create {{infer}} API](put-inference-api.md) to create the endpoint. If `search_inference_id` is specified, the {{infer}} endpoint will only be used at index time.
 
 `search_inference_id`
-:   (Optional, string) {{infer-cap}} endpoint that will be used to generate embeddings at query time. You can update this parameter by using the [Update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping). Use the [Create {{infer}} API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-inference-put) to create the endpoint. If not specified, the {{infer}} endpoint defined by `inference_id` will be used at both index and query time.
+:   (Optional, string) {{infer-cap}} endpoint that will be used to generate embeddings at query time. You can update this parameter by using the [Update mapping API](indices-put-mapping.md). Use the [Create {{infer}} API](put-inference-api.md) to create the endpoint. If not specified, the {{infer}} endpoint defined by `inference_id` will be used at both index and query time.
 
 
-## {{infer-cap}} endpoint validation [infer-endpoint-validation]
+## {{infer-cap}} endpoint validation [infer-endpoint-validation] 
 
 The `inference_id` will not be validated when the mapping is created, but when documents are ingested into the index. When the first document is indexed, the `inference_id` will be used to generate underlying indexing structures for the field.
 
-::::{warning}
-Removing an {{infer}} endpoint will cause ingestion of documents and semantic queries to fail on indices that define `semantic_text` fields with that {{infer}} endpoint as their `inference_id`. Trying to [delete an {{infer}} endpoint](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-inference-delete) that is used on a `semantic_text` field will result in an error.
+::::{warning} 
+Removing an {{infer}} endpoint will cause ingestion of documents and semantic queries to fail on indices that define `semantic_text` fields with that {{infer}} endpoint as their `inference_id`. Trying to [delete an {{infer}} endpoint](delete-inference-api.md) that is used on a `semantic_text` field will result in an error.
 ::::
 
 
 
-## Text chunking [auto-text-chunking]
+## Text chunking [auto-text-chunking] 
 
 {{infer-cap}} endpoints have a limit on the amount of text they can process. To allow for large amounts of text to be used in semantic search, `semantic_text` automatically generates smaller passages if needed, called *chunks*.
 
 Each chunk refers to a passage of the text and the corresponding embedding generated from it. When querying, the individual passages will be automatically searched for each document, and the most relevant passage will be used to compute a score.
 
-For more details on chunking and how to configure chunking settings, see [Configuring chunking](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-inference) in the Inference API documentation.
+For more details on chunking and how to configure chunking settings, see [Configuring chunking](inference-apis.md#infer-chunking-config) in the Inference API documentation.
 
-Refer to [this tutorial](docs-content://solutions/search/semantic-search/semantic-search-semantic-text.md) to learn more about semantic search using `semantic_text` and the `semantic` query.
+Refer to [this tutorial](semantic-search-semantic-text.md) to learn more about semantic search using `semantic_text` and the `semantic` query.
 
 
-## Extracting Relevant Fragments from Semantic Text [semantic-text-highlighting]
+## Extracting Relevant Fragments from Semantic Text [semantic-text-highlighting] 
 
-You can extract the most relevant fragments from a semantic text field by using the [highlight parameter](/reference/elasticsearch/rest-apis/highlighting.md) in the [Search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search).
+You can extract the most relevant fragments from a semantic text field by using the [highlight parameter](highlighting.md) in the [Search API](search-search.md#search-search-api-request-body).
 
 ```console
 POST test-index/_search
@@ -124,6 +126,8 @@ POST test-index/_search
     }
 }
 ```
+
+%  TEST[skip:Requires inference endpoint]
 
 1. Specifies the maximum number of fragments to return.
 2. Sorts highlighted fragments by score when set to `score`. By default, fragments will be output in the order they appear in the field (order: none).
@@ -151,25 +155,27 @@ PUT test-index
 }
 ```
 
+%  TEST[skip:Requires inference endpoint]
+
 1. Ensures that highlighting is applied exclusively to semantic_text fields.
 
 
 
-## Customizing `semantic_text` indexing [custom-indexing]
+## Customizing `semantic_text` indexing [custom-indexing] 
 
 `semantic_text` uses defaults for indexing data based on the {{infer}} endpoint specified. It enables you to quickstart your semantic search by providing automatic {{infer}} and a dedicated query so you don’t need to provide further details.
 
-In case you want to customize data indexing, use the [`sparse_vector`](/reference/elasticsearch/mapping-reference/sparse-vector.md) or [`dense_vector`](/reference/elasticsearch/mapping-reference/dense-vector.md) field types and create an ingest pipeline with an [{{infer}} processor](/reference/ingestion-tools/enrich-processor/inference-processor.md) to generate the embeddings. [This tutorial](docs-content://solutions/search/semantic-search/semantic-search-inference.md) walks you through the process. In these cases - when you use `sparse_vector` or `dense_vector` field types instead of the `semantic_text` field type to customize indexing - using the [`semantic_query`](/reference/query-languages/query-dsl-semantic-query.md) is not supported for querying the field data.
+In case you want to customize data indexing, use the [`sparse_vector`](sparse-vector.md) or [`dense_vector`](dense-vector.md) field types and create an ingest pipeline with an [{{infer}} processor](inference-processor.md) to generate the embeddings. [This tutorial](semantic-search-inference.md) walks you through the process. In these cases - when you use `sparse_vector` or `dense_vector` field types instead of the `semantic_text` field type to customize indexing - using the [`semantic_query`](query-dsl-semantic-query.md) is not supported for querying the field data.
 
 
-## Updates to `semantic_text` fields [update-script]
+## Updates to `semantic_text` fields [update-script] 
 
 Updates that use scripts are not supported for an index contains a `semantic_text` field. Even if the script targets non-`semantic_text` fields, the update will fail when the index contains a `semantic_text` field.
 
 
-## `copy_to` and multi-fields support [copy-to-support]
+## `copy_to` and multi-fields support [copy-to-support] 
 
-The semantic_text field type can serve as the target of [copy_to fields](/reference/elasticsearch/mapping-reference/copy-to.md), be part of a [multi-field](/reference/elasticsearch/mapping-reference/multi-fields.md) structure, or contain [multi-fields](/reference/elasticsearch/mapping-reference/multi-fields.md) internally. This means you can use a single field to collect the values of other fields for semantic search.
+The semantic_text field type can serve as the target of [copy_to fields](copy-to.md), be part of a [multi-field](multi-fields.md) structure, or contain [multi-fields](multi-fields.md) internally. This means you can use a single field to collect the values of other fields for semantic search.
 
 For example, the following mapping:
 
@@ -190,6 +196,8 @@ PUT test-index
     }
 }
 ```
+
+%  TEST[skip:TBD]
 
 can also be declared as multi-fields:
 
@@ -212,11 +220,13 @@ PUT test-index
 }
 ```
 
+%  TEST[skip:TBD]
 
-## Limitations [limitations]
+
+## Limitations [limitations] 
 
 `semantic_text` field types have the following limitations:
 
-* `semantic_text` fields are not currently supported as elements of [nested fields](/reference/elasticsearch/mapping-reference/nested.md).
-* `semantic_text` fields can’t currently be set as part of [Dynamic templates](docs-content://manage-data/data-store/mapping/dynamic-templates.md).
+* `semantic_text` fields are not currently supported as elements of [nested fields](nested.md).
+* `semantic_text` fields can’t currently be set as part of [Dynamic templates](dynamic-templates.md).
 

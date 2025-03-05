@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/eql-ex-threat-detection.html
----
-
 # Example: Detect threats with EQL [eql-ex-threat-detection]
 
 This example tutorial shows how you can use EQL to detect security threats and other suspicious behavior. In the scenario, you’re tasked with detecting [regsvr32 misuse](https://attack.mitre.org/techniques/T1218/010/) in Windows event logs.
@@ -16,46 +11,66 @@ One common variant of regsvr32 misuse is a [Squiblydoo attack](https://attack.mi
 ```
 
 
-## Setup [eql-ex-threat-detection-setup]
+## Setup [eql-ex-threat-detection-setup] 
 
-This tutorial uses a test dataset from [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) that includes events imitating a Squiblydoo attack. The data has been mapped to [Elastic Common Schema (ECS)][Elastic Common Schema (ECS)](ecs://reference/index.md)) fields.
+This tutorial uses a test dataset from [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) that includes events imitating a Squiblydoo attack. The data has been mapped to [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}) fields.
 
 To get started:
 
-1. Create an [index template](docs-content://manage-data/data-store/templates.md) with [data stream enabled](docs-content://manage-data/data-store/data-streams/set-up-data-stream.md#create-index-template):
+1. Create an [index template](index-templates.md) with [data stream enabled](set-up-a-data-stream.md#create-index-template):
 
-    ```console
-    PUT /_index_template/my-data-stream-template
-    {
-      "index_patterns": [ "my-data-stream*" ],
-      "data_stream": { },
-      "priority": 500
-    }
-    ```
+    % [source,console]
 
-2. Download [`normalized-T1117-AtomicRed-regsvr32.json`](https://raw.githubusercontent.com/elastic/elasticsearch/master/docs/src/yamlRestTest/resources/normalized-T1117-AtomicRed-regsvr32.json).
-3. Use the [bulk API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-bulk) to index the data to a matching stream:
+
+% ----
+% DELETE /_data_stream/*
+% DELETE /_index_template/*
+% ----
+% // TEARDOWN
+
++
+
+```console
+PUT /_index_template/my-data-stream-template
+{
+  "index_patterns": [ "my-data-stream*" ],
+  "data_stream": { },
+  "priority": 500
+}
+```
+
+1. Download [`normalized-T1117-AtomicRed-regsvr32.json`](https://raw.githubusercontent.com/elastic/elasticsearch/master/docs/src/yamlRestTest/resources/normalized-T1117-AtomicRed-regsvr32.json).
+2. Use the [bulk API](docs-bulk.md) to index the data to a matching stream:
 
     ```sh
     curl -H "Content-Type: application/json" -XPOST "localhost:9200/my-data-stream/_bulk?pretty&refresh" --data-binary "@normalized-T1117-AtomicRed-regsvr32.json"
     ```
 
-4. Use the [cat indices API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cat-indices) to verify the data was indexed:
+
+%  NOTCONSOLE
+
+1. Use the [cat indices API](cat-indices.md) to verify the data was indexed:
 
     ```console
     GET /_cat/indices/my-data-stream?v=true&h=health,status,index,docs.count
     ```
 
-    The response should show a `docs.count` of `150`.
 
-    ```txt
-    health status index                                 docs.count
-    yellow open   .ds-my-data-stream-2099.12.07-000001         150
-    ```
+%  TEST[setup:atomic_red_regsvr32]
+
++ The response should show a `docs.count` of `150`.
+
++
+
+```txt
+health status index                                 docs.count
+yellow open   .ds-my-data-stream-2099.12.07-000001         150
+```
+
+%  TESTRESPONSE[s/.ds-my-data-stream-2099.12.07-000001/.+/ non_json]
 
 
-
-## Get a count of regsvr32 events [eql-ex-get-a-count-of-regsvr32-events]
+## Get a count of regsvr32 events [eql-ex-get-a-count-of-regsvr32-events] 
 
 First, get a count of events associated with a `regsvr32.exe` process:
 
@@ -68,6 +83,8 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events    <1>
   "size": 200                                               <3>
 }
 ```
+
+%  TEST[setup:atomic_red_regsvr32]
 
 1. `?filter_path=-hits.events` excludes the `hits.events` property from the response. This search is only intended to get an event count, not a list of matching events.
 2. Matches any event with a `process.name` of `regsvr32.exe`.
@@ -91,8 +108,10 @@ The response returns 143 related events.
 }
 ```
 
+%  TESTRESPONSE[s/"took": 60/"took": $body.took/]
 
-## Check for command line artifacts [eql-ex-check-for-command-line-artifacts]
+
+## Check for command line artifacts [eql-ex-check-for-command-line-artifacts] 
 
 `regsvr32.exe` processes were associated with 143 events. But how was `regsvr32.exe` first called? And who called it? `regsvr32.exe` is a command-line utility. Narrow your results to processes where the command line was used:
 
@@ -104,6 +123,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches one event with an `event.type` of `creation`, indicating the start of a `regsvr32.exe` process. Based on the event’s `process.command_line` value, `regsvr32.exe` used `scrobj.dll` to register a script, `RegSvr32.sct`. This fits the behavior of a Squiblydoo attack.
 
@@ -151,8 +172,14 @@ The query matches one event with an `event.type` of `creation`, indicating the s
 }
 ```
 
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
 
-## Check for malicious script loads [eql-ex-check-for-malicious-script-loads]
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "gl5MJXMBMk1dGnErnBW8"/"_id": $body.hits.events.0._id/]
+
+
+## Check for malicious script loads [eql-ex-check-for-malicious-script-loads] 
 
 Check if `regsvr32.exe` later loads the `scrobj.dll` library:
 
@@ -164,6 +191,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches an event, confirming `scrobj.dll` was loaded.
 
@@ -201,10 +230,16 @@ The query matches an event, confirming `scrobj.dll` was loaded.
 }
 ```
 
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
 
-## Determine the likelihood of success [eql-ex-detemine-likelihood-of-success]
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
 
-In many cases, attackers use malicious scripts to connect to remote servers or download other files. Use an [EQL sequence query](/reference/query-languages/eql-syntax.md#eql-sequences) to check for the following series of events:
+%  TESTRESPONSE[s/"_id": "ol5MJXMBMk1dGnErnBW8"/"_id": $body.hits.events.0._id/]
+
+
+## Determine the likelihood of success [eql-ex-detemine-likelihood-of-success] 
+
+In many cases, attackers use malicious scripts to connect to remote servers or download other files. Use an [EQL sequence query](eql-syntax.md#eql-sequences) to check for the following series of events:
 
 1. A `regsvr32.exe` process
 2. A load of the `scrobj.dll` library by the same process
@@ -223,6 +258,8 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches a sequence, indicating the attack likely succeeded.
 
@@ -329,4 +366,14 @@ The query matches a sequence, indicating the attack likely succeeded.
   }
 }
 ```
+
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.sequences.0.events.0._index/]
+
+%  TESTRESPONSE[s/"_id": "gl5MJXMBMk1dGnErnBW8"/"_id": $body.hits.sequences.0.events.0._id/]
+
+%  TESTRESPONSE[s/"_id": "ol5MJXMBMk1dGnErnBW8"/"_id": $body.hits.sequences.0.events.1._id/]
+
+%  TESTRESPONSE[s/"_id": "EF5MJXMBMk1dGnErnBa9"/"_id": $body.hits.sequences.0.events.2._id/]
 

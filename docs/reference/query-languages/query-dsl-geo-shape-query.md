@@ -1,15 +1,13 @@
 ---
 navigation_title: "Geoshape"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-shape-query.html
 ---
 
 # Geoshape query [query-dsl-geo-shape-query]
 
 
-Filter documents indexed using either the [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) or the [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) type.
+Filter documents indexed using either the [`geo_shape`](geo-shape.md) or the [`geo_point`](geo-point.md) type.
 
-The `geo_shape` query uses the same [index](/reference/elasticsearch/mapping-reference/geo-shape.md#geoshape-indexing-approach) as the `geo_shape` or `geo_point` mapping to find documents that have a shape that is related to the query shape, using a specified [spatial relationship](#geo-shape-spatial-relations): either intersects, contained, within or disjoint.
+The `geo_shape` query uses the same [index](geo-shape.md#geoshape-indexing-approach) as the `geo_shape` or `geo_point` mapping to find documents that have a shape that is related to the query shape, using a specified [spatial relationship](query-dsl-geo-shape-query.md#geo-shape-spatial-relations): either intersects, contained, within or disjoint.
 
 The query supports two ways of defining the query shape, either by providing a whole shape definition, or by referencing the name of a shape pre-indexed in another index. Both formats are defined below with examples.
 
@@ -40,6 +38,8 @@ POST /example/_doc?refresh
   }
 }
 ```
+
+%  TESTSETUP
 
 The following query will find the point using {{es}}'s `envelope` GeoJSON extension:
 
@@ -88,6 +88,8 @@ PUT /example_points/_doc/1?refresh
 }
 ```
 
+%  TEST[continued]
+
 Using the same query, the documents with matching `geo_point` fields are returned.
 
 ```console
@@ -113,6 +115,8 @@ GET /example_points/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 ```console-result
 {
@@ -144,6 +148,8 @@ GET /example_points/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took" : 17/"took" : $body.took/]
 
 
 ## Pre-indexed shape [_pre_indexed_shape]
@@ -208,7 +214,7 @@ The following is a complete list of spatial relation operators available when se
 * `CONTAINS` - Return all documents whose `geo_shape` or `geo_point` field contains the query geometry.
 
 
-### Ignore unmapped [_ignore_unmapped_4]
+### Ignore unmapped [_ignore_unmapped_4] 
 
 When set to `true` the `ignore_unmapped` option will ignore an unmapped field and will not match any documents for this query. This can be useful when querying multiple indexes which might have different mappings. When set to `false` (the default value) the query will throw an exception if the field is not mapped.
 
@@ -244,6 +250,6 @@ PUT /test/_doc/1
 }
 ```
 
-* The `geo_shape` query assumes `geo_shape` fields use a default `orientation` of `RIGHT` (counterclockwise). See [Polygon orientation](/reference/elasticsearch/mapping-reference/geo-shape.md#polygon-orientation).
+* The `geo_shape` query assumes `geo_shape` fields use a default `orientation` of `RIGHT` (counterclockwise). See [Polygon orientation](geo-shape.md#polygon-orientation).
 
 

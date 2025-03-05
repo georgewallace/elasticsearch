@@ -1,20 +1,18 @@
 ---
 navigation_title: "Significant text"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-significanttext-aggregation.html
 ---
 
 # Significant text aggregation [search-aggregations-bucket-significanttext-aggregation]
 
 
-An aggregation that returns interesting or unusual occurrences of free-text terms in a set. It is like the [significant terms](/reference/data-analysis/aggregations/search-aggregations-bucket-significantterms-aggregation.md) aggregation but differs in that:
+An aggregation that returns interesting or unusual occurrences of free-text terms in a set. It is like the [significant terms](search-aggregations-bucket-significantterms-aggregation.md) aggregation but differs in that:
 
 * It is specifically designed for use on type `text` fields
 * It does not require field data or doc-values
 * It re-analyzes text content on-the-fly meaning it can also filter duplicate sections of noisy text that otherwise tend to skew statistics.
 
-::::{warning}
-Re-analyzing *large* result sets will require a lot of time and memory. It is recommended that the significant_text aggregation is used as a child of either the [sampler](/reference/data-analysis/aggregations/search-aggregations-bucket-sampler-aggregation.md) or [diversified sampler](/reference/data-analysis/aggregations/search-aggregations-bucket-diversified-sampler-aggregation.md) aggregation to limit the analysis to a *small* selection of top-matching documents e.g. 200. This will typically improve speed, memory use and quality of results.
+::::{warning} 
+Re-analyzing *large* result sets will require a lot of time and memory. It is recommended that the significant_text aggregation is used as a child of either the [sampler](search-aggregations-bucket-sampler-aggregation.md) or [diversified sampler](search-aggregations-bucket-diversified-sampler-aggregation.md) aggregation to limit the analysis to a *small* selection of top-matching documents e.g. 200. This will typically improve speed, memory use and quality of results.
 ::::
 
 
@@ -52,6 +50,8 @@ GET news/_search
 }
 ```
 
+%  TEST[setup:news]
+
 Response:
 
 ```console-result
@@ -79,6 +79,8 @@ Response:
     }
 }
 ```
+
+%  TESTRESPONSE[skip:historically skipped]
 
 The results show that "h5n1" is one of several terms strongly associated with bird flu. It only occurs 5 times in our index as a whole (see the `bg_count`) and yet 4 of these were lucky enough to appear in our 100 document sample of "bird flu" results. That suggests a significant word and one which the user can potentially add to their search.
 
@@ -125,6 +127,8 @@ First let’s look at an unfiltered real-world example using the [Signal media d
 }
 ```
 
+%  NOTCONSOLE
+
 The uncleansed documents have thrown up some odd-looking terms that are, on the face of it, statistically correlated with appearances of our search term "elasticsearch" e.g. "pozmantier". We can drill down into examples of these documents to see why pozmantier is connected using this query:
 
 $$$significanttext-aggregation-pozmantier-example$$$
@@ -148,6 +152,8 @@ GET news/_search
   }
 }
 ```
+
+%  TEST[setup:news]
 
 The results show a series of very similar news articles about a judging panel for a number of tech projects:
 
@@ -185,6 +191,8 @@ The results show a series of very similar news articles about a judging panel fo
       ...
 ```
 
+%  NOTCONSOLE
+
 Mike Pozmantier was one of many judges on a panel and elasticsearch was used in one of many projects being judged.
 
 As is typical, this lengthy press release was cut-and-paste by a variety of news sites and consequently any rare names, numbers or typos they contain become statistically correlated with our matching query.
@@ -218,6 +226,8 @@ GET news/_search
   }
 }
 ```
+
+%  TEST[setup:news]
 
 The results from analysing our deduplicated text are obviously of higher quality to anyone familiar with the elastic stack:
 
@@ -255,9 +265,11 @@ The results from analysing our deduplicated text are obviously of higher quality
 }
 ```
 
+%  NOTCONSOLE
+
 Mr Pozmantier and other one-off associations with elasticsearch no longer appear in the aggregation results as a consequence of copy-and-paste operations or other forms of mechanical repetition.
 
-If your duplicate or near-duplicate content is identifiable via a single-value indexed field  (perhaps a hash of the article’s `title` text or an `original_press_release_url` field) then it would be more efficient to use a parent [diversified sampler](/reference/data-analysis/aggregations/search-aggregations-bucket-diversified-sampler-aggregation.md) aggregation to eliminate these documents from the sample set based on that single key. The less duplicate content you can feed into the significant_text aggregation up front the better in terms of performance.
+If your duplicate or near-duplicate content is identifiable via a single-value indexed field  (perhaps a hash of the article’s `title` text or an `original_press_release_url` field) then it would be more efficient to use a parent [diversified sampler](search-aggregations-bucket-diversified-sampler-aggregation.md) aggregation to eliminate these documents from the sample set based on that single key. The less duplicate content you can feed into the significant_text aggregation up front the better in terms of performance.
 
 ::::{admonition} How are the significance scores calculated?
 The numbers returned for scores are primarily intended for ranking different suggestions sensibly rather than something easily understood by end users. The scores are derived from the doc frequencies in *foreground* and *background* sets. In brief, a term is considered significant if there is a noticeable difference in the frequency in which a term appears in the subset and in the background. The way the terms are ranked can be configured, see "Parameters" section.
@@ -306,7 +318,7 @@ Like most design decisions, this is the basis of a trade-off in which we have ch
 
 ### Significance heuristics [_significance_heuristics]
 
-This aggregation supports the same scoring heuristics (JLH, mutual_information, gnd, chi_square etc) as the [significant terms](/reference/data-analysis/aggregations/search-aggregations-bucket-significantterms-aggregation.md) aggregation
+This aggregation supports the same scoring heuristics (JLH, mutual_information, gnd, chi_square etc) as the [significant terms](search-aggregations-bucket-significantterms-aggregation.md) aggregation
 
 
 ### Size & Shard Size [sig-text-shard-size]
@@ -317,7 +329,7 @@ To ensure better accuracy a multiple of the final `size` is used as the number o
 
 Low-frequency terms can turn out to be the most interesting ones once all results are combined so the significant_terms aggregation can produce higher-quality results when the `shard_size` parameter is set to values significantly higher than the `size` setting. This ensures that a bigger volume of promising candidate terms are given a consolidated review by the reducing node before the final selection. Obviously large candidate term lists will cause extra network traffic and RAM usage so this is quality/cost trade off that needs to be balanced. If `shard_size` is set to -1 (the default) then `shard_size` will be automatically estimated based on the number of shards and the `size` parameter.
 
-::::{note}
+::::{note} 
 `shard_size` cannot be smaller than `size` (as it doesn’t make much sense). When it is, elasticsearch will override it and reset it to be equal to `size`.
 ::::
 
@@ -333,7 +345,7 @@ Terms that score highly will be collected on a shard level and merged with the t
 
 The parameter `shard_min_doc_count` regulates the *certainty* a shard has if the term should actually be added to the candidate list or not with respect to the `min_doc_count`. Terms will only be considered if their local shard frequency within the set is higher than the `shard_min_doc_count`. If your dictionary contains many low frequent terms and you are not interested in those (for example misspellings), then you can set the `shard_min_doc_count` parameter to filter out candidate terms on a shard level that will with a reasonable certainty not reach the required `min_doc_count` even after merging the local counts. `shard_min_doc_count` is set to `0` per default and has no effect unless you explicitly set it.
 
-::::{warning}
+::::{warning} 
 Setting `min_doc_count` to `1` is generally not advised as it tends to return terms that are typos or other bizarre curiosities. Finding more than one instance of a term helps reinforce that, while still rare, the term was not the result of a one-off accident. The default value of 3 is used to provide a minimum weight-of-evidence. Setting `shard_min_doc_count` too high will cause significant candidate terms to be filtered out on a shard level. This value should be set much lower than `min_doc_count/#shards`.
 ::::
 
@@ -367,9 +379,11 @@ GET news/_search
 }
 ```
 
+%  TEST[setup:news]
+
 The above filter would help focus in on terms that were peculiar to the city of Madrid rather than revealing terms like "Spanish" that are unusual in the full index’s worldwide context but commonplace in the subset of documents containing the word "Spain".
 
-::::{warning}
+::::{warning} 
 Use of background filters will slow the query as each term’s postings must be filtered to determine a frequency
 ::::
 
@@ -400,10 +414,12 @@ GET news/_search
 }
 ```
 
+%  TEST[setup:news]
+
 
 ### Filtering Values [_filtering_values_3]
 
-It is possible (although rarely required) to filter the values for which buckets will be created. This can be done using the `include` and `exclude` parameters which are based on a regular expression string or arrays of exact terms. This functionality mirrors the features described in the [terms aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md) documentation.
+It is possible (although rarely required) to filter the values for which buckets will be created. This can be done using the `include` and `exclude` parameters which are based on a regular expression string or arrays of exact terms. This functionality mirrors the features described in the [terms aggregation](search-aggregations-bucket-terms-aggregation.md) documentation.
 
 
 

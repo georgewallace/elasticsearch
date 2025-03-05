@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-operators-logical.html
----
-
 # Logical Operators [sql-operators-logical]
 
 Boolean operator for evaluating one or two expressions.

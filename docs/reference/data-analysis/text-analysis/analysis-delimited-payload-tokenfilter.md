@@ -1,13 +1,11 @@
 ---
 navigation_title: "Delimited payload"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-delimited-payload-tokenfilter.html
 ---
 
 # Delimited payload token filter [analysis-delimited-payload-tokenfilter]
 
 
-::::{warning}
+::::{warning} 
 The older name `delimited_payload_filter` is deprecated and should not be used with new indices. Use `delimited_payload` instead.
 
 ::::
@@ -17,7 +15,7 @@ Separates a token stream into tokens and payloads based on a specified delimiter
 
 For example, you can use the `delimited_payload` filter with a `|` delimiter to split `the|1 quick|2 fox|3` into the tokens `the`, `quick`, and `fox` with respective payloads of `1`, `2`, and `3`.
 
-This filter uses Lucene’s [DelimitedPayloadTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/payloads/DelimitedPayloadTokenFilter.md).
+This filter uses Lucene’s [DelimitedPayloadTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/payloads/DelimitedPayloadTokenFilter.md).
 
 ::::{admonition} Payloads
 :class: note
@@ -26,17 +24,17 @@ A payload is user-defined binary data associated with a token position and store
 
 {{es}} does not store token payloads by default. To store payloads, you must:
 
-* Set the [`term_vector`](/reference/elasticsearch/mapping-reference/term-vector.md) mapping parameter to `with_positions_payloads` or `with_positions_offsets_payloads` for any field storing payloads.
+* Set the [`term_vector`](term-vector.md) mapping parameter to `with_positions_payloads` or `with_positions_offsets_payloads` for any field storing payloads.
 * Use an index analyzer that includes the `delimited_payload` filter
 
-You can view stored payloads using the [term vectors API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-termvectors).
+You can view stored payloads using the [term vectors API](docs-termvectors.md).
 
 ::::
 
 
 ## Example [analysis-delimited-payload-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `delimited_payload` filter with the default `|` delimiter to split `the|0 brown|10 fox|5 is|0 quick|10` into tokens and payloads.
+The following [analyze API](indices-analyze.md) request uses the `delimited_payload` filter with the default `|` delimiter to split `the|0 brown|10 fox|5 is|0 quick|10` into tokens and payloads.
 
 ```console
 GET _analyze
@@ -53,12 +51,55 @@ The filter produces the following tokens:
 [ the, brown, fox, is, quick ]
 ```
 
-Note that the analyze API does not return stored payloads. For an example that includes returned payloads, see [Return stored payloads](#analysis-delimited-payload-tokenfilter-return-stored-payloads).
+Note that the analyze API does not return stored payloads. For an example that includes returned payloads, see [Return stored payloads](analysis-delimited-payload-tokenfilter.md#analysis-delimited-payload-tokenfilter-return-stored-payloads).
+
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "the",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 6,
+%       "end_offset": 14,
+%       "type": "word",
+%       "position": 1
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 15,
+%       "end_offset": 20,
+%       "type": "word",
+%       "position": 2
+%     },
+%     {
+%       "token": "is",
+%       "start_offset": 21,
+%       "end_offset": 25,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "quick",
+%       "start_offset": 26,
+%       "end_offset": 34,
+%       "type": "word",
+%       "position": 4
+%     }
+%   ]
+% }
+% --------------------------------------------------
 
 
 ## Add to an analyzer [analysis-delimited-payload-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `delimited-payload` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `delimited-payload` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT delimited_payload
@@ -100,7 +141,7 @@ PUT delimited_payload
 
 To customize the `delimited_payload` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses a custom `delimited_payload` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md). The custom `delimited_payload` filter uses the `+` delimiter to separate tokens from payloads. Payloads are encoded as integers.
+For example, the following [create index API](indices-create-index.md) request uses a custom `delimited_payload` filter to configure a new [custom analyzer](analysis-custom-analyzer.md). The custom `delimited_payload` filter uses the `+` delimiter to separate tokens from payloads. Payloads are encoded as integers.
 
 ```console
 PUT delimited_payload_example
@@ -128,10 +169,10 @@ PUT delimited_payload_example
 
 ## Return stored payloads [analysis-delimited-payload-tokenfilter-return-stored-payloads]
 
-Use the [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) to create an index that:
+Use the [create index API](indices-create-index.md) to create an index that:
 
 * Includes a field that stores term vectors with payloads.
-* Uses a [custom index analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md) with the `delimited_payload` filter.
+* Uses a [custom index analyzer](analysis-custom-analyzer.md) with the `delimited_payload` filter.
 
 ```console
 PUT text_payloads
@@ -167,7 +208,9 @@ POST text_payloads/_doc/1
 }
 ```
 
-Use the [term vectors API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-termvectors) to return the document’s tokens and base64-encoded payloads.
+%  TEST[continued]
+
+Use the [term vectors API](docs-termvectors.md) to return the document’s tokens and base64-encoded payloads.
 
 ```console
 GET text_payloads/_termvectors/1
@@ -176,6 +219,8 @@ GET text_payloads/_termvectors/1
   "payloads": true
 }
 ```
+
+%  TEST[continued]
 
 The API returns the following response:
 
@@ -244,5 +289,7 @@ The API returns the following response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 8/"took": "$body.took"/]
 
 

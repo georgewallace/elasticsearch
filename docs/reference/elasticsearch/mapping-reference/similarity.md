@@ -1,15 +1,10 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/similarity.html
----
-
-# similarity [similarity]
+# `similarity` [similarity]
 
 {{es}} allows you to configure a text scoring algorithm or *similarity* per field. The `similarity` setting provides a simple way of choosing a text similarity algorithm other than the default `BM25`, such as `boolean`.
 
-Only text-based field types like [`text`](/reference/elasticsearch/mapping-reference/text.md) and [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) support this configuration.
+Only text-based field types like [`text`](text.md) and [`keyword`](keyword.md) support this configuration.
 
-Custom similarities can be configured by tuning the parameters of the built-in similarities. For more details about this expert options, see the [similarity module](/reference/elasticsearch/index-settings/similarity.md).
+Custom similarities can be configured by tuning the parameters of the built-in similarities. For more details about this expert options, see the [similarity module](index-modules-similarity.md).
 
 The only similarities which can be used out of the box, without any further configuration are:
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Keyword repeat"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-keyword-repeat-tokenfilter.html
 ---
 
 # Keyword repeat token filter [analysis-keyword-repeat-tokenfilter]
@@ -9,25 +7,25 @@ mapped_pages:
 
 Outputs a keyword version of each token in a stream. These keyword tokens are not stemmed.
 
-The `keyword_repeat` filter assigns keyword tokens a `keyword` attribute of `true`. Stemmer token filters, such as [`stemmer`](/reference/data-analysis/text-analysis/analysis-stemmer-tokenfilter.md) or [`porter_stem`](/reference/data-analysis/text-analysis/analysis-porterstem-tokenfilter.md), skip tokens with a `keyword` attribute of `true`.
+The `keyword_repeat` filter assigns keyword tokens a `keyword` attribute of `true`. Stemmer token filters, such as [`stemmer`](analysis-stemmer-tokenfilter.md) or [`porter_stem`](analysis-porterstem-tokenfilter.md), skip tokens with a `keyword` attribute of `true`.
 
 You can use the `keyword_repeat` filter with a stemmer token filter to output a stemmed and unstemmed version of each token in a stream.
 
-::::{important}
-To work properly, the `keyword_repeat` filter must be listed before any stemmer token filters in the [analyzer configuration](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+::::{important} 
+To work properly, the `keyword_repeat` filter must be listed before any stemmer token filters in the [analyzer configuration](analysis-custom-analyzer.md).
 
 Stemming does not affect all tokens. This means streams could contain duplicate tokens in the same position, even after stemming.
 
-To remove these duplicate tokens, add the [`remove_duplicates`](/reference/data-analysis/text-analysis/analysis-remove-duplicates-tokenfilter.md) filter after the stemmer filter in the analyzer configuration.
+To remove these duplicate tokens, add the [`remove_duplicates`](analysis-remove-duplicates-tokenfilter.md) filter after the stemmer filter in the analyzer configuration.
 
 ::::
 
 
-The `keyword_repeat` filter uses Lucene’s [KeywordRepeatFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/KeywordRepeatFilter.md).
+The `keyword_repeat` filter uses Lucene’s [KeywordRepeatFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/KeywordRepeatFilter.md).
 
 ## Example [analysis-keyword-repeat-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `keyword_repeat` filter to output a keyword and non-keyword version of each token in `fox running and jumping`.
+The following [analyze API](indices-analyze.md) request uses the `keyword_repeat` filter to output a keyword and non-keyword version of each token in `fox running and jumping`.
 
 To return the `keyword` attribute for these tokens, the analyze API request also includes the following arguments:
 
@@ -49,7 +47,7 @@ GET /_analyze
 
 The API returns the following response. Note that one version of each token has a `keyword` attribute of `true`.
 
-::::{dropdown} **Response**
+::::{dropdown} ***Response***
 ```console-result
 {
   "detail": {
@@ -131,6 +129,8 @@ The API returns the following response. Note that one version of each token has 
 }
 ```
 
+%  TESTRESPONSE[s/"tokenizer": \.\.\./"tokenizer": $body.detail.tokenizer/]
+
 ::::
 
 
@@ -155,7 +155,7 @@ The API returns the following response. Note the following changes:
 * The non-keyword version of `running` was stemmed to `run`.
 * The non-keyword version of `jumping` was stemmed to `jump`.
 
-::::{dropdown} **Response**
+::::{dropdown} ***Response***
 ```console-result
 {
   "detail": {
@@ -241,6 +241,10 @@ The API returns the following response. Note the following changes:
 }
 ```
 
+%  TESTRESPONSE[s/"tokenizer": \.\.\./"tokenizer": $body.detail.tokenizer/]
+
+%  TESTRESPONSE[s/"tokens": …​/"tokens": $body.$_path/]
+
 ::::
 
 
@@ -265,7 +269,7 @@ GET /_analyze
 
 The API returns the following response. Note that the duplicate tokens for `fox` and `and` have been removed.
 
-::::{dropdown} **Response**
+::::{dropdown} ***Response***
 ```console-result
 {
   "detail": {
@@ -339,13 +343,17 @@ The API returns the following response. Note that the duplicate tokens for `fox`
 }
 ```
 
+%  TESTRESPONSE[s/"tokenizer": \.\.\./"tokenizer": $body.detail.tokenizer/]
+
+%  TESTRESPONSE[s/"tokens": …​/"tokens": $body.$_path/]
+
 ::::
 
 
 
 ## Add to an analyzer [analysis-keyword-repeat-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `keyword_repeat` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `keyword_repeat` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 This custom analyzer uses the `keyword_repeat` and `porter_stem` filters to create a stemmed and unstemmed version of each token in a stream. The `remove_duplicates` filter then removes any duplicate tokens from the stream.
 
@@ -368,3 +376,5 @@ PUT /my-index-000001
   }
 }
 ```
+
+

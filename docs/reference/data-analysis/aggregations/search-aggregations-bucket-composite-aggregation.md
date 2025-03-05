@@ -1,22 +1,78 @@
 ---
 navigation_title: "Composite"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html
 ---
 
 # Composite aggregation [search-aggregations-bucket-composite-aggregation]
 
 
-::::{warning}
+::::{warning} 
 The composite aggregation is expensive. Load test your application before deploying a composite aggregation in production.
 ::::
 
 
 A multi-bucket aggregation that creates composite buckets from different sources.
 
-Unlike the other `multi-bucket` aggregations, you can use the `composite` aggregation to paginate **all** buckets from a multi-level aggregation efficiently. This aggregation provides a way to stream **all** buckets of a specific aggregation, similar to what [scroll](/reference/elasticsearch/rest-apis/paginate-search-results.md#scroll-search-results) does for documents.
+Unlike the other `multi-bucket` aggregations, you can use the `composite` aggregation to paginate ***all*** buckets from a multi-level aggregation efficiently. This aggregation provides a way to stream ***all*** buckets of a specific aggregation, similar to what [scroll](paginate-search-results.md#scroll-search-results) does for documents.
 
 The composite buckets are built from the combinations of the values extracted/created for each document and each combination is considered as a composite bucket.
+
+% 
+% [source,console]
+% --------------------------------------------------
+% PUT /sales
+% {
+%   "mappings": {
+%     "properties": {
+%       "product": {
+%           "type": "keyword"
+%       },
+%       "timestamp": {
+%           "type": "date"
+%       },
+%       "price": {
+%           "type": "long"
+%       },
+%       "shop": {
+%           "type": "keyword"
+%       },
+%       "location": {
+%           "type": "geo_point"
+%       },
+%       "nested": {
+%           "type": "nested",
+%           "properties": {
+%             "product": {
+%                 "type": "keyword"
+%             },
+%             "timestamp": {
+%                 "type": "date"
+%             },
+%             "price": {
+%                 "type": "long"
+%             },
+%             "shop": {
+%                 "type": "keyword"
+%             }
+%           }
+%        }
+%     }
+%   }
+% }
+% 
+% POST /sales/_bulk?refresh
+% {"index":{"_id":0}}
+% {"product": "mad max", "price": "20", "timestamp": "2017-05-09T14:35"}
+% {"index":{"_id":1}}
+% {"product": "mad max", "price": "25", "timestamp": "2017-05-09T12:35"}
+% {"index":{"_id":2}}
+% {"product": "rocky", "price": "10", "timestamp": "2017-05-08T09:10"}
+% {"index":{"_id":3}}
+% {"product": "mad max", "price": "27", "timestamp": "2017-05-10T07:07"}
+% {"index":{"_id":4}}
+% {"product": "apocalypse now", "price": "10", "timestamp": "2017-05-11T08:35"}
+% -------------------------------------------------
+% // TESTSETUP
+% 
 
 For example, consider the following document:
 
@@ -26,6 +82,8 @@ For example, consider the following document:
   "number": [23, 65, 76]
 }
 ```
+
+%  NOTCONSOLE
 
 Using `keyword` and `number` as source fields for the aggregation results in the following composite buckets:
 
@@ -38,21 +96,23 @@ Using `keyword` and `number` as source fields for the aggregation results in the
 { "keyword": "bar", "number": 76 }
 ```
 
+%  NOTCONSOLE
+
 ## Value sources [_value_sources]
 
 The `sources` parameter defines the source fields to use when building composite buckets. The order that the `sources` are defined controls the order that the keys are returned.
 
-::::{note}
+::::{note} 
 You must use a unique name when defining `sources`.
 ::::
 
 
 The `sources` parameter can be any of the following types:
 
-* [Terms](#_terms)
-* [Histogram](#_histogram)
-* [Date histogram](#_date_histogram)
-* [GeoTile grid](#_geotile_grid)
+* [Terms](search-aggregations-bucket-composite-aggregation.md#_terms)
+* [Histogram](search-aggregations-bucket-composite-aggregation.md#_histogram)
+* [Date histogram](search-aggregations-bucket-composite-aggregation.md#_date_histogram)
+* [GeoTile grid](search-aggregations-bucket-composite-aggregation.md#_geotile_grid)
 
 ### Terms [_terms]
 
@@ -78,7 +138,7 @@ GET /_search
 }
 ```
 
-Like the `terms` aggregation, it’s possible to use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) to create values for the composite buckets:
+Like the `terms` aggregation, it’s possible to use a [runtime field](runtime.md) to create values for the composite buckets:
 
 $$$composite-aggregation-terms-runtime-field-example$$$
 
@@ -111,10 +171,36 @@ GET /_search
 }
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "timed_out": false,
+%   "took": "$body.took",
+%   "_shards": {
+%     "total": 1,
+%     "successful": 1,
+%     "failed": 0,
+%     "skipped": 0
+%   },
+%   "hits": "$body.hits",
+%   "aggregations": {
+%     "my_buckets": {
+%       "after_key": { "dow": "Wednesday" },
+%       "buckets": [
+%         { "key": { "dow": "Monday"    }, "doc_count": 1 },
+%         { "key": { "dow": "Thursday"  }, "doc_count": 1 },
+%         { "key": { "dow": "Tuesday"   }, "doc_count": 2 },
+%         { "key": { "dow": "Wednesday" }, "doc_count": 1 }
+%       ]
+%     }
+%   }
+% }
+% ----
+
 Although similar, the `terms` value source doesn’t support the same set of parameters as the `terms` aggregation. For other supported value source parameters, see:
 
-* [Order](#_order)
-* [Missing bucket](#_missing_bucket)
+* [Order](search-aggregations-bucket-composite-aggregation.md#_order)
+* [Missing bucket](search-aggregations-bucket-composite-aggregation.md#_missing_bucket)
 
 
 ### Histogram [_histogram]
@@ -141,7 +227,7 @@ GET /_search
 }
 ```
 
-Like the `histogram` aggregation it’s possible to use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) to create values for the composite buckets:
+Like the `histogram` aggregation it’s possible to use a [runtime field](runtime.md) to create values for the composite buckets:
 
 $$$composite-aggregation-histogram-runtime-field-example$$$
 
@@ -180,6 +266,31 @@ GET /_search
 }
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "timed_out": false,
+%   "took": "$body.took",
+%   "_shards": {
+%     "total": 1,
+%     "successful": 1,
+%     "failed": 0,
+%     "skipped": 0
+%   },
+%   "hits": "$body.hits",
+%   "aggregations": {
+%     "my_buckets": {
+%       "after_key": { "price": 20.0 },
+%       "buckets": [
+%         { "key": { "price": 10.0 }, "doc_count": 2 },
+%         { "key": { "price": 15.0 }, "doc_count": 1 },
+%         { "key": { "price": 20.0 }, "doc_count": 2 }
+%       ]
+%     }
+%   }
+% }
+% ----
+
 
 ### Date histogram [_date_histogram]
 
@@ -205,7 +316,7 @@ GET /_search
 
 The example above creates an interval per day and translates all `timestamp` values to the start of its closest intervals. Available expressions for interval: `year`, `quarter`, `month`, `week`, `day`, `hour`, `minute`, `second`
 
-Time values can also be specified via abbreviations supported by [time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) parsing. Note that fractional time values are not supported, but you can address this by shifting to another time unit (e.g., `1.5h` could instead be specified as `90m`).
+Time values can also be specified via abbreviations supported by [time units](api-conventions.md#time-units) parsing. Note that fractional time values are not supported, but you can address this by shifting to another time unit (e.g., `1.5h` could instead be specified as `90m`).
 
 **Format**
 
@@ -237,7 +348,7 @@ GET /_search
 }
 ```
 
-1. Supports expressive date [format pattern](/reference/data-analysis/aggregations/search-aggregations-bucket-daterange-aggregation.md#date-format-pattern)
+1. Supports expressive date [format pattern](search-aggregations-bucket-daterange-aggregation.md#date-format-pattern)
 
 
 **Time Zone**
@@ -248,7 +359,7 @@ Time zones may either be specified as an ISO 8601 UTC offset (e.g. `+01:00` or `
 
 **Offset**
 
-Use the `offset` parameter to change the start value of each bucket by the specified positive (`+`) or negative offset (`-`) duration, such as `1h` for an hour, or `1d` for a day. See [Time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) for more possible time duration options.
+Use the `offset` parameter to change the start value of each bucket by the specified positive (`+`) or negative offset (`-`) duration, such as `1h` for an hour, or `1d` for a day. See [Time units](api-conventions.md#time-units) for more possible time duration options.
 
 For example, when using an interval of `day`, each bucket runs from midnight to midnight. Setting the `offset` parameter to `+6h` changes each bucket to run from 6am to 6am:
 
@@ -311,7 +422,9 @@ Instead of a single bucket starting at midnight, the above request groups the do
 }
 ```
 
-::::{note}
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+::::{note} 
 The start `offset` of each bucket is calculated after `time_zone` adjustments have been made.
 ::::
 
@@ -319,7 +432,7 @@ The start `offset` of each bucket is calculated after `time_zone` adjustments ha
 
 ### GeoTile grid [_geotile_grid]
 
-The `geotile_grid` value source works on `geo_point` fields and groups points into buckets that represent cells in a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell corresponds to a [map tile](https://en.wikipedia.org/wiki/Tiled_web_map) as used by many online map sites. Each cell is labeled using a `"{{zoom}}/{x}/{{y}}"` format, where zoom is equal to the user-specified precision.
+The `geotile_grid` value source works on `geo_point` fields and groups points into buckets that represent cells in a grid. The resulting grid can be sparse and only contains cells that have matching data. Each cell corresponds to a [map tile](https://en.wikipedia.org/wiki/Tiled_web_map) as used by many online map sites. Each cell is labeled using a "{{zoom}}/{x}/{{y}}" format, where zoom is equal to the user-specified precision.
 
 $$$composite-aggregation-geotilegrid-example$$$
 
@@ -514,6 +627,8 @@ GET /_search
 }
 ```
 
+%  TEST[s/_search/_search\?filter_path=aggregations/]
+
 ... returns:
 
 ```console-result
@@ -546,6 +661,8 @@ GET /_search
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 To get the next set of buckets, resend the same aggregation with the `after` parameter set to the `after_key` value returned in the response. For example, this request uses the `after_key` value provided in the previous response:
 
 $$$composite-aggregation-after-example$$$
@@ -569,10 +686,10 @@ GET /_search
 }
 ```
 
-1. Should restrict the aggregation to buckets that sort **after** the provided values.
+1. Should restrict the aggregation to buckets that sort ***after*** the provided values.
 
 
-::::{note}
+::::{note} 
 The `after_key` is **usually** the key to the last bucket returned in the response, but that isn’t guaranteed. Always use the returned `after_key` instead of deriving it from the buckets.
 ::::
 
@@ -580,7 +697,7 @@ The `after_key` is **usually** the key to the last bucket returned in the respon
 
 ## Early termination [_early_termination]
 
-For optimal performance the [index sort](/reference/elasticsearch/index-settings/sorting.md) should be set on the index so that it matches parts or fully the source order in the composite aggregation. For instance the following index sort:
+For optimal performance the [index sort](index-modules-index-sorting.md) should be set on the index so that it matches parts or fully the source order in the composite aggregation. For instance the following index sort:
 
 ```console
 PUT my-index-000001
@@ -676,8 +793,8 @@ Note that the order of the source is important, in the example below switching t
 * Make sure that the order of the field matches the order of the index sort.
 * Put multi-valued fields last since they cannot be used for early termination.
 
-::::{warning}
-[index sort](/reference/elasticsearch/index-settings/sorting.md) can slowdown indexing, it is very important to test index sorting with your specific use case and dataset to ensure that it matches your requirement. If it doesn’t note that `composite` aggregations will also try to early terminate on non-sorted indices if the query matches all document (`match_all` query).
+::::{warning} 
+[index sort](index-modules-index-sorting.md) can slowdown indexing, it is very important to test index sorting with your specific use case and dataset to ensure that it matches your requirement. If it doesn’t note that `composite` aggregations will also try to early terminate on non-sorted indices if the query matches all document (`match_all` query).
 ::::
 
 
@@ -709,6 +826,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 ... returns:
 
@@ -768,9 +887,13 @@ GET /_search
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 
 ## Pipeline aggregations [search-aggregations-bucket-composite-aggregation-pipeline-aggregations]
 
 The composite agg is not currently compatible with pipeline aggregations, nor does it make sense in most cases. E.g. due to the paging nature of composite aggs, a single logical partition (one day for example) might be spread over multiple pages. Since pipeline aggregations are purely post-processing on the final list of buckets, running something like a derivative on a composite page could lead to inaccurate results as it is only taking into account a "partial" result on that page.
 
 Pipeline aggs that are self contained to a single bucket (such as `bucket_selector`) might be supported in the future.
+
+

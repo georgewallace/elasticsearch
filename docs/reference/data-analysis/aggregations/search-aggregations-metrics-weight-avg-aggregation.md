@@ -1,7 +1,5 @@
 ---
 navigation_title: "Weighted avg"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-weight-avg-aggregation.html
 ---
 
 # Weighted avg aggregation [search-aggregations-metrics-weight-avg-aggregation]
@@ -62,6 +60,8 @@ POST /exams/_search
 }
 ```
 
+%  TEST[setup:exams]
+
 Which yields a response like:
 
 ```console-result
@@ -75,7 +75,9 @@ Which yields a response like:
 }
 ```
 
-While multiple values-per-field are allowed, only one weight is allowed. If the aggregation encounters a document that has more than one weight (e.g. the weight field is a multi-valued field) it will abort the search. If you have this situation, you should build a [Runtime field](#search-aggregations-metrics-weight-avg-aggregation-runtime-field) to combine those values into a single weight.
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+While multiple values-per-field are allowed, only one weight is allowed. If the aggregation encounters a document that has more than one weight (e.g. the weight field is a multi-valued field) it will abort the search. If you have this situation, you should build a [Runtime field](search-aggregations-metrics-weight-avg-aggregation.md#search-aggregations-metrics-weight-avg-aggregation-runtime-field) to combine those values into a single weight.
 
 This single weight will be applied independently to each value extracted from the `value` field.
 
@@ -106,6 +108,8 @@ POST /exams/_search
 }
 ```
 
+%  TEST
+
 The three values (`1`, `2`, and `3`) will be included as independent values, all with the weight of `2`:
 
 ```console-result
@@ -119,12 +123,14 @@ The three values (`1`, `2`, and `3`) will be included as independent values, all
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 The aggregation returns `2.0` as the result, which matches what we would expect when calculating by hand: `((1*2) + (2*2) + (3*2)) / (2+2+2) == 2`
 
 
 ## Runtime field [search-aggregations-metrics-weight-avg-aggregation-runtime-field]
 
-If you have to sum or weigh values that don’t quite line up with the indexed values, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
+If you have to sum or weigh values that don’t quite line up with the indexed values, run the aggregation on a [runtime field](runtime.md).
 
 ```console
 POST /exams/_doc?refresh
@@ -205,5 +211,7 @@ POST /exams/_search
   }
 }
 ```
+
+%  TEST[setup:exams]
 
 

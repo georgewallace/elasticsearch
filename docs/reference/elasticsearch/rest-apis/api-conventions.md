@@ -1,17 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/api-conventions.html
-applies_to:
-  stack: all
-navigation_title: API conventions
----
-
-# Elasticsearch API conventions [api-conventions]
+# API conventions [api-conventions]
 
 The {{es}} REST APIs are exposed over HTTP. Except where noted, the following conventions apply across all APIs.
 
 
-## Content-type requirements [_content_type_requirements]
+## Content-type requirements [_content_type_requirements] 
 
 The type of the content sent in a request body must be specified using the `Content-Type` header. The value of this header must map to one of the supported formats that the API supports. Most APIs support JSON, YAML, CBOR, and SMILE. The bulk and multi-search APIs support NDJSON, JSON, and SMILE; other types will result in an error response.
 
@@ -20,29 +12,29 @@ When using the `source` query string parameter, the content type must be specifi
 {{es}} only supports UTF-8-encoded JSON. {{es}} ignores any other encoding headings sent with a request. Responses are also UTF-8 encoded.
 
 
-## `X-Opaque-Id` HTTP header [x-opaque-id]
+## `X-Opaque-Id` HTTP header [x-opaque-id] 
 
 You can pass an `X-Opaque-Id` HTTP header to track the origin of a request in {{es}} logs and tasks. If provided, {{es}} surfaces the `X-Opaque-Id` value in the:
 
 * Response of any request that includes the header
-* [Task management API](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-tasks) response
-* [Slow logs](/reference/elasticsearch/index-settings/slow-log.md)
-* [Deprecation logs](docs-content://deploy-manage/monitor/logging-configuration/update-elasticsearch-logging-levels.md#deprecation-logging)
+* [Task management API](tasks.md#_identifying_running_tasks) response
+* [Slow logs](index-modules-slowlog.md#search-slow-log)
+* [Deprecation logs](logging.md#deprecation-logging)
 
-For the deprecation logs, {{es}} also uses the `X-Opaque-Id` value to throttle and deduplicate deprecation warnings. See [Deprecation logs throttling](docs-content://deploy-manage/monitor/logging-configuration/update-elasticsearch-logging-levels.md#_deprecation_logs_throttling).
+For the deprecation logs, {{es}} also uses the `X-Opaque-Id` value to throttle and deduplicate deprecation warnings. See [Deprecation logs throttling](logging.md#_deprecation_logs_throttling).
 
 The `X-Opaque-Id` header accepts any arbitrary value. However, we recommend you limit these values to a finite set, such as an ID per client. Don’t generate a unique `X-Opaque-Id` header for every request. Too many unique `X-Opaque-Id` values can prevent {{es}} from deduplicating warnings in the deprecation logs.
 
 
-## `traceparent` HTTP header [traceparent]
+## `traceparent` HTTP header [traceparent] 
 
 {{es}} also supports a `traceparent` HTTP header using the [official W3C trace context spec](https://www.w3.org/TR/trace-context/#traceparent-header). You can use the `traceparent` header to trace requests across Elastic products and other services. Because it’s only used for traces, you can safely generate a unique `traceparent` header for each request.
 
 If provided, {{es}} surfaces the header’s `trace-id` value as `trace.id` in the:
 
-* [JSON {{es}} server logs](docs-content://deploy-manage/monitor/logging-configuration/update-elasticsearch-logging-levels.md)
-* [Slow logs](/reference/elasticsearch/index-settings/slow-log.md)
-* [Deprecation logs](docs-content://deploy-manage/monitor/logging-configuration/update-elasticsearch-logging-levels.md#deprecation-logging)
+* [JSON {{es}} server logs](logging.md)
+* [Slow logs](index-modules-slowlog.md#search-slow-log)
+* [Deprecation logs](logging.md#deprecation-logging)
 
 For example, the following `traceparent` value would produce the following `trace.id` value in the above logs.
 
@@ -52,12 +44,12 @@ For example, the following `traceparent` value would produce the following `trac
 ```
 
 
-## GET and POST requests [get-requests]
+## GET and POST requests [get-requests] 
 
-A number of {{es}} GET APIs—​most notably the search API—​support a request body. While the GET action makes sense in the context of retrieving information, GET requests with a body are not supported by all HTTP libraries. All {{es}} GET APIs that require a body can also be submitted as POST requests. Alternatively, you can pass the request body as the [`source` query string parameter](#api-request-body-query-string) when using GET.
+A number of {{es}} GET APIs—​most notably the search API—​support a request body. While the GET action makes sense in the context of retrieving information, GET requests with a body are not supported by all HTTP libraries. All {{es}} GET APIs that require a body can also be submitted as POST requests. Alternatively, you can pass the request body as the [`source` query string parameter](api-conventions.md#api-request-body-query-string) when using GET.
 
 
-## Cron expressions [api-cron-expressions]
+## Cron expressions [api-cron-expressions] 
 
 A cron expression is a string of the following form:
 
@@ -69,15 +61,15 @@ A cron expression is a string of the following form:
 
 All schedule times are in coordinated universal time (UTC); other timezones are not supported.
 
-::::{tip}
-You can use the [*elasticsearch-croneval*](/reference/elasticsearch/command-line-tools/elasticsearch-croneval.md) command line tool to validate your cron expressions.
+::::{tip} 
+You can use the [*elasticsearch-croneval*](elasticsearch-croneval.md) command line tool to validate your cron expressions.
 ::::
 
 
 
-### Cron expression elements [cron-elements]
+### Cron expression elements [cron-elements] 
 
-All elements are required except for `year`. See [Cron special characters](#cron-special-characters) for information about the allowed special characters.
+All elements are required except for `year`. See [Cron special characters](api-conventions.md#cron-special-characters) for information about the allowed special characters.
 
 `<seconds>`
 :   (Required) Valid values: `0`-`59` and the special characters `,` `-` `*` `/`
@@ -101,7 +93,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   (Optional) Valid values: `1970`-`2099` and the special characters `,` `-` `*` `/`
 
 
-### Cron special characters [cron-special-characters]
+### Cron special characters [cron-special-characters] 
 
 `*`
 :   Selects every possible value for a field. For example, `*` in the `hours` field means "every hour".
@@ -128,10 +120,10 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Nth XXX day in a month. Use in the `day_of_week` field to specify the nth XXX day of the month. For example, if you specify `6#1`, the schedule will trigger on the first Friday of the month. Note that if you specify `3#5` and there are not 5 Tuesdays in a particular month, the schedule won’t trigger that month.
 
 
-### Examples [cron-expression-examples]
+### Examples [cron-expression-examples] 
 
 
-#### Setting daily triggers [cron-example-daily]
+#### Setting daily triggers [cron-example-daily] 
 
 `0 5 9 * * ?`
 :   Trigger at 9:05 a.m. UTC every day.
@@ -140,7 +132,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Trigger at 9:05 a.m. UTC every day during the year 2020.
 
 
-#### Restricting triggers to a range of days or times [cron-example-range]
+#### Restricting triggers to a range of days or times [cron-example-range] 
 
 `0 5 9 ? * MON-FRI`
 :   Trigger at 9:05 a.m. UTC Monday through Friday.
@@ -149,7 +141,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Trigger every minute starting at 9:00 a.m. UTC and ending at 9:05 a.m. UTC every day.
 
 
-#### Setting interval triggers [cron-example-interval]
+#### Setting interval triggers [cron-example-interval] 
 
 `0 0/15 9 * * ?`
 :   Trigger every 15 minutes starting at 9:00 a.m. UTC and ending at 9:45 a.m. UTC every day.
@@ -158,7 +150,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Trigger at 9:05 a.m. UTC every 3 days every month, starting on the first day of the month.
 
 
-#### Setting schedules that trigger on a particular day [cron-example-day]
+#### Setting schedules that trigger on a particular day [cron-example-day] 
 
 `0 1 4 1 4 ?`
 :   Trigger every April 1st at 4:01 a.m. UTC.
@@ -176,7 +168,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Trigger at 9:05 a.m. UTC on the first Friday of every month.
 
 
-#### Setting triggers using last [cron-example-last]
+#### Setting triggers using last [cron-example-last] 
 
 `0 5 9 L * ?`
 :   Trigger at 9:05 a.m. UTC on the last day of every month.
@@ -188,7 +180,7 @@ All elements are required except for `year`. See [Cron special characters](#cron
 :   Trigger at 9:05 a.m. UTC on the last weekday of every month.
 
 
-## Date math support in index and index alias names [api-date-math-index-names]
+## Date math support in index and index alias names [api-date-math-index-names] 
 
 Date math name resolution lets you to search a range of time series indices or index aliases rather than searching all of your indices and filtering the results. Limiting the number of searched indices reduces cluster load and improves search performance. For example, if you are searching for errors in your daily logs, you can use a date math name template to restrict the search to the past two days.
 
@@ -212,7 +204,7 @@ Where:
 `time_zone`
 :   Optional time zone. Defaults to `UTC`.
 
-::::{note}
+::::{note} 
 Pay attention to the usage of small vs capital letters used in the `date_format`. For example: `mm` denotes minute of hour, while `MM` denotes month of year. Similarly `hh` denotes the hour in the `1-12` range in combination with `AM/PM`, while `HH` denotes the hour in the `0-23` 24-hour range.
 ::::
 
@@ -289,8 +281,12 @@ GET /%3Clogstash-%7Bnow%2Fd-2d%7D%3E%2C%3Clogstash-%7Bnow%2Fd-1d%7D%3E%2C%3Clogs
 }
 ```
 
+%  TEST[s/^/PUT logstash-2016.09.20\nPUT logstash-2016.09.19\nPUT logstash-2016.09.18\n/]
 
-## Multi-target syntax [api-multi-index]
+%  TEST[s/now/2016.09.20%7C%7C/]
+
+
+## Multi-target syntax [api-multi-index] 
 
 Most APIs that accept a `<data-stream>`, `<index>`, or `<target>` request path parameter also support *multi-target syntax*.
 
@@ -298,7 +294,7 @@ In multi-target syntax, you can use a comma-separated list to run a request on m
 
 You can exclude targets using the `-` character: `test*,-test3`.
 
-::::{important}
+::::{important} 
 Aliases are resolved after wildcard expressions. This can result in a request that targets an excluded alias. For example, if `test3` is an index alias, the pattern `test*,-test3` still targets the indices for `test3`. To avoid this, exclude the concrete indices for the alias instead.
 ::::
 
@@ -311,13 +307,13 @@ Multi-target APIs that can target indices support the following query string par
 :   (Optional, Boolean) If `false`, the request returns an error if it targets a missing or closed index. Defaults to `false`.
 
 `allow_no_indices`
-:   (Optional, Boolean) If `false`, the request returns an error if any wildcard expression, [index alias](docs-content://manage-data/data-store/aliases.md), or `_all` value targets only missing or closed indices. This behavior applies even if the request targets other open indices. For example, a request targeting `foo*,bar*` returns an error if an index starts with `foo` but no index starts with `bar`.
+:   (Optional, Boolean) If `false`, the request returns an error if any wildcard expression, [index alias](aliases.md), or `_all` value targets only missing or closed indices. This behavior applies even if the request targets other open indices. For example, a request targeting `foo*,bar*` returns an error if an index starts with `foo` but no index starts with `bar`.
 
 `expand_wildcards`
 :   (Optional, string) Type of index that wildcard patterns can match. If the request can target data streams, this argument determines whether wildcard expressions match hidden data streams. Supports comma-separated values, such as `open,hidden`. Valid values are:
 
 `all`
-:   Match any data stream or index, including [hidden](#multi-hidden) ones.
+:   Match any data stream or index, including [hidden](api-conventions.md#multi-hidden) ones.
 
 `open`
 :   Match open, non-hidden indices. Also matches any non-hidden data stream.
@@ -342,30 +338,30 @@ Some multi-target APIs that can target indices also support the following query 
     [7.16.0]
 
 
-::::{note}
-APIs with a single target, such as the [get document API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get), do not support multi-target syntax.
+::::{note} 
+APIs with a single target, such as the [get document API](docs-get.md), do not support multi-target syntax.
 ::::
 
 
 
-### Hidden data streams and indices [multi-hidden]
+### Hidden data streams and indices [multi-hidden] 
 
 For most APIs, wildcard expressions do not match hidden data streams and indices by default. To match hidden data streams and indices using a wildcard expression, you must specify the `expand_wildcards` query parameter.
 
 Alternatively, querying an index pattern starting with a dot, such as `.watcher_hist*`, will match hidden indices by default. This is intended to mirror Unix file-globbing behavior and provide a smoother transition path to hidden indices.
 
-You can create hidden data streams by setting `data_stream.hidden` to `true` in the stream’s matching [index template](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-index-template). You can hide indices using the [`index.hidden`](/reference/elasticsearch/index-settings/index-modules.md#index-hidden) index setting.
+You can create hidden data streams by setting `data_stream.hidden` to `true` in the stream’s matching [index template](indices-put-template.md). You can hide indices using the [`index.hidden`](index-modules.md#index-hidden) index setting.
 
 The backing indices for data streams are hidden automatically. Some features, such as {{ml}}, store information in hidden indices.
 
 Global index templates that match all indices are not applied to hidden indices.
 
 
-### System indices [system-indices]
+### System indices [system-indices] 
 
 {{es}} modules and plugins can store configuration and state information in internal *system indices*. You should not directly access or modify system indices as they contain data essential to the operation of the system.
 
-::::{important}
+::::{important} 
 Direct access to system indices is deprecated and will no longer be allowed in a future major version.
 ::::
 
@@ -376,23 +372,23 @@ To view system indices within cluster:
 GET _cluster/state/metadata?filter_path=metadata.indices.*.system
 ```
 
-::::{warning}
-When overwriting current cluster state, system indices should be restored as part of their [feature state](docs-content://deploy-manage/tools/snapshot-and-restore.md#feature-state).
+::::{warning} 
+When overwriting current cluster state, system indices should be restored as part of their [feature state](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html#feature-state).
 ::::
 
 
 
-## Parameters [api-conventions-parameters]
+## Parameters [api-conventions-parameters] 
 
 Rest parameters (when using HTTP, map to HTTP URL parameters) follow the convention of using underscore casing.
 
 
-## Request body in query string [api-request-body-query-string]
+## Request body in query string [api-request-body-query-string] 
 
 For libraries that don’t accept a request body for non-POST requests, you can pass the request body as the `source` query string parameter instead. When using this method, the `source_content_type` parameter should also be passed with a media type value that indicates the format of the source, such as `application/json`.
 
 
-## REST API version compatibility [api-compatibility]
+## REST API version compatibility [api-compatibility] 
 
 Major version upgrades often include a number of breaking changes that impact how you interact with {{es}}. While we recommend that you monitor the deprecation logs and update applications before upgrading {{es}}, having to coordinate the necessary changes can be an impediment to upgrading.
 
@@ -408,26 +404,26 @@ Accept: application/vnd.elasticsearch+json; compatible-with=7
 ```
 
 
-## HTTP `429 Too Many Requests` status code push back [api-push-back]
+## HTTP `429 Too Many Requests` status code push back [api-push-back] 
 
 {{es}} APIs may respond with the HTTP `429 Too Many Requests` status code, indicating that the cluster is too busy to handle the request. When this happens, consider retrying after a short delay. If the retry also receives a `429 Too Many Requests` response, extend the delay by backing off exponentially before each subsequent retry.
 
 
-## URL-based access control [api-url-access-control]
+## URL-based access control [api-url-access-control] 
 
-Many users use a proxy with URL-based access control to secure access to {{es}} data streams and indices. For [multi-search](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-msearch), [multi-get](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-mget), and [bulk](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-bulk) requests, the user has the choice of specifying a data stream or  index in the URL and on each individual request within the request body. This can make URL-based access control challenging.
+Many users use a proxy with URL-based access control to secure access to {{es}} data streams and indices. For [multi-search](search-multi-search.md), [multi-get](docs-multi-get.md), and [bulk](docs-bulk.md) requests, the user has the choice of specifying a data stream or  index in the URL and on each individual request within the request body. This can make URL-based access control challenging.
 
 To prevent the user from overriding the data stream or index specified in the URL, set `rest.action.multi.allow_explicit_index` to `false` in `elasticsearch.yml`.
 
 This causes  {{es}} to reject requests that explicitly specify a data stream or index in the request body.
 
 
-## Boolean Values [_boolean_values]
+## Boolean Values [_boolean_values] 
 
 All REST API parameters (both request parameters and JSON body) support providing boolean "false" as the value `false` and boolean "true" as the value `true`. All other values will raise an error.
 
 
-## Number Values [api-conventions-number-values]
+## Number Values [api-conventions-number-values] 
 
 When passing a numeric parameter in a request body, you may use a `string` containing the number instead of the native numeric type. For example:
 
@@ -441,7 +437,7 @@ POST /_search
 Integer-valued fields in a response body are described as `integer` (or occasionally `long`) in this manual, but there are generally no explicit bounds on such values. JSON, SMILE, CBOR and YAML all permit arbitrarily large integer values. Do not assume that `integer` fields in a response body will always fit into a 32-bit signed integer.
 
 
-## Byte size units [byte-units]
+## Byte size units [byte-units] 
 
 Whenever the byte size of data needs to be specified, e.g. when setting a buffer size parameter, the value must specify the unit, like `10kb` for 10 kilobytes. Note that these units use powers of 1024, so `1kb` means 1024 bytes. The supported units are:
 
@@ -464,9 +460,9 @@ Whenever the byte size of data needs to be specified, e.g. when setting a buffer
 :   Petabytes
 
 
-## Distance Units [distance-units]
+## Distance Units [distance-units] 
 
-Wherever distances need to be specified, such as the `distance` parameter in the [Geo-distance](/reference/query-languages/query-dsl-geo-distance-query.md)), the default unit is meters if none is specified. Distances can be specified in other units, such as `"1km"` or `"2mi"` (2 miles).
+Wherever distances need to be specified, such as the `distance` parameter in the [Geo-distance](query-dsl-geo-distance-query.md)), the default unit is meters if none is specified. Distances can be specified in other units, such as `"1km"` or `"2mi"` (2 miles).
 
 The full list of units is listed below:
 
@@ -498,7 +494,7 @@ Nautical mile
 :   `NM`, `nmi`, or `nauticalmiles`
 
 
-## Time units [time-units]
+## Time units [time-units] 
 
 Whenever durations need to be specified, e.g. for a `timeout` parameter, the duration must specify the unit, like `2d` for 2 days. The supported units are:
 
@@ -524,7 +520,7 @@ Whenever durations need to be specified, e.g. for a `timeout` parameter, the dur
 :   Nanoseconds
 
 
-## Unit-less quantities [size-units]
+## Unit-less quantities [size-units] 
 
 Unit-less quantities means that they don’t have a "unit" like "bytes" or "Hertz" or "meter" or "long tonne".
 

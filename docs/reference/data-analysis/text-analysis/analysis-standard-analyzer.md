@@ -1,7 +1,5 @@
 ---
 navigation_title: "Standard"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-analyzer.html
 ---
 
 # Standard analyzer [analysis-standard-analyzer]
@@ -10,7 +8,7 @@ mapped_pages:
 The `standard` analyzer is the default analyzer which is used if none is specified. It provides grammar based tokenization (based on the Unicode Text Segmentation algorithm, as specified in [Unicode Standard Annex #29](https://unicode.org/reports/tr29/)) and works well for most languages.
 
 
-## Example output [_example_output_4]
+## Example output [_example_output_4] 
 
 ```console
 POST _analyze
@@ -20,6 +18,93 @@ POST _analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "the",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "2",
+%       "start_offset": 4,
+%       "end_offset": 5,
+%       "type": "<NUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "quick",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "foxes",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     },
+%     {
+%       "token": "jumped",
+%       "start_offset": 24,
+%       "end_offset": 30,
+%       "type": "<ALPHANUM>",
+%       "position": 5
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 31,
+%       "end_offset": 35,
+%       "type": "<ALPHANUM>",
+%       "position": 6
+%     },
+%     {
+%       "token": "the",
+%       "start_offset": 36,
+%       "end_offset": 39,
+%       "type": "<ALPHANUM>",
+%       "position": 7
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 40,
+%       "end_offset": 44,
+%       "type": "<ALPHANUM>",
+%       "position": 8
+%     },
+%     {
+%       "token": "dog’s",
+%       "start_offset": 45,
+%       "end_offset": 50,
+%       "type": "<ALPHANUM>",
+%       "position": 9
+%     },
+%     {
+%       "token": "bone",
+%       "start_offset": 51,
+%       "end_offset": 55,
+%       "type": "<ALPHANUM>",
+%       "position": 10
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above sentence would produce the following terms:
 
 ```text
@@ -27,7 +112,7 @@ The above sentence would produce the following terms:
 ```
 
 
-## Configuration [_configuration_5]
+## Configuration [_configuration_5] 
 
 The `standard` analyzer accepts the following parameters:
 
@@ -40,10 +125,10 @@ The `standard` analyzer accepts the following parameters:
 `stopwords_path`
 :   The path to a file containing stop words.
 
-See the [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) for more information about stop word configuration.
+See the [Stop Token Filter](analysis-stop-tokenfilter.md) for more information about stop word configuration.
 
 
-## Example configuration [_example_configuration_4]
+## Example configuration [_example_configuration_4] 
 
 In this example, we configure the `standard` analyzer to have a `max_token_length` of 5 (for demonstration purposes), and to use the pre-defined list of English stop words:
 
@@ -70,6 +155,86 @@ POST my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "2",
+%       "start_offset": 4,
+%       "end_offset": 5,
+%       "type": "<NUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "quick",
+%       "start_offset": 6,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "brown",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "foxes",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     },
+%     {
+%       "token": "jumpe",
+%       "start_offset": 24,
+%       "end_offset": 29,
+%       "type": "<ALPHANUM>",
+%       "position": 5
+%     },
+%     {
+%       "token": "d",
+%       "start_offset": 29,
+%       "end_offset": 30,
+%       "type": "<ALPHANUM>",
+%       "position": 6
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 31,
+%       "end_offset": 35,
+%       "type": "<ALPHANUM>",
+%       "position": 7
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 40,
+%       "end_offset": 44,
+%       "type": "<ALPHANUM>",
+%       "position": 9
+%     },
+%     {
+%       "token": "dog’s",
+%       "start_offset": 45,
+%       "end_offset": 50,
+%       "type": "<ALPHANUM>",
+%       "position": 10
+%     },
+%     {
+%       "token": "bone",
+%       "start_offset": 51,
+%       "end_offset": 55,
+%       "type": "<ALPHANUM>",
+%       "position": 11
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above example produces the following terms:
 
 ```text
@@ -77,17 +242,17 @@ The above example produces the following terms:
 ```
 
 
-## Definition [_definition_4]
+## Definition [_definition_4] 
 
 The `standard` analyzer consists of:
 
 Tokenizer
-:   * [Standard Tokenizer](/reference/data-analysis/text-analysis/analysis-standard-tokenizer.md)
+:   * [Standard Tokenizer](analysis-standard-tokenizer.md)
 
 
 Token Filters
-:   * [Lower Case Token Filter](/reference/data-analysis/text-analysis/analysis-lowercase-tokenfilter.md)
-* [Stop Token Filter](/reference/data-analysis/text-analysis/analysis-stop-tokenfilter.md) (disabled by default)
+:   * [Lower Case Token Filter](analysis-lowercase-tokenfilter.md)
+* [Stop Token Filter](analysis-stop-tokenfilter.md) (disabled by default)
 
 
 If you need to customize the `standard` analyzer beyond the configuration parameters then you need to recreate it as a `custom` analyzer and modify it, usually by adding token filters. This would recreate the built-in `standard` analyzer and you can use it as a starting point:
@@ -109,6 +274,8 @@ PUT /standard_example
   }
 }
 ```
+
+%  TEST[s/\n$/\nstartyaml\n  - compare_analyzers: {index: standard_example, first: standard, second: rebuilt_standard}\nendyaml\n/]
 
 1. You’d add any token filters after `lowercase`.
 

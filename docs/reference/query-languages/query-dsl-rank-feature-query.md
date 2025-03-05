@@ -1,28 +1,26 @@
 ---
 navigation_title: "Rank feature"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-rank-feature-query.html
 ---
 
 # Rank feature query [query-dsl-rank-feature-query]
 
 
-Boosts the [relevance score](/reference/query-languages/query-filter-context.md#relevance-scores) of documents based on the numeric value of a [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) or [`rank_features`](/reference/elasticsearch/mapping-reference/rank-features.md) field.
+Boosts the [relevance score](query-filter-context.md#relevance-scores) of documents based on the numeric value of a [`rank_feature`](rank-feature.md) or [`rank_features`](rank-features.md) field.
 
-The `rank_feature` query is typically used in the `should` clause of a [`bool`](/reference/query-languages/query-dsl-bool-query.md) query so its relevance scores are added to other scores from the `bool` query.
+The `rank_feature` query is typically used in the `should` clause of a [`bool`](query-dsl-bool-query.md) query so its relevance scores are added to other scores from the `bool` query.
 
 With `positive_score_impact` set to `false` for a `rank_feature` or `rank_features` field, we recommend that every document that participates in a query has a value for this field. Otherwise, if a `rank_feature` query is used in the should clause, it doesn’t add anything to a score of a document with a missing value, but adds some boost for a document containing a feature. This is contrary to what we want – as we consider these features negative, we want to rank documents containing them lower than documents missing them.
 
-Unlike the [`function_score`](/reference/query-languages/query-dsl-function-score-query.md) query or other ways to change [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores), the `rank_feature` query efficiently skips non-competitive hits when the [`track_total_hits`](docs-content://solutions/search/the-search-api.md#track-total-hits) parameter is **not** `true`. This can dramatically improve query speed.
+Unlike the [`function_score`](query-dsl-function-score-query.md) query or other ways to change [relevance scores](query-filter-context.md#relevance-scores), the `rank_feature` query efficiently skips non-competitive hits when the [`track_total_hits`](search-your-data.md#track-total-hits) parameter is ***not*** `true`. This can dramatically improve query speed.
 
 ## Rank feature functions [rank-feature-query-functions]
 
 To calculate relevance scores based on rank feature fields, the `rank_feature` query supports the following mathematical functions:
 
-* [Saturation](#rank-feature-query-saturation)
-* [Logarithm](#rank-feature-query-logarithm)
-* [Sigmoid](#rank-feature-query-sigmoid)
-* [Linear](#rank-feature-query-linear)
+* [Saturation](query-dsl-rank-feature-query.md#rank-feature-query-saturation)
+* [Logarithm](query-dsl-rank-feature-query.md#rank-feature-query-logarithm)
+* [Sigmoid](query-dsl-rank-feature-query.md#rank-feature-query-sigmoid)
+* [Linear](query-dsl-rank-feature-query.md#rank-feature-query-linear)
 
 If you don’t know where to start, we recommend using the `saturation` function. If no function is provided, the `rank_feature` query uses the `saturation` function by default.
 
@@ -31,13 +29,13 @@ If you don’t know where to start, we recommend using the `saturation` function
 
 ### Index setup [rank-feature-query-index-setup]
 
-To use the `rank_feature` query, your index must include a [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) or [`rank_features`](/reference/elasticsearch/mapping-reference/rank-features.md) field mapping. To see how you can set up an index for the `rank_feature` query, try the following example.
+To use the `rank_feature` query, your index must include a [`rank_feature`](rank-feature.md) or [`rank_features`](rank-features.md) field mapping. To see how you can set up an index for the `rank_feature` query, try the following example.
 
 Create a `test` index with the following field mappings:
 
-* `pagerank`, a [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) field which measures the importance of a website
-* `url_length`, a [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) field which contains the length of the website’s URL. For this example, a long URL correlates negatively to relevance, indicated by a `positive_score_impact` value of `false`.
-* `topics`, a [`rank_features`](/reference/elasticsearch/mapping-reference/rank-features.md) field which contains a list of topics and a measure of how well each document is connected to this topic
+* `pagerank`, a [`rank_feature`](rank-feature.md) field which measures the importance of a website
+* `url_length`, a [`rank_feature`](rank-feature.md) field which contains the length of the website’s URL. For this example, a long URL correlates negatively to relevance, indicated by a `positive_score_impact` value of `false`.
+* `topics`, a [`rank_features`](rank-features.md) field which contains a list of topics and a measure of how well each document is connected to this topic
 
 ```console
 PUT /test
@@ -58,6 +56,8 @@ PUT /test
   }
 }
 ```
+
+%  TESTSETUP
 
 Index several documents to the `test` index.
 
@@ -146,34 +146,34 @@ GET /test/_search
 ## Top-level parameters for `rank_feature` [rank-feature-top-level-params]
 
 `field`
-:   (Required, string) [`rank_feature`](/reference/elasticsearch/mapping-reference/rank-feature.md) or [`rank_features`](/reference/elasticsearch/mapping-reference/rank-features.md) field used to boost [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores).
+:   (Required, string) [`rank_feature`](rank-feature.md) or [`rank_features`](rank-features.md) field used to boost [relevance scores](query-filter-context.md#relevance-scores).
 
 `boost`
-:   (Optional, float) Floating point number used to decrease or increase [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores). Defaults to `1.0`.
+:   (Optional, float) Floating point number used to decrease or increase [relevance scores](query-filter-context.md#relevance-scores). Defaults to `1.0`.
 
 Boost values are relative to the default value of `1.0`. A boost value between `0` and `1.0` decreases the relevance score. A value greater than `1.0` increases the relevance score.
 
 
 `saturation`
-:   (Optional, [function object](#rank-feature-query-saturation)) Saturation function used to boost [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. If no function is provided, the `rank_feature` query defaults to the `saturation` function. See [Saturation](#rank-feature-query-saturation) for more information.
+:   (Optional, [function object](query-dsl-rank-feature-query.md#rank-feature-query-saturation)) Saturation function used to boost [relevance scores](query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. If no function is provided, the `rank_feature` query defaults to the `saturation` function. See [Saturation](query-dsl-rank-feature-query.md#rank-feature-query-saturation) for more information.
 
 Only one function `saturation`, `log`, `sigmoid` or `linear` can be provided.
 
 
 `log`
-:   (Optional, [function object](#rank-feature-query-logarithm)) Logarithmic function used to boost [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Logarithm](#rank-feature-query-logarithm) for more information.
+:   (Optional, [function object](query-dsl-rank-feature-query.md#rank-feature-query-logarithm)) Logarithmic function used to boost [relevance scores](query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Logarithm](query-dsl-rank-feature-query.md#rank-feature-query-logarithm) for more information.
 
 Only one function `saturation`, `log`, `sigmoid` or `linear` can be provided.
 
 
 `sigmoid`
-:   (Optional, [function object](#rank-feature-query-sigmoid)) Sigmoid function used to boost [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Sigmoid](#rank-feature-query-sigmoid) for more information.
+:   (Optional, [function object](query-dsl-rank-feature-query.md#rank-feature-query-sigmoid)) Sigmoid function used to boost [relevance scores](query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Sigmoid](query-dsl-rank-feature-query.md#rank-feature-query-sigmoid) for more information.
 
 Only one function `saturation`, `log`, `sigmoid` or `linear` can be provided.
 
 
 `linear`
-:   (Optional, [function object](#rank-feature-query-linear)) Linear function used to boost [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Linear](#rank-feature-query-linear) for more information.
+:   (Optional, [function object](query-dsl-rank-feature-query.md#rank-feature-query-linear)) Linear function used to boost [relevance scores](query-filter-context.md#relevance-scores) based on the value of the rank feature `field`. See [Linear](query-dsl-rank-feature-query.md#rank-feature-query-linear) for more information.
 
 Only one function `saturation`, `log`, `sigmoid` or `linear` can be provided.
 
@@ -274,3 +274,6 @@ GET /test/_search
   }
 }
 ```
+
+
+

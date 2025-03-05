@@ -1,7 +1,5 @@
 ---
 navigation_title: "Hyphenation decompounder"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-hyp-decomp-tokenfilter.html
 ---
 
 # Hyphenation decompounder token filter [analysis-hyp-decomp-tokenfilter]
@@ -9,11 +7,11 @@ mapped_pages:
 
 Uses XML-based hyphenation patterns to find potential subwords in compound words. These subwords are then checked against the specified word list. Subwords not in the list are excluded from the token output.
 
-This filter uses Lucene’s [HyphenationCompoundWordTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/compound/HyphenationCompoundWordTokenFilter.md), which was built for Germanic languages.
+This filter uses Lucene’s [HyphenationCompoundWordTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/compound/HyphenationCompoundWordTokenFilter.md), which was built for Germanic languages.
 
 ## Example [analysis-hyp-decomp-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `hyphenation_decompounder` filter to find subwords in `Kaffeetasse` based on German hyphenation patterns in the `analysis/hyphenation_patterns.xml` file. The filter then checks these subwords against a list of specified words: `kaffee`, `zucker`, and `tasse`.
+The following [analyze API](indices-analyze.md) request uses the `hyphenation_decompounder` filter to find subwords in `Kaffeetasse` based on German hyphenation patterns in the `analysis/hyphenation_patterns.xml` file. The filter then checks these subwords against a list of specified words: `kaffee`, `zucker`, and `tasse`.
 
 ```console
 GET _analyze
@@ -29,6 +27,8 @@ GET _analyze
   "text": "Kaffeetasse"
 }
 ```
+
+%  TEST[skip: requires a valid hyphenation_patterns.xml file for DE-DR]
 
 The filter produces the following tokens:
 
@@ -53,7 +53,7 @@ For example FOP XML hyphenation pattern files, refer to:
 `word_list`
 :   (Required*, array of strings) A list of subwords. Subwords found using the hyphenation pattern but not in this list are excluded from the token output.
 
-You can use the [`dictionary_decompounder`](/reference/data-analysis/text-analysis/analysis-dict-decomp-tokenfilter.md) filter to test the quality of word lists before implementing them.
+You can use the [`dictionary_decompounder`](analysis-dict-decomp-tokenfilter.md) filter to test the quality of word lists before implementing them.
 
 Either this parameter or `word_list_path` must be specified.
 
@@ -63,7 +63,7 @@ Either this parameter or `word_list_path` must be specified.
 
 This path must be absolute or relative to the `config` location, and the file must be UTF-8 encoded. Each token in the file must be separated by a line break.
 
-You can use the [`dictionary_decompounder`](/reference/data-analysis/text-analysis/analysis-dict-decomp-tokenfilter.md) filter to test the quality of word lists before implementing them.
+You can use the [`dictionary_decompounder`](analysis-dict-decomp-tokenfilter.md) filter to test the quality of word lists before implementing them.
 
 Either this parameter or `word_list` must be specified.
 
@@ -93,7 +93,7 @@ Typically users will only want to include one of the three flags as enabling `no
 
 To customize the `hyphenation_decompounder` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses a custom `hyphenation_decompounder` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+For example, the following [create index API](indices-create-index.md) request uses a custom `hyphenation_decompounder` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 The custom `hyphenation_decompounder` filter find subwords based on hyphenation patterns in the `analysis/hyphenation_patterns.xml` file. The filter then checks these subwords against the list of words specified in the `analysis/example_word_list.txt` file. Subwords longer than 22 characters are excluded from the token output.
 

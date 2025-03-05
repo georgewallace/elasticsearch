@@ -1,7 +1,5 @@
 ---
 navigation_title: "Span near"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-near-query.html
 ---
 
 # Span near query [query-dsl-span-near-query]

@@ -1,31 +1,32 @@
 ---
 navigation_title: "Tutorial"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-postgresql-connector-client-tutorial.html
 ---
 
 # PostgreSQL self-managed connector tutorial [es-postgresql-connector-client-tutorial]
 
 
-This tutorial walks you through the process of creating a self-managed connector for a PostgreSQL data source. You’ll be using the [self-managed connector](/reference/ingestion-tools/search-connectors/self-managed-connectors.md) workflow in the Kibana UI. This means you’ll be deploying the connector on your own infrastructure. Refer to the [Elastic PostgreSQL connector reference](/reference/ingestion-tools/search-connectors/es-connectors-postgresql.md) for more information about this connector.
+This tutorial walks you through the process of creating a self-managed connector for a PostgreSQL data source. You’ll be using the [self-managed connector](es-build-connector.md) workflow in the Kibana UI. This means you’ll be deploying the connector on your own infrastructure. Refer to the [Elastic PostgreSQL connector reference](es-connectors-postgresql.md) for more information about this connector.
 
-In this exercise, you’ll be working in both the terminal (or your IDE) and the Kibana UI.
+You’ll use the [connector framework](https://github.com/elastic/connectors/tree/main) to create the connector. In this exercise, you’ll be working in both the terminal (or your IDE) and the Kibana UI.
 
-If you want to deploy a self-managed connector for another data source, use this tutorial as a blueprint. Refer to the list of available [connectors](/reference/ingestion-tools/search-connectors/index.md).
+If you want to deploy a self-managed connector for another data source, use this tutorial as a blueprint. Refer to the list of available [self-managed connectors](es-build-connector.md).
 
-::::{tip}
-Want to get started quickly testing a self-managed connector using Docker Compose? Refer to this [guide](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
+::::{tip} 
+Want to get started quickly testing a self-managed connector using Docker Compose? Refer to this [README](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
+
 ::::
 
-## Prerequisites [es-postgresql-connector-client-tutorial-prerequisites]
 
 
-### Elastic prerequisites [es-postgresql-connector-client-tutorial-prerequisites-elastic]
-
-First, ensure you satisfy the [prerequisites](/reference/ingestion-tools/search-connectors/self-managed-connectors.md#es-build-connector-prerequisites) for self-managed connectors.
+## Prerequisites [es-postgresql-connector-client-tutorial-prerequisites] 
 
 
-### PostgreSQL prerequisites [es-postgresql-connector-client-tutorial-postgresql-prerequisites]
+### Elastic prerequisites [es-postgresql-connector-client-tutorial-prerequisites-elastic] 
+
+First, ensure you satisfy the [prerequisites](es-build-connector.md#es-build-connector-prerequisites) for self-managed connectors.
+
+
+### PostgreSQL prerequisites [es-postgresql-connector-client-tutorial-postgresql-prerequisites] 
 
 You need:
 
@@ -33,7 +34,7 @@ You need:
 * Tables must be owned by a PostgreSQL user.
 * Database `superuser` privileges are required to index all database tables.
 
-::::{tip}
+::::{tip} 
 You should enable recording of the commit time of PostgreSQL transactions. Otherwise, *all* data will be indexed in every sync. By default, `track_commit_timestamp` is `off`.
 
 Enable this by running the following command on the PosgreSQL server command line:
@@ -48,21 +49,21 @@ Then restart the PostgreSQL server.
 
 
 
-## Steps [es-postgresql-connector-client-tutorial-steps]
+## Steps [es-postgresql-connector-client-tutorial-steps] 
 
 To complete this tutorial, you’ll need to complete the following steps:
 
-1. [Create an Elasticsearch index](#es-postgresql-connector-client-tutorial-create-index)
-2. [Set up the connector](#es-postgresql-connector-client-tutorial-setup-connector)
-3. [Run the `connectors` connector service](#es-postgresql-connector-client-tutorial-run-connector-service)
-4. [Sync your PostgreSQL data source](#es-postgresql-connector-client-tutorial-sync-data-source)
+1. [Create an Elasticsearch index](es-postgresql-connector-client-tutorial.md#es-postgresql-connector-client-tutorial-create-index)
+2. [Set up the connector](es-postgresql-connector-client-tutorial.md#es-postgresql-connector-client-tutorial-setup-connector)
+3. [Run the `connectors` connector service](es-postgresql-connector-client-tutorial.md#es-postgresql-connector-client-tutorial-run-connector-service)
+4. [Sync your PostgreSQL data source](es-postgresql-connector-client-tutorial.md#es-postgresql-connector-client-tutorial-sync-data-source)
 
 
-## Create an Elasticsearch index [es-postgresql-connector-client-tutorial-create-index]
+## Create an Elasticsearch index [es-postgresql-connector-client-tutorial-create-index] 
 
 Elastic connectors enable you to create searchable, read-only replicas of your data sources in Elasticsearch. The first step in setting up your self-managed connector is to create an index.
 
-In the [Kibana^](docs-content://get-started/the-stack.md) UI, navigate to **Search > Content > Elasticsearch indices** from the main menu, or use the [global search field](docs-content://explore-analyze/query-filter/filtering.md#_finding_your_apps_and_objects).
+In the [Kibana^](https://www.elastic.co/guide/en/kibana/current) UI, navigate to **Search > Content > Elasticsearch indices** from the main menu, or use the [global search field](https://www.elastic.co/guide/en/kibana/current/kibana-concepts-analysts.html#_finding_your_apps_and_objects).
 
 Create a new connector index:
 
@@ -90,7 +91,7 @@ Before you can configure the connector, you need to gather some details about yo
 
 
 
-## Set up the connector [es-postgresql-connector-client-tutorial-setup-connector]
+## Set up the connector [es-postgresql-connector-client-tutorial-setup-connector] 
 
 Once you’ve created an index, you can set up the connector. You will be guided through this process in the UI.
 
@@ -99,7 +100,7 @@ Once you’ve created an index, you can set up the connector. You will be guided
 
     * Clone or fork that repository locally with the following command: `git clone https://github.com/elastic/connectors`.
     * Open the `config.yml` configuration file in your editor of choice.
-    * Replace the values for `host`, `api_key`, and `connector_id` with the values you gathered [earlier](#es-postgresql-connector-client-tutorial-gather-elastic-details). Use the `service_type` value `postgresql` for this connector.
+    * Replace the values for `host`, `api_key`, and `connector_id` with the values you gathered [earlier](es-postgresql-connector-client-tutorial.md#es-postgresql-connector-client-tutorial-gather-elastic-details). Use the `service_type` value `postgresql` for this connector.
 
         ::::{dropdown} **Expand** to see an example `config.yml` file
         Replace the values for `host`, `api_key`, and `connector_id` with your own values. Use the `service_type` value `postgresql` for this connector.
@@ -140,7 +141,7 @@ Once you’ve created an index, you can set up the connector. You will be guided
 
 
 
-## Run the connector service [es-postgresql-connector-client-tutorial-run-connector-service]
+## Run the connector service [es-postgresql-connector-client-tutorial-run-connector-service] 
 
 Now that you’ve configured the connector code, you can run the connector service.
 
@@ -154,10 +155,10 @@ The connector service should now be running. The UI will let you know that the c
 Here we’re working locally. In production setups, you’ll deploy the connector service to your own infrastructure. If you prefer to use Docker, refer to the [repo docs](https://github.com/elastic/connectors/tree/main/docs/DOCKER.md) for instructions.
 
 
-## Sync your PostgreSQL data source [es-postgresql-connector-client-tutorial-sync-data-source]
+## Sync your PostgreSQL data source [es-postgresql-connector-client-tutorial-sync-data-source] 
 
 
-### Enter your PostgreSQL data source details [es-postgresql-connector-client-tutorial-sync-data-source-details]
+### Enter your PostgreSQL data source details [es-postgresql-connector-client-tutorial-sync-data-source-details] 
 
 Once you’ve configured the connector, you can use it to index your data source.
 
@@ -175,7 +176,7 @@ Enter the following information:
 Once you’ve entered all these details, select **Save configuration**.
 
 
-### Launch a sync [es-postgresql-connector-client-tutorial-sync-data-source-launch-sync]
+### Launch a sync [es-postgresql-connector-client-tutorial-sync-data-source-launch-sync] 
 
 If you navigate to the **Overview** tab in the Kibana UI, you can see the connector’s *ingestion status*. This should now have changed to **Configured**.
 
@@ -199,9 +200,11 @@ Verify your Elasticsearch documents in the **Documents** tab in the Kibana UI.
 If you’re happy with the results, set a recurring sync schedule in the **Scheduling** tab. This will ensure your *searchable* data in Elasticsearch is always up to date with changes to your PostgreSQL data source.
 
 
-## Learn more [es-postgresql-connector-client-tutorial-learn-more]
+## Learn more [es-postgresql-connector-client-tutorial-learn-more] 
 
-* [Overview of self-managed connectors and frameworks](/reference/ingestion-tools/search-connectors/self-managed-connectors.md)
+* [Overview of self-managed connectors and frameworks](es-build-connector.md)
 * [Elastic connector framework repository](https://github.com/elastic/connectors/tree/main)
-* [Elastic PostgreSQL connector reference](/reference/ingestion-tools/search-connectors/es-connectors-postgresql.md)
-* [Overview of all Elastic connectors](/reference/ingestion-tools/search-connectors/index.md)
+* [Elastic PostgreSQL connector reference](es-connectors-postgresql.md)
+* [Overview of all Elastic connectors](es-connectors.md)
+* [Elastic managed connectors in Elastic Cloud](es-native-connectors.md)
+

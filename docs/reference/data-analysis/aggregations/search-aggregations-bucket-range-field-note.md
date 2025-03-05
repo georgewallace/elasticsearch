@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-range-field-note.html
----
-
 # Subtleties of bucketing range fields [search-aggregations-bucket-range-field-note]
 
 ## Documents are counted for each bucket they land in [_documents_are_counted_for_each_bucket_they_land_in]
@@ -40,6 +35,8 @@ PUT range_index/_doc/1?refresh
   }
 }
 ```
+
+%  TESTSETUP
 
 The range is wider than the interval in the following aggregation, and thus the document will land in multiple buckets.
 
@@ -84,6 +81,8 @@ Since the interval is `5` (and the offset is `0` by default), we expect buckets 
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 A document cannot exist partially in a bucket; For example, the above document cannot count as one-third in each of the above three buckets. In this example, since the document’s range landed in multiple buckets, the full value of that document would also be counted in any sub-aggregations for each bucket as well.
 
@@ -170,6 +169,8 @@ Even though the query only considers days in November, the aggregation generates
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 Depending on the use case, a `CONTAINS` query could limit the documents to only those that fall entirely in the queried range. In this example, the one document would not be included and the aggregation would be empty. Filtering the buckets after the aggregation is also an option, for use cases where the document should be counted but the out of bounds data can be safely ignored.
 

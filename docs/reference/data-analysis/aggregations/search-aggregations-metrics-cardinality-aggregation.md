@@ -1,7 +1,5 @@
 ---
 navigation_title: "Cardinality"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html
 ---
 
 # Cardinality aggregation [search-aggregations-metrics-cardinality-aggregation]
@@ -24,6 +22,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 Response:
 
 ```console-result
@@ -36,6 +36,8 @@ Response:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 ## Precision control [_precision_control]
 
@@ -55,6 +57,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 1. The `precision_threshold` options allows to trade memory for accuracy, and defines a unique count below which counts are expected to be close to accurate. Above this value, counts might become a bit more fuzzy. The maximum supported value is 40000, thresholds above this number will have the same effect as a threshold of 40000. The default value is `3000`.
 
 
@@ -65,6 +69,8 @@ Computing exact counts requires loading values into a hash set and returning its
 
 This `cardinality` aggregation is based on the [HyperLogLog++](https://static.googleusercontent.com/media/research.google.com/fr//pubs/archive/40671.pdf) algorithm, which counts based on the hashes of the values with some interesting properties:
 
+%  tag::explanation[]
+
 * configurable precision, which decides on how to trade memory for accuracy,
 * excellent accuracy on low-cardinality sets,
 * fixed memory usage: no matter if there are tens or billions of unique values, memory usage only depends on the configured precision.
@@ -73,18 +79,79 @@ For a precision threshold of `c`, the implementation that we are using requires 
 
 The following chart shows how the error varies before and after the threshold:
 
-![cardinality error](../../../images/cardinality_error.png "")
+% To generate this chart use this gnuplot script:
+% [source,gnuplot]
+% -------
+% #!/usr/bin/gnuplot
+% reset
+% set terminal png size 1000,400
+% 
+% set xlabel "Actual cardinality"
+% set logscale x
+% 
+% set ylabel "Relative error (%)"
+% set yrange [0:8]
+% 
+% set title "Cardinality error"
+% set grid
+% 
+% set style data lines
+% 
+% plot "test.dat" using 1:2 title "threshold=100", \
+% "" using 1:3 title "threshold=1000", \
+% "" using 1:4 title "threshold=10000"
+% #
+% -------
+% 
+% and generate data in a *test.dat* file using the below Java code:
+% 
+% [source,java]
+% -------
+% private static double error(HyperLogLogPlusPlus h, long expected) {
+%     double actual = h.cardinality(0);
+%     return Math.abs(expected - actual) / expected;
+% }
+% 
+% public static void main(String[] args) {
+%     HyperLogLogPlusPlus h100 = new HyperLogLogPlusPlus(precisionFromThreshold(100), BigArrays.NON_RECYCLING_INSTANCE, 1);
+%     HyperLogLogPlusPlus h1000 = new HyperLogLogPlusPlus(precisionFromThreshold(1000), BigArrays.NON_RECYCLING_INSTANCE, 1);
+%     HyperLogLogPlusPlus h10000 = new HyperLogLogPlusPlus(precisionFromThreshold(10000), BigArrays.NON_RECYCLING_INSTANCE, 1);
+% 
+%     int next = 100;
+%     int step = 10;
+% 
+%     for (int i = 1; i ⇐ 10000000; ++i) {
+%         long h = BitMixer.mix64(i);
+%         h100.collect(0, h);
+%         h1000.collect(0, h);
+%         h10000.collect(0, h);
+% 
+%         if (i == next) {
+%             System.out.println(i + " " + error(h100, i)*100 + " " + error(h1000, i)*100 + " " + error(h10000, i)*100);
+%             next += step;
+%             if (next >= 100 * step) {
+%                 step *= 10;
+%             }
+%         }
+%     }
+% }
+% -------
+% 
+
+![cardinality error](images/cardinality_error.png "")
 
 For all 3 thresholds, counts have been accurate up to the configured threshold. Although not guaranteed, this is likely to be the case. Accuracy in practice depends on the dataset in question. In general, most datasets show consistently good accuracy. Also note that even with a threshold as low as 100, the error remains very low (1-6% as seen in the above graph) even when counting millions of items.
 
 The HyperLogLog++ algorithm depends on the leading zeros of hashed values, the exact distributions of hashes in a dataset can affect the accuracy of the cardinality.
 
+%  end::explanation[]
+
 
 ## Pre-computed hashes [_pre_computed_hashes]
 
-On string fields that have a high cardinality, it might be faster to store the hash of your field values in your index and then run the cardinality aggregation on this field. This can either be done by providing hash values from client-side or by letting Elasticsearch compute hash values for you by using the [`mapper-murmur3`](/reference/elasticsearch-plugins/mapper-murmur3.md) plugin.
+On string fields that have a high cardinality, it might be faster to store the hash of your field values in your index and then run the cardinality aggregation on this field. This can either be done by providing hash values from client-side or by letting Elasticsearch compute hash values for you by using the [`mapper-murmur3`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/mapper-murmur3.html) plugin.
 
-::::{note}
+::::{note} 
 Pre-computing hashes is usually only useful on very large and/or high-cardinality fields as it saves CPU and memory. However, on numeric fields, hashing is very fast and storing the original values requires as much or less memory than storing the hashes. This is also true on low-cardinality string fields, especially given that those have an optimization in order to make sure that hashes are computed at most once per unique value per segment.
 ::::
 
@@ -92,7 +159,7 @@ Pre-computing hashes is usually only useful on very large and/or high-cardinalit
 
 ## Script [_script_4]
 
-If you need the cardinality of the combination of two fields, create a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) combining them and aggregate it.
+If you need the cardinality of the combination of two fields, create a [runtime field](runtime.md) combining them and aggregate it.
 
 ```console
 POST /sales/_search?size=0
@@ -113,6 +180,21 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[s/size=0/size=0&filter_path=aggregations/]
+
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "aggregations": {
+%     "type_promoted_count": {
+%       "value": 5
+%     }
+%   }
+% }
+% --------------------------------------------------
+
 
 ## Missing value [_missing_value_8]
 
@@ -131,6 +213,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. Documents without a value in the `tag` field will fall into the same bucket as documents that have the value `N/A`.
 

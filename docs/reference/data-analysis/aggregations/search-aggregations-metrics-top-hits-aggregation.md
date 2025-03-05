@@ -1,7 +1,5 @@
 ---
 navigation_title: "Top hits"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-top-hits-aggregation.html
 ---
 
 # Top hits aggregation [search-aggregations-metrics-top-hits-aggregation]
@@ -9,8 +7,8 @@ mapped_pages:
 
 A `top_hits` metric aggregator keeps track of the most relevant document being aggregated. This aggregator is intended to be used as a sub aggregator, so that the top matching documents can be aggregated per bucket.
 
-::::{tip}
-We do not recommend using `top_hits` as a top-level aggregation. If you want to group search hits, use the [`collapse`](/reference/elasticsearch/rest-apis/collapse-search-results.md) parameter instead.
+::::{tip} 
+We do not recommend using `top_hits` as a top-level aggregation. If you want to group search hits, use the [`collapse`](collapse-search-results.md) parameter instead.
 ::::
 
 
@@ -27,23 +25,23 @@ The `top_hits` aggregator can effectively be used to group result sets by certai
 
 The top_hits aggregation returns regular search hits, because of this many per hit features can be supported:
 
-* [Highlighting](/reference/elasticsearch/rest-apis/highlighting.md)
-* [Explain](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search)
-* [Named queries](/reference/query-languages/query-dsl-bool-query.md#named-queries)
-* [Search fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#search-fields-param)
-* [Source filtering](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#source-filtering)
-* [Stored fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#stored-fields)
-* [Script fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#script-fields)
-* [Doc value fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#docvalue-fields)
-* [Include versions](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search)
-* [Include Sequence Numbers and Primary Terms](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search)
+* [Highlighting](highlighting.md)
+* [Explain](search-search.md#request-body-search-explain)
+* [Named queries](query-dsl-bool-query.md#named-queries)
+* [Search fields](search-fields.md#search-fields-param)
+* [Source filtering](search-fields.md#source-filtering)
+* [Stored fields](search-fields.md#stored-fields)
+* [Script fields](search-fields.md#script-fields)
+* [Doc value fields](search-fields.md#docvalue-fields)
+* [Include versions](search-search.md#request-body-search-version)
+* [Include Sequence Numbers and Primary Terms](search-search.md#request-body-search-seq-no-primary-term)
 
-::::{important}
-If you **only** need `docvalue_fields`, `size`, and `sort` then [Top metrics](/reference/data-analysis/aggregations/search-aggregations-metrics-top-metrics.md) might be a more efficient choice than the Top Hits Aggregation.
+::::{important} 
+If you **only** need `docvalue_fields`, `size`, and `sort` then [Top metrics](search-aggregations-metrics-top-metrics.md) might be a more efficient choice than the Top Hits Aggregation.
 ::::
 
 
-`top_hits` does not support the [`rescore`](/reference/elasticsearch/rest-apis/filter-search-results.md#rescore) parameter. Query rescoring applies only to search hits, not aggregation results. To change the scores used by aggregations, use a [`function_score`](/reference/query-languages/query-dsl-function-score-query.md) or [`script_score`](/reference/query-languages/query-dsl-script-score-query.md) query.
+`top_hits` does not support the [`rescore`](filter-search-results.md#rescore) parameter. Query rescoring applies only to search hits, not aggregation results. To change the scores used by aggregations, use a [`function_score`](query-dsl-function-score-query.md) or [`script_score`](query-dsl-script-score-query.md) query.
 
 
 ## Example [_example_6]
@@ -80,6 +78,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 Possible response:
 
@@ -178,6 +178,14 @@ Possible response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+%  TESTRESPONSE[s/AVnNBmauCQpcRyxw6ChK/$body.aggregations.top_tags.buckets.0.top_sales_hits.hits.hits.0._id/]
+
+%  TESTRESPONSE[s/AVnNBmauCQpcRyxw6ChL/$body.aggregations.top_tags.buckets.1.top_sales_hits.hits.hits.0._id/]
+
+%  TESTRESPONSE[s/AVnNBmatCQpcRyxw6ChH/$body.aggregations.top_tags.buckets.2.top_sales_hits.hits.hits.0._id/]
+
 
 ## Field collapse example [_field_collapse_example]
 
@@ -220,12 +228,14 @@ POST /sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
 At the moment the `max` (or `min`) aggregator is needed to make sure the buckets from the `terms` aggregator are ordered according to the score of the most relevant webpage per domain. Unfortunately the `top_hits` aggregator can’t be used in the `order` option of the `terms` aggregator yet.
 
 
 ## top_hits support in a nested or reverse_nested aggregator [_top_hits_support_in_a_nested_or_reverse_nested_aggregator]
 
-If the `top_hits` aggregator is wrapped in a `nested` or `reverse_nested` aggregator then nested hits are being returned. Nested hits are in a sense hidden mini documents that are part of regular document where in the mapping a nested field type has been configured. The `top_hits` aggregator has the ability to un-hide these documents if it is wrapped in a `nested` or `reverse_nested` aggregator. Read more about nested in the [nested type mapping](/reference/elasticsearch/mapping-reference/nested.md).
+If the `top_hits` aggregator is wrapped in a `nested` or `reverse_nested` aggregator then nested hits are being returned. Nested hits are in a sense hidden mini documents that are part of regular document where in the mapping a nested field type has been configured. The `top_hits` aggregator has the ability to un-hide these documents if it is wrapped in a `nested` or `reverse_nested` aggregator. Read more about nested in the [nested type mapping](nested.md).
 
 If nested type has been configured a single document is actually indexed as multiple Lucene documents and they share the same id. In order to determine the identity of a nested hit there is more needed than just the id, so that is why nested hits also include their nested identity. The nested identity is kept under the `_nested` field in the search hit and includes the array field and the offset in the array field the nested hit belongs to. The offset is zero based.
 
@@ -266,6 +276,8 @@ PUT /sales/_doc/1?refresh
 }
 ```
 
+%  TEST[continued]
+
 It’s now possible to execute the following `top_hits` aggregation (wrapped in a `nested` aggregation):
 
 ```console
@@ -296,6 +308,10 @@ POST /sales/_search
   }
 }
 ```
+
+%  TEST[continued]
+
+%  TEST[s/_search/_search\?filter_path=aggregations.by_sale.by_user.buckets/]
 
 Top hits response snippet with a nested hit, which resides in the first slot of array field `comments`:
 
@@ -342,6 +358,8 @@ Top hits response snippet with a nested hit, which resides in the first slot of 
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\.//]
+
 1. Name of the array field containing the nested hit
 2. Position if the nested hit in the containing array
 3. Source of the nested hit
@@ -386,6 +404,8 @@ In the example below a nested hit resides in the first slot of the field `nested
 ...
 ```
 
+%  NOTCONSOLE
+
 
 ## Use in pipeline aggregations [_use_in_pipeline_aggregations]
 
@@ -429,6 +449,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 The `bucket_path` uses the `top_hits` name `top_sales_hits` and a keyword for the field providing the aggregate value, namely `_source` field `price` in the example above. Other options include `top_sales_hits[_sort]`, for filtering on the sort value `date` above, and `top_sales_hits[_score]`, for filtering on the score of the top hit.
 

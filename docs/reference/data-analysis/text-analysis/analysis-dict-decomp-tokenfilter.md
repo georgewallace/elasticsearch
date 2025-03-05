@@ -1,25 +1,23 @@
 ---
 navigation_title: "Dictionary decompounder"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-dict-decomp-tokenfilter.html
 ---
 
 # Dictionary decompounder token filter [analysis-dict-decomp-tokenfilter]
 
 
-::::{note}
-In most cases, we recommend using the faster [`hyphenation_decompounder`](/reference/data-analysis/text-analysis/analysis-hyp-decomp-tokenfilter.md) token filter in place of this filter. However, you can use the `dictionary_decompounder` filter to check the quality of a word list before implementing it in the `hyphenation_decompounder` filter.
+::::{note} 
+In most cases, we recommend using the faster [`hyphenation_decompounder`](analysis-hyp-decomp-tokenfilter.md) token filter in place of this filter. However, you can use the `dictionary_decompounder` filter to check the quality of a word list before implementing it in the `hyphenation_decompounder` filter.
 
 ::::
 
 
 Uses a specified list of words and a brute force approach to find subwords in compound words. If found, these subwords are included in the token output.
 
-This filter uses Lucene’s [DictionaryCompoundWordTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/compound/DictionaryCompoundWordTokenFilter.md), which was built for Germanic languages.
+This filter uses Lucene’s [DictionaryCompoundWordTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/compound/DictionaryCompoundWordTokenFilter.md), which was built for Germanic languages.
 
 ## Example [analysis-dict-decomp-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `dictionary_decompounder` filter to find subwords in `Donaudampfschiff`. The filter then checks these subwords against the specified list of words: `Donau`, `dampf`, `meer`, and `schiff`.
+The following [analyze API](indices-analyze.md) request uses the `dictionary_decompounder` filter to find subwords in `Donaudampfschiff`. The filter then checks these subwords against the specified list of words: `Donau`, `dampf`, `meer`, and `schiff`.
 
 ```console
 GET _analyze
@@ -40,6 +38,42 @@ The filter produces the following tokens:
 ```text
 [ Donaudampfschiff, Donau, dampf, schiff ]
 ```
+
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "Donaudampfschiff",
+%       "start_offset" : 0,
+%       "end_offset" : 16,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "Donau",
+%       "start_offset" : 0,
+%       "end_offset" : 16,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "dampf",
+%       "start_offset" : 0,
+%       "end_offset" : 16,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "schiff",
+%       "start_offset" : 0,
+%       "end_offset" : 16,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     }
+%   ]
+% }
+% --------------------------------------------------
 
 
 ## Configurable parameters [analysis-dict-decomp-tokenfilter-configure-parms]
@@ -75,7 +109,7 @@ Either this parameter or `word_list` must be specified.
 
 To customize the `dictionary_decompounder` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses a custom `dictionary_decompounder` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+For example, the following [create index API](indices-create-index.md) request uses a custom `dictionary_decompounder` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 The custom `dictionary_decompounder` filter find subwords in the `analysis/example_word_list.txt` file. Subwords longer than 22 characters are excluded from the token output.
 

@@ -1,13 +1,8 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html
----
-
-# format [mapping-date-format]
+# `format` [mapping-date-format]
 
 In JSON documents, dates are represented as strings. Elasticsearch uses a set of preconfigured formats to recognize and parse these strings into a long value representing *milliseconds-since-the-epoch* in UTC.
 
-Besides the [built-in formats](#built-in-date-formats), your own [custom formats](#custom-date-formats) can be specified using the familiar `yyyy/MM/dd` syntax:
+Besides the [built-in formats](mapping-date-format.md#built-in-date-formats), your own [custom formats](mapping-date-format.md#custom-date-formats) can be specified using the familiar `yyyy/MM/dd` syntax:
 
 ```console
 PUT my-index-000001
@@ -23,7 +18,7 @@ PUT my-index-000001
 }
 ```
 
-Many APIs which support date values also support [date math](/reference/elasticsearch/rest-apis/common-options.md#date-math) expressions, such as `now-1m/d` — the current time, minus one month, rounded down to the nearest day.
+Many APIs which support date values also support [date math](common-options.md#date-math) expressions, such as `now-1m/d` — the current time, minus one month, rounded down to the nearest day.
 
 ## Custom date formats [custom-date-formats]
 
@@ -38,7 +33,7 @@ Most of the below formats have a `strict` companion format, which means that yea
 
 To use them, you need to prepend `strict_` to the name of the date format, for instance `strict_date_optional_time` instead of `date_optional_time`.
 
-These strict date formats are especially useful when [date fields are dynamically mapped](docs-content://manage-data/data-store/mapping/dynamic-field-mapping.md#date-detection) in order to make sure to not accidentally map irrelevant strings as dates.
+These strict date formats are especially useful when [date fields are dynamically mapped](dynamic-field-mapping.md#date-detection) in order to make sure to not accidentally map irrelevant strings as dates.
 
 The following tables lists all the defaults ISO formats supported:
 

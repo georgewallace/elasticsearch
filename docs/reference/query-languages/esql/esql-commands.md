@@ -1,56 +1,68 @@
 ---
 navigation_title: "Commands"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/esql-commands.html
 ---
 
 # {{esql}} commands [esql-commands]
 
 
-## Source commands [esql-source-commands]
+%  tag::source_commands[]
+
+## Source commands [_source_commands]
 
 An {{esql}} source command produces a table, typically with data from {{es}}. An {{esql}} query must start with a source command.
 
-:::{image} ../../../images/source-command.svg
+:::{image} images/source-command.svg
 :alt: A source command producing a table from {es}
 :::
 
 {{esql}} supports these source commands:
 
-* [`FROM`](#esql-from)
-* [`ROW`](#esql-row)
-* [`SHOW`](#esql-show)
+* [`FROM`](esql-commands.md#esql-from)
+* [`ROW`](esql-commands.md#esql-row)
+* [`SHOW`](esql-commands.md#esql-show)
+
+%  end::source_command[]
+
+%  tag::proc_commands[]
 
 
-## Processing commands [esql-processing-commands]
+## Processing commands [_processing_commands]
 
 {{esql}} processing commands change an input table by adding, removing, or changing rows and columns.
 
-:::{image} ../../../images/processing-command.svg
+:::{image} images/processing-command.svg
 :alt: A processing command changing an input table
 :::
 
 {{esql}} supports these processing commands:
 
-* [`DISSECT`](#esql-dissect)
-* [`DROP`](#esql-drop)
-* [`ENRICH`](#esql-enrich)
-* [`EVAL`](#esql-eval)
-* [`GROK`](#esql-grok)
-* [`KEEP`](#esql-keep)
-* [`LIMIT`](#esql-limit)
-* [preview] [`MV_EXPAND`](#esql-mv_expand)
-* [`RENAME`](#esql-rename)
-* [`SORT`](#esql-sort)
-* [`STATS`](#esql-stats-by)
-* [`WHERE`](#esql-where)
+* [`DISSECT`](esql-commands.md#esql-dissect)
+* [`DROP`](esql-commands.md#esql-drop)
+* [`ENRICH`](esql-commands.md#esql-enrich)
+* [`EVAL`](esql-commands.md#esql-eval)
+* [`GROK`](esql-commands.md#esql-grok)
+
+% * [preview] [esql-inlinestats-by](#esql-inlinestats-by)
+
+* [`KEEP`](esql-commands.md#esql-keep)
+* [`LIMIT`](esql-commands.md#esql-limit)
+
+% * [preview] [esql-lookup](#esql-lookup)
+
+* [preview] [`MV_EXPAND`](esql-commands.md#esql-mv_expand)
+* [`RENAME`](esql-commands.md#esql-rename)
+* [`SORT`](esql-commands.md#esql-sort)
+* [`STATS`](esql-commands.md#esql-stats-by)
+* [`WHERE`](esql-commands.md#esql-where)
+
+%  end::proc_command[]
 
 
-## `FROM` [esql-from]
+## `FROM` [esql-from] 
 
 The `FROM` source command returns a table with data from a data stream, index, or alias.
 
-**Syntax**
+***Syntax***
 
 ```esql
 FROM index_pattern [METADATA fields]
@@ -62,14 +74,14 @@ FROM index_pattern [METADATA fields]
 :   A list of indices, data streams or aliases. Supports wildcards and date math.
 
 `fields`
-:   A comma-separated list of [metadata fields](/reference/query-languages/esql/esql-metadata-fields.md) to retrieve.
+:   A comma-separated list of [metadata fields](esql-metadata-fields.md) to retrieve.
 
 **Description**
 
 The `FROM` source command returns a table with data from a data stream, index, or alias. Each row in the resulting table represents a document. Each column corresponds to a field, and can be accessed by the name of that field.
 
-::::{note}
-By default, an {{esql}} query without an explicit [`LIMIT`](#esql-limit) uses an implicit limit of 1000. This applies to `FROM` too. A `FROM` command without `LIMIT`:
+::::{note} 
+By default, an {{esql}} query without an explicit [`LIMIT`](esql-commands.md#esql-limit) uses an implicit limit of 1000. This applies to `FROM` too. A `FROM` command without `LIMIT`:
 
 ```esql
 FROM employees
@@ -91,25 +103,25 @@ FROM employees
 FROM employees
 ```
 
-You can use [date math](/reference/elasticsearch/rest-apis/api-conventions.md#api-date-math-index-names) to refer to indices, aliases and data streams. This can be useful for time series data, for example to access today’s index:
+You can use [date math](api-conventions.md#api-date-math-index-names) to refer to indices, aliases and data streams. This can be useful for time series data, for example to access today’s index:
 
 ```esql
 FROM <logs-{now/d}>
 ```
 
-Use comma-separated lists or wildcards to [query multiple data streams, indices, or aliases](docs-content://explore-analyze/query-filter/languages/esql-multi-index.md):
+Use comma-separated lists or wildcards to [query multiple data streams, indices, or aliases](esql-multi-index.md):
 
 ```esql
 FROM employees-00001,other-employees-*
 ```
 
-Use the format `<remote_cluster_name>:<target>` to [query data streams and indices on remote clusters](docs-content://explore-analyze/query-filter/languages/esql-cross-clusters.md):
+Use the format `<remote_cluster_name>:<target>` to [query data streams and indices on remote clusters](esql-cross-clusters.md):
 
 ```esql
 FROM cluster_one:employees-00001,cluster_two:other-employees-*
 ```
 
-Use the optional `METADATA` directive to enable [metadata fields](/reference/query-languages/esql/esql-metadata-fields.md):
+Use the optional `METADATA` directive to enable [metadata fields](esql-metadata-fields.md):
 
 ```esql
 FROM employees METADATA _id
@@ -122,11 +134,11 @@ FROM "this=that", """this[that"""
 ```
 
 
-## `ROW` [esql-row]
+## `ROW` [esql-row] 
 
 The `ROW` source command produces a row with one or more columns with values that you specify. This can be useful for testing.
 
-**Syntax**
+***Syntax***
 
 ```esql
 ROW column1 = value1[, ..., columnN = valueN]
@@ -138,7 +150,7 @@ ROW column1 = value1[, ..., columnN = valueN]
 :   The column name. In case of duplicate column names, only the rightmost duplicate creates a column.
 
 `valueX`
-:   The value for the column. Can be a literal, an expression, or a [function](/reference/query-languages/esql/esql-functions-operators.md#esql-functions).
+:   The value for the column. Can be a literal, an expression, or a [function](esql-functions-operators.md#esql-functions).
 
 **Examples**
 
@@ -156,18 +168,18 @@ Use square brackets to create multi-value columns:
 ROW a = [2, 1]
 ```
 
-`ROW` supports the use of [functions](/reference/query-languages/esql/esql-functions-operators.md#esql-functions):
+`ROW` supports the use of [functions](esql-functions-operators.md#esql-functions):
 
 ```esql
 ROW a = ROUND(1.23, 0)
 ```
 
 
-## `SHOW` [esql-show]
+## `SHOW` [esql-show] 
 
 The `SHOW` source command returns information about the deployment and its capabilities.
 
-**Syntax**
+***Syntax***
 
 ```esql
 SHOW item
@@ -191,11 +203,11 @@ SHOW INFO
 | 8.13.0 | 2024-02-23T10:04:18.123117961Z | 04ba8c8db2507501c88f215e475de7b0798cb3b3 |
 
 
-## `DISSECT` [esql-dissect]
+## `DISSECT` [esql-dissect] 
 
-`DISSECT` enables you to [extract structured data out of a string](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md).
+`DISSECT` enables you to [extract structured data out of a string](esql-process-data-with-dissect-and-grok.md).
 
-**Syntax**
+***Syntax***
 
 ```esql
 DISSECT input "pattern" [APPEND_SEPARATOR="<separator>"]
@@ -207,18 +219,20 @@ DISSECT input "pattern" [APPEND_SEPARATOR="<separator>"]
 :   The column that contains the string you want to structure.  If the column has multiple values, `DISSECT` will process each value.
 
 `pattern`
-:   A [dissect pattern](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md#esql-dissect-patterns). If a field name conflicts with an existing column, the existing column is dropped. If a field name is used more than once, only the rightmost duplicate creates a column.
+:   A [dissect pattern](esql-process-data-with-dissect-and-grok.md#esql-dissect-patterns). If a field name conflicts with an existing column, the existing column is dropped. If a field name is used more than once, only the rightmost duplicate creates a column.
 
 `<separator>`
-:   A string used as the separator between appended values, when using the [append modifier](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md#esql-append-modifier).
+:   A string used as the separator between appended values, when using the [append modifier](esql-process-data-with-dissect-and-grok.md#esql-append-modifier).
 
 **Description**
 
-`DISSECT` enables you to [extract structured data out of a string](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md). `DISSECT` matches the string against a delimiter-based pattern, and extracts the specified keys as columns.
+`DISSECT` enables you to [extract structured data out of a string](esql-process-data-with-dissect-and-grok.md). `DISSECT` matches the string against a delimiter-based pattern, and extracts the specified keys as columns.
 
-Refer to [Process data with `DISSECT`](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md#esql-process-data-with-dissect) for the syntax of dissect patterns.
+Refer to [Process data with `DISSECT`](esql-process-data-with-dissect-and-grok.md#esql-process-data-with-dissect) for the syntax of dissect patterns.
 
 **Examples**
+
+%  tag::examples[]
 
 The following example parses a string that contains a timestamp, some text, and an IP address:
 
@@ -232,7 +246,7 @@ ROW a = "2023-01-23T12:15:00.000Z - some text - 127.0.0.1"
 | --- | --- | --- |
 | 2023-01-23T12:15:00.000Z | some text | 127.0.0.1 |
 
-By default, `DISSECT` outputs keyword string columns. To convert to another type, use [Type conversion functions](/reference/query-languages/esql/esql-functions-operators.md#esql-type-conversion-functions):
+By default, `DISSECT` outputs keyword string columns. To convert to another type, use [Type conversion functions](esql-functions-operators.md#esql-type-conversion-functions):
 
 ```esql
 ROW a = "2023-01-23T12:15:00.000Z - some text - 127.0.0.1"
@@ -245,12 +259,14 @@ ROW a = "2023-01-23T12:15:00.000Z - some text - 127.0.0.1"
 | --- | --- | --- |
 | some text | 127.0.0.1 | 2023-01-23T12:15:00.000Z |
 
+%  end::examples[]
 
-## `DROP` [esql-drop]
+
+## `DROP` [esql-drop] 
 
 The `DROP` processing command removes one or more columns.
 
-**Syntax**
+***Syntax***
 
 ```esql
 DROP columns
@@ -276,11 +292,11 @@ FROM employees
 ```
 
 
-## `ENRICH` [esql-enrich]
+## `ENRICH` [esql-enrich] 
 
 `ENRICH` enables you to add data from existing indices as new columns using an enrich policy.
 
-**Syntax**
+***Syntax***
 
 ```esql
 ENRICH policy [ON match_field] [WITH [new_name1 = ]field1, [new_name2 = ]field2, ...]
@@ -289,13 +305,13 @@ ENRICH policy [ON match_field] [WITH [new_name1 = ]field1, [new_name2 = ]field2,
 **Parameters**
 
 `policy`
-:   The name of the enrich policy. You need to [create](/reference/query-languages/esql/esql-enrich-data.md#esql-set-up-enrich-policy) and [execute](/reference/query-languages/esql/esql-enrich-data.md#esql-execute-enrich-policy) the enrich policy first.
+:   The name of the enrich policy. You need to [create](esql-enrich-data.md#esql-set-up-enrich-policy) and [execute](esql-enrich-data.md#esql-execute-enrich-policy) the enrich policy first.
 
 `mode`
-:   The mode of the enrich command in cross cluster {{esql}}. See [enrich across clusters](docs-content://explore-analyze/query-filter/languages/esql-cross-clusters.md#ccq-enrich).
+:   The mode of the enrich command in cross cluster {{esql}}. See [enrich across clusters](esql-cross-clusters.md#ccq-enrich).
 
 `match_field`
-:   The match field. `ENRICH` uses its value to look for records in the enrich index. If not specified, the match will be performed on the column with the same name as the `match_field` defined in the [enrich policy](/reference/query-languages/esql/esql-enrich-data.md#esql-enrich-policy).
+:   The match field. `ENRICH` uses its value to look for records in the enrich index. If not specified, the match will be performed on the column with the same name as the `match_field` defined in the [enrich policy](esql-enrich-data.md#esql-enrich-policy).
 
 `fieldX`
 :   The enrich fields from the enrich index that are added to the result as new columns. If a column with the same name as the enrich field already exists, the existing column will be replaced by the new column. If not specified, each of the enrich fields defined in the policy is added. A column with the same name as the enrich field will be dropped unless the enrich field is renamed.
@@ -305,20 +321,22 @@ ENRICH policy [ON match_field] [WITH [new_name1 = ]field1, [new_name2 = ]field2,
 
 **Description**
 
-`ENRICH` enables you to add data from existing indices as new columns using an enrich policy. Refer to [Data enrichment](/reference/query-languages/esql/esql-enrich-data.md) for information about setting up a policy.
+`ENRICH` enables you to add data from existing indices as new columns using an enrich policy. Refer to [Data enrichment](esql-enrich-data.md) for information about setting up a policy.
 
-:::{image} ../../../images/esql-enrich.png
+:::{image} images/esql-enrich.png
 :alt: esql enrich
 :::
 
-::::{tip}
-Before you can use `ENRICH`, you need to [create and execute an enrich policy](/reference/query-languages/esql/esql-enrich-data.md#esql-set-up-enrich-policy).
+::::{tip} 
+Before you can use `ENRICH`, you need to [create and execute an enrich policy](esql-enrich-data.md#esql-set-up-enrich-policy).
 ::::
 
 
 **Examples**
 
-The following example uses the `languages_policy` enrich policy to add a new column for each enrich field defined in the policy. The match is performed using the `match_field` defined in the [enrich policy](/reference/query-languages/esql/esql-enrich-data.md#esql-enrich-policy) and requires that the input table has a column with the same name (`language_code` in this example). `ENRICH` will look for records in the [enrich index](/reference/query-languages/esql/esql-enrich-data.md#esql-enrich-index) based on the match field value.
+%  tag::examples[]
+
+The following example uses the `languages_policy` enrich policy to add a new column for each enrich field defined in the policy. The match is performed using the `match_field` defined in the [enrich policy](esql-enrich-data.md#esql-enrich-policy) and requires that the input table has a column with the same name (`language_code` in this example). `ENRICH` will look for records in the [enrich index](esql-enrich-data.md#esql-enrich-index) based on the match field value.
 
 ```esql
 ROW language_code = "1"
@@ -364,12 +382,14 @@ ROW a = "1"
 
 In case of name collisions, the newly created columns will override existing columns.
 
+%  end::examples[]
 
-## `EVAL` [esql-eval]
+
+## `EVAL` [esql-eval] 
 
 The `EVAL` processing command enables you to append new columns with calculated values.
 
-**Syntax**
+***Syntax***
 
 ```esql
 EVAL [column1 =] value1[, ..., [columnN =] valueN]
@@ -381,11 +401,11 @@ EVAL [column1 =] value1[, ..., [columnN =] valueN]
 :   The column name. If a column with the same name already exists, the existing column is dropped. If a column name is used more than once, only the rightmost duplicate creates a column.
 
 `valueX`
-:   The value for the column. Can be a literal, an expression, or a [function](/reference/query-languages/esql/esql-functions-operators.md#esql-functions). Can use columns defined left of this one.
+:   The value for the column. Can be a literal, an expression, or a [function](esql-functions-operators.md#esql-functions). Can use columns defined left of this one.
 
 **Description**
 
-The `EVAL` processing command enables you to append new columns with calculated values. `EVAL` supports various functions for calculating values. Refer to [Functions](/reference/query-languages/esql/esql-functions-operators.md#esql-functions) for more information.
+The `EVAL` processing command enables you to append new columns with calculated values. `EVAL` supports various functions for calculating values. Refer to [Functions](esql-functions-operators.md#esql-functions) for more information.
 
 **Examples**
 
@@ -432,7 +452,7 @@ FROM employees
 | Bezalel | Simmel | 2.08 | 6.82448 |
 | Parto | Bamford | 1.83 | 6.004230000000001 |
 
-Because this name contains special characters, [it needs to be quoted](/reference/query-languages/esql/esql-syntax.md#esql-identifiers) with backticks (```) when using it in subsequent commands:
+Because this name contains special characters, [it needs to be quoted](esql-syntax.md#esql-identifiers) with backticks (```) when using it in subsequent commands:
 
 ```esql
 FROM employees
@@ -445,11 +465,11 @@ FROM employees
 | 5.801464200000001 |
 
 
-## `GROK` [esql-grok]
+## `GROK` [esql-grok] 
 
-`GROK` enables you to [extract structured data out of a string](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md).
+`GROK` enables you to [extract structured data out of a string](esql-process-data-with-dissect-and-grok.md).
 
-**Syntax**
+***Syntax***
 
 ```esql
 GROK input "pattern"
@@ -465,11 +485,13 @@ GROK input "pattern"
 
 **Description**
 
-`GROK` enables you to [extract structured data out of a string](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md). `GROK` matches the string against patterns, based on regular expressions, and extracts the specified patterns as columns.
+`GROK` enables you to [extract structured data out of a string](esql-process-data-with-dissect-and-grok.md). `GROK` matches the string against patterns, based on regular expressions, and extracts the specified patterns as columns.
 
-Refer to [Process data with `GROK`](/reference/query-languages/esql/esql-process-data-with-dissect-grok.md#esql-process-data-with-grok) for the syntax of grok patterns.
+Refer to [Process data with `GROK`](esql-process-data-with-dissect-and-grok.md#esql-process-data-with-grok) for the syntax of grok patterns.
 
 **Examples**
+
+%  tag::examples[]
 
 The following example parses a string that contains a timestamp, an IP address, an email address, and a number:
 
@@ -481,7 +503,7 @@ ROW a = "2023-01-23T12:15:00.000Z 127.0.0.1 some.email@foo.com 42"
 
 | date:keyword | ip:keyword | email:keyword | num:keyword |
 | --- | --- | --- | --- |
-| 2023-01-23T12:15:00.000Z | 127.0.0.1 | `some.email@foo.com` | 42 |
+| 2023-01-23T12:15:00.000Z | 127.0.0.1 | [some.email@foo.com](mailto:some.email@foo.com) | 42 |
 
 By default, `GROK` outputs keyword string columns. `int` and `float` types can be converted by appending `:type` to the semantics in the pattern. For example `{NUMBER:num:int}`:
 
@@ -493,9 +515,9 @@ ROW a = "2023-01-23T12:15:00.000Z 127.0.0.1 some.email@foo.com 42"
 
 | date:keyword | ip:keyword | email:keyword | num:integer |
 | --- | --- | --- | --- |
-| 2023-01-23T12:15:00.000Z | 127.0.0.1 | `some.email@foo.com` | 42 |
+| 2023-01-23T12:15:00.000Z | 127.0.0.1 | [some.email@foo.com](mailto:some.email@foo.com) | 42 |
 
-For other type conversions, use [Type conversion functions](/reference/query-languages/esql/esql-functions-operators.md#esql-type-conversion-functions):
+For other type conversions, use [Type conversion functions](esql-functions-operators.md#esql-type-conversion-functions):
 
 ```esql
 ROW a = "2023-01-23T12:15:00.000Z 127.0.0.1 some.email@foo.com 42"
@@ -506,7 +528,7 @@ ROW a = "2023-01-23T12:15:00.000Z 127.0.0.1 some.email@foo.com 42"
 
 | ip:keyword | email:keyword | num:integer | date:date |
 | --- | --- | --- | --- |
-| 127.0.0.1 | `some.email@foo.com` | 42 | 2023-01-23T12:15:00.000Z |
+| 127.0.0.1 | [some.email@foo.com](mailto:some.email@foo.com) | 42 | 2023-01-23T12:15:00.000Z |
 
 If a field name is used more than once, `GROK` creates a multi-valued column:
 
@@ -522,12 +544,16 @@ FROM addresses
 | San Francisco | CA 94108 | ["CA", "94108"] |
 | Tokyo | 100-7014 | null |
 
+%  end::examples[]
 
-## `KEEP` [esql-keep]
+% include::processing-commands/inlinestats.asciidoc[]
+
+
+## `KEEP` [esql-keep] 
 
 The `KEEP` processing command enables you to specify what columns are returned and the order in which they are returned.
 
-**Syntax**
+***Syntax***
 
 ```esql
 KEEP columns
@@ -624,11 +650,11 @@ FROM employees
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 
-## `LIMIT` [esql-limit]
+## `LIMIT` [esql-limit] 
 
 The `LIMIT` processing command enables you to limit the number of rows that are returned.
 
-**Syntax**
+***Syntax***
 
 ```esql
 LIMIT max_number_of_rows
@@ -641,19 +667,25 @@ LIMIT max_number_of_rows
 
 **Description**
 
-The `LIMIT` processing command enables you to limit the number of rows that are returned. Queries do not return more than 10,000 rows, regardless of the `LIMIT` command’s value.
+The `LIMIT` processing command enables you to limit the number of rows that are returned.
+
+%  tag::limitation[]
+
+Queries do not return more than 10,000 rows, regardless of the `LIMIT` command’s value.
 
 This limit only applies to the number of rows that are retrieved by the query. Queries and aggregations run on the full data set.
 
 To overcome this limitation:
 
-* Reduce the result set size by modifying the query to only return relevant data. Use [`WHERE`](#esql-where) to select a smaller subset of the data.
-* Shift any post-query processing to the query itself. You can use the {{esql}} [`STATS`](#esql-stats-by) command to aggregate data in the query.
+* Reduce the result set size by modifying the query to only return relevant data. Use [`WHERE`](esql-commands.md#esql-where) to select a smaller subset of the data.
+* Shift any post-query processing to the query itself. You can use the {{esql}} [`STATS`](esql-commands.md#esql-stats-by) command to aggregate data in the query.
 
 The default and maximum limits can be changed using these dynamic cluster settings:
 
 * `esql.query.result_truncation_default_size`
 * `esql.query.result_truncation_max_size`
+
+%  end::limitation[]
 
 **Example**
 
@@ -663,17 +695,19 @@ FROM employees
 | LIMIT 5
 ```
 
+% include::processing-commands/lookup.asciidoc[]
 
-## `MV_EXPAND` [esql-mv_expand]
 
-::::{warning}
+## `MV_EXPAND` [esql-mv_expand] 
+
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
 The `MV_EXPAND` processing command expands multivalued columns into one row per value, duplicating other columns.
 
-**Syntax**
+***Syntax***
 
 ```esql
 MV_EXPAND column
@@ -698,11 +732,11 @@ ROW a=[1,2,3], b="b", j=["a","b"]
 | 3 | b | ["a", "b"] |
 
 
-## `RENAME` [esql-rename]
+## `RENAME` [esql-rename] 
 
 The `RENAME` processing command renames one or more columns.
 
-**Syntax**
+***Syntax***
 
 ```esql
 RENAME old_name1 AS new_name1[, ..., old_nameN AS new_nameN]
@@ -737,11 +771,11 @@ FROM employees
 ```
 
 
-## `SORT` [esql-sort]
+## `SORT` [esql-sort] 
 
 The `SORT` processing command sorts a table on one or more columns.
 
-**Syntax**
+***Syntax***
 
 ```esql
 SORT column1 [ASC/DESC][NULLS FIRST/NULLS LAST][, ..., columnN [ASC/DESC][NULLS FIRST/NULLS LAST]]
@@ -797,11 +831,11 @@ FROM employees
 ```
 
 
-## `STATS` [esql-stats-by]
+## `STATS` [esql-stats-by] 
 
 The `STATS` processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows.
 
-**Syntax**
+***Syntax***
 
 ```esql
 STATS [column1 =] expression1 [WHERE boolean_expression1][,
@@ -824,7 +858,7 @@ STATS [column1 =] expression1 [WHERE boolean_expression1][,
 `boolean_expressionX`
 :   The condition that must be met for a row to be included in the evaluation of `expressionX`.
 
-::::{note}
+::::{note} 
 Individual `null` values are skipped when computing aggregations.
 ::::
 
@@ -833,36 +867,36 @@ Individual `null` values are skipped when computing aggregations.
 
 The `STATS` processing command groups rows according to a common value and calculates one or more aggregated values over the grouped rows. For the calculation of each aggregated value, the rows in a group can be filtered with `WHERE`. If `BY` is omitted, the output table contains exactly one row with the aggregations applied over the entire dataset.
 
-The following [aggregation functions](/reference/query-languages/esql/esql-functions-operators.md#esql-agg-functions) are supported:
+The following [aggregation functions](esql-functions-operators.md#esql-agg-functions) are supported:
 
-* [`AVG`](/reference/query-languages/esql/esql-functions-operators.md#esql-avg)
-* [`COUNT`](/reference/query-languages/esql/esql-functions-operators.md#esql-count)
-* [`COUNT_DISTINCT`](/reference/query-languages/esql/esql-functions-operators.md#esql-count_distinct)
-* [`MAX`](/reference/query-languages/esql/esql-functions-operators.md#esql-max)
-* [`MEDIAN`](/reference/query-languages/esql/esql-functions-operators.md#esql-median)
-* [`MEDIAN_ABSOLUTE_DEVIATION`](/reference/query-languages/esql/esql-functions-operators.md#esql-median_absolute_deviation)
-* [`MIN`](/reference/query-languages/esql/esql-functions-operators.md#esql-min)
-* [`PERCENTILE`](/reference/query-languages/esql/esql-functions-operators.md#esql-percentile)
-* [preview] [`ST_CENTROID_AGG`](/reference/query-languages/esql/esql-functions-operators.md#esql-st_centroid_agg)
-* [preview] [`ST_EXTENT_AGG`](/reference/query-languages/esql/esql-functions-operators.md#esql-st_extent_agg)
-* [`STD_DEV`](/reference/query-languages/esql/esql-functions-operators.md#esql-std_dev)
-* [`SUM`](/reference/query-languages/esql/esql-functions-operators.md#esql-sum)
-* [`TOP`](/reference/query-languages/esql/esql-functions-operators.md#esql-top)
-* [`VALUES`](/reference/query-languages/esql/esql-functions-operators.md#esql-values)
-* [`WEIGHTED_AVG`](/reference/query-languages/esql/esql-functions-operators.md#esql-weighted_avg)
+* [`AVG`](esql-functions-operators.md#esql-avg)
+* [`COUNT`](esql-functions-operators.md#esql-count)
+* [`COUNT_DISTINCT`](esql-functions-operators.md#esql-count_distinct)
+* [`MAX`](esql-functions-operators.md#esql-max)
+* [`MEDIAN`](esql-functions-operators.md#esql-median)
+* [`MEDIAN_ABSOLUTE_DEVIATION`](esql-functions-operators.md#esql-median_absolute_deviation)
+* [`MIN`](esql-functions-operators.md#esql-min)
+* [`PERCENTILE`](esql-functions-operators.md#esql-percentile)
+* [preview] [`ST_CENTROID_AGG`](esql-functions-operators.md#esql-st_centroid_agg)
+* [preview] [`ST_EXTENT_AGG`](esql-functions-operators.md#esql-st_extent_agg)
+* [`STD_DEV`](esql-functions-operators.md#esql-std_dev)
+* [`SUM`](esql-functions-operators.md#esql-sum)
+* [`TOP`](esql-functions-operators.md#esql-top)
+* [`VALUES`](esql-functions-operators.md#esql-values)
+* [`WEIGHTED_AVG`](esql-functions-operators.md#esql-weighted_avg)
 
-The following [grouping functions](/reference/query-languages/esql/esql-functions-operators.md#esql-group-functions) are supported:
+The following [grouping functions](esql-functions-operators.md#esql-group-functions) are supported:
 
-* [`BUCKET`](/reference/query-languages/esql/esql-functions-operators.md#esql-bucket)
-* [preview] [`CATEGORIZE`](/reference/query-languages/esql/esql-functions-operators.md#esql-categorize)
+* [`BUCKET`](esql-functions-operators.md#esql-bucket)
+* [preview] [`CATEGORIZE`](esql-functions-operators.md#esql-categorize)
 
-::::{note}
+::::{note} 
 `STATS` without any groups is much much faster than adding a group.
 ::::
 
 
-::::{note}
-Grouping on a single expression is currently much more optimized than grouping on many expressions. In some tests we have seen grouping on a single `keyword` column to be five times faster than grouping on two `keyword` columns. Do not try to work around this by combining the two columns together with something like [`CONCAT`](/reference/query-languages/esql/esql-functions-operators.md#esql-concat) and then grouping - that is not going to be faster.
+::::{note} 
+Grouping on a single expression is currently much more optimized than grouping on many expressions. In some tests we have seen grouping on a single `keyword` column to be five times faster than grouping on two `keyword` columns. Do not try to work around this by combining the two columns together with something like [`CONCAT`](esql-functions-operators.md#esql-concat) and then grouping - that is not going to be faster.
 ::::
 
 
@@ -1025,7 +1059,7 @@ FROM employees
 | --- |
 | 48248.55 |
 
-Because this name contains special characters, [it needs to be quoted](/reference/query-languages/esql/esql-syntax.md#esql-identifiers) with backticks (```) when using it in subsequent commands:
+Because this name contains special characters, [it needs to be quoted](esql-syntax.md#esql-identifiers) with backticks (```) when using it in subsequent commands:
 
 ```esql
 FROM employees
@@ -1038,17 +1072,17 @@ FROM employees
 | 48248.55 | 48249.0 |
 
 
-## `WHERE` [esql-where]
+## `WHERE` [esql-where] 
 
 The `WHERE` processing command produces a table that contains all the rows from the input table for which the provided condition evaluates to `true`.
 
-::::{tip}
+::::{tip} 
 In case of value exclusions, fields with `null` values will be excluded from search results. In this context a `null` means either there is an explicit `null` value in the document or there is no value at all. For example: `WHERE field != "value"` will be interpreted as `WHERE field != "value" AND field IS NOT NULL`.
 
 ::::
 
 
-**Syntax**
+***Syntax***
 
 ```esql
 WHERE expression
@@ -1082,7 +1116,7 @@ FROM sample_data
 | WHERE @timestamp > NOW() - 1 hour
 ```
 
-`WHERE` supports various [functions](/reference/query-languages/esql/esql-functions-operators.md#esql-functions). For example the [`LENGTH`](/reference/query-languages/esql/esql-functions-operators.md#esql-length) function:
+`WHERE` supports various [functions](esql-functions-operators.md#esql-functions). For example the [`LENGTH`](esql-functions-operators.md#esql-length) function:
 
 ```esql
 FROM employees
@@ -1090,7 +1124,7 @@ FROM employees
 | WHERE LENGTH(first_name) < 4
 ```
 
-For a complete list of all functions, refer to [Functions overview](/reference/query-languages/esql/esql-functions-operators.md#esql-functions).
+For a complete list of all functions, refer to [Functions overview](esql-functions-operators.md#esql-functions).
 
 For NULL comparison, use the `IS NULL` and `IS NOT NULL` predicates:
 
@@ -1118,9 +1152,9 @@ FROM employees
 | --- |
 | 84 |
 
-For matching text, you can use [full text search functions](/reference/query-languages/esql/esql-functions-operators.md#esql-search-functions) like `MATCH`.
+For matching text, you can use [full text search functions](esql-functions-operators.md#esql-search-functions) like `MATCH`.
 
-Use [`MATCH`](/reference/query-languages/esql/esql-functions-operators.md#esql-match) to perform a [match query](/reference/query-languages/query-dsl-match-query.md) on a specified field.
+Use [`MATCH`](esql-functions-operators.md#esql-match) to perform a [match query](query-dsl-match-query.md) on a specified field.
 
 Match can be used on text fields, as well as other field types like boolean, dates, and numeric types.
 
@@ -1140,8 +1174,8 @@ FROM books
 | 2883 | William Faulkner |
 | 3293 | Danny Faulkner |
 
-::::{tip}
-You can also use the shorthand [match operator](/reference/query-languages/esql/esql-functions-operators.md#esql-search-operators) `:` instead of `MATCH`.
+::::{tip} 
+You can also use the shorthand [match operator](esql-functions-operators.md#esql-search-operators) `:` instead of `MATCH`.
 
 ::::
 
@@ -1152,6 +1186,8 @@ The following wildcard characters are supported:
 
 * `*` matches zero or more characters.
 * `?` matches one character.
+
+%  This is generated by ESQL’s AbstractFunctionTestCase. Do no edit it. See ../README.md for how to regenerate it.
 
 **Supported types**
 
@@ -1185,7 +1221,9 @@ ROW message = "foo * bar"
 | WHERE message LIKE """foo \* bar"""
 ```
 
-Use `RLIKE` to filter data based on string patterns using using [regular expressions](/reference/query-languages/regexp-syntax.md). `RLIKE` usually acts on a field placed on the left-hand side of the operator, but it can also act on a constant (literal) expression. The right-hand side of the operator represents the pattern.
+Use `RLIKE` to filter data based on string patterns using using [regular expressions](regexp-syntax.md). `RLIKE` usually acts on a field placed on the left-hand side of the operator, but it can also act on a constant (literal) expression. The right-hand side of the operator represents the pattern.
+
+%  This is generated by ESQL’s AbstractFunctionTestCase. Do no edit it. See ../README.md for how to regenerate it.
 
 **Supported types**
 
@@ -1229,4 +1267,6 @@ ROW a = 1, b = 4, c = 3
 | --- | --- | --- |
 | 1 | 4 | 3 |
 
-For a complete list of all operators, refer to [Operators](/reference/query-languages/esql/esql-functions-operators.md#esql-operators).
+For a complete list of all operators, refer to [Operators](esql-functions-operators.md#esql-operators).
+
+

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Bucket script"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-bucket-script-aggregation.html
 ---
 
 # Bucket script aggregation [search-aggregations-pipeline-bucket-script-aggregation]
@@ -25,6 +23,8 @@ A `bucket_script` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 1. Here, `my_var1` is the name of the variable for this buckets path to use in the script, `the_sum` is the path to the metrics to use for that variable.
 
 
@@ -32,9 +32,9 @@ $$$bucket-script-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `script` | The script to run for this aggregation. The script can be inline, file or indexed. (see [Scripting](docs-content://explore-analyze/scripting.md)for more details) | Required |  |
-| `buckets_path` | A map of script variables and their associated path to the buckets we wish to use for the variable(see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details) | Required |  |
-| `gap_policy` | The policy to apply when gaps are found in the data (see [Dealing with gaps in the data](/reference/data-analysis/aggregations/pipeline.md#gap-policy) for more details) | Optional | `skip` |
+| `script` | The script to run for this aggregation. The script can be inline, file or indexed. (see [Scripting](modules-scripting.md)for more details) | Required |  |
+| `buckets_path` | A map of script variables and their associated path to the buckets we wish to use for the variable(see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details) | Required |  |
+| `gap_policy` | The policy to apply when gaps are found in the data (see [Dealing with gaps in the data](search-aggregations-pipeline.md#gap-policy) for more details) | Optional | `skip` |
 | `format` | [DecimalFormat pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/DecimalFormat.md) for theoutput value. If specified, the formatted value is returned in the aggregation’s`value_as_string` property | Optional | `null` |
 
 The following snippet calculates the ratio percentage of t-shirt sales compared to total sales each month:
@@ -83,6 +83,8 @@ POST /sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 And the following may be the response:
 
@@ -151,5 +153,11 @@ And the following may be the response:
    }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
 
 

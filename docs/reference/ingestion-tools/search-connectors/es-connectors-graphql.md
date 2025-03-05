@@ -1,57 +1,59 @@
 ---
 navigation_title: "GraphQL"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-graphql.html
 ---
 
 # Elastic GraphQL connector reference [es-connectors-graphql]
 
 
+%  Attributes used in this file
+
 The Elastic GraphQL connector is written in Python using the [Elastic connector framework](https://github.com/elastic/connectors/tree/main). View the [source code for this connector](https://github.com/elastic/connectors/blob/main/connectors/sources/graphql.py).
 
 
-## Availability and prerequisites [es-connectors-graphql-connector-availability-and-prerequisites]
+## Availability and prerequisites [es-connectors-graphql-connector-availability-and-prerequisites] 
 
 This connector was introduced in Elastic **8.14.0**, available as a **self-managed** self-managed connector.
 
-To use this connector, satisfy all [self-managed connector prerequisites](/reference/ingestion-tools/search-connectors/self-managed-connectors.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
+To use this connector, satisfy all [self-managed connector prerequisites](es-build-connector.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
 
-* [Run connectors service from source](/reference/ingestion-tools/search-connectors/es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
-* [Run connectors service in Docker](/reference/ingestion-tools/search-connectors/es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
+* [Run connectors service from source](es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
+* [Run connectors service in Docker](es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
 
-::::{note}
+::::{note} 
 This connector is in **technical preview** and is subject to change. The design and code is less mature than official GA features and is being provided as-is with no warranties. Technical preview features are not subject to the support SLA of official GA features.
 
 ::::
 
 
 
-## Usage [es-connectors-graphql-connector-usage]
+## Usage [es-connectors-graphql-connector-usage] 
 
 To set up this connector in the UI, select the **GraphQL** tile when creating a new connector under **Search → Connectors**.
 
-If you’re already familiar with how connectors work, you can also use the [Connector APIs](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector).
+If you’re already familiar with how connectors work, you can also use the [Connector APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html).
 
-For additional operations, see [*Connectors UI in {{kib}}*](/reference/ingestion-tools/search-connectors/connectors-ui-in-kibana.md).
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
 
 
-## Deploy with Docker [es-connectors-graphql-connector-docker]
+## Deploy with Docker [es-connectors-graphql-connector-docker] 
 
 You can deploy the GraphQL connector as a self-managed connector using Docker. Follow these instructions.
 
-::::{dropdown} Step 1: Download sample configuration file
+::::{dropdown} **Step 1: Download sample configuration file**
 Download the sample configuration file. You can either download it manually or run the following command:
 
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
 
+%  NOTCONSOLE
+
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
 ::::
 
 
-::::{dropdown} Step 2: Update the configuration file for your self-managed connector
+::::{dropdown} **Step 2: Update the configuration file for your self-managed connector**
 Update the configuration file with the following settings to match your environment:
 
 * `elasticsearch.host`
@@ -79,7 +81,7 @@ Note: You can change other default configurations by simply uncommenting specifi
 ::::
 
 
-::::{dropdown} Step 3: Run the Docker image
+::::{dropdown} **Step 3: Run the Docker image**
 Run the Docker image with the Connector Service using the following command:
 
 ```sh
@@ -88,7 +90,7 @@ docker run \
 --network "elastic" \
 --tty \
 --rm \
-docker.elastic.co/integrations/elastic-connectors:9.0.0 \
+docker.elastic.co/integrations/elastic-connectors:9.0.0-beta1.0 \
 /app/bin/elastic-ingest \
 -c /config/config.yml
 ```
@@ -100,17 +102,17 @@ Refer to [`DOCKER.md`](https://github.com/elastic/connectors/tree/main/docs/DOCK
 
 Find all available Docker images in the [official registry](https://www.docker.elastic.co/r/integrations/elastic-connectors).
 
-::::{tip}
+::::{tip} 
 We also have a quickstart self-managed option using Docker Compose, so you can spin up all required services at once: Elasticsearch, Kibana, and the connectors service. Refer to this [README](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
 
 ::::
 
 
 
-## Configuration [es-connectors-graphql-connector-configuration]
+## Configuration [es-connectors-graphql-connector-configuration] 
 
 
-### Configure GraphQL connector [es-connectors-graphql-connector-configure-graphql-connector]
+### Configure GraphQL connector [es-connectors-graphql-connector-configure-graphql-connector] 
 
 Note the following configuration fields:
 
@@ -147,6 +149,8 @@ Note the following configuration fields:
     ```
 
 
+%  NOTCONSOLE
+
 `graphql_variables`
 :   A JSON object of key/value pairs containing variables used in the GraphQL query. The connector will substitute the variables in the query with the values provided here and make a GraphQL query to the source.
 
@@ -171,12 +175,17 @@ Note the following configuration fields:
     }
     ```
 
-    In this example `user_id` is unique in every user document. Therefore, we set `user_id` as the value for `organization.users`.
 
-    ::::{note}
-    The path provided in this field should only contain JSON objects and not lists.
+%  NOTCONSOLE
 
-    ::::
++ In this example `user_id` is unique in every user document. Therefore, we set `user_id` as the value for `organization.users`.
+
++
+
+::::{note} 
+The path provided in this field should only contain JSON objects and not lists.
+
+::::
 
 
 `headers`
@@ -188,6 +197,8 @@ Note the following configuration fields:
     }
     ```
 
+
+%  NOTCONSOLE
 
 `pagination_model` (required)
 :   This field specifies the pagination model to be used by the connector. The connector supports `No pagination` and `Cursor-based pagination` pagination models.
@@ -214,11 +225,12 @@ Note the following configuration fields:
     }
     ```
 
-    The value of `pagination_key` is `sampleData.users` so it must contain:
 
-    * `pageInfo {endCursor hasNextPage}`
-    * the `after` argument with a variable when using cursor-based pagination
+%  NOTCONSOLE
 
++ The value of `pagination_key` is `sampleData.users` so it must contain:
+
++ * `pageInfo {endCursor hasNextPage}` * the `after` argument with a variable when using cursor-based pagination
 
 `pagination_key` (required)
 :   Specifies which GraphQL object is used for pagination. Use `.` to provide the full path of the object from the root of the response.
@@ -232,36 +244,36 @@ Note the following configuration fields:
 :   Specifies the maximum time in seconds to wait for a response from the GraphQL source. Default value is **30 seconds**.
 
 
-## Documents and syncs [es-connectors-graphql-connector-documents-and-syncs]
+## Documents and syncs [es-connectors-graphql-connector-documents-and-syncs] 
 
 The connector syncs the objects and entities based on GraphQL Query and GraphQL Object List.
 
 
-## Sync types [es-connectors-graphql-connector-sync-types]
+## Sync types [es-connectors-graphql-connector-sync-types] 
 
-[Full syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-full) are supported by default for all connectors.
+[Full syncs](es-connectors-sync-types.md#es-connectors-sync-types-full) are supported by default for all connectors.
 
-This connector currently does not support [incremental syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-incremental).
-
-
-## Sync rules [es-connectors-graphql-connector-sync-rules]
-
-[Basic sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+This connector currently does not support [incremental syncs](es-connectors-sync-types.md#es-connectors-sync-types-incremental).
 
 
-## Advanced Sync Rules [es-connectors-graphql-connector-advanced-sync-rules]
+## Sync rules [es-connectors-graphql-connector-sync-rules] 
+
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+
+
+## Advanced Sync Rules [es-connectors-graphql-connector-advanced-sync-rules] 
 
 Advanced sync rules are not available for this connector in the present version.
 
 
-## Connector Client operations [es-connectors-graphql-connector-connector-client-operations]
+## Connector Client operations [es-connectors-graphql-connector-connector-client-operations] 
 
 
-### End-to-end Testing [es-connectors-graphql-connector-end-to-end-testing]
+### End-to-end Testing [es-connectors-graphql-connector-end-to-end-testing] 
 
 The connector framework enables operators to run functional tests against a real data source, using Docker Compose. You don’t need a running Elasticsearch instance or GraphQL source to run this test.
 
-Refer to [Connector testing](/reference/ingestion-tools/search-connectors/self-managed-connectors.md#es-build-connector-testing) for more details.
+Refer to [Connector testing](es-build-connector.md#es-build-connector-testing) for more details.
 
 To perform E2E testing for the GraphQL connector, run the following command:
 
@@ -278,20 +290,20 @@ make ftest NAME=graphql DATA_SIZE=small
 By default, `DATA_SIZE=MEDIUM`.
 
 
-## Known issues [es-connectors-graphql-connector-known-issues]
+## Known issues [es-connectors-graphql-connector-known-issues] 
 
 * Every document will be updated in every sync.
 * If the same field name exists with different types across different objects, the connector might raise a mapping parser exception.
 
-Refer to [Known issues](/release-notes/known-issues.md) for a list of known issues for all connectors.
+Refer to [Known issues](es-connectors-known-issues.md) for a list of known issues for all connectors.
 
 
-## Troubleshooting [es-connectors-graphql-connector-troubleshooting]
+## Troubleshooting [es-connectors-graphql-connector-troubleshooting] 
 
-See [Troubleshooting](/reference/ingestion-tools/search-connectors/es-connectors-troubleshooting.md).
+See [Troubleshooting](es-connectors-troubleshooting.md).
 
 
-## Security [es-connectors-graphql-connector-security]
+## Security [es-connectors-graphql-connector-security] 
 
-See [Security](/reference/ingestion-tools/search-connectors/es-connectors-security.md).
+See [Security](es-connectors-security.md).
 

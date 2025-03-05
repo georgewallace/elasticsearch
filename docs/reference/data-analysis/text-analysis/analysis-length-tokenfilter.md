@@ -1,7 +1,5 @@
 ---
 navigation_title: "Length"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-length-tokenfilter.html
 ---
 
 # Length token filter [analysis-length-tokenfilter]
@@ -9,17 +7,17 @@ mapped_pages:
 
 Removes tokens shorter or longer than specified character lengths. For example, you can use the `length` filter to exclude tokens shorter than 2 characters and tokens longer than 5 characters.
 
-This filter uses Lucene’s [LengthFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/miscellaneous/LengthFilter.md).
+This filter uses Lucene’s [LengthFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/miscellaneous/LengthFilter.md).
 
-::::{tip}
-The `length` filter removes entire tokens. If you’d prefer to shorten tokens to a specific length, use the [`truncate`](/reference/data-analysis/text-analysis/analysis-truncate-tokenfilter.md) filter.
+::::{tip} 
+The `length` filter removes entire tokens. If you’d prefer to shorten tokens to a specific length, use the [`truncate`](analysis-truncate-tokenfilter.md) filter.
 
 ::::
 
 
 ## Example [analysis-length-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `length` filter to remove tokens longer than 4 characters:
+The following [analyze API](indices-analyze.md) request uses the `length` filter to remove tokens longer than 4 characters:
 
 ```console
 GET _analyze
@@ -42,10 +40,60 @@ The filter produces the following tokens:
 [ the, fox, over, the, lazy, dog ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "the",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "word",
+%       "position": 0
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 16,
+%       "end_offset": 19,
+%       "type": "word",
+%       "position": 3
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 26,
+%       "end_offset": 30,
+%       "type": "word",
+%       "position": 5
+%     },
+%     {
+%       "token": "the",
+%       "start_offset": 31,
+%       "end_offset": 34,
+%       "type": "word",
+%       "position": 6
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 35,
+%       "end_offset": 39,
+%       "type": "word",
+%       "position": 7
+%     },
+%     {
+%       "token": "dog",
+%       "start_offset": 40,
+%       "end_offset": 43,
+%       "type": "word",
+%       "position": 8
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-length-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `length` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `length` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT length_example

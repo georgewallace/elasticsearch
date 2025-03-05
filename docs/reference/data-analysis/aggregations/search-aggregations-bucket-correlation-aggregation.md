@@ -1,7 +1,5 @@
 ---
 navigation_title: "Bucket correlation"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-correlation-aggregation.html
 ---
 
 # Bucket correlation aggregation [search-aggregations-bucket-correlation-aggregation]
@@ -12,7 +10,7 @@ A sibling pipeline aggregation which executes a correlation function on the conf
 ## Parameters [bucket-correlation-agg-syntax]
 
 `buckets_path`
-:   (Required, string) Path to the buckets that contain one set of values to correlate. For syntax, see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax).
+:   (Required, string) Path to the buckets that contain one set of values to correlate. For syntax, see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax).
 
 `function`
 :   (Required, object) The correlation function to execute.
@@ -69,6 +67,8 @@ A `bucket_correlation` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 1. The buckets containing the values to correlate against.
 2. The correlation function definition.
 
@@ -76,7 +76,7 @@ A `bucket_correlation` aggregation looks like this in isolation:
 
 ## Example [bucket-correlation-agg-example]
 
-The following snippet correlates the individual terms in the field `version` with the `latency` metric. Not shown is the pre-calculation of the `latency` indicator values, which was done utilizing the [percentiles](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md) aggregation.
+The following snippet correlates the individual terms in the field `version` with the `latency` metric. Not shown is the pre-calculation of the `latency` indicator values, which was done utilizing the [percentiles](search-aggregations-metrics-percentile-aggregation.md) aggregation.
 
 This example is only using the 10s percentiles.
 
@@ -126,6 +126,8 @@ POST correlate_latency/_search?size=0&filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:correlate_latency]
 
 1. The term buckets containing a range aggregation and the bucket correlation aggregation. Both are utilized to calculate the correlation of the term values with the latency.
 2. The range aggregation on the latency field. The ranges were created referencing the percentiles of the latency field.

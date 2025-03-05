@@ -1,7 +1,5 @@
 ---
 navigation_title: "Moving function"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-movfn-aggregation.html
 ---
 
 # Moving function aggregation [search-aggregations-pipeline-movfn-aggregation]
@@ -23,15 +21,17 @@ A `moving_fn` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$moving-fn-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | Path to the metric of interest (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details | Required |  |
+| `buckets_path` | Path to the metric of interest (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details | Required |  |
 | `window` | The size of window to "slide" across the histogram. | Required |  |
 | `script` | The script that should be executed on each window of data | Required |  |
-| `gap_policy` | The policy to apply when gaps are found in the data. See [Dealing with gaps in the data](/reference/data-analysis/aggregations/pipeline.md#gap-policy). | Optional | `skip` |
-| `shift` | [Shift](#shift-parameter) of window position. | Optional | 0 |
+| `gap_policy` | The policy to apply when gaps are found in the data. See [Dealing with gaps in the data](search-aggregations-pipeline.md#gap-policy). | Optional | `skip` |
+| `shift` | [Shift](search-aggregations-pipeline-movfn-aggregation.md#shift-parameter) of window position. | Optional | 0 |
 
 `moving_fn` aggregations must be embedded inside of a `histogram` or `date_histogram` aggregation. They can be embedded like any other metric aggregation:
 
@@ -62,12 +62,14 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 1. A `date_histogram` named "my_date_histo" is constructed on the "timestamp" field, with one-month intervals
 2. A `sum` metric is used to calculate the sum of a field. This could be any numeric metric (sum, min, max, etc)
 3. Finally, we specify a `moving_fn` aggregation which uses "the_sum" metric as its input.
 
 
-Moving averages are built by first specifying a `histogram` or `date_histogram` over a field. You can then optionally add numeric metrics, such as a `sum`, inside of that histogram. Finally, the `moving_fn` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at one of the sibling metrics inside of the histogram (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`.
+Moving averages are built by first specifying a `histogram` or `date_histogram` over a field. You can then optionally add numeric metrics, such as a `sum`, inside of that histogram. Finally, the `moving_fn` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at one of the sibling metrics inside of the histogram (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`.
 
 An example response from the above aggregation may look like:
 
@@ -119,6 +121,12 @@ An example response from the above aggregation may look like:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
 
 ## Custom user scripting [_custom_user_scripting]
 
@@ -152,6 +160,8 @@ POST /_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 
 ## shift parameter [shift-parameter]
@@ -218,6 +228,8 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 
 ### min Function [_min_function]
 
@@ -255,6 +267,8 @@ POST /_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 
 ### sum Function [_sum_function]
@@ -294,6 +308,8 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 
 ### stdDev Function [_stddev_function]
 
@@ -332,6 +348,8 @@ POST /_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 The `avg` parameter must be provided to the standard deviation function because different styles of averages can be computed on the window (simple, linearly weighted, etc). The various moving averages that are detailed below can be used to calculate the average for the standard deviation function.
 
@@ -375,6 +393,8 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 
 
 ## linearWeightedAvg Function [_linearweightedavg_function]
@@ -416,6 +436,8 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 
 ## ewma Function [_ewma_function]
 
@@ -456,6 +478,8 @@ POST /_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 
 ## holt Function [_holt_function]
@@ -502,6 +526,8 @@ POST /_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 In practice, the `alpha` value behaves very similarly in `holtMovAvg` as `ewmaMovAvg`: small values produce more smoothing and more lag, while larger values produce closer tracking and less lag. The value of `beta` is often difficult to see. Small values emphasize long-term trends (such as a constant linear trend in the whole series), while larger values emphasize short-term trends.
 
@@ -554,7 +580,9 @@ POST /_search
 }
 ```
 
-::::{warning}
+%  TEST[setup:sales]
+
+::::{warning} 
 Multiplicative Holt-Winters works by dividing each data point by the seasonal value. This is problematic if any of your data is zero, or if there are gaps in the data (since this results in a divid-by-zero). To combat this, the `mult` Holt-Winters pads all values by a very small amount (1*10-10) so that all values are non-zero. This affects the result, but only minimally. If your data is non-zero, or you prefer to see `NaN` when zero’s are encountered, you can disable this behavior with `pad: false`
 
 ::::

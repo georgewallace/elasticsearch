@@ -1,7 +1,5 @@
 ---
 navigation_title: "Term"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
 ---
 
 # Term query [query-dsl-term-query]
@@ -11,12 +9,12 @@ Returns documents that contain an **exact** term in a provided field.
 
 You can use the `term` query to find documents based on a precise value such as a price, a product ID, or a username.
 
-::::{warning}
-Avoid using the `term` query for [`text`](/reference/elasticsearch/mapping-reference/text.md) fields.
+::::{warning} 
+Avoid using the `term` query for [`text`](text.md) fields.
 
-By default, {{es}} changes the values of `text` fields as part of [analysis](docs-content://manage-data/data-store/text-analysis.md). This can make finding exact matches for `text` field values difficult.
+By default, {{es}} changes the values of `text` fields as part of [analysis](analysis.md). This can make finding exact matches for `text` field values difficult.
 
-To search `text` field values, use the [`match`](/reference/query-languages/query-dsl-match-query.md) query instead.
+To search `text` field values, use the [`match`](query-dsl-match-query.md) query instead.
 
 ::::
 
@@ -50,7 +48,7 @@ GET /_search
 :   (Required, string) Term you wish to find in the provided `<field>`. To return a document, the term must exactly match the field value, including whitespace and capitalization.
 
 `boost`
-:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) of a query. Defaults to `1.0`.
+:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](query-filter-context.md#relevance-scores) of a query. Defaults to `1.0`.
 
     You can use the `boost` parameter to adjust relevance scores for searches containing two or more queries.
 
@@ -65,10 +63,10 @@ GET /_search
 
 ### Avoid using the `term` query for `text` fields [avoid-term-query-text-fields]
 
-By default, {{es}} changes the values of `text` fields during analysis. For example, the default [standard analyzer](/reference/data-analysis/text-analysis/analysis-standard-analyzer.md) changes `text` field values as follows:
+By default, {{es}} changes the values of `text` fields during analysis. For example, the default [standard analyzer](analysis-standard-analyzer.md) changes `text` field values as follows:
 
 * Removes most punctuation
-* Divides the remaining content into individual words, called [tokens](/reference/data-analysis/text-analysis/tokenizer-reference.md)
+* Divides the remaining content into individual words, called [tokens](analysis-tokenizers.md)
 * Lowercases the tokens
 
 To better search `text` fields, the `match` query also analyzes your provided search term before performing a search. This means the `match` query can search `text` fields for analyzed tokens rather than an exact term.
@@ -99,6 +97,8 @@ To see the difference in search results, try the following example.
     }
     ```
 
+    %  TEST[continued]
+
     Because `full_text` is a `text` field, {{es}} changes `Quick Brown Foxes!` to `[quick, brown, fox]` during analysis.
 
 3. Use the `term` query to search for `Quick Brown Foxes!` in the `full_text` field. Include the `pretty` parameter so the response is more readable.
@@ -114,9 +114,19 @@ To see the difference in search results, try the following example.
     }
     ```
 
+    %  TEST[continued]
+
     Because the `full_text` field no longer contains the **exact** term `Quick Brown Foxes!`, the `term` query search returns no results.
 
 4. Use the `match` query to search for `Quick Brown Foxes!` in the `full_text` field.
+
+    % 
+    % [source,console]
+    % ----
+    % POST my-index-000001/_refresh
+    % ----
+    % // TEST[continued]
+    % 
 
     ```console
     GET my-index-000001/_search?pretty
@@ -128,6 +138,8 @@ To see the difference in search results, try the following example.
       }
     }
     ```
+
+    %  TEST[continued]
 
     Unlike the `term` query, the `match` query analyzes your provided search term, `Quick Brown Foxes!`, before performing a search. The `match` query then returns any documents containing the `quick`, `brown`, or `fox` tokens in the `full_text` field.
 
@@ -162,6 +174,8 @@ To see the difference in search results, try the following example.
       }
     }
     ```
+
+    %  TESTRESPONSE[s/"took" : 1/"took" : $body.took/]
 
 
 

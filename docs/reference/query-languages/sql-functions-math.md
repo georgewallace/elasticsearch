@@ -1,14 +1,9 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-math.html
----
-
 # Mathematical Functions [sql-functions-math]
 
 All math and trigonometric functions require their input (where applicable) to be numeric.
 
 
-## Generic [sql-functions-math-generic]
+## Generic [sql-functions-math-generic] 
 
 ## `ABS` [sql-functions-math-abs]
 
@@ -140,7 +135,7 @@ EXPM1(numeric_exp) <1>
 
 **Output**: double numeric value
 
-**Description**: Returns [Euler’s number at the power](https://en.wikipedia.org/wiki/Exponential_function) of `numeric_exp` minus 1 (enumeric_exp - 1).
+**Description**: Returns [Euler’s number at the power](https://docs.oracle.com/javase/8/docs/api/java/lang/Math.md#expm1-double-) of `numeric_exp` minus 1 (enumeric_exp - 1).
 
 ```sql
 SELECT E(), EXP(2), EXPM1(2);
@@ -421,7 +416,7 @@ SELECT TRUNCATE(-345.153, -1) AS trimmed;
 ```
 
 
-## Trigonometric [sql-functions-math-trigonometric]
+## Trigonometric [sql-functions-math-trigonometric] 
 
 
 ## `ACOS` [sql-functions-math-acos]

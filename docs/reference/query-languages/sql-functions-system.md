@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-system.html
----
-
 # System Functions [sql-functions-system]
 
 These functions return metadata type of information about the system being queried.
@@ -38,7 +33,7 @@ USER()
 
 **Output**: string
 
-**Description**: Returns the username of the authenticated user executing the query. This function can return `null` in case [security](docs-content://deploy-manage/deploy/self-managed/installing-elasticsearch.md) is disabled.
+**Description**: Returns the username of the authenticated user executing the query. This function can return `null` in case [security](configuring-stack-security.md) is disabled.
 
 ```sql
 SELECT USER();

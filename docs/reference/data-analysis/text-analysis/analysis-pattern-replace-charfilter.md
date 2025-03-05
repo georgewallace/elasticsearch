@@ -1,7 +1,5 @@
 ---
 navigation_title: "Pattern replace"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-replace-charfilter.html
 ---
 
 # Pattern replace character filter [analysis-pattern-replace-charfilter]
@@ -22,7 +20,7 @@ Read more about [pathological regular expressions and how to avoid them](https:/
 
 
 
-## Configuration [_configuration_23]
+## Configuration [_configuration_23] 
 
 The `pattern_replace` character filter accepts the following parameters:
 
@@ -36,7 +34,7 @@ The `pattern_replace` character filter accepts the following parameters:
 :   Java regular expression [flags](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.md#field.summary). Flags should be pipe-separated, eg `"CASE_INSENSITIVE|COMMENTS"`.
 
 
-## Example configuration [_example_configuration_15]
+## Example configuration [_example_configuration_15] 
 
 In this example, we configure the `pattern_replace` character filter to replace any embedded dashes in numbers with underscores, i.e `123-456-789` → `123_456_789`:
 
@@ -71,13 +69,19 @@ POST my-index-000001/_analyze
 }
 ```
 
+%  TEST[s/\$1//]
+
+%  the test framework doesn’t like the $1 so we just throw it away rather than
+
+%  try to get it to work properly. At least we are still testing the charfilter.
+
 The above example produces the following terms:
 
 ```text
 [ My, credit, card, is, 123_456_789 ]
 ```
 
-::::{warning}
+::::{warning} 
 Using a replacement string that changes the length of the original text will work for search purposes, but will result in incorrect highlighting, as can be seen in the following example.
 ::::
 
@@ -126,6 +130,51 @@ POST my-index-000001/_analyze
 }
 ```
 
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "the",
+%       "start_offset": 0,
+%       "end_offset": 3,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "foo",
+%       "start_offset": 4,
+%       "end_offset": 6,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "bar",
+%       "start_offset": 7,
+%       "end_offset": 9,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "baz",
+%       "start_offset": 10,
+%       "end_offset": 13,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "method",
+%       "start_offset": 14,
+%       "end_offset": 20,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     }
+%   ]
+% }
+% ----------------------------
+% 
+
 The above returns the following terms:
 
 ```text
@@ -154,6 +203,8 @@ GET my-index-000001/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 The output from the above is:
 
@@ -191,6 +242,8 @@ The output from the above is:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took".*/"took": "$body.took",/]
 
 1. Note the incorrect highlight.
 

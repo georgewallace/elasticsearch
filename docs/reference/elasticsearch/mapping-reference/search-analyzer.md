@@ -1,13 +1,8 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-analyzer.html
----
+# `search_analyzer` [search-analyzer]
 
-# search_analyzer [search-analyzer]
+Usually, the same [analyzer](analyzer.md) should be applied at index time and at search time, to ensure that the terms in the query are in the same format as the terms in the inverted index.
 
-Usually, the same [analyzer](/reference/elasticsearch/mapping-reference/analyzer.md) should be applied at index time and at search time, to ensure that the terms in the query are in the same format as the terms in the inverted index.
-
-Sometimes, though, it can make sense to use a different analyzer at search time, such as when using the  [`edge_ngram`](/reference/data-analysis/text-analysis/analysis-edgengram-tokenizer.md) tokenizer for autocomplete or when using search-time synonyms.
+Sometimes, though, it can make sense to use a different analyzer at search time, such as when using the  [`edge_ngram`](analysis-edgengram-tokenizer.md) tokenizer for autocomplete or when using search-time synonyms.
 
 By default, queries will use the `analyzer` defined in the field mapping, but this can be overridden with the `search_analyzer` setting:
 
@@ -72,8 +67,8 @@ GET my-index-000001/_search
 
 See [Index time search-as-you- type](https://www.elastic.co/guide/en/elasticsearch/guide/2.x/_index_time_search_as_you_type.html) for a full explanation of this example.
 
-::::{tip}
-The `search_analyzer` setting can be updated on existing fields using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping). Note, that in order to do so, any existing "analyzer" setting and "type" need to be repeated in the updated field definition.
+::::{tip} 
+The `search_analyzer` setting can be updated on existing fields using the [update mapping API](indices-put-mapping.md). Note, that in order to do so, any existing "analyzer" setting and "type" need to be repeated in the updated field definition.
 ::::
 
 

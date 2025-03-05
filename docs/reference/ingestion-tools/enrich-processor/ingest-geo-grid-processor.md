@@ -1,13 +1,11 @@
 ---
 navigation_title: "Geo-grid"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest-geo-grid-processor.html
 ---
 
 # Geo-grid processor [ingest-geo-grid-processor]
 
 
-Converts geo-grid definitions of grid tiles or cells to regular bounding boxes or polygons which describe their shape. This is useful if there is a need to interact with the tile shapes as spatially indexable fields. For example the `geotile` field value `"4/8/3"` could be indexed as a string field, but that would not enable any spatial operations on it. Instead, convert it to the value `"POLYGON ((0.0 40.979898069620134, 22.5 40.979898069620134, 22.5 55.77657301866769, 0.0 55.77657301866769, 0.0 40.979898069620134))"`, which can be indexed as a [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) field.
+Converts geo-grid definitions of grid tiles or cells to regular bounding boxes or polygons which describe their shape. This is useful if there is a need to interact with the tile shapes as spatially indexable fields. For example the `geotile` field value `"4/8/3"` could be indexed as a string field, but that would not enable any spatial operations on it. Instead, convert it to the value `"POLYGON ((0.0 40.979898069620134, 22.5 40.979898069620134, 22.5 55.77657301866769, 0.0 55.77657301866769, 0.0 40.979898069620134))"`, which can be indexed as a [`geo_shape`](geo-shape.md) field.
 
 $$$geo-grid-processor-options$$$
 
@@ -23,9 +21,9 @@ $$$geo-grid-processor-options$$$
 | `ignore_missing` | no | - | If `true` and `field` does not exist, the processor quietly exits without modifying the document. |
 | `target_format` | no | "GeoJSON" | Which format to save the generated polygon in. Either `WKT` or `GeoJSON`. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 To demonstrate the usage of this ingest processor, consider an index called `geocells` with a mapping for a field `geocell` of type `geo_shape`. In order to populate that index using `geotile` and `geohex` fields, define two ingest processors:
@@ -70,7 +68,7 @@ PUT _ingest/pipeline/geohex2shape
 }
 ```
 
-These two pipelines can be used to index documents into the `geocells` index. The `geocell` field will be the string version of either a rectangular tile with format `z/x/y` or an H3 cell address, depending on which ingest processor we use when indexing the document. The resulting geometry will be represented and indexed as a [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) field in either [GeoJSON](http://geojson.org) or the [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) format.
+These two pipelines can be used to index documents into the `geocells` index. The `geocell` field will be the string version of either a rectangular tile with format `z/x/y` or an H3 cell address, depending on which ingest processor we use when indexing the document. The resulting geometry will be represented and indexed as a [`geo_shape`](geo-shape.md) field in either [GeoJSON](http://geojson.org) or the [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) format.
 
 ## Example: Rectangular geotile with envelope in GeoJSON [_example_rectangular_geotile_with_envelope_in_geojson]
 
@@ -84,6 +82,8 @@ PUT geocells/_doc/1?pipeline=geotile2shape
 
 GET geocells/_doc/1
 ```
+
+%  TEST[continued]
 
 The response shows how the ingest-processor has replaced the `geocell` field with an indexable `geo_shape`:
 
@@ -107,7 +107,9 @@ The response shows how the ingest-processor has replaced the `geocell` field wit
 }
 ```
 
-![Kibana map with showing the geotile at 4/8/5 and its four child cells](../../../images/geogrid_tile.png "")
+%  TESTRESPONSE[s/"_version": \d+/"_version": $body._version/ s/"_seq_no": \d+/"_seq_no": $body._seq_no/ s/"_primary_term": 1/"_primary_term": $body._primary_term/]
+
+![Kibana map with showing the geotile at 4/8/5 and its four child cells](images/geogrid_tile.png "")
 
 
 ## Example: Hexagonal geohex with polygon in WKT format [_example_hexagonal_geohex_with_polygon_in_wkt_format]
@@ -122,6 +124,8 @@ PUT geocells/_doc/1?pipeline=geohex2shape
 
 GET geocells/_doc/1
 ```
+
+%  TEST[continued]
 
 The response shows how the ingest-processor has replaced the `geocell` field with an indexable `geo_shape`:
 
@@ -139,12 +143,14 @@ The response shows how the ingest-processor has replaced the `geocell` field wit
 }
 ```
 
-![Kibana map with showing an H3 cell](../../../images/geogrid_h3.png "")
+%  TESTRESPONSE[s/"_version": \d+/"_version": $body._version/ s/"_seq_no": \d+/"_seq_no": $body._seq_no/ s/"_primary_term": 1/"_primary_term": $body._primary_term/]
+
+![Kibana map with showing an H3 cell](images/geogrid_h3.png "")
 
 
 ## Example: Enriched tile details [_example_enriched_tile_details]
 
-As described in [geo_grid processor options](#geo-grid-processor-options), there are many other fields that can be set, which will enrich the information available. For example, with H3 tiles there are 7 child tiles, but only the first is fully contained by the parent. The remaining six are only partially overlapping the parent, and there exist a further six non-child tiles that overlap the parent. This can be investigated by adding parent and child additional fields to the ingest-processor:
+As described in [geo_grid processor options](ingest-geo-grid-processor.md#geo-grid-processor-options), there are many other fields that can be set, which will enrich the information available. For example, with H3 tiles there are 7 child tiles, but only the first is fully contained by the parent. The remaining six are only partially overlapping the parent, and there exist a further six non-child tiles that overlap the parent. This can be investigated by adding parent and child additional fields to the ingest-processor:
 
 ```console
 PUT _ingest/pipeline/geohex2shape
@@ -178,6 +184,8 @@ PUT geocells/_doc/1?pipeline=geohex2shape
 
 GET geocells/_doc/1
 ```
+
+%  TEST[continued]
 
 The response from this index request:
 
@@ -215,8 +223,10 @@ The response from this index request:
 }
 ```
 
+%  TESTRESPONSE[s/"_version": \d+/"_version": $body._version/ s/"_seq_no": \d+/"_seq_no": $body._seq_no/ s/"_primary_term": 1/"_primary_term": $body._primary_term/]
+
 This additional information will then enable, for example, creating a visualization of the H3 cell, its children and its intersecting non-children cells.
 
-![Kibana map with three H3 layers: cell](../../../images/geogrid_h3_children.png "")
+![Kibana map with three H3 layers: cell](images/geogrid_h3_children.png "")
 
 

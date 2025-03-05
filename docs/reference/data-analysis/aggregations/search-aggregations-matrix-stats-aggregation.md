@@ -1,7 +1,5 @@
 ---
 navigation_title: "Matrix stats"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-matrix-stats-aggregation.html
 ---
 
 # Matrix stats aggregation [search-aggregations-matrix-stats-aggregation]
@@ -30,10 +28,28 @@ The `matrix_stats` aggregation is a numeric aggregation that computes the follow
 `correlation`
 :   The covariance matrix scaled to a range of -1 to 1, inclusive. Describes the relationship between field distributions.
 
-::::{important}
+::::{important} 
 Unlike other metric aggregations, the `matrix_stats` aggregation does not support scripting.
 ::::
 
+
+% 
+% [source,js]
+% --------------------------------------------------
+% PUT /statistics/_doc/0
+% {"poverty": 24.0, "income": 50000.0}
+% 
+% PUT /statistics/_doc/1
+% {"poverty": 13.0, "income": 95687.0}
+% 
+% PUT /statistics/_doc/2
+% {"poverty": 69.0, "income": 7890.0}
+% 
+% POST /_refresh
+% --------------------------------------------------
+% // NOTCONSOLE
+% // TESTSETUP
+% 
 
 The following example demonstrates the use of matrix stats to describe the relationship between income and poverty.
 
@@ -51,6 +67,8 @@ GET /_search
   }
 }
 ```
+
+%  TEST[s/_search/_search\?filter_path=aggregations/]
 
 The aggregation type is `matrix_stats` and the `fields` setting defines the set of fields (as an array) for computing the statistics. The above request returns the following response:
 
@@ -95,6 +113,10 @@ The aggregation type is `matrix_stats` and the `fields` setting defines the set 
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\.//]
+
+%  TESTRESPONSE[s/: (\-)?[0-9\.E]+/: $body.$_path/]
 
 The `doc_count` field indicates the number of documents involved in the computation of the statistics.
 

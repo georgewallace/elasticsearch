@@ -1,13 +1,11 @@
 ---
-navigation_title: "Rank Vectors"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/master/rank-vectors.html
+navigation_title: " Rank Vectors "
 ---
 
 # Rank Vectors [rank-vectors]
 
 
-::::{warning}
+::::{warning} 
 This functionality is in technical preview and may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
@@ -35,6 +33,8 @@ PUT my-rank-vectors-float/_doc/1
   "my_vector" : [[0.5, 10, 6], [-0.5, 10, 10]]
 }
 ```
+
+%  TESTSETUP
 
 In addition to the `float` element type, `byte` and `bit` element types are also supported.
 
@@ -109,7 +109,7 @@ $$$rank-vectors-element-type$$$
 
 ## Synthetic `_source` [rank-vectors-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
@@ -119,7 +119,7 @@ Synthetic `_source` is Generally Available only for TSDB indices (indices that h
 
 ## Scoring with rank vectors [rank-vectors-scoring]
 
-Rank vectors can be accessed and used in [`script_score` queries](/reference/query-languages/query-dsl-script-score-query.md).
+Rank vectors can be accessed and used in [`script_score` queries](query-dsl-script-score-query.md).
 
 For example, the following query scores documents based on the maxSim similarity between the query vector and the vectors stored in the `my_vector` field:
 

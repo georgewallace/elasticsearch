@@ -1,7 +1,5 @@
 ---
 navigation_title: "Unsigned long"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/unsigned-long.html
 ---
 
 # Unsigned long field type [unsigned-long]
@@ -36,6 +34,8 @@ POST /my_index/_bulk?refresh
 {"my_counter": 18446744073709551615}
 ```
 
+% TEST[continued]
+
 Term queries accept any numbers in a numeric or string form.
 
 ```console
@@ -48,6 +48,8 @@ GET /my_index/_search
     }
 }
 ```
+
+% TEST[continued]
 
 Range query terms can contain values with decimal parts. In this case {{es}} converts them to integer values: `gte` and `gt` terms are converted to the nearest integer up inclusive, and `lt` and `lte` ranges are converted to the nearest integer down inclusive.
 
@@ -67,11 +69,13 @@ GET /my_index/_search
 }
 ```
 
+% TEST[continued]
+
 ## Sort values [_sort_values_2]
 
 For queries with sort on an `unsigned_long` field, for a particular document {{es}} returns a sort value of the type `long` if the value of this document is within the range of long values, or of the type `BigInteger` if the value exceeds this range.
 
-::::{note}
+::::{note} 
 REST clients need to be able to handle big integer values in JSON to support this field type correctly.
 ::::
 
@@ -85,6 +89,8 @@ GET /my_index/_search
     "sort" : {"my_counter" : "desc"}
 }
 ```
+
+% TEST[continued]
 
 
 ## Stored fields [_stored_fields]
@@ -119,6 +125,8 @@ GET /my_index/_search
 }
 ```
 
+% TEST[continued]
+
 Alternatively, you can treat the unsigned long type as `BigInteger` in your scripts by using the field API. For example, this script treats `my_counter` as `BigInteger` with a default value of `BigInteger.ZERO`:
 
 ```js
@@ -126,6 +134,8 @@ Alternatively, you can treat the unsigned long type as `BigInteger` in your scri
     "source": "field('my_counter').asBigInteger(BigInteger.ZERO)"
 }
 ```
+
+%  NOTCONSOLE
 
 For scripts that need to return float or double values, you can further convert `BigInteger` values to double or float:
 
@@ -142,6 +152,8 @@ GET /my_index/_search
     }
 }
 ```
+
+% TEST[continued]
 
 
 ## Queries with mixed numeric types [_queries_with_mixed_numeric_types]

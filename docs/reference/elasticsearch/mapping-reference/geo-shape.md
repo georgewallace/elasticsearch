@@ -1,35 +1,33 @@
 ---
 navigation_title: "Geoshape"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
 ---
 
 # Geoshape field type [geo-shape]
 
 
-The `geo_shape` data type facilitates the indexing of and searching with arbitrary geoshapes such as rectangles, lines and polygons. If the data being indexed contains shapes other than just points, it is necessary to use this mapping. If the data contains only points, it can be indexed as either [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) or `geo_shape`.
+The `geo_shape` data type facilitates the indexing of and searching with arbitrary geoshapes such as rectangles, lines and polygons. If the data being indexed contains shapes other than just points, it is necessary to use this mapping. If the data contains only points, it can be indexed as either [`geo_point`](geo-point.md) or `geo_shape`.
 
 Documents using this type can be used:
 
 * to find geoshapes within:
 
-    * a [bounding box](/reference/query-languages/query-dsl-geo-bounding-box-query.md)
-    * a certain [distance](/reference/query-languages/query-dsl-geo-distance-query.md) of a central point
-    * a [`geo_shape` query](/reference/query-languages/query-dsl-geo-shape-query.md) (for example, intersecting polygons).
+    * a [bounding box](query-dsl-geo-bounding-box-query.md)
+    * a certain [distance](query-dsl-geo-distance-query.md) of a central point
+    * a [`geo_shape` query](query-dsl-geo-shape-query.md) (for example, intersecting polygons).
 
 * to aggregate documents by geographic grids:
 
-    * either [`geo_hash`](/reference/data-analysis/aggregations/search-aggregations-bucket-geohashgrid-aggregation.md)
-    * or [`geo_tile`](/reference/data-analysis/aggregations/search-aggregations-bucket-geotilegrid-aggregation.md)
-    * or [`geo_hex`](/reference/data-analysis/aggregations/search-aggregations-bucket-geohexgrid-aggregation.md)
+    * either [`geo_hash`](search-aggregations-bucket-geohashgrid-aggregation.md)
+    * or [`geo_tile`](search-aggregations-bucket-geotilegrid-aggregation.md)
+    * or [`geo_hex`](search-aggregations-bucket-geohexgrid-aggregation.md)
 
 
 
-### Mapping Options [geo-shape-mapping-options]
+### Mapping Options [geo-shape-mapping-options] 
 
 The `geo_shape` mapping maps GeoJSON or WKT geometry objects to the `geo_shape` type. To enable it, users must explicitly map fields to the `geo_shape` type.
 
-::::{note}
+::::{note} 
 In [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) and [WKT](https://www.ogc.org/standard/sfa/), and therefore Elasticsearch, the correct **coordinate order is longitude, latitude (X, Y)** within coordinate arrays. This differs from many Geospatial APIs (e.g., Google Maps) that generally use the colloquial latitude, longitude (Y, X).
 
 ::::
@@ -37,20 +35,20 @@ In [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) and [WKT](https://ww
 
 | Option | Description | Default |
 | --- | --- | --- |
-| `orientation` | Optional. Default [orientation](#polygon-orientation) for the field’s WKT polygons.<br><br>This parameter sets and returns only a `RIGHT` (counterclockwise) or `LEFT` (clockwise) value. However, you can specify either value in multiple ways.<br><br>To set `RIGHT`, use one of the following arguments or its uppercase variant:<br><br>* `right`<br>* `counterclockwise`<br>* `ccw`<br><br>To set `LEFT`, use one of the following arguments or its uppercase variant:<br><br>* `left`<br>* `clockwise`<br>* `cw`<br> | `RIGHT` |
+| `orientation` | Optional. Default [orientation](geo-shape.md#polygon-orientation) for the field’s WKT polygons.<br><br>This parameter sets and returns only a `RIGHT` (counterclockwise) or `LEFT` (clockwise) value. However, you can specify either value in multiple ways.<br><br>To set `RIGHT`, use one of the following arguments or its uppercase variant:<br><br>* `right`<br>* `counterclockwise`<br>* `ccw`<br><br>To set `LEFT`, use one of the following arguments or its uppercase variant:<br><br>* `left`<br>* `clockwise`<br>* `cw`<br> | `RIGHT` |
 | `ignore_malformed` | If true, malformed GeoJSON or WKT shapes are ignored. Iffalse (default), malformed GeoJSON and WKT shapes throw an exception and reject theentire document. | `false` |
 | `ignore_z_value` | If `true` (default) three dimension points will be accepted (stored in source)but only latitude and longitude values will be indexed; the third dimension is ignored. If `false`,geopoints containing any more than latitude and longitude (two dimensions) values throw an exceptionand reject the whole document. | `true` |
 | `coerce` | If `true` unclosed linear rings in polygons will be automatically closed. | `false` |
-| `index` | Should the field be quickly searchable? Accepts `true` (default) and `false`.Fields that only have [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) enabled can still be queried, albeit slower. | `true` |
+| `index` | Should the field be quickly searchable? Accepts `true` (default) and `false`.Fields that only have [`doc_values`](doc-values.md) enabled can still be queried, albeit slower. | `true` |
 | `doc_values` | Should the field be stored on disk in a column-stride fashion,so that it can later be used for aggregations or scripting? | `true` |
 
 
-### Indexing approach [geoshape-indexing-approach]
+### Indexing approach [geoshape-indexing-approach] 
 
 Geoshape types are indexed by decomposing the shape into a triangular mesh and indexing each triangle as a 7 dimension point in a BKD tree. This provides near perfect spatial resolution (down to 1e-7 decimal degree precision) since all spatial relations are computed using an encoded vector representation of the original shape. Performance of the tessellator primarily depends on the number of vertices that define the polygon/multi-polygon.
 
 
-#### Example [_example]
+#### Example [_example] 
 
 ```console
 PUT /example
@@ -65,8 +63,10 @@ PUT /example
 }
 ```
 
+%  TESTSETUP
 
-### Input Structure [input-structure]
+
+### Input Structure [input-structure] 
 
 Shapes can be represented using either the [GeoJSON](http://geojson.org) or [Well-Known Text](https://docs.opengeospatial.org/is/12-063r5/12-063r5.md) (WKT) format. The following table provides a mapping of GeoJSON and WKT to Elasticsearch types:
 
@@ -81,14 +81,14 @@ Shapes can be represented using either the [GeoJSON](http://geojson.org) or [Wel
 | `GeometryCollection` | `GEOMETRYCOLLECTION` | `geometrycollection` | A GeoJSON shape similar to the`multi*` shapes except that multiple types can coexist (e.g., a Pointand a LineString). |
 | `N/A` | `BBOX` | `envelope` | A bounding rectangle, or envelope, specified byspecifying only the top left and bottom right points. |
 
-::::{note}
+::::{note} 
 For all types, both the inner `type` and `coordinates` fields are required.
 
 ::::
 
 
 
-#### [Point](http://geojson.org/geojson-spec.md#id2) [geo-point-type]
+#### [Point](http://geojson.org/geojson-spec.md#id2) [geo-point-type] 
 
 A point is a single geographic coordinate, such as the location of a building or the current position given by a smartphone’s Geolocation API. The following is an example of a point in GeoJSON.
 
@@ -112,7 +112,7 @@ POST /example/_doc
 ```
 
 
-#### [LineString](http://geojson.org/geojson-spec.md#id3) [geo-linestring]
+#### [LineString](http://geojson.org/geojson-spec.md#id3) [geo-linestring] 
 
 A linestring defined by an array of two or more positions. By specifying only two points, the linestring will represent a straight line. Specifying more than two points creates an arbitrary path. The following is an example of a linestring in GeoJSON.
 
@@ -138,7 +138,7 @@ POST /example/_doc
 The above linestring would draw a straight line starting at the White House to the US Capitol Building.
 
 
-#### [Polygon](http://geojson.org/geojson-spec.md#id4) [geo-polygon]
+#### [Polygon](http://geojson.org/geojson-spec.md#id4) [geo-polygon] 
 
 A polygon is defined by a list of a list of points. The first and last points in each (outer) list must be the same (the polygon must be closed). The following is an example of a polygon in GeoJSON.
 
@@ -188,11 +188,11 @@ POST /example/_doc
 ```
 
 
-#### Polygon orientation [polygon-orientation]
+#### Polygon orientation [polygon-orientation] 
 
 A polygon’s orientation indicates the order of its vertices: `RIGHT` (counterclockwise) or `LEFT` (clockwise). {{es}} uses a polygon’s orientation to determine if it crosses the international dateline (+/-180° longitude).
 
-You can set a default orientation for WKT polygons using the [`orientation` mapping parameter](#geo-shape-mapping-options). This is because the WKT specification doesn’t specify or enforce a default orientation.
+You can set a default orientation for WKT polygons using the [`orientation` mapping parameter](geo-shape.md#geo-shape-mapping-options). This is because the WKT specification doesn’t specify or enforce a default orientation.
 
 GeoJSON polygons use a default orientation of `RIGHT`, regardless of `orientation` mapping parameter’s value. This is because the [GeoJSON specification](https://tools.ietf.org/html/rfc7946#section-3.1.6) mandates that an outer polygon use a counterclockwise orientation and interior shapes use a clockwise orientation.
 
@@ -216,7 +216,7 @@ POST /example/_doc
 If the difference between a polygon’s minimum longitude and the maximum longitude is 180° or greater, {{es}} checks whether the polygon’s document-level `orientation` differs from the default orientation. If the orientation differs, {{es}} considers the polygon to cross the international dateline and splits the polygon at the dateline.
 
 
-#### [MultiPoint](http://geojson.org/geojson-spec.md#id5) [geo-multipoint]
+#### [MultiPoint](http://geojson.org/geojson-spec.md#id5) [geo-multipoint] 
 
 The following is an example of a list of GeoJSON points:
 
@@ -242,7 +242,7 @@ POST /example/_doc
 ```
 
 
-#### [MultiLineString](http://geojson.org/geojson-spec.md#id6) [geo-multilinestring]
+#### [MultiLineString](http://geojson.org/geojson-spec.md#id6) [geo-multilinestring] 
 
 The following is an example of a list of GeoJSON linestrings:
 
@@ -270,7 +270,7 @@ POST /example/_doc
 ```
 
 
-#### [MultiPolygon](http://geojson.org/geojson-spec.md#id7) [geo-multipolygon]
+#### [MultiPolygon](http://geojson.org/geojson-spec.md#id7) [geo-multipolygon] 
 
 The following is an example of a list of GeoJSON polygons (second polygon contains a hole):
 
@@ -298,7 +298,7 @@ POST /example/_doc
 ```
 
 
-#### [Geometry Collection](http://geojson.org/geojson-spec.md#geometrycollection) [geo-geometry_collection]
+#### [Geometry Collection](http://geojson.org/geojson-spec.md#geometrycollection) [geo-geometry_collection] 
 
 The following is an example of a collection of GeoJSON geometry objects:
 
@@ -331,7 +331,7 @@ POST /example/_doc
 ```
 
 
-#### Envelope [_envelope]
+#### Envelope [_envelope] 
 
 Elasticsearch supports an `envelope` type, which consists of coordinates for upper left and lower right points of the shape to represent a bounding rectangle in the format `[[minLon, maxLat], [maxLon, minLat]]`:
 
@@ -357,18 +357,18 @@ POST /example/_doc
 ```
 
 
-#### Circle [_circle]
+#### Circle [_circle] 
 
-Neither GeoJSON nor WKT supports a point-radius circle type. Instead, use a [circle ingest processor](/reference/ingestion-tools/enrich-processor/ingest-circle-processor.md) to approximate the circle as a [`polygon`](#geo-polygon).
+Neither GeoJSON nor WKT supports a point-radius circle type. Instead, use a [circle ingest processor](ingest-circle-processor.md) to approximate the circle as a [`polygon`](geo-shape.md#geo-polygon).
 
 
-### Sorting and Retrieving index Shapes [_sorting_and_retrieving_index_shapes]
+### Sorting and Retrieving index Shapes [_sorting_and_retrieving_index_shapes] 
 
 Due to the complex input structure and index representation of shapes, it is not currently possible to sort shapes or retrieve their fields directly. The `geo_shape` value is only retrievable through the `_source` field.
 
 ## Synthetic source [geo-shape-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 

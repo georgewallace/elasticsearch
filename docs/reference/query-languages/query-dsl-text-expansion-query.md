@@ -1,7 +1,5 @@
 ---
 navigation_title: "Text expansion"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-text-expansion-query.html
 ---
 
 # Text expansion query [query-dsl-text-expansion-query]
@@ -10,20 +8,20 @@ mapped_pages:
 ::::{admonition} Deprecated in 8.15.0.
 :class: warning
 
-This query has been replaced by [Sparse vector](/reference/query-languages/query-dsl-sparse-vector-query.md).
+This query has been replaced by [Sparse vector](query-dsl-sparse-vector-query.md).
 ::::
 
 
 ::::{admonition} Deprecation usage note
-You can continue using `rank_features` fields with `text_expansion` queries in the current version. However, if you plan to upgrade, we recommend updating mappings to use the `sparse_vector` field type and [reindexing your data](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-reindex). This will allow you to take advantage of the new capabilities and improvements available in newer versions.
+You can continue using `rank_features` fields with `text_expansion` queries in the current version. However, if you plan to upgrade, we recommend updating mappings to use the `sparse_vector` field type and [reindexing your data](docs-reindex.md). This will allow you to take advantage of the new capabilities and improvements available in newer versions.
 
 ::::
 
 
-The text expansion query uses a {{nlp}} model to convert the query text into a list of token-weight pairs which are then used in a query against a [sparse vector](/reference/elasticsearch/mapping-reference/sparse-vector.md) or [rank features](/reference/elasticsearch/mapping-reference/rank-features.md) field.
+The text expansion query uses a {{nlp}} model to convert the query text into a list of token-weight pairs which are then used in a query against a [sparse vector](sparse-vector.md) or [rank features](rank-features.md) field.
 
 
-## Example request [text-expansion-query-ex-request]
+## Example request [text-expansion-query-ex-request] 
 
 ```console
 GET _search
@@ -39,14 +37,16 @@ GET _search
 }
 ```
 
+%  TEST[skip: TBD]
 
-## Top level parameters for `text_expansion` [text-expansion-query-params]
+
+## Top level parameters for `text_expansion` [text-expansion-query-params] 
 
 `<sparse_vector_field>`
 :   (Required, object) The name of the field that contains the token-weight pairs the NLP model created based on the input text.
 
 
-## Top level parameters for `<sparse_vector_field>` [text-expansion-rank-feature-field-params]
+## Top level parameters for `<sparse_vector_field>` [text-expansion-rank-feature-field-params] 
 
 `model_id`
 :   (Required, string) The ID of the model to use to convert the query text into token-weight pairs. It must be the same model ID that was used to create the tokens from the input text.
@@ -68,15 +68,15 @@ GET _search
     `only_score_pruned_tokens`
     :   (Optional, boolean) [preview] If `true` we only input pruned tokens into scoring, and discard non-pruned tokens. It is strongly recommended to set this to `false` for the main query, but this can be set to `true` for a rescore query to get more relevant results. Default: `false`.
 
-    ::::{note}
+    ::::{note} 
     The default values for `tokens_freq_ratio_threshold` and `tokens_weight_threshold` were chosen based on tests using ELSER that provided the most optimal results.
     ::::
 
 
 
-## Example ELSER query [text-expansion-query-example]
+## Example ELSER query [text-expansion-query-example] 
 
-The following is an example of the `text_expansion` query that references the ELSER model to perform semantic search. For a more detailed description of how to perform semantic search by using ELSER and the `text_expansion` query, refer to [this tutorial](docs-content://solutions/search/semantic-search/semantic-search-elser-ingest-pipelines.md).
+The following is an example of the `text_expansion` query that references the ELSER model to perform semantic search. For a more detailed description of how to perform semantic search by using ELSER and the `text_expansion` query, refer to [this tutorial](semantic-search-elser.md).
 
 ```console
 GET my-index/_search
@@ -92,7 +92,9 @@ GET my-index/_search
 }
 ```
 
-Multiple `text_expansion` queries can be combined with each other or other query types. This can be achieved by wrapping them in [boolean query clauses](/reference/query-languages/query-dsl-bool-query.md) and using linear boosting:
+%  TEST[skip: TBD]
+
+Multiple `text_expansion` queries can be combined with each other or other query types. This can be achieved by wrapping them in [boolean query clauses](query-dsl-bool-query.md) and using linear boosting:
 
 ```console
 GET my-index/_search
@@ -134,7 +136,9 @@ GET my-index/_search
 }
 ```
 
-This can also be achieved using [reciprocal rank fusion (RRF)](/reference/elasticsearch/rest-apis/reciprocal-rank-fusion.md), through an [`rrf` retriever](/reference/elasticsearch/rest-apis/retrievers.md#rrf-retriever) with multiple [`standard` retrievers](/reference/elasticsearch/rest-apis/retrievers.md#standard-retriever).
+%  TEST[skip: TBD]
+
+This can also be achieved using [reciprocal rank fusion (RRF)](rrf.md), through an [`rrf` retriever](retriever.md#rrf-retriever) with multiple [`standard` retrievers](retriever.md#standard-retriever).
 
 ```console
 GET my-index/_search
@@ -187,12 +191,14 @@ GET my-index/_search
 }
 ```
 
+%  TEST[skip: TBD]
 
-## Example ELSER query with pruning configuration and rescore [text-expansion-query-with-pruning-config-and-rescore-example]
+
+## Example ELSER query with pruning configuration and rescore [text-expansion-query-with-pruning-config-and-rescore-example] 
 
 The following is an extension to the above example that adds a [preview] pruning configuration to the `text_expansion` query. The pruning configuration identifies non-significant tokens to prune from the query in order to improve query performance.
 
-Token pruning happens at the shard level. While this should result in the same tokens being labeled as insignificant across shards, this is not guaranteed based on the composition of each shard. Therefore, if you are running `text_expansion` with a `pruning_config` on a multi-shard index, we strongly recommend adding a [Rescore filtered search results](/reference/elasticsearch/rest-apis/filter-search-results.md#rescore) function with the tokens that were originally pruned from the query. This will help mitigate any shard-level inconsistency with pruned tokens and provide better relevance overall.
+Token pruning happens at the shard level. While this should result in the same tokens being labeled as insignificant across shards, this is not guaranteed based on the composition of each shard. Therefore, if you are running `text_expansion` with a `pruning_config` on a multi-shard index, we strongly recommend adding a [Rescore filtered search results](filter-search-results.md#rescore) function with the tokens that were originally pruned from the query. This will help mitigate any shard-level inconsistency with pruned tokens and provide better relevance overall.
 
 ```console
 GET my-index/_search
@@ -231,7 +237,9 @@ GET my-index/_search
 }
 ```
 
-::::{note}
+% TEST[skip: TBD]
+
+::::{note} 
 Depending on your data, the text expansion query may be faster with `track_total_hits: false`.
 
 ::::

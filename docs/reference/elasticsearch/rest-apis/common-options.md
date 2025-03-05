@@ -1,29 +1,21 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html
-applies_to:
-  stack: all
-navigation_title: Common options
----
-
-# Elasticsearch API common options [common-options]
+# Common options [common-options]
 
 All {{es}} REST APIs support the following options.
 
 
-## Pretty Results [_pretty_results]
+## Pretty Results [_pretty_results] 
 
 When appending `?pretty=true` to any request made, the JSON returned will be pretty formatted (use it for debugging only!). Another option is to set `?format=yaml` which will cause the result to be returned in the (sometimes) more readable yaml format.
 
 
-## Human readable output [_human_readable_output]
+## Human readable output [_human_readable_output] 
 
 Statistics are returned in a format suitable for humans (e.g. `"exists_time": "1h"` or `"size": "1kb"`) and for computers (e.g. `"exists_time_in_millis": 3600000` or `"size_in_bytes": 1024`). The human readable values can be turned off by adding `?human=false` to the query string. This makes sense when the stats results are being consumed by a monitoring tool, rather than intended for human consumption. The default for the `human` flag is `false`.
 
 
-## Date Math [date-math]
+## Date Math [date-math] 
 
-Most parameters which accept a formatted date value — such as `gt` and `lt` in [`range` queries](/reference/query-languages/query-dsl-range-query.md), or `from` and `to` in [`daterange` aggregations](/reference/data-analysis/aggregations/search-aggregations-bucket-daterange-aggregation.md) — understand date maths.
+Most parameters which accept a formatted date value — such as `gt` and `lt` in [`range` queries](query-dsl-range-query.md), or `from` and `to` in [`daterange` aggregations](search-aggregations-bucket-daterange-aggregation.md) — understand date maths.
 
 The expression starts with an anchor date, which can either be `now`, or a date string ending with `||`. This anchor date can optionally be followed by one or more maths expressions:
 
@@ -31,7 +23,7 @@ The expression starts with an anchor date, which can either be `now`, or a date 
 * `-1d`: Subtract one day
 * `/d`: Round down to the nearest day
 
-The supported time units differ from those supported by [time units](/reference/elasticsearch/rest-apis/api-conventions.md#time-units) for durations. The supported units are:
+The supported time units differ from those supported by [time units](api-conventions.md#time-units) for durations. The supported units are:
 
 `y`
 :   Years
@@ -72,13 +64,15 @@ Assuming `now` is `2001-01-01 12:00:00`, some examples are:
 :   `2001-02-01` in milliseconds plus one month. Resolves to: `2001-03-01 00:00:00`
 
 
-## Response Filtering [common-options-response-filtering]
+## Response Filtering [common-options-response-filtering] 
 
 All REST APIs accept a `filter_path` parameter that can be used to reduce the response returned by Elasticsearch. This parameter takes a comma separated list of filters expressed with the dot notation:
 
 ```console
 GET /_search?q=kimchy&filter_path=took,hits.hits._id,hits.hits._score
 ```
+
+%  TEST[setup:my_index]
 
 Responds:
 
@@ -96,11 +90,17 @@ Responds:
 }
 ```
 
+%  TESTRESPONSE[s/"took" : 3/"took" : $body.took/]
+
+%  TESTRESPONSE[s/1.6375021/$body.hits.hits.0._score/]
+
 It also supports the `*` wildcard character to match any field or part of a field’s name:
 
 ```console
 GET /_cluster/state?filter_path=metadata.indices.*.stat*
 ```
+
+%  TEST[s/^/PUT my-index-000001\n/]
 
 Responds:
 
@@ -119,6 +119,8 @@ And the `**` wildcard can be used to include fields without knowing the exact pa
 ```console
 GET /_cluster/state?filter_path=routing_table.indices.**.state
 ```
+
+%  TEST[s/^/PUT my-index-000001\n/]
 
 Responds:
 
@@ -142,6 +144,8 @@ It is also possible to exclude one or more fields by prefixing the filter with t
 GET /_count?filter_path=-_shards
 ```
 
+%  TEST[setup:my_index]
+
 Responds:
 
 ```console-result
@@ -155,6 +159,8 @@ And for more control, both inclusive and exclusive filters can be combined in th
 ```console
 GET /_cluster/state?filter_path=metadata.indices.*.state,-metadata.indices.logstash-*
 ```
+
+%  TEST[s/^/PUT my-index-000001\nPUT my-index-000002\nPUT my-index-000003\nPUT logstash-2016.01\n/]
 
 Responds:
 
@@ -170,7 +176,7 @@ Responds:
 }
 ```
 
-Note that Elasticsearch sometimes returns directly the raw value of a field, like the `_source` field. If you want to filter `_source` fields, you should consider combining the already existing `_source` parameter (see [Get API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get) for more details) with the `filter_path` parameter like this:
+Note that Elasticsearch sometimes returns directly the raw value of a field, like the `_source` field. If you want to filter `_source` fields, you should consider combining the already existing `_source` parameter (see [Get API](docs-get.md#get-source-filtering) for more details) with the `filter_path` parameter like this:
 
 ```console
 POST /library/_doc?refresh
@@ -197,13 +203,15 @@ GET /_search?filter_path=hits.hits._source&_source=title&sort=rating:desc
 ```
 
 
-## Flat Settings [_flat_settings]
+## Flat Settings [_flat_settings] 
 
 The `flat_settings` flag affects rendering of the lists of settings. When the `flat_settings` flag is `true`, settings are returned in a flat format:
 
 ```console
 GET my-index-000001/_settings?flat_settings=true
 ```
+
+%  TEST[setup:my_index]
 
 Returns:
 
@@ -223,11 +231,19 @@ Returns:
 }
 ```
 
+%  TESTRESPONSE[s/1474389951325/$body.my-index-000001.settings.index\\\\.creation_date/]
+
+%  TESTRESPONSE[s/n6gzFZTgS664GUfx0Xrpjw/$body.my-index-000001.settings.index\\\\.uuid/]
+
+%  TESTRESPONSE[s/"index.version.created": \.\.\./"index.version.created": $body.my-index-000001.settings.index\\\\.version\\\\.created/]
+
 When the `flat_settings` flag is `false`, settings are returned in a more human readable structured format:
 
 ```console
 GET my-index-000001/_settings?flat_settings=false
 ```
+
+%  TEST[setup:my_index]
 
 Returns:
 
@@ -257,10 +273,16 @@ Returns:
 }
 ```
 
+%  TESTRESPONSE[s/1474389951325/$body.my-index-000001.settings.index.creation_date/]
+
+%  TESTRESPONSE[s/n6gzFZTgS664GUfx0Xrpjw/$body.my-index-000001.settings.index.uuid/]
+
+%  TESTRESPONSE[s/"created": \.\.\./"created": $body.my-index-000001.settings.index.version.created/]
+
 By default `flat_settings` is set to `false`.
 
 
-## Fuzziness [fuzziness]
+## Fuzziness [fuzziness] 
 
 Some queries and APIs support parameters to allow inexact *fuzzy* matching, using the `fuzziness` parameter.
 
@@ -287,13 +309,17 @@ The `fuzziness` parameter can be specified as:
 
 
 
-## Enabling stack traces [common-options-error-options]
+## Enabling stack traces [common-options-error-options] 
 
 By default when a request returns an error Elasticsearch doesn’t include the stack trace of the error. You can enable that behavior by setting the `error_trace` url parameter to `true`. For example, by default when you send an invalid `size` parameter to the `_search` API:
 
 ```console
 POST /my-index-000001/_search?size=surprise_me
 ```
+
+%  TEST[s/surprise_me/surprise_me&error_trace=false/ catch:bad_request]
+
+%  Since the test system sends error_trace=true by default we have to override
 
 The response looks like:
 
@@ -323,6 +349,8 @@ But if you set `error_trace=true`:
 POST /my-index-000001/_search?size=surprise_me&error_trace=true
 ```
 
+%  TEST[catch:bad_request]
+
 The response looks like:
 
 ```console-result
@@ -347,4 +375,10 @@ The response looks like:
   "status": 400
 }
 ```
+
+%  TESTRESPONSE[s/"stack_trace": "Failed to parse int parameter.+\.\.\."/"stack_trace": $body.error.root_cause.0.stack_trace/]
+
+%  TESTRESPONSE[s/"stack_trace": "java.lang.IllegalArgum.+\.\.\."/"stack_trace": $body.error.stack_trace/]
+
+%  TESTRESPONSE[s/"stack_trace": "java.lang.Number.+\.\.\."/"stack_trace": $body.error.caused_by.stack_trace/]
 

@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-readonly.html
----
-
 # Read only [ilm-readonly]
 
 Phases allowed: hot, warm, cold.

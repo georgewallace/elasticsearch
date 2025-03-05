@@ -1,13 +1,11 @@
 ---
 navigation_title: "Geo-bounds"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-geobounds-aggregation.html
 ---
 
 # Geo-bounds aggregation [search-aggregations-metrics-geobounds-aggregation]
 
 
-A metric aggregation that computes the geographic bounding box containing all values for a [Geopoint](/reference/elasticsearch/mapping-reference/geo-point.md) or [Geoshape](/reference/elasticsearch/mapping-reference/geo-shape.md) field.
+A metric aggregation that computes the geographic bounding box containing all values for a [Geopoint](geo-point.md) or [Geoshape](geo-shape.md) field.
 
 Example:
 
@@ -53,7 +51,7 @@ POST /museums/_search?size=0
 }
 ```
 
-1. The `geo_bounds` aggregation specifies the field to use to obtain the bounds, which must be a [Geopoint](/reference/elasticsearch/mapping-reference/geo-point.md) or a [Geoshape](/reference/elasticsearch/mapping-reference/geo-shape.md) type.
+1. The `geo_bounds` aggregation specifies the field to use to obtain the bounds, which must be a [Geopoint](geo-point.md) or a [Geoshape](geo-shape.md) type.
 2. $$$geo-bounds-wrap-longitude$$$ `wrap_longitude` is an optional parameter which specifies whether the bounding box should be allowed to overlap the international date line. The default value is `true`.
 
 
@@ -81,12 +79,14 @@ The response for the above aggregation:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
-## Geo Bounds Aggregation on `geo_shape` fields [geobounds-aggregation-geo-shape]
+
+## Geo Bounds Aggregation on `geo_shape` fields [geobounds-aggregation-geo-shape] 
 
 The Geo Bounds Aggregation is also supported on `geo_shape` fields.
 
-If [`wrap_longitude`](#geo-bounds-wrap-longitude) is set to `true` (the default), the bounding box can overlap the international date line and return a bounds where the `top_left` longitude is larger than the `top_right` longitude.
+If [`wrap_longitude`](search-aggregations-metrics-geobounds-aggregation.md#geo-bounds-wrap-longitude) is set to `true` (the default), the bounding box can overlap the international date line and return a bounds where the `top_left` longitude is larger than the `top_right` longitude.
 
 For example, the upper right longitude will typically be greater than the lower left longitude of a geographic bounding box. However, when the area crosses the 180° meridian, the value of the lower left longitude will be greater than the value of the upper right longitude. See [Geographic bounding box](http://docs.opengeospatial.org/is/12-063r5/12-063r5.md#30) on the Open Geospatial Consortium website for more information.
 
@@ -122,6 +122,8 @@ POST /places/_search?size=0
 }
 ```
 
+%  TEST
+
 ```console-result
 {
   ...
@@ -141,4 +143,6 @@ POST /places/_search?size=0
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 

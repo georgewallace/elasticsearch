@@ -1,28 +1,23 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/regexp-syntax.html
----
-
 # Regular expression syntax [regexp-syntax]
 
 A [regular expression](https://en.wikipedia.org/wiki/Regular_expression) is a way to match patterns in data using placeholder characters, called operators.
 
 {{es}} supports regular expressions in the following queries:
 
-* [`regexp`](/reference/query-languages/query-dsl-regexp-query.md)
-* [`query_string`](/reference/query-languages/query-dsl-query-string-query.md)
+* [`regexp`](query-dsl-regexp-query.md)
+* [`query_string`](query-dsl-query-string-query.md)
 
 {{es}} uses [Apache Lucene](https://lucene.apache.org/core/)'s regular expression engine to parse these queries.
 
 
-## Reserved characters [regexp-reserved-characters]
+## Reserved characters [regexp-reserved-characters] 
 
 Lucene’s regular expression engine supports all Unicode characters. However, the following characters are reserved as operators:
 
 ```
 . ? + * | { } [ ] ( ) " \
 ```
-Depending on the [optional operators](#regexp-optional-operators) enabled, the following characters may also be reserved:
+Depending on the [optional operators](regexp-syntax.md#regexp-optional-operators) enabled, the following characters may also be reserved:
 
 ```
 # @ & < >  ~
@@ -34,7 +29,7 @@ To use one of these characters literally, escape it with a preceding backslash o
 \\                  # renders as a literal '\'
 "john@smith.com"    # renders as 'john@smith.com'
 ```
-::::{note}
+::::{note} 
 The backslash is an escape character in both JSON strings and regular expressions. You need to escape both backslashes in a query, unless you use a language client, which takes care of this. For example, the string `a\b` needs to be indexed as `"a\\b"`:
 
 ```console
@@ -57,11 +52,13 @@ GET my-index-000001/_search
 }
 ```
 
+% TEST[continued]
+
 ::::
 
 
 
-## Standard operators [regexp-standard-operators]
+## Standard operators [regexp-standard-operators] 
 
 Lucene’s regular expression engine does not use the [Perl Compatible Regular Expressions (PCRE)](https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions) library, but it does support the following standard operators.
 
@@ -139,14 +136,14 @@ A `^` before a character in the brackets negates the character or range. For exa
 ```
 
 
-## Optional operators [regexp-optional-operators]
+## Optional operators [regexp-optional-operators] 
 
 You can use the `flags` parameter to enable more optional operators for Lucene’s regular expression engine.
 
 To enable multiple operators, use a `|` separator. For example, a `flags` value of `COMPLEMENT|INTERVAL` enables the `COMPLEMENT` and `INTERVAL` operators.
 
 
-### Valid values [_valid_values]
+### Valid values [_valid_values] 
 
 `ALL` (Default)
 :   Enables all optional operators.
@@ -198,7 +195,7 @@ You can combine the `@` operator with `&` and `~` operators to create an "everyt
 :   Disables all optional operators.
 
 
-## Unsupported operators [regexp-unsupported-operators]
+## Unsupported operators [regexp-unsupported-operators] 
 
 Lucene’s regular expression engine does not support anchor operators, such as `^` (beginning of line) or `$` (end of line). To match a term, the regular expression must match the entire string.
 

@@ -1,16 +1,14 @@
 ---
 navigation_title: "Geo-bounding box"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-bounding-box-query.html
 ---
 
 # Geo-bounding box query [query-dsl-geo-bounding-box-query]
 
 
-Matches [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) and [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) values that intersect a bounding box.
+Matches [`geo_point`](geo-point.md) and [`geo_shape`](geo-shape.md) values that intersect a bounding box.
 
 
-## Example [geo-bounding-box-query-ex]
+## Example [geo-bounding-box-query-ex] 
 
 Assume the following documents are indexed:
 
@@ -65,6 +63,8 @@ PUT /my_geoshapes/_doc/1
   }
 }
 ```
+
+%  TESTSETUP
 
 Use a `geo_bounding_box` filter to match `geo_point` values that intersect a bounding box. To define the box, provide geopoint values for two opposite corners.
 
@@ -154,7 +154,7 @@ GET my_locations,my_geoshapes/_search
 ```
 
 
-## Query options [_query_options]
+## Query options [_query_options] 
 
 | Option | Description |
 | --- | --- |
@@ -162,12 +162,12 @@ GET my_locations,my_geoshapes/_search
 | `validation_method` | Set to `IGNORE_MALFORMED` toaccept geo points with invalid latitude or longitude, set to`COERCE` to also try to infer correct latitude or longitude. (default is `STRICT`). |
 
 
-## Accepted formats [query-dsl-geo-bounding-box-query-accepted-formats]
+## Accepted formats [query-dsl-geo-bounding-box-query-accepted-formats] 
 
 In much the same way the `geo_point` type can accept different representations of the geo point, the filter can accept it as well:
 
 
-### Lat lon as properties [_lat_lon_as_properties_2]
+### Lat lon as properties [_lat_lon_as_properties_2] 
 
 ```console
 GET my_locations/_search
@@ -197,7 +197,7 @@ GET my_locations/_search
 ```
 
 
-### Lat lon as array [_lat_lon_as_array_2]
+### Lat lon as array [_lat_lon_as_array_2] 
 
 Format in `[lon, lat]`, note, the order of lon/lat here in order to conform with [GeoJSON](http://geojson.org/).
 
@@ -223,7 +223,7 @@ GET my_locations/_search
 ```
 
 
-### Lat lon as string [_lat_lon_as_string]
+### Lat lon as string [_lat_lon_as_string] 
 
 Format in `lat,lon`.
 
@@ -249,7 +249,7 @@ GET my_locations/_search
 ```
 
 
-### Bounding box as well-known text (WKT) [_bounding_box_as_well_known_text_wkt]
+### Bounding box as well-known text (WKT) [_bounding_box_as_well_known_text_wkt] 
 
 ```console
 GET my_locations/_search
@@ -272,7 +272,7 @@ GET my_locations/_search
 ```
 
 
-### Geohash [_geohash_2]
+### Geohash [_geohash_2] 
 
 ```console
 GET my_locations/_search
@@ -316,7 +316,7 @@ GET my_locations/_search
 In this example, the geohash `dr` will produce the bounding box query with the top left corner at `45.0,-78.75` and the bottom right corner at `39.375,-67.5`.
 
 
-## Vertices [_vertices]
+## Vertices [_vertices] 
 
 The vertices of the bounding box can either be set by `top_left` and `bottom_right` or by `top_right` and `bottom_left` parameters. Instead of setting the values pairwise, one can use the simple names `top`, `left`, `bottom` and `right` to set the values separately.
 
@@ -344,17 +344,17 @@ GET my_locations/_search
 ```
 
 
-## Multi location per document [_multi_location_per_document]
+## Multi location per document [_multi_location_per_document] 
 
 The filter can work with multiple locations / points per document. Once a single location / point matches the filter, the document will be included in the filter
 
 
-## Ignore unmapped [_ignore_unmapped]
+## Ignore unmapped [_ignore_unmapped] 
 
 When set to `true` the `ignore_unmapped` option will ignore an unmapped field and will not match any documents for this query. This can be useful when querying multiple indexes which might have different mappings. When set to `false` (the default value) the query will throw an exception if the field is not mapped.
 
 
-## Notes on precision [_notes_on_precision]
+## Notes on precision [_notes_on_precision] 
 
 Geopoints have limited precision and are always rounded down during index time. During the query time, upper boundaries of the bounding boxes are rounded down, while lower boundaries are rounded up. As a result, the points along on the lower bounds (bottom and left edges of the bounding box) might not make it into the bounding box due to the rounding error. At the same time points alongside the upper bounds (top and right edges) might be selected by the query even if they are located slightly outside the edge. The rounding error should be less than 4.20e-8 degrees on the latitude and less than 8.39e-8 degrees on the longitude, which translates to less than 1cm error even at the equator.
 

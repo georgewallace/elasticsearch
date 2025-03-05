@@ -1,7 +1,5 @@
 ---
 navigation_title: "Numeric"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/number.html
 ---
 
 # Numeric field types [number]
@@ -58,7 +56,7 @@ PUT my-index-000001
 }
 ```
 
-::::{note}
+::::{note} 
 The `double`, `float` and `half_float` types consider that `-0.0` and `+0.0` are different values. As a consequence, doing a `term` query on `-0.0` will not match `+0.0` and vice-versa. Same is true for range queries: if the upper bound is `-0.0` then `+0.0` will not match, and if the lower bound is `+0.0` then `-0.0` will not match.
 ::::
 
@@ -82,16 +80,20 @@ $$$floating_point$$$
 ::::{admonition} Mapping numeric identifiers
 :class: tip
 
-Not all numeric data should be mapped as a `numeric` field data type. {{es}} optimizes numeric fields, such as `integer` or `long`, for [`range`](/reference/query-languages/query-dsl-range-query.md) queries. However, [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) fields are better for [`term`](/reference/query-languages/query-dsl-term-query.md) and other [term-level](/reference/query-languages/term-level-queries.md) queries.
+%  tag::map-ids-as-keyword[]
+
+Not all numeric data should be mapped as a [numeric](number.md) field data type. {{es}} optimizes numeric fields, such as `integer` or `long`, for [`range`](query-dsl-range-query.md) queries. However, [`keyword`](keyword.md) fields are better for [`term`](query-dsl-term-query.md) and other [term-level](term-level-queries.md) queries.
 
 Identifiers, such as an ISBN or a product ID, are rarely used in `range` queries. However, they are often retrieved using term-level queries.
 
 Consider mapping a numeric identifier as a `keyword` if:
 
-* You don’t plan to search for the identifier data using [`range`](/reference/query-languages/query-dsl-range-query.md) queries.
+* You don’t plan to search for the identifier data using [`range`](query-dsl-range-query.md) queries.
 * Fast retrieval is important. `term` query searches on `keyword` fields are often faster than `term` searches on numeric fields.
 
-If you’re unsure which to use, you can use a [multi-field](/reference/elasticsearch/mapping-reference/multi-fields.md) to map the data as both a `keyword` *and* a numeric data type.
+If you’re unsure which to use, you can use a [multi-field](multi-fields.md) to map the data as both a `keyword` *and* a numeric data type.
+
+%  end::map-ids-as-keyword[]
 
 ::::
 
@@ -101,39 +103,39 @@ If you’re unsure which to use, you can use a [multi-field](/reference/elastics
 
 The following parameters are accepted by numeric types:
 
-[`coerce`](/reference/elasticsearch/mapping-reference/coerce.md)
+[`coerce`](coerce.md)
 :   Try to convert strings to numbers and truncate fractions for integers. Accepts `true` (default) and `false`. Not applicable for `unsigned_long`. Note that this cannot be set if the `script` parameter is used.
 
-[`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md)
+[`doc_values`](doc-values.md)
 :   Should the field be stored on disk in a column-stride fashion, so that it can later be used for sorting, aggregations, or scripting? Accepts `true` (default) or `false`.
 
-[`ignore_malformed`](/reference/elasticsearch/mapping-reference/ignore-malformed.md)
+[`ignore_malformed`](ignore-malformed.md)
 :   If `true`, malformed numbers are ignored. If `false` (default), malformed numbers throw an exception and reject the whole document.  Note that this cannot be set if the `script` parameter is used.
 
-[`index`](/reference/elasticsearch/mapping-reference/mapping-index.md)
-:   Should the field be quickly searchable? Accepts `true` (default) and `false`. Numeric fields that only have [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) enabled can also be queried, albeit slower.
+[`index`](mapping-index.md)
+:   Should the field be quickly searchable? Accepts `true` (default) and `false`. Numeric fields that only have [`doc_values`](doc-values.md) enabled can also be queried, albeit slower.
 
-[`meta`](/reference/elasticsearch/mapping-reference/mapping-field-meta.md)
+[`meta`](mapping-field-meta.md)
 :   Metadata about the field.
 
-[`null_value`](/reference/elasticsearch/mapping-reference/null-value.md)
+[`null_value`](null-value.md)
 :   Accepts a numeric value of the same `type` as the field which is substituted for any explicit `null` values. Defaults to `null`, which means the field is treated as missing. Note that this cannot be set if the `script` parameter is used.
 
 `on_script_error`
-:   Defines what to do if the script defined by the `script` parameter throws an error at indexing time. Accepts `fail` (default), which will cause the entire document to be rejected, and `continue`, which will register the field in the document’s [`_ignored`](/reference/elasticsearch/mapping-reference/mapping-ignored-field.md) metadata field and continue indexing. This parameter can only be set if the `script` field is also set.
+:   Defines what to do if the script defined by the `script` parameter throws an error at indexing time. Accepts `fail` (default), which will cause the entire document to be rejected, and `continue`, which will register the field in the document’s [`_ignored`](mapping-ignored-field.md) metadata field and continue indexing. This parameter can only be set if the `script` field is also set.
 
 `script`
-:   If this parameter is set, then the field will index values generated by this script, rather than reading the values directly from the source. If a value is set for this field on the input document, then the document will be rejected with an error. Scripts are in the same format as their [runtime equivalent](docs-content://manage-data/data-store/mapping/map-runtime-field.md). Scripts can only be configured on `long` and `double` field types.
+:   If this parameter is set, then the field will index values generated by this script, rather than reading the values directly from the source. If a value is set for this field on the input document, then the document will be rejected with an error. Scripts are in the same format as their [runtime equivalent](runtime-mapping-fields.md). Scripts can only be configured on `long` and `double` field types.
 
-[`store`](/reference/elasticsearch/mapping-reference/mapping-store.md)
-:   Whether the field value should be stored and retrievable separately from the [`_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field. Accepts `true` or `false` (default).
+[`store`](mapping-store.md)
+:   Whether the field value should be stored and retrievable separately from the [`_source`](mapping-source-field.md) field. Accepts `true` or `false` (default).
 
 `time_series_dimension`
 :   (Optional, Boolean)
 
-    Marks the field as a [time series dimension](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-dimension). Defaults to `false`.
+    Marks the field as a [time series dimension](tsds.md#time-series-dimension). Defaults to `false`.
 
-    The `index.mapping.dimension_fields.limit` [index setting](/reference/elasticsearch/index-settings/time-series.md) limits the number of dimensions in an index.
+    The [`index.mapping.dimension_fields.limit`](tsds-index-settings.md#index-mapping-dimension-fields-limit) index setting limits the number of dimensions in an index.
 
     Dimension fields have the following constraints:
 
@@ -145,23 +147,30 @@ The following parameters are accepted by numeric types:
 
 
 `time_series_metric`
-:   (Optional, string) Marks the field as a [time series metric](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-metric). The value is the metric type. You can’t update this parameter for existing fields.
+:   (Optional, string)
 
-    ::::{dropdown} Valid `time_series_metric` values for numeric fields
-    `counter`
-    :   A cumulative metric that only monotonically increases or resets to `0` (zero). For example, a count of errors or completed tasks.
+%  tag::time_series_metric[]
 
-    `gauge`
-    :   A metric that represents a single numeric that can arbitrarily increase or decrease. For example, a temperature or available disk space.
+Marks the field as a [time series metric](tsds.md#time-series-metric). The value is the metric type. You can’t update this parameter for existing fields.
 
-    `null` (Default)
-    :   Not a time series metric.
+%  end::time_series_metric[]
 
-    ::::
++ .Valid `time_series_metric` values for numeric fields
+
+::::{dropdown} 
+`counter`
+:   A cumulative metric that only monotonically increases or resets to `0` (zero). For example, a count of errors or completed tasks.
+
+`gauge`
+:   A metric that represents a single numeric that can arbitrarily increase or decrease. For example, a temperature or available disk space.
+
+`null` (Default)
+:   Not a time series metric.
+
+::::
 
 
-    For a numeric time series metric, the `doc_values` parameter must be `true`. A numeric field can’t be both a time series dimension and a time series metric.
-
++ For a numeric time series metric, the `doc_values` parameter must be `true`. A numeric field can’t be both a time series dimension and a time series metric.
 
 
 ## Parameters for `scaled_float` [scaled-float-params]
@@ -176,17 +185,17 @@ The following parameters are accepted by numeric types:
 
 `scaled_float` is stored as a single `long` value, which is the product of multiplying the original value by the scaling factor. If the multiplication results in a value that is outside the range of a `long`, the value is saturated to the minimum or maximum value of a `long`. For example, if the scaling factor is `100` and the value is `92233720368547758.08`, the expected value is `9223372036854775808`. However, the value that is stored is `9223372036854775807`, the maximum value for a `long`.
 
-This can lead to unexpected results with [range queries](/reference/query-languages/query-dsl-range-query.md) when the scaling factor or provided `float` value are exceptionally large.
+This can lead to unexpected results with [range queries](query-dsl-range-query.md) when the scaling factor or provided `float` value are exceptionally large.
 
 
 ## Synthetic `_source` [numeric-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-All numeric fields support [synthetic `_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md#synthetic-source) in their default configuration. Synthetic `_source` cannot be used together with [`copy_to`](/reference/elasticsearch/mapping-reference/copy-to.md), or with [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) disabled.
+All numeric fields support [synthetic `_source`](mapping-source-field.md#synthetic-source) in their default configuration. Synthetic `_source` cannot be used together with [`copy_to`](copy-to.md), or with [`doc_values`](doc-values.md) disabled.
 
 Synthetic source may sort numeric field values. For example:
 
@@ -216,6 +225,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -223,6 +234,8 @@ Will become:
   "long": [-123466, 0, 0, 87612]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 Scaled floats will always apply their scaling factor so:
 
@@ -252,6 +265,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -259,5 +274,7 @@ Will become:
   "f": 100.0
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 

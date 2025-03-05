@@ -1,7 +1,5 @@
 ---
 navigation_title: "Redact"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/redact-processor.html
 ---
 
 # Redact processor [redact-processor]
@@ -11,7 +9,7 @@ The Redact processor uses the Grok rules engine to obscure text in the input doc
 
 {{es}} comes packaged with a number of useful predefined [patterns](https://github.com/elastic/elasticsearch/blob/master/libs/grok/src/main/resources/patterns/ecs-v1) that can be conveniently referenced by the Redact processor. If one of those does not suit your needs, create a new pattern with a custom pattern definition. The Redact processor replaces every occurrence of a match. If there are multiple matches all will be replaced with the pattern name.
 
-The Redact processor is compatible with [Elastic Common Schema (ECS)](ecs://reference/ecs-field-reference.md) patterns. Legacy Grok patterns are not supported.
+The Redact processor is compatible with [Elastic Common Schema (ECS)](https://www.elastic.co/guide/en/ecs/{{ecs_version}}/ecs-field-reference.html) patterns. Legacy Grok patterns are not supported.
 
 ## Using the Redact processor in a pipeline [using-redact]
 
@@ -26,9 +24,9 @@ $$$redact-options$$$
 | `suffix` | no | > | End a redacted section with this token |
 | `ignore_missing` | no | `true` | If `true` and `field` does not exist or is `null`, the processor quietly exits without modifying the document |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 | `skip_if_unlicensed` | no | `false` | If `true` and the current license does not support running redact processors, then the processor quietly exits without modifying the document |
 | `trace_redact` | no | `false` | If `true` then ingest metadata `_ingest._redact._is_redacted` is set to `true` if the document has been redacted |
@@ -80,6 +78,8 @@ The document in the response still contains the `message` field but now the IP a
   ]
 }
 ```
+
+%  TESTRESPONSE[s/2023-02-01T16:08:39.419056008Z/$body.docs.0.doc._ingest.timestamp/]
 
 The IP address is replaced with the word `client` because that is what is specified in the Grok pattern `%{IP:client}`. The `<` and `>` tokens which surround the pattern name are configurable using the `prefix` and `suffix` options.
 
@@ -136,6 +136,8 @@ In the response both the IP `55.3.244.1` and email address `test@elastic.co` hav
 }
 ```
 
+%  TESTRESPONSE[s/2023-02-01T16:53:14.560005377Z/$body.docs.0.doc._ingest.timestamp/]
+
 
 ## Custom patterns [redact-custom-patterns]
 
@@ -143,8 +145,8 @@ If one of the existing Grok [patterns](https://github.com/elastic/elasticsearch/
 
 This example defines the custom pattern `GITHUB_NAME` to match GitHub usernames. The pattern definition uses the existing `USERNAME` Grok [pattern](https://github.com/elastic/elasticsearch/blob/master/libs/grok/src/main/resources/patterns/ecs-v1/grok-patterns) prefixed by the literal `@`.
 
-::::{note}
-The [Grok Debugger](docs-content://explore-analyze/query-filter/tools/grok-debugger.md) is a really useful tool for building custom patterns.
+::::{note} 
+The [Grok Debugger](https://www.elastic.co/guide/en/kibana/current/xpack-grokdebugger.html) is a really useful tool for building custom patterns.
 ::::
 
 
@@ -198,10 +200,12 @@ The username is redacted in the response.
 }
 ```
 
+%  TESTRESPONSE[s/2023-02-01T16:53:14.560005377Z/$body.docs.0.doc._ingest.timestamp/]
+
 
 ## Grok watchdog [grok-watchdog-redact]
 
-The watchdog interrupts expressions that take too long to execute. When interrupted, the Redact processor fails with an error. The same [settings](/reference/ingestion-tools/enrich-processor/grok-processor.md#grok-watchdog-options) that control the Grok Watchdog timeout also apply to the Redact processor.
+The watchdog interrupts expressions that take too long to execute. When interrupted, the Redact processor fails with an error. The same [settings](grok-processor.md#grok-watchdog-options) that control the Grok Watchdog timeout also apply to the Redact processor.
 
 
 ## Licensing [redact-licensing]

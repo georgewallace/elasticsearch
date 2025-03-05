@@ -1,17 +1,15 @@
 ---
 navigation_title: "Predicate script"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-predicatefilter-tokenfilter.html
 ---
 
 # Predicate script token filter [analysis-predicatefilter-tokenfilter]
 
 
-Removes tokens that don’t match a provided predicate script. The filter supports inline [Painless](/reference/scripting-languages/painless/painless.md) scripts only. Scripts are evaluated in the [analysis predicate context](/reference/scripting-languages/painless/painless-analysis-predicate-context.md).
+Removes tokens that don’t match a provided predicate script. The filter supports inline [Painless](https://www.elastic.co/guide/en/elasticsearch/painless/current/index.html) scripts only. Scripts are evaluated in the [analysis predicate context](https://www.elastic.co/guide/en/elasticsearch/painless/current/painless-analysis-predicate-context.html).
 
 ## Example [analysis-predicatefilter-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `predicate_token_filter` filter to only output tokens longer than three characters from `the fox jumps the lazy dog`.
+The following [analyze API](indices-analyze.md) request uses the `predicate_token_filter` filter to only output tokens longer than three characters from `the fox jumps the lazy dog`.
 
 ```console
 GET /_analyze
@@ -68,9 +66,9 @@ The API response contains the position and offsets of each output token. Note th
 ## Configurable parameters [analysis-predicatefilter-tokenfilter-configure-parms]
 
 `script`
-:   (Required, [script object](docs-content://explore-analyze/scripting/modules-scripting-using.md)) Script containing a condition used to filter incoming tokens. Only tokens that match this script are included in the output.
+:   (Required, [script object](modules-scripting-using.md)) Script containing a condition used to filter incoming tokens. Only tokens that match this script are included in the output.
 
-    This parameter supports inline [Painless](/reference/scripting-languages/painless/painless.md) scripts only. The script is evaluated in the [analysis predicate context](/reference/scripting-languages/painless/painless-analysis-predicate-context.md).
+    This parameter supports inline [Painless](https://www.elastic.co/guide/en/elasticsearch/painless/current/index.html) scripts only. The script is evaluated in the [analysis predicate context](https://www.elastic.co/guide/en/elasticsearch/painless/current/painless-analysis-predicate-context.html).
 
 
 
@@ -78,7 +76,7 @@ The API response contains the position and offsets of each output token. Note th
 
 To customize the `predicate_token_filter` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request configures a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md) using a custom `predicate_token_filter` filter, `my_script_filter`.
+The following [create index API](indices-create-index.md) request configures a new [custom analyzer](analysis-custom-analyzer.md) using a custom `predicate_token_filter` filter, `my_script_filter`.
 
 The `my_script_filter` filter removes tokens with of any type other than `ALPHANUM`.
 

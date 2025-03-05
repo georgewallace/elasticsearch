@@ -1,7 +1,5 @@
 ---
 navigation_title: "Median absolute deviation"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-median-absolute-deviation-aggregation.html
 ---
 
 # Median absolute deviation aggregation [search-aggregations-metrics-median-absolute-deviation-aggregation]
@@ -38,6 +36,8 @@ GET reviews/_search
 }
 ```
 
+%  TEST[setup:reviews]
+
 1. `rating` must be a numeric field
 
 
@@ -57,12 +57,14 @@ The resulting median absolute deviation of `2` tells us that there is a fair amo
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 
 ## Approximation [_approximation]
 
-The naive implementation of calculating median absolute deviation stores the entire sample in memory, so this aggregation instead calculates an approximation. It uses the [TDigest data structure](https://github.com/tdunning/t-digest) to approximate the sample median and the median of deviations from the sample median. For more about the approximation characteristics of TDigests, see [Percentiles are (usually) approximate](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md#search-aggregations-metrics-percentile-aggregation-approximation).
+The naive implementation of calculating median absolute deviation stores the entire sample in memory, so this aggregation instead calculates an approximation. It uses the [TDigest data structure](https://github.com/tdunning/t-digest) to approximate the sample median and the median of deviations from the sample median. For more about the approximation characteristics of TDigests, see [Percentiles are (usually) approximate](search-aggregations-metrics-percentile-aggregation.md#search-aggregations-metrics-percentile-aggregation-approximation).
 
-The tradeoff between resource usage and accuracy of a TDigest’s quantile approximation, and therefore the accuracy of this aggregation’s approximation of median absolute deviation, is controlled by the `compression` parameter. A higher `compression` setting provides a more accurate approximation at the cost of higher memory usage. For more about the characteristics of the TDigest `compression` parameter see [Compression](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md#search-aggregations-metrics-percentile-aggregation-compression).
+The tradeoff between resource usage and accuracy of a TDigest’s quantile approximation, and therefore the accuracy of this aggregation’s approximation of median absolute deviation, is controlled by the `compression` parameter. A higher `compression` setting provides a more accurate approximation at the cost of higher memory usage. For more about the characteristics of the TDigest `compression` parameter see [Compression](search-aggregations-metrics-percentile-aggregation.md#search-aggregations-metrics-percentile-aggregation-compression).
 
 ```console
 GET reviews/_search
@@ -79,12 +81,14 @@ GET reviews/_search
 }
 ```
 
+%  TEST[setup:reviews]
+
 The default `compression` value for this aggregation is `1000`. At this compression level this aggregation is usually within 5% of the exact result, but observed performance will depend on the sample data.
 
 
 ## Script [_script_7]
 
-In the example above, product reviews are on a scale of one to five. If you want to modify them to a scale of one to ten, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
+In the example above, product reviews are on a scale of one to five. If you want to modify them to a scale of one to ten, use a [runtime field](runtime.md).
 
 ```console
 GET reviews/_search?filter_path=aggregations
@@ -115,6 +119,8 @@ GET reviews/_search?filter_path=aggregations
   }
 }
 ```
+
+%  TEST[setup:reviews]
 
 Which will result in:
 
@@ -152,5 +158,7 @@ GET reviews/_search
   }
 }
 ```
+
+%  TEST[setup:reviews]
 
 

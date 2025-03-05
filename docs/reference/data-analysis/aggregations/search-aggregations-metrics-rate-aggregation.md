@@ -1,15 +1,13 @@
 ---
 navigation_title: "Rate"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-rate-aggregation.html
 ---
 
 # Rate aggregation [search-aggregations-metrics-rate-aggregation]
 
 
-A `rate` metrics aggregation can be used only inside a `date_histogram` or `composite` aggregation. It calculates a rate of documents or a field in each bucket. The field values can be extracted from specific numeric or [histogram fields](/reference/elasticsearch/mapping-reference/histogram.md) in the documents.
+A `rate` metrics aggregation can be used only inside a `date_histogram` or `composite` aggregation. It calculates a rate of documents or a field in each bucket. The field values can be extracted from specific numeric or [histogram fields](histogram.md) in the documents.
 
-::::{note}
+::::{note} 
 For `composite` aggregations, there must be exactly one `date_histogram` source for the `rate` aggregation to be supported.
 ::::
 
@@ -26,6 +24,8 @@ A `rate` aggregation looks like this in isolation:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 The following request will group all sales records into monthly buckets and then convert the number of sales transactions in each bucket into per annual sales rate.
 
@@ -50,6 +50,8 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. Histogram is grouped by month.
 2. But the rate is converted into annual rate.
@@ -93,6 +95,8 @@ The response will return the annual rate of transactions in each bucket. Since t
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 Instead of counting the number of documents, it is also possible to calculate a sum of all values of the fields in the documents in each bucket or the number of values in each bucket. The following request will group all sales records into monthly bucket and than calculate the total monthly sales and convert them into average daily sales.
 
 ```console
@@ -117,6 +121,8 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. Histogram is grouped by month.
 2. Calculate sum of all sale prices
@@ -161,6 +167,8 @@ The response will contain the average daily sale prices for each month.
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 You can also take advantage of `composite` aggregations to calculate the average daily sale price for each item in your inventory
 
 ```console
@@ -199,6 +207,8 @@ GET sales/_search?filter_path=aggregations&size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. Composite aggregation with a date histogram source and a source for the item type.
 2. The date histogram source grouping monthly
@@ -320,6 +330,8 @@ GET sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
 1. Histogram is grouped by month.
 2. Calculate number of all sale prices
 3. Convert to annual counts
@@ -364,6 +376,8 @@ The response will contain the average daily sale prices for each month.
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 By default `sum` mode is used.
 
 `"mode": "sum"`
@@ -375,7 +389,7 @@ By default `sum` mode is used.
 
 ## Relationship between bucket sizes and rate [_relationship_between_bucket_sizes_and_rate]
 
-The `rate` aggregation supports all rate that can be used [calendar_intervals parameter](/reference/data-analysis/aggregations/search-aggregations-bucket-datehistogram-aggregation.md#calendar_intervals) of `date_histogram` aggregation. The specified rate should compatible with the `date_histogram` aggregation interval, i.e. it should be possible to convert the bucket size into the rate. By default the interval of the `date_histogram` is used.
+The `rate` aggregation supports all rate that can be used [calendar_intervals parameter](search-aggregations-bucket-datehistogram-aggregation.md#calendar_intervals) of `date_histogram` aggregation. The specified rate should compatible with the `date_histogram` aggregation interval, i.e. it should be possible to convert the bucket size into the rate. By default the interval of the `date_histogram` is used.
 
 `"rate": "second"`
 :   compatible with all intervals
@@ -406,7 +420,7 @@ There is also an additional limitations if the date histogram is not a direct pa
 
 ## Script [_script_11]
 
-If you need to run the aggregation against values that aren’t indexed, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if we need to adjust our prices before calculating rates:
+If you need to run the aggregation against values that aren’t indexed, run the aggregation on a [runtime field](runtime.md). For example, if we need to adjust our prices before calculating rates:
 
 ```console
 GET sales/_search
@@ -440,6 +454,8 @@ GET sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 ```console-result
 {
@@ -476,5 +492,7 @@ GET sales/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 

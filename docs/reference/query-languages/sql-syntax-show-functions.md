@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-syntax-show-functions.html
----
-
 # SHOW FUNCTIONS [sql-syntax-show-functions]
 
 ```sql

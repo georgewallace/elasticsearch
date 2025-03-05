@@ -1,7 +1,5 @@
 ---
 navigation_title: "Span not"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-not-query.html
 ---
 
 # Span not query [query-dsl-span-not-query]

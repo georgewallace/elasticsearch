@@ -1,7 +1,5 @@
 ---
 navigation_title: "JSON"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/json-processor.html
 ---
 
 # JSON processor [json-processor]
@@ -20,9 +18,9 @@ $$$json-options$$$
 | `allow_duplicate_keys` | no | false | When set to `true`, the JSON parser will not fail if the JSON contains duplicate keys. Instead, the last encountered value for any duplicate key wins. |
 | `strict_json_parsing` | no | true | When set to `true`, the JSON parser will strictly parse the field value. When set to `false`, the JSON parser will be more lenient but also more likely to drop parts of the field value. For example if `strict_json_parsing` is set to `true` and the field value is `123 "foo"` then the processor will throw an IllegalArgumentException. But if `strict_json_parsing` is set to `false` then the field value will be parsed as `123`. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 All JSON-supported types will be parsed (null, boolean, number, array, object, string).
@@ -38,6 +36,8 @@ Suppose you provide this configuration of the `json` processor:
 }
 ```
 
+%  NOTCONSOLE
+
 If the following document is processed:
 
 ```js
@@ -45,6 +45,8 @@ If the following document is processed:
   "string_source": "{\"foo\": 2000}"
 }
 ```
+
+%  NOTCONSOLE
 
 after the `json` processor operates on it, it will look like:
 
@@ -57,6 +59,8 @@ after the `json` processor operates on it, it will look like:
 }
 ```
 
+%  NOTCONSOLE
+
 If the following configuration is provided, omitting the optional `target_field` setting:
 
 ```js
@@ -67,6 +71,8 @@ If the following configuration is provided, omitting the optional `target_field`
 }
 ```
 
+%  NOTCONSOLE
+
 then after the `json` processor operates on this document:
 
 ```js
@@ -74,6 +80,8 @@ then after the `json` processor operates on this document:
   "source_and_target": "{\"foo\": 2000}"
 }
 ```
+
+%  NOTCONSOLE
 
 it will look like:
 
@@ -84,6 +92,8 @@ it will look like:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 This illustrates that, unless it is explicitly named in the processor configuration, the `target_field` is the same field provided in the required `field` configuration.
 

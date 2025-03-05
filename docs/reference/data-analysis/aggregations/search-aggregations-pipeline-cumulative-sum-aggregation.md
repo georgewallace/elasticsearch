@@ -1,7 +1,5 @@
 ---
 navigation_title: "Cumulative sum"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-cumulative-sum-aggregation.html
 ---
 
 # Cumulative sum aggregation [search-aggregations-pipeline-cumulative-sum-aggregation]
@@ -21,11 +19,13 @@ A `cumulative_sum` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$cumulative-sum-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | The path to the buckets we wish to find the cumulative sum for (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details) | Required |  |
+| `buckets_path` | The path to the buckets we wish to find the cumulative sum for (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details) | Required |  |
 | `format` | [DecimalFormat pattern](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/text/DecimalFormat.md) for theoutput value. If specified, the formatted value is returned in the aggregation’s`value_as_string` property | Optional | `null` |
 
 The following snippet calculates the cumulative sum of the total monthly `sales`:
@@ -56,6 +56,8 @@ POST /sales/_search
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. `buckets_path` instructs this cumulative sum aggregation to use the output of the `sales` aggregation for the cumulative sum
 
@@ -109,5 +111,11 @@ And the following may be the response:
    }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
 
 

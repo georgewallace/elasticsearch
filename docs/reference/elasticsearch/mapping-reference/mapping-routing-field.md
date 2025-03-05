@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-routing-field.html
----
-
-# _routing field [mapping-routing-field]
+# `_routing` field [mapping-routing-field]
 
 A document is routed to a particular shard in an index using the following formulas:
 
@@ -11,9 +6,9 @@ A document is routed to a particular shard in an index using the following formu
 routing_factor = num_routing_shards / num_primary_shards
 shard_num = (hash(_routing) % num_routing_shards) / routing_factor
 ```
-`num_routing_shards` is the value of the [`index.number_of_routing_shards`](/reference/elasticsearch/index-settings/index-modules.md#index-number-of-routing-shards) index setting. `num_primary_shards` is the value of the [`index.number_of_shards`](/reference/elasticsearch/index-settings/index-modules.md#index-number-of-shards) index setting.
+`num_routing_shards` is the value of the [`index.number_of_routing_shards`](index-modules.md#index-number-of-routing-shards) index setting. `num_primary_shards` is the value of the [`index.number_of_shards`](index-modules.md#index-number-of-shards) index setting.
 
-The default `_routing` value is the document’s [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md). Custom routing patterns can be implemented by specifying a custom `routing` value per document. For instance:
+The default `_routing` value is the document’s [`_id`](mapping-id-field.md). Custom routing patterns can be implemented by specifying a custom `routing` value per document. For instance:
 
 ```console
 PUT my-index-000001/_doc/1?routing=user1&refresh=true <1>
@@ -24,8 +19,10 @@ PUT my-index-000001/_doc/1?routing=user1&refresh=true <1>
 GET my-index-000001/_doc/1?routing=user1 <2>
 ```
 
+%  TESTSETUP
+
 1. This document uses `user1` as its routing value, instead of its ID.
-2. The same `routing` value needs to be provided when [getting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get), [deleting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-delete), or [updating](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update) the document.
+2. The same `routing` value needs to be provided when [getting](docs-get.md), [deleting](docs-delete.md), or [updating](docs-update.md) the document.
 
 
 The value of the `_routing` field is accessible in queries:
@@ -41,11 +38,11 @@ GET my-index-000001/_search
 }
 ```
 
-1. Querying on the `_routing` field (also see the [`ids` query](/reference/query-languages/query-dsl-ids-query.md))
+1. Querying on the `_routing` field (also see the [`ids` query](query-dsl-ids-query.md))
 
 
-::::{note}
-Data streams do not support custom routing unless they were created with the [`allow_custom_routing`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-index-template) setting enabled in the template.
+::::{note} 
+Data streams do not support custom routing unless they were created with the [`allow_custom_routing`](indices-put-template.md#put-index-template-api-request-body) setting enabled in the template.
 ::::
 
 
@@ -70,7 +67,7 @@ GET my-index-000001/_search?routing=user1,user2 <1>
 
 ## Making a routing value required [_making_a_routing_value_required]
 
-When using custom routing, it is important to provide the routing value whenever [indexing](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-create), [getting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get), [deleting](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-delete), or [updating](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update) a document.
+When using custom routing, it is important to provide the routing value whenever [indexing](docs-index_.md), [getting](docs-get.md), [deleting](docs-delete.md), or [updating](docs-update.md) a document.
 
 Forgetting the routing value can lead to a document being indexed on more than one shard. As a safeguard, the `_routing` field can be configured to make a custom `routing` value required for all CRUD operations:
 
@@ -90,6 +87,8 @@ PUT my-index-000002/_doc/1 <2>
 }
 ```
 
+%  TEST[catch:bad_request]
+
 1. Routing is required for all documents.
 2. This index request throws a `routing_missing_exception`.
 
@@ -106,7 +105,7 @@ It is up to the user to ensure that IDs are unique across the index.
 
 An index can be configured such that custom routing values will go to a subset of the shards rather than a single shard. This helps mitigate the risk of ending up with an imbalanced cluster while still reducing the impact of searches.
 
-This is done by providing the index level setting [`index.routing_partition_size`](/reference/elasticsearch/index-settings/index-modules.md#routing-partition-size) at index creation. As the partition size increases, the more evenly distributed the data will become at the expense of having to search more shards per request.
+This is done by providing the index level setting [`index.routing_partition_size`](index-modules.md#routing-partition-size) at index creation. As the partition size increases, the more evenly distributed the data will become at the expense of having to search more shards per request.
 
 When this setting is present, the formulas for calculating the shard become:
 
@@ -120,7 +119,7 @@ To enable this feature, the `index.routing_partition_size` should have a value g
 
 Once enabled, the partitioned index will have the following limitations:
 
-* Mappings with [`join` field](/reference/elasticsearch/mapping-reference/parent-join.md) relationships cannot be created within it.
+* Mappings with [`join` field](parent-join.md) relationships cannot be created within it.
 * All mappings within the index must have the `_routing` field marked as required.
 
 

@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-pinned-query.html
----
+# Pinned Query [query-dsl-pinned-query]
 
-# Pinned query [query-dsl-pinned-query]
-
-Promotes selected documents to rank higher than those matching a given query. This feature is typically used to guide searchers to curated documents that are promoted over and above any "organic" matches for a search. The promoted or "pinned" documents are identified using the document IDs stored in the [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md) field.
+Promotes selected documents to rank higher than those matching a given query. This feature is typically used to guide searchers to curated documents that are promoted over and above any "organic" matches for a search. The promoted or "pinned" documents are identified using the document IDs stored in the [`_id`](mapping-id-field.md) field.
 
 ## Example request [_example_request]
 
@@ -29,13 +24,13 @@ GET /_search
 ## Top-level parameters for `pinned` [pinned-query-top-level-parameters]
 
 `ids`
-:   (Optional, array) [Document IDs](/reference/elasticsearch/mapping-reference/mapping-id-field.md) listed in the order they are to appear in results. Required if `docs` is not specified.
+:   (Optional, array) [Document IDs](mapping-id-field.md) listed in the order they are to appear in results. Required if `docs` is not specified.
 
 `docs`
 :   (Optional, array) Documents listed in the order they are to appear in results. Required if `ids` is not specified. You can specify the following attributes for each document:
 
     `_id`
-    :   (Required, string) The unique [document ID](/reference/elasticsearch/mapping-reference/mapping-id-field.md).
+    :   (Required, string) The unique [document ID](mapping-id-field.md).
 
     `_index`
     :   (Optional, string) The index that contains the document.

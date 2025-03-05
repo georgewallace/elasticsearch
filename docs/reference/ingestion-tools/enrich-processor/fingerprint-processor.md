@@ -1,7 +1,5 @@
 ---
 navigation_title: "Fingerprint"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/fingerprint-processor.html
 ---
 
 # Fingerprint processor [fingerprint-processor]
@@ -19,13 +17,13 @@ $$$fingerprint-options$$$
 | `method` | no | `SHA-1` | The hash method used tocompute the fingerprint. Must be one of `MD5`, `SHA-1`, `SHA-256`, `SHA-512`, or`MurmurHash3`. |
 | `ignore_missing` | no | `false` | If `true`, the processorignores any missing `fields`. If all fields are missing, the processor silentlyexits without modifying the document. |
 | `description` | no | - | Description of the processor. Useful for describing the purpose of the processor or its configuration. |
-| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#conditionally-run-processor). |
-| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
-| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md#handling-pipeline-failures). |
+| `if` | no | - | Conditionally execute the processor. See [Conditionally run a processor](ingest.md#conditionally-run-processor). |
+| `ignore_failure` | no | `false` | Ignore failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
+| `on_failure` | no | - | Handle failures for the processor. See [Handling pipeline failures](ingest.md#handling-pipeline-failures). |
 | `tag` | no | - | Identifier for the processor. Useful for debugging and metrics. |
 
 
-## Example [fingerprint-processor-ex]
+## Example [fingerprint-processor-ex] 
 
 The following example illustrates the use of the fingerprint processor:
 
@@ -78,4 +76,6 @@ Which produces the following result:
   ]
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"_index":"_index","_id":"_id","_version":"-3","_ingest":{"timestamp":$body.docs.0.doc._ingest.timestamp},/]
 

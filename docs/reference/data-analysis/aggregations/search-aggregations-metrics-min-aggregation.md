@@ -1,7 +1,5 @@
 ---
 navigation_title: "Min"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-min-aggregation.html
 ---
 
 # Min aggregation [search-aggregations-metrics-min-aggregation]
@@ -9,7 +7,7 @@ mapped_pages:
 
 A `single-value` metrics aggregation that keeps track and returns the minimum value among numeric values extracted from the aggregated documents.
 
-::::{note}
+::::{note} 
 The `min` and `max` aggregation operate on the `double` representation of the data. As a consequence, the result may be approximate when running on longs whose absolute value is greater than `2^53`.
 ::::
 
@@ -25,6 +23,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 Response:
 
 ```console-result
@@ -39,11 +39,13 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 As can be seen, the name of the aggregation (`min_price` above) also serves as the key by which the aggregation result can be retrieved from the returned response.
 
 ## Script [_script_8]
 
-If you need to get the `min` of something more complex than a single field, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
+If you need to get the `min` of something more complex than a single field, run the aggregation on a [runtime field](runtime.md).
 
 ```console
 POST /sales/_search
@@ -69,6 +71,21 @@ POST /sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search?filter_path=aggregations/]
+
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "aggregations": {
+%       "min_price": {
+%           "value": 8.0
+%       }
+%   }
+% }
+% --------------------------------------------------
+
 
 ## Missing value [_missing_value_12]
 
@@ -88,13 +105,15 @@ POST /sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
 1. Documents without a value in the `grade` field will fall into the same bucket as documents that have the value `10`.
 
 
 
 ## Histogram fields [search-aggregations-metrics-min-aggregation-histogram-fields]
 
-When `min` is computed on [histogram fields](/reference/elasticsearch/mapping-reference/histogram.md), the result of the aggregation is the minimum of all elements in the `values` array. Note, that the `counts` array of the histogram is ignored.
+When `min` is computed on [histogram fields](histogram.md), the result of the aggregation is the minimum of all elements in the `values` array. Note, that the `counts` array of the histogram is ignored.
 
 For example, for the following index that stores pre-aggregated histograms with latency metrics for different networks:
 

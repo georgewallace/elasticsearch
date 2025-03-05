@@ -1,27 +1,25 @@
 ---
 navigation_title: "Query string"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
 ---
 
 # Query string query [query-dsl-query-string-query]
 
 
-::::{tip}
-This page contains information about the `query_string` query type. For information about running a search query in {{es}}, see [*The search API*](docs-content://solutions/search/querying-for-search.md).
+::::{tip} 
+This page contains information about the `query_string` query type. For information about running a search query in {{es}}, see [*The search API*](search-your-data.md).
 ::::
 
 
 Returns documents based on a provided query string, using a parser with a strict syntax.
 
-This query uses a [syntax](#query-string-syntax) to parse and split the provided query string based on operators, such as `AND` or `NOT`. The query then [analyzes](docs-content://manage-data/data-store/text-analysis.md) each split text independently before returning matching documents.
+This query uses a [syntax](query-dsl-query-string-query.md#query-string-syntax) to parse and split the provided query string based on operators, such as `AND` or `NOT`. The query then [analyzes](analysis.md) each split text independently before returning matching documents.
 
 You can use the `query_string` query to create a complex search that includes wildcard characters, searches across multiple fields, and more. While versatile, the query is strict and returns an error if the query string includes any invalid syntax.
 
-::::{warning}
+::::{warning} 
 Because it returns an error for any invalid syntax, we don’t recommend using the `query_string` query for search boxes.
 
-If you don’t need to support a query syntax, consider using the [`match`](/reference/query-languages/query-dsl-match-query.md) query. If you need the features of a query syntax, use the [`simple_query_string`](/reference/query-languages/query-dsl-simple-query-string-query.md) query, which is less strict.
+If you don’t need to support a query syntax, consider using the [`match`](query-dsl-match-query.md) query. If you need the features of a query syntax, use the [`simple_query_string`](query-dsl-simple-query-string-query.md) query, which is less strict.
 
 ::::
 
@@ -46,21 +44,21 @@ GET /_search
 ## Top-level parameters for `query_string` [query-string-top-level-params]
 
 `query`
-:   (Required, string) Query string you wish to parse and use for search. See [Query string syntax](#query-string-syntax).
+:   (Required, string) Query string you wish to parse and use for search. See [Query string syntax](query-dsl-query-string-query.md#query-string-syntax).
 
 `default_field`
 :   (Optional, string) Default field to search if no field is provided in the query string. Supports wildcards (`*`).
 
-Defaults to the [`index.query.default_field`](/reference/elasticsearch/index-settings/index-modules.md#index-query-default-field) index setting, which has a default value of `*`. The `*` value extracts all fields that are eligible for term queries and filters the metadata fields. All extracted fields are then combined to build a query if no `prefix` is specified.
+Defaults to the [`index.query.default_field`](index-modules.md#index-query-default-field) index setting, which has a default value of `*`. The `*` value extracts all fields that are eligible for term queries and filters the metadata fields. All extracted fields are then combined to build a query if no `prefix` is specified.
 
-Searching across all eligible fields does not include [nested documents](/reference/elasticsearch/mapping-reference/nested.md). Use a [`nested` query](/reference/query-languages/query-dsl-nested-query.md) to search those documents.
+Searching across all eligible fields does not include [nested documents](nested.md). Use a [`nested` query](query-dsl-nested-query.md) to search those documents.
 
-::::{admonition}
+::::{admonition} 
 :name: WARNING
 
 For mappings with a large number of fields, searching across all eligible fields could be expensive.
 
-There is a limit on the number of fields times terms that can be queried at once. It is defined by the `indices.query.bool.max_clause_count` [search setting](/reference/elasticsearch/configuration-reference/search-settings.md).
+There is a limit on the number of fields times terms that can be queried at once. It is defined by the `indices.query.bool.max_clause_count` [search setting](search-settings.md).
 
 ::::
 
@@ -70,18 +68,16 @@ There is a limit on the number of fields times terms that can be queried at once
 :   (Optional, Boolean) If `true`, the wildcard characters `*` and `?` are allowed as the first character of the query string. Defaults to `true`.
 
 `analyze_wildcard`
-:   (Optional, Boolean) If `true`, the query attempts to analyze wildcard terms in the query string. Defaults to `false`. Note that, in case of  `true`, only queries that end with a `*`
-are fully analyzed. Queries that start with `*` or have it in the middle
-are only [normalized](/reference/data-analysis/text-analysis/normalizers.md).
+:   (Optional, Boolean) If `true`, the query attempts to analyze wildcard terms in the query string. Defaults to `false`.
 
 `analyzer`
-:   (Optional, string) [Analyzer](docs-content://manage-data/data-store/text-analysis.md) used to convert text in the query string into tokens. Defaults to the [index-time analyzer](docs-content://manage-data/data-store/text-analysis/specify-an-analyzer.md#specify-index-time-analyzer) mapped for the `default_field`. If no analyzer is mapped, the index’s default analyzer is used.
+:   (Optional, string) [Analyzer](analysis.md) used to convert text in the query string into tokens. Defaults to the [index-time analyzer](specify-analyzer.md#specify-index-time-analyzer) mapped for the `default_field`. If no analyzer is mapped, the index’s default analyzer is used.
 
 `auto_generate_synonyms_phrase_query`
-:   (Optional, Boolean) If `true`, [match phrase](/reference/query-languages/query-dsl-match-query-phrase.md) queries are automatically created for multi-term synonyms. Defaults to `true`. See [Synonyms and the `query_string` query](#query-string-synonyms) for an example.
+:   (Optional, Boolean) If `true`, [match phrase](query-dsl-match-query-phrase.md) queries are automatically created for multi-term synonyms. Defaults to `true`. See [Synonyms and the `query_string` query](query-dsl-query-string-query.md#query-string-synonyms) for an example.
 
 `boost`
-:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) of the query. Defaults to `1.0`.
+:   (Optional, float) Floating point number used to decrease or increase the [relevance scores](query-filter-context.md#relevance-scores) of the query. Defaults to `1.0`.
 
 Boost values are relative to the default value of `1.0`. A boost value between `0` and `1.0` decreases the relevance score. A value greater than `1.0` increases the relevance score.
 
@@ -102,11 +98,11 @@ Boost values are relative to the default value of `1.0`. A boost value between `
 `fields`
 :   (Optional, array of strings) Array of fields to search. Supports wildcards (`*`).
 
-    You can use this parameter query to search across multiple fields. See [Search multiple fields](#query-string-multi-field).
+    You can use this parameter query to search across multiple fields. See [Search multiple fields](query-dsl-query-string-query.md#query-string-multi-field).
 
 
 `fuzziness`
-:   (Optional, string) Maximum edit distance allowed for fuzzy matching. For fuzzy syntax, see [Fuzziness](#query-string-fuzziness).
+:   (Optional, string) Maximum edit distance allowed for fuzzy matching. For fuzzy syntax, see [Fuzziness](query-dsl-query-string-query.md#query-string-fuzziness).
 
 `fuzzy_max_expansions`
 :   (Optional, integer) Maximum number of terms to which the query expands for fuzzy matching. Defaults to `50`.
@@ -118,7 +114,7 @@ Boost values are relative to the default value of `1.0`. A boost value between `
 :   (Optional, Boolean) If `true`, edits for fuzzy matching include transpositions of two adjacent characters (ab → ba). Defaults to `true`.
 
 `lenient`
-:   (Optional, Boolean) If `true`, format-based errors, such as providing a text value for a [numeric](/reference/elasticsearch/mapping-reference/number.md) field, are ignored. Defaults to `false`.
+:   (Optional, Boolean) If `true`, format-based errors, such as providing a text value for a [numeric](number.md) field, are ignored. Defaults to `false`.
 
 `max_determinized_states`
 :   (Optional, integer) Maximum number of [automaton states](https://en.wikipedia.org/wiki/Deterministic_finite_automaton) required for the query. Default is `10000`.
@@ -129,10 +125,10 @@ You can use this parameter to prevent that conversion from unintentionally consu
 
 
 `minimum_should_match`
-:   (Optional, string) Minimum number of clauses that must match for a document to be returned. See the [`minimum_should_match` parameter](/reference/query-languages/query-dsl-minimum-should-match.md) for valid values and more information. See [How `minimum_should_match` works](#query-string-min-should-match) for an example.
+:   (Optional, string) Minimum number of clauses that must match for a document to be returned. See the [`minimum_should_match` parameter](query-dsl-minimum-should-match.md) for valid values and more information. See [How `minimum_should_match` works](query-dsl-query-string-query.md#query-string-min-should-match) for an example.
 
 `quote_analyzer`
-:   (Optional, string) [Analyzer](docs-content://manage-data/data-store/text-analysis.md) used to convert quoted text in the query string into tokens. Defaults to the [`search_quote_analyzer`](/reference/elasticsearch/mapping-reference/analyzer.md#search-quote-analyzer) mapped for the `default_field`.
+:   (Optional, string) [Analyzer](analysis.md) used to convert quoted text in the query string into tokens. Defaults to the [`search_quote_analyzer`](analyzer.md#search-quote-analyzer) mapped for the `default_field`.
 
 For quoted text, this parameter overrides the analyzer specified in the `analyzer` parameter.
 
@@ -143,19 +139,19 @@ For quoted text, this parameter overrides the analyzer specified in the `analyze
 `quote_field_suffix`
 :   (Optional, string) Suffix appended to quoted text in the query string.
 
-You can use this suffix to use a different analysis method for exact matches. See [Mixing exact search with stemming](docs-content://solutions/search/full-text/search-relevance/mixing-exact-search-with-stemming.md).
+You can use this suffix to use a different analysis method for exact matches. See [Mixing exact search with stemming](mixing-exact-search-with-stemming.md).
 
 
 `rewrite`
-:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](/reference/query-languages/query-dsl-multi-term-rewrite.md).
+:   (Optional, string) Method used to rewrite the query. For valid values and more information, see the [`rewrite` parameter](query-dsl-multi-term-rewrite.md).
 
 `time_zone`
 :   (Optional, string) [Coordinated Universal Time (UTC) offset](https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) or [IANA time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) used to convert `date` values in the query string to UTC.
 
 Valid values are ISO 8601 UTC offsets, such as `+01:00` or -`08:00`, and IANA time zone IDs, such as `America/Los_Angeles`.
 
-::::{note}
-The `time_zone` parameter does **not** affect the [date math](/reference/elasticsearch/rest-apis/common-options.md#date-math) value of `now`. `now` is always the current system time in UTC. However, the `time_zone` parameter does convert dates calculated using `now` and [date math rounding](/reference/elasticsearch/rest-apis/common-options.md#date-math). For example, the `time_zone` parameter will convert a value of `now/d`.
+::::{note} 
+The `time_zone` parameter does ***not*** affect the [date math](common-options.md#date-math) value of `now`. `now` is always the current system time in UTC. However, the `time_zone` parameter does convert dates calculated using `now` and [date math rounding](common-options.md#date-math). For example, the `time_zone` parameter will convert a value of `now/d`.
 
 ::::
 
@@ -166,7 +162,7 @@ The `time_zone` parameter does **not** affect the [date math](/reference/elastic
 
 ### Query string syntax [query-string-syntax]
 
-The query string mini-language is used by the Query string and by the `q` query string parameter in the [`search` API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search).
+The query string mini-language is used by the [Query string](query-dsl-query-string-query.md) and by the `q` query string parameter in the [`search` API](search-search.md).
 
 The query string is parsed into a series of *terms* and *operators*. A term can be a single word — `quick` or `brown` — or a phrase, surrounded by double quotes — `"quick brown"` — which searches for all the words in the phrase, in the same order.
 
@@ -223,8 +219,8 @@ qu?ck bro*
 ```
 Be aware that wildcard queries can use an enormous amount of memory and perform very badly — just think how many terms need to be queried to match the query string `"a* b* c*"`.
 
-::::{warning}
-Pure wildcards `\*` are rewritten to [`exists`](/reference/query-languages/query-dsl-exists-query.md) queries for efficiency. As a consequence, the wildcard `"field:*"` would match documents with an empty value like the following:
+::::{warning} 
+Pure wildcards `\*` are rewritten to [`exists`](query-dsl-exists-query.md) queries for efficiency. As a consequence, the wildcard `"field:*"` would match documents with an empty value like the following:
 
 ```
 {
@@ -232,7 +228,7 @@ Pure wildcards `\*` are rewritten to [`exists`](/reference/query-languages/query
 }
 ```
 
-... and would **not** match if the field is missing or set with an explicit null value like the following:
+... and would ***not*** match if the field is missing or set with an explicit null value like the following:
 
 ```
 {
@@ -243,7 +239,7 @@ Pure wildcards `\*` are rewritten to [`exists`](/reference/query-languages/query
 ::::
 
 
-::::{warning}
+::::{warning} 
 Allowing a wildcard at the beginning of a word (eg `"*ing"`) is particularly heavy, because all terms in the index need to be examined, just in case they match. Leading wildcards can be disabled by setting `allow_leading_wildcard` to `false`.
 
 ::::
@@ -261,9 +257,9 @@ Regular expression patterns can be embedded in the query string by wrapping them
 ```
 name:/joh?n(ath[oa]n)/
 ```
-The supported regular expression syntax is explained in [*Regular expression syntax*](/reference/query-languages/regexp-syntax.md).
+The supported regular expression syntax is explained in [*Regular expression syntax*](regexp-syntax.md).
 
-::::{warning}
+::::{warning} 
 The `allow_leading_wildcard` parameter does not have any control over regular expressions. A query string such as the following would force Elasticsearch to visit every term in the index:
 
 ```
@@ -277,12 +273,12 @@ Use with caution!
 
 #### Fuzziness [query-string-fuzziness]
 
-You can run [`fuzzy` queries](/reference/query-languages/query-dsl-fuzzy-query.md) using the `~` operator:
+You can run [`fuzzy` queries](query-dsl-fuzzy-query.md) using the `~` operator:
 
 ```
 quikc~ brwn~ foks~
 ```
-For these queries, the query string is [normalized](/reference/data-analysis/text-analysis/normalizers.md). If present, only certain filters from the analyzer are applied. For a list of applicable filters, see [*Normalizers*](/reference/data-analysis/text-analysis/normalizers.md).
+For these queries, the query string is [normalized](analysis-normalizers.md). If present, only certain filters from the analyzer are applied. For a list of applicable filters, see [*Normalizers*](analysis-normalizers.md).
 
 The query uses the [Damerau-Levenshtein distance](https://en.wikipedia.org/wiki/Damerau-Levenshtein_distance) to find all terms with a maximum of two changes, where a change is the insertion, deletion or substitution of a single character, or transposition of two adjacent characters.
 
@@ -296,7 +292,7 @@ quikc~1
 
 :name: avoid-widlcards-fuzzy-searches
 
-Mixing [fuzzy](/reference/elasticsearch/rest-apis/common-options.md#fuzziness) and [wildcard](#query-string-wildcard) operators is *not* supported. When mixed, one of the operators is not applied. For example, you can search for `app~1` (fuzzy) or `app*` (wildcard), but searches for `app*~1` do not apply the fuzzy operator (`~1`).
+Mixing [fuzzy](common-options.md#fuzziness) and [wildcard](query-dsl-query-string-query.md#query-string-wildcard) operators is *not* supported. When mixed, one of the operators is not applied. For example, you can search for `app~1` (fuzzy) or `app*` (wildcard), but searches for `app*~1` do not apply the fuzzy operator (`~1`).
 
 ::::
 
@@ -364,7 +360,7 @@ age:>=10
 age:<10
 age:<=10
 ```
-::::{note}
+::::{note} 
 To combine an upper and lower bound with the simplified syntax, you would need to join two clauses with an `AND` operator:
 
 ```
@@ -374,7 +370,7 @@ age:(+>=10 +<20)
 ::::
 
 
-The parsing of ranges in query strings can be complex and error prone. It is much more reliable to use an explicit [`range` query](/reference/query-languages/query-dsl-range-query.md).
+The parsing of ranges in query strings can be complex and error prone. It is much more reliable to use an explicit [`range` query](query-dsl-range-query.md).
 
 
 #### Boosting [_boosting]
@@ -412,7 +408,7 @@ The familiar boolean operators `AND`, `OR` and `NOT` (also written `&&`, `||` an
 `((quick AND fox) OR (brown AND fox) OR fox) AND NOT news`
 :   This form now replicates the logic from the original query correctly, but the relevance scoring bears little resemblance to the original.
 
-In contrast, the same query rewritten using the [`match` query](/reference/query-languages/query-dsl-match-query.md) would look like this:
+In contrast, the same query rewritten using the [`match` query](query-dsl-match-query.md) would look like this:
 
 ```
 {
@@ -453,11 +449,13 @@ GET /my-index-000001/_search
 }
 ```
 
+%  TEST[setup:my_index]
+
 The reserved characters are:  `+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`
 
 Failing to escape these special characters correctly could lead to a syntax error which prevents your query from running.
 
-::::{note}
+::::{note} 
 `<` and `>` can’t be escaped at all. The only way to prevent them from attempting to create a range query is to remove them from the query string entirely.
 ::::
 
@@ -472,7 +470,7 @@ If the query string is empty or only contains whitespaces the query will yield a
 
 #### Avoid using the `query_string` query for nested documents [query-string-nested]
 
-`query_string` searches do not return [nested](/reference/elasticsearch/mapping-reference/nested.md) documents. To search nested documents, use the [`nested` query](/reference/query-languages/query-dsl-nested-query.md).
+`query_string` searches do not return [nested](nested.md) documents. To search nested documents, use the [`nested` query](query-dsl-nested-query.md).
 
 
 #### Search multiple fields [query-string-multi-field]
@@ -554,7 +552,7 @@ GET /_search
 }
 ```
 
-::::{note}
+::::{note} 
 Since `\` (backslash) is a special character in json strings, it needs to be escaped, hence the two backslashes in the above `query_string`.
 ::::
 
@@ -582,31 +580,31 @@ When running the `query_string` query against multiple fields, the following add
 :   (Optional, string) Determines how the query matches and scores documents. Valid values are:
 
 `best_fields` (Default)
-:   Finds documents which match any field and uses the highest [`_score`](/reference/query-languages/query-filter-context.md#relevance-scores) from any matching field. See [`best_fields`](/reference/query-languages/query-dsl-multi-match-query.md#type-best-fields).
+:   Finds documents which match any field and uses the highest [`_score`](query-filter-context.md#relevance-scores) from any matching field. See [`best_fields`](query-dsl-multi-match-query.md#type-best-fields).
 
 `bool_prefix`
-:   Creates a `match_bool_prefix` query on each field and combines the `_score` from each field. See [`bool_prefix`](/reference/query-languages/query-dsl-multi-match-query.md#type-bool-prefix).
+:   Creates a `match_bool_prefix` query on each field and combines the `_score` from each field. See [`bool_prefix`](query-dsl-multi-match-query.md#type-bool-prefix).
 
 `cross_fields`
-:   Treats fields with the same `analyzer` as though they were one big field. Looks for each word in **any** field. See [`cross_fields`](/reference/query-languages/query-dsl-multi-match-query.md#type-cross-fields).
+:   Treats fields with the same `analyzer` as though they were one big field. Looks for each word in ***any*** field. See [`cross_fields`](query-dsl-multi-match-query.md#type-cross-fields).
 
 `most_fields`
-:   Finds documents which match any field and combines the `_score` from each field. See [`most_fields`](/reference/query-languages/query-dsl-multi-match-query.md#type-most-fields).
+:   Finds documents which match any field and combines the `_score` from each field. See [`most_fields`](query-dsl-multi-match-query.md#type-most-fields).
 
 `phrase`
-:   Runs a `match_phrase` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](/reference/query-languages/query-dsl-multi-match-query.md#type-phrase).
+:   Runs a `match_phrase` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](query-dsl-multi-match-query.md#type-phrase).
 
 `phrase_prefix`
-:   Runs a `match_phrase_prefix` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](/reference/query-languages/query-dsl-multi-match-query.md#type-phrase).
+:   Runs a `match_phrase_prefix` query on each field and uses the `_score` from the best field. See [`phrase` and `phrase_prefix`](query-dsl-multi-match-query.md#type-phrase).
 
-NOTE: Additional top-level `multi_match` parameters may be available based on the [`type`](/reference/query-languages/query-dsl-multi-match-query.md#multi-match-types) value.
+NOTE: Additional top-level `multi_match` parameters may be available based on the [`type`](query-dsl-multi-match-query.md#multi-match-types) value.
 
 
 
 
 ### Synonyms and the `query_string` query [query-string-synonyms]
 
-The `query_string` query supports multi-terms synonym expansion with the [synonym_graph](/reference/data-analysis/text-analysis/analysis-synonym-graph-tokenfilter.md) token filter. When this filter is used, the parser creates a phrase query for each multi-terms synonyms. For example, the following synonym: `ny, new york` would produce:
+The `query_string` query supports multi-terms synonym expansion with the [synonym_graph](analysis-synonym-graph-tokenfilter.md) token filter. When this filter is used, the parser creates a phrase query for each multi-terms synonyms. For example, the following synonym: `ny, new york` would produce:
 
 `(ny OR ("new york"))`
 
@@ -737,4 +735,7 @@ that matches documents with at least two of the three per-term blended queries.
 
 ### Allow expensive queries [_allow_expensive_queries]
 
-Query string query can be internally be transformed to a [`prefix query`](/reference/query-languages/query-dsl-prefix-query.md) which means that if the prefix queries are disabled as explained [here](/reference/query-languages/query-dsl-prefix-query.md#prefix-query-allow-expensive-queries) the query will not be executed and an exception will be thrown.
+Query string query can be internally be transformed to a [`prefix query`](query-dsl-prefix-query.md) which means that if the prefix queries are disabled as explained [here](query-dsl-prefix-query.md#prefix-query-allow-expensive-queries) the query will not be executed and an exception will be thrown.
+
+
+

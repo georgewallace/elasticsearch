@@ -1,7 +1,5 @@
 ---
 navigation_title: "Extended stats"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-extendedstats-aggregation.html
 ---
 
 # Extended stats aggregation [search-aggregations-metrics-extendedstats-aggregation]
@@ -9,7 +7,7 @@ mapped_pages:
 
 A `multi-value` metrics aggregation that computes stats over numeric values extracted from the aggregated documents.
 
-The `extended_stats` aggregations is an extended version of the [`stats`](/reference/data-analysis/aggregations/search-aggregations-metrics-stats-aggregation.md) aggregation, where additional metrics are added such as `sum_of_squares`, `variance`, `std_deviation` and `std_deviation_bounds`.
+The `extended_stats` aggregations is an extended version of the [`stats`](search-aggregations-metrics-stats-aggregation.md) aggregation, where additional metrics are added such as `sum_of_squares`, `variance`, `std_deviation` and `std_deviation_bounds`.
 
 Assuming the data consists of documents representing exams grades (between 0 and 100) of students
 
@@ -22,6 +20,8 @@ GET /exams/_search
   }
 }
 ```
+
+%  TEST[setup:exams]
 
 The above aggregation computes the grades statistics over all documents. The aggregation type is `extended_stats` and the `field` setting defines the numeric field of the documents the stats will be computed on. The above will return the following:
 
@@ -58,6 +58,8 @@ The `std_deviation` and `variance` are calculated as population metrics so they 
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 The name of the aggregation (`grades_stats` above) also serves as the key by which the aggregation result can be retrieved from the returned response.
 
 ## Standard Deviation Bounds [_standard_deviation_bounds]
@@ -79,6 +81,8 @@ GET /exams/_search
 }
 ```
 
+%  TEST[setup:exams]
+
 1. `sigma` controls how many standard deviations +/- from the mean should be displayed
 
 
@@ -97,7 +101,7 @@ The standard deviation and its bounds are displayed by default, but they are not
 
 ## Script [_script_5]
 
-If you need to aggregate on a value that isn’t indexed, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). Say the we found out that the grades we’ve been working on were for an exam that was above the level of the students and we want to "correct" it:
+If you need to aggregate on a value that isn’t indexed, use a [runtime field](runtime.md). Say the we found out that the grades we’ve been working on were for an exam that was above the level of the students and we want to "correct" it:
 
 ```console
 GET /exams/_search
@@ -122,6 +126,40 @@ GET /exams/_search
 }
 ```
 
+%  TEST[setup:exams]
+
+%  TEST[s/_search/_search?filter_path=aggregations/]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "grades_stats": {
+%       "count": 2,
+%       "min": 60.0,
+%       "max": 100.0,
+%       "avg": 80.0,
+%       "sum": 160.0,
+%       "sum_of_squares": 13600.0,
+%       "variance": 400.0,
+%       "variance_population": 400.0,
+%       "variance_sampling": 800.0,
+%       "std_deviation": 20.0,
+%       "std_deviation_population": 20.0,
+%       "std_deviation_sampling": 28.284271247461902,
+%       "std_deviation_bounds": {
+%         "upper": 120.0,
+%         "lower": 40.0,
+%         "upper_population": 120.0,
+%         "lower_population": 40.0,
+%         "upper_sampling": 136.5685424949238,
+%         "lower_sampling": 23.431457505076196
+%       }
+%     }
+%   }
+% }
+% ----
+
 
 ## Missing value [_missing_value_9]
 
@@ -141,6 +179,8 @@ GET /exams/_search
   }
 }
 ```
+
+%  TEST[setup:exams]
 
 1. Documents without a value in the `grade` field will fall into the same bucket as documents that have the value `0`.
 

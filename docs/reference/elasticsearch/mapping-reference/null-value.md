@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/null-value.html
----
-
-# null_value [null-value]
+# `null_value` [null-value]
 
 A `null` value cannot be indexed or searched. When a field is set to `null`, (or an empty array or an array of `null` values)  it is treated as though that field has no values.
 
@@ -47,12 +42,12 @@ GET my-index-000001/_search
 3. A query for `NULL` returns document 1, but not document 2.
 
 
-::::{important}
+::::{important} 
 The `null_value` needs to be the same data type as the field. For instance, a `long` field cannot have a string `null_value`.
 ::::
 
 
-::::{note}
+::::{note} 
 The `null_value` only influences how data is indexed, it doesn’t modify the `_source` document.
 ::::
 

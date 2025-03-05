@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-string.html
----
-
 # String Functions [sql-functions-string]
 
 Functions for performing string manipulation.
@@ -599,6 +594,5 @@ UCASE('Elastic')
 ----------------
 ELASTIC
 ```
-
 
 

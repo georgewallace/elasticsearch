@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
----
-
-# fields [multi-fields]
+# `fields` [multi-fields]
 
 It is often useful to index the same field in different ways for different purposes. This is the purpose of *multi-fields*. For instance, a `string` field could be mapped as a `text` field for full-text search, and as a `keyword` field for sorting or aggregations:
 
@@ -59,10 +54,10 @@ GET my-index-000001/_search
 3. The `city.raw` field can be used for sorting and aggregations
 
 
-You can add multi-fields to an existing field using the [update mapping API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping).
+You can add multi-fields to an existing field using the [update mapping API](indices-put-mapping.md).
 
-::::{warning}
-If an index (or data stream) contains documents when you add a multi-field, those documents will not have values for the new multi-field. You can populate the new multi-field with the [update by query API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update-by-query).
+::::{warning} 
+If an index (or data stream) contains documents when you add a multi-field, those documents will not have values for the new multi-field. You can populate the new multi-field with the [update by query API](docs-update-by-query.md#picking-up-a-new-property).
 ::::
 
 
@@ -70,7 +65,7 @@ A multi-field mapping is completely separate from the parent field’s mapping. 
 
 ## Multi-fields with multiple analyzers [_multi_fields_with_multiple_analyzers]
 
-Another use case of multi-fields is to analyze the same field in different ways for better relevance. For instance we could index a field with the [`standard` analyzer](/reference/data-analysis/text-analysis/analysis-standard-analyzer.md) which breaks text up into words, and again with the [`english` analyzer](/reference/data-analysis/text-analysis/analysis-lang-analyzer.md#english-analyzer) which stems words into their root form:
+Another use case of multi-fields is to analyze the same field in different ways for better relevance. For instance we could index a field with the [`standard` analyzer](analysis-standard-analyzer.md) which breaks text up into words, and again with the [`english` analyzer](analysis-lang-analyzer.md#english-analyzer) which stems words into their root form:
 
 ```console
 PUT my-index-000001

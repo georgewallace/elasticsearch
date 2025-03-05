@@ -1,13 +1,13 @@
 ---
 navigation_title: "OpenText Documentum"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-opentext.html
 ---
 
 # Elastic OpenText Documentum connector reference [es-connectors-opentext]
 
 
-::::{warning}
+%  Attributes used in this file
+
+::::{warning} 
 This connector is an **example connector** that serves as a building block for customizations and is subject to change. Its source code currently lives on a [feature branch](https://github.com/elastic/connectors/blob/opentext-connector-backup/connectors/sources/opentext_documentum.py) and is yet not part of the main Elastic Connectors codebase. The design and code is less mature than supported features and is being provided as-is with no warranties. This connector is not subject to the support SLA of supported features.
 
 ::::
@@ -16,34 +16,34 @@ This connector is an **example connector** that serves as a building block for c
 The Elastic OpenText Documentum connector is written in Python using the [Elastic connector framework](https://github.com/elastic/connectors/tree/main?tab=readme-ov-file#connector-framework). View the [source code](https://github.com/elastic/connectors/blob/opentext-connector-backup/connectors/sources/opentext_documentum.py) for this example connector.
 
 
-## Availability and prerequisites [es-connectors-opentext-documentum-connector-availability-and-prerequisites]
+## Availability and prerequisites [es-connectors-opentext-documentum-connector-availability-and-prerequisites] 
 
 This **example connector** was introduced in Elastic **8.14.0**, available as a **self-managed** self-managed connector on a feature branch, for testing and development purposes only.
 
-To use this connector, satisfy all [self-managed connector prerequisites](/reference/ingestion-tools/search-connectors/self-managed-connectors.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
+To use this connector, satisfy all [self-managed connector prerequisites](es-build-connector.md). Importantly, you must deploy the connectors service on your own infrastructure. You have two deployment options:
 
-* [Run connectors service from source](/reference/ingestion-tools/search-connectors/es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
-* [Run connectors service in Docker](/reference/ingestion-tools/search-connectors/es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
+* [Run connectors service from source](es-connectors-run-from-source.md). Use this option if you’re comfortable working with Python and want to iterate quickly locally.
+* [Run connectors service in Docker](es-connectors-run-from-docker.md). Use this option if you want to deploy the connectors to a server, or use a container orchestration platform.
 
 
-## Usage [es-connectors-opentext-documentum-connector-usage]
+## Usage [es-connectors-opentext-documentum-connector-usage] 
 
 To set up this connector in the UI, select the **OpenText Documentum** tile when creating a new connector under **Search → Connectors**.
 
-If you’re already familiar with how connectors work, you can also use the [Connector APIs](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector).
+If you’re already familiar with how connectors work, you can also use the [Connector APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html).
 
-For additional operations, see [*Connectors UI in {{kib}}*](/reference/ingestion-tools/search-connectors/connectors-ui-in-kibana.md).
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
 
 
-## Connecting to OpenText Documentum [es-connectors-opentext-documentum-connector-connecting-to-opentext-documentum]
+## Connecting to OpenText Documentum [es-connectors-opentext-documentum-connector-connecting-to-opentext-documentum] 
 
 Basic authentication is used to connect with OpenText Documentum.
 
 
-## Configuration [es-connectors-opentext-documentum-connector-configuration]
+## Configuration [es-connectors-opentext-documentum-connector-configuration] 
 
 
-### Configure OpenText Documentum connector [es-connectors-opentext-documentum-connector-configure-opentext-documentum-connector]
+### Configure OpenText Documentum connector [es-connectors-opentext-documentum-connector-configure-opentext-documentum-connector] 
 
 Note the following configuration fields:
 
@@ -83,12 +83,12 @@ Note the following configuration fields:
 
 
 
-### Content Extraction [es-connectors-opentext-documentum-connector-content-extraction]
+### Content Extraction [es-connectors-opentext-documentum-connector-content-extraction] 
 
-Refer to [content extraction](/reference/ingestion-tools/search-connectors/es-connectors-content-extraction.md).
+Refer to [content extraction](es-connectors-content-extraction.md).
 
 
-## Documents and syncs [es-connectors-opentext-documentum-connector-documents-and-syncs]
+## Documents and syncs [es-connectors-opentext-documentum-connector-documents-and-syncs] 
 
 The connector syncs the following objects and entities:
 
@@ -96,7 +96,7 @@ The connector syncs the following objects and entities:
 * **Cabinets**
 * **Files & Folders**
 
-::::{note}
+::::{note} 
 * Files bigger than 10 MB won’t be extracted.
 * Permissions are not synced. **All documents** indexed to an Elastic deployment will be visible to **all users with access** to the destination Elasticsearch index.
 
@@ -104,28 +104,28 @@ The connector syncs the following objects and entities:
 
 
 
-### Sync types [es-connectors-opentext-documentum-connector-sync-types]
+### Sync types [es-connectors-opentext-documentum-connector-sync-types] 
 
-[Full syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-full) are supported by default for all connectors.
+[Full syncs](es-connectors-sync-types.md#es-connectors-sync-types-full) are supported by default for all connectors.
 
-[Incremental syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-incremental) are not available for this connector in the present version.
+[Incremental syncs](es-connectors-sync-types.md#es-connectors-sync-types-incremental) are not available for this connector in the present version.
 
 
-## Sync rules [es-connectors-opentext-documentum-connector-sync-rules]
+## Sync rules [es-connectors-opentext-documentum-connector-sync-rules] 
 
-[Basic sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
 
 Advanced sync rules are not available for this connector in the present version.
 
 
-## Connector Client operations [es-connectors-opentext-documentum-connector-connector-client-operations]
+## Connector Client operations [es-connectors-opentext-documentum-connector-connector-client-operations] 
 
 
-### End-to-end Testing [es-connectors-opentext-documentum-connector-end-to-end-testing]
+### End-to-end Testing [es-connectors-opentext-documentum-connector-end-to-end-testing] 
 
 The connector framework enables operators to run functional tests against a real data source, using Docker Compose. You don’t need a running Elasticsearch instance or OpenText Documentum source to run this test.
 
-Refer to [Connector testing](/reference/ingestion-tools/search-connectors/self-managed-connectors.md#es-build-connector-testing) for more details.
+Refer to [Connector testing](es-build-connector.md#es-build-connector-testing) for more details.
 
 To perform E2E testing for the OpenText Documentum connector, run the following command:
 
@@ -142,17 +142,17 @@ make ftest NAME=opentext_documentum DATA_SIZE=small
 By default, `DATA_SIZE=MEDIUM`.
 
 
-## Known issues [es-connectors-opentext-documentum-connector-known-issues]
+## Known issues [es-connectors-opentext-documentum-connector-known-issues] 
 
-* There are no known issues for this connector. Refer to [Known issues](/release-notes/known-issues.md) for a list of known issues for all connectors.
-
-
-## Troubleshooting [es-connectors-opentext-documentum-connector-troubleshooting]
-
-See [Troubleshooting](/reference/ingestion-tools/search-connectors/es-connectors-troubleshooting.md).
+* There are no known issues for this connector. Refer to [Known issues](es-connectors-known-issues.md) for a list of known issues for all connectors.
 
 
-## Security [es-connectors-opentext-documentum-connector-security]
+## Troubleshooting [es-connectors-opentext-documentum-connector-troubleshooting] 
 
-See [Security](/reference/ingestion-tools/search-connectors/es-connectors-security.md).
+See [Troubleshooting](es-connectors-troubleshooting.md).
+
+
+## Security [es-connectors-opentext-documentum-connector-security] 
+
+See [Security](es-connectors-security.md).
 

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Geo-polygon"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html
 ---
 
 # Geo-polygon query [query-dsl-geo-polygon-query]
@@ -10,7 +8,7 @@ mapped_pages:
 ::::{admonition} Deprecated in 7.12.
 :class: warning
 
-Use [Geoshape](/reference/query-languages/query-dsl-geo-shape-query.md) instead where polygons are defined in GeoJSON or [Well-Known Text (WKT)](http://docs.opengeospatial.org/is/18-010r7/18-010r7.md).
+Use [Geoshape](query-dsl-geo-shape-query.md) instead where polygons are defined in GeoJSON or [Well-Known Text (WKT)](http://docs.opengeospatial.org/is/18-010r7/18-010r7.md).
 ::::
 
 
@@ -40,8 +38,10 @@ GET /_search
 }
 ```
 
+%  TEST[warning:Deprecated field [geo_polygon] used, replaced by [[geo_shape] query where polygons are defined in geojson or wkt]]
 
-## Query options [_query_options_2]
+
+## Query options [_query_options_2] 
 
 | Option | Description |
 | --- | --- |
@@ -49,10 +49,10 @@ GET /_search
 | `validation_method` | Set to `IGNORE_MALFORMED` to accept geo points withinvalid latitude or longitude, `COERCE` to try and infer correct latitudeor longitude, or `STRICT` (default is `STRICT`). |
 
 
-## Allowed formats [_allowed_formats]
+## Allowed formats [_allowed_formats] 
 
 
-### Lat long as array [_lat_long_as_array]
+### Lat long as array [_lat_long_as_array] 
 
 Format as `[lon, lat]`
 
@@ -82,8 +82,10 @@ GET /_search
 }
 ```
 
+%  TEST[warning:Deprecated field [geo_polygon] used, replaced by [[geo_shape] query where polygons are defined in geojson or wkt]]
 
-### Lat lon as string [_lat_lon_as_string_2]
+
+### Lat lon as string [_lat_lon_as_string_2] 
 
 Format in `lat,lon`.
 
@@ -111,8 +113,10 @@ GET /_search
 }
 ```
 
+%  TEST[warning:Deprecated field [geo_polygon] used, replaced by [[geo_shape] query where polygons are defined in geojson or wkt]]
 
-### Geohash [_geohash_4]
+
+### Geohash [_geohash_4] 
 
 ```console
 GET /_search
@@ -138,13 +142,15 @@ GET /_search
 }
 ```
 
-
-## `geo_point` type [_geo_point_type]
-
-The query **requires** the [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) type to be set on the relevant field.
+%  TEST[warning:Deprecated field [geo_polygon] used, replaced by [[geo_shape] query where polygons are defined in geojson or wkt]]
 
 
-## Ignore unmapped [_ignore_unmapped_3]
+## `geo_point` type [_geo_point_type] 
+
+The query **requires** the [`geo_point`](geo-point.md) type to be set on the relevant field.
+
+
+## Ignore unmapped [_ignore_unmapped_3] 
 
 When set to `true` the `ignore_unmapped` option will ignore an unmapped field and will not match any documents for this query. This can be useful when querying multiple indexes which might have different mappings. When set to `false` (the default value) the query will throw an exception if the field is not mapped.
 

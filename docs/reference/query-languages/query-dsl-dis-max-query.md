@@ -1,7 +1,5 @@
 ---
 navigation_title: "Disjunction max"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-dis-max-query.html
 ---
 
 # Disjunction max query [query-dsl-dis-max-query]
@@ -32,10 +30,10 @@ GET /_search
 ## Top-level parameters for `dis_max` [query-dsl-dis-max-query-top-level-params]
 
 `queries`
-:   (Required, array of query objects) Contains one or more query clauses. Returned documents **must match one or more** of these queries. If a document matches multiple queries, {{es}} uses the highest [relevance score](/reference/query-languages/query-filter-context.md).
+:   (Required, array of query objects) Contains one or more query clauses. Returned documents ***must match one or more*** of these queries. If a document matches multiple queries, {{es}} uses the highest [relevance score](query-filter-context.md).
 
 `tie_breaker`
-:   (Optional, float) Floating point number between `0` and `1.0` used to increase the [relevance scores](/reference/query-languages/query-filter-context.md#relevance-scores) of documents matching multiple query clauses. Defaults to `0.0`.
+:   (Optional, float) Floating point number between `0` and `1.0` used to increase the [relevance scores](query-filter-context.md#relevance-scores) of documents matching multiple query clauses. Defaults to `0.0`.
 
 You can use the `tie_breaker` value to assign higher relevance scores to documents that contain the same term in multiple fields than documents that contain this term in only the best of those multiple fields, without confusing this with the better case of two different terms in the multiple fields.
 
@@ -46,3 +44,6 @@ If a document matches multiple clauses, the `dis_max` query calculates the relev
 3. Add the highest score to the multiplied scores.
 
 If the `tie_breaker` value is greater than `0.0`, all matching clauses count, but the clause with the highest score counts most.
+
+
+

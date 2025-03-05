@@ -1,13 +1,11 @@
 ---
 navigation_title: "Sum"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-sum-aggregation.html
 ---
 
 # Sum aggregation [search-aggregations-metrics-sum-aggregation]
 
 
-A `single-value` metrics aggregation that sums up numeric values that are extracted from the aggregated documents. These values can be extracted either from specific numeric or [histogram](/reference/elasticsearch/mapping-reference/histogram.md) fields.
+A `single-value` metrics aggregation that sums up numeric values that are extracted from the aggregated documents. These values can be extracted either from specific numeric or [histogram](histogram.md) fields.
 
 Assuming the data consists of documents representing sales records we can sum the sale price of all hats with:
 
@@ -27,6 +25,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 Resulting in:
 
 ```console-result
@@ -40,11 +40,13 @@ Resulting in:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 The name of the aggregation (`hat_prices` above) also serves as the key by which the aggregation result can be retrieved from the returned response.
 
 ## Script [_script_14]
 
-If you need to get the `sum` for something more complex than a single field, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
+If you need to get the `sum` for something more complex than a single field, run the aggregation on a [runtime field](runtime.md).
 
 ```console
 POST /sales/_search?size=0
@@ -78,6 +80,21 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[s/size=0/size=0&filter_path=aggregations/]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "hat_prices": {
+%       "value": 370.0
+%     }
+%   }
+% }
+% ----
+
 
 ## Missing value [_missing_value_17]
 
@@ -97,17 +114,19 @@ POST /sales/_search?size=0
     "hat_prices": {
       "sum": {
         "field": "price",
-        "missing": 100
+        "missing": 100 <1>
       }
     }
   }
 }
 ```
 
+%  TEST[setup:sales]
+
 
 ## Histogram fields [search-aggregations-metrics-sum-aggregation-histogram-fields]
 
-When sum is computed on [histogram fields](/reference/elasticsearch/mapping-reference/histogram.md), the result of the aggregation is the sum of all elements in the `values` array multiplied by the number in the same position in the `counts` array.
+When sum is computed on [histogram fields](histogram.md), the result of the aggregation is the sum of all elements in the `values` array multiplied by the number in the same position in the `counts` array.
 
 For example, for the following index that stores pre-aggregated histograms with latency metrics for different networks:
 

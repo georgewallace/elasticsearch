@@ -1,7 +1,5 @@
 ---
 navigation_title: "Span first"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-span-first-query.html
 ---
 
 # Span first query [query-dsl-span-first-query]

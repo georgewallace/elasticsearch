@@ -1,7 +1,5 @@
 ---
 navigation_title: "Stop"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stop-tokenfilter.html
 ---
 
 # Stop token filter [analysis-stop-tokenfilter]
@@ -13,9 +11,9 @@ When not customized, the filter removes the following English stop words by defa
 
 `a`, `an`, `and`, `are`, `as`, `at`, `be`, `but`, `by`, `for`, `if`, `in`, `into`, `is`, `it`, `no`, `not`, `of`, `on`, `or`, `such`, `that`, `the`, `their`, `then`, `there`, `these`, `they`, `this`, `to`, `was`, `will`, `with`
 
-In addition to English, the `stop` filter supports predefined [stop word lists for several languages](#analysis-stop-tokenfilter-stop-words-by-lang). You can also specify your own stop words as an array or file.
+In addition to English, the `stop` filter supports predefined [stop word lists for several languages](analysis-stop-tokenfilter.md#analysis-stop-tokenfilter-stop-words-by-lang). You can also specify your own stop words as an array or file.
 
-The `stop` filter uses Lucene’s [StopFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/core/StopFilter.md).
+The `stop` filter uses Lucene’s [StopFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/core/StopFilter.md).
 
 ## Example [analysis-stop-tokenfilter-analyze-ex]
 
@@ -36,10 +34,60 @@ The filter produces the following tokens:
 [ quick, fox, jumps, over, lazy, dog ]
 ```
 
+% [source,console-result]
+% ----
+% {
+%   "tokens": [
+%     {
+%       "token": "quick",
+%       "start_offset": 2,
+%       "end_offset": 7,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "fox",
+%       "start_offset": 8,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "jumps",
+%       "start_offset": 12,
+%       "end_offset": 17,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "over",
+%       "start_offset": 18,
+%       "end_offset": 22,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     },
+%     {
+%       "token": "lazy",
+%       "start_offset": 27,
+%       "end_offset": 31,
+%       "type": "<ALPHANUM>",
+%       "position": 6
+%     },
+%     {
+%       "token": "dog",
+%       "start_offset": 32,
+%       "end_offset": 35,
+%       "type": "<ALPHANUM>",
+%       "position": 7
+%     }
+%   ]
+% }
+% ----
+
 
 ## Add to an analyzer [analysis-stop-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `stop` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `stop` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT /my-index-000001
@@ -61,9 +109,9 @@ PUT /my-index-000001
 ## Configurable parameters [analysis-stop-tokenfilter-configure-parms]
 
 `stopwords`
-:   (Optional, string or array of strings) Language value, such as `_arabic_` or `_thai_`. Defaults to [`_english_`](#english-stop-words).
+:   (Optional, string or array of strings) Language value, such as `_arabic_` or `_thai_`. Defaults to [`_english_`](analysis-stop-tokenfilter.md#english-stop-words).
 
-Each language value corresponds to a predefined list of stop words in Lucene. See [Stop words by language](#analysis-stop-tokenfilter-stop-words-by-lang) for supported language values and their stop words.
+Each language value corresponds to a predefined list of stop words in Lucene. See [Stop words by language](analysis-stop-tokenfilter.md#analysis-stop-tokenfilter-stop-words-by-lang) for supported language values and their stop words.
 
 Also accepts an array of stop words.
 
@@ -82,13 +130,15 @@ This path must be absolute or relative to the `config` location, and the file mu
 `remove_trailing`
 :   (Optional, Boolean) If `true`, the last token of a stream is removed if it’s a stop word. Defaults to `true`.
 
-This parameter should be `false` when using the filter with a completion suggester. This would ensure a query like `green a` matches and suggests `green apple` while still removing other stop words. For more information about completion suggesters, refer to [](/reference/elasticsearch/rest-apis/search-suggesters.md)
+This parameter should be `false` when using the filter with a [completion suggester](search-suggesters.md#completion-suggester). This would ensure a query like `green a` matches and suggests `green apple` while still removing other stop words.
+
+
 
 ## Customize [analysis-stop-tokenfilter-customize]
 
 To customize the `stop` filter, duplicate it to create the basis for a new custom token filter. You can modify the filter using its configurable parameters.
 
-For example, the following request creates a custom case-insensitive `stop` filter that removes stop words from the [`_english_`](#english-stop-words) stop words list:
+For example, the following request creates a custom case-insensitive `stop` filter that removes stop words from the [`_english_`](analysis-stop-tokenfilter.md#english-stop-words) stop words list:
 
 ```console
 PUT /my-index-000001

@@ -1,13 +1,11 @@
 ---
 navigation_title: "Range"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/range.html
 ---
 
 # Range field types [range]
 
 
-Range field types represent a continuous range of values between an upper and lower bound. For example, a range can represent *any date in October* or *any integer from 0 to 9*. They are defined using the operators `gt` or `gte` for the lower bound, and `lt` or `lte` for the upper bound. They can be used for querying, and have limited support for aggregations. The only supported aggregations are [histogram](/reference/data-analysis/aggregations/search-aggregations-bucket-histogram-aggregation.md), [cardinality](/reference/data-analysis/aggregations/search-aggregations-metrics-cardinality-aggregation.md).
+Range field types represent a continuous range of values between an upper and lower bound. For example, a range can represent *any date in October* or *any integer from 0 to 9*. They are defined using the operators `gt` or `gte` for the lower bound, and `lt` or `lte` for the upper bound. They can be used for querying, and have limited support for aggregations. The only supported aggregations are [histogram](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-histogram-aggregation.html), [cardinality](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html).
 
 The following range types are supported:
 
@@ -24,7 +22,7 @@ The following range types are supported:
 :   A range of double-precision 64-bit IEEE 754 floating point values.
 
 `date_range`
-:   A range of [`date`](/reference/elasticsearch/mapping-reference/date.md) values. Date ranges support various date formats through the [`format`](/reference/elasticsearch/mapping-reference/mapping-date-format.md) mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the `now` [date math](/reference/elasticsearch/rest-apis/common-options.md#date-math) expression are not supported.
+:   A range of [`date`](date.md) values. Date ranges support various date formats through the [`format`](mapping-date-format.md) mapping parameter. Regardless of the format used, date values are parsed into an unsigned 64-bit integer representing milliseconds since the Unix epoch in UTC. Values containing the `now` [date math](common-options.md#date-math) expression are not supported.
 
 `ip_range`
 :   A range of ip values supporting either [IPv4](https://en.wikipedia.org/wiki/IPv4) or [IPv6](https://en.wikipedia.org/wiki/IPv6) (or mixed) addresses.
@@ -63,12 +61,14 @@ PUT range_index/_doc/1?refresh
 }
 ```
 
-1. `date_range` types accept the same field parameters defined by the [`date`](/reference/elasticsearch/mapping-reference/date.md) type.
+%  TESTSETUP
+
+1. `date_range` types accept the same field parameters defined by the [`date`](date.md) type.
 2. Example indexing a meeting with 10 to 20 attendees, not including 20.
 3. Example date range using date time stamp.
 
 
-The following is an example of a [term query](/reference/query-languages/query-dsl-term-query.md) on the `integer_range` field named "expected_attendees". 12 is a value inside the range, so it will match.
+The following is an example of a [term query](query-dsl-term-query.md) on the `integer_range` field named "expected_attendees". 12 is a value inside the range, so it will match.
 
 ```console
 GET range_index/_search
@@ -120,6 +120,8 @@ The result produced by the above query.
 }
 ```
 
+%  TESTRESPONSE[s/"took": 13/"took" : $body.took/]
+
 The following is an example of a `date_range` query over the `date_range` field named "time_frame".
 
 ```console
@@ -137,8 +139,8 @@ GET range_index/_search
 }
 ```
 
-1. Range queries work the same as described in [range query](/reference/query-languages/query-dsl-range-query.md).
-2. Range queries over range [fields](/reference/elasticsearch/mapping-reference/field-data-types.md) support a `relation` parameter which can be one of `WITHIN`, `CONTAINS`, `INTERSECTS` (default).
+1. Range queries work the same as described in [range query](query-dsl-range-query.md).
+2. Range queries over range [fields](mapping-types.md) support a `relation` parameter which can be one of `WITHIN`, `CONTAINS`, `INTERSECTS` (default).
 
 
 This query produces a similar result:
@@ -178,6 +180,8 @@ This query produces a similar result:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 13/"took" : $body.took/]
+
 ## IP Range [ip-range]
 
 In addition to the range format above, IP ranges can be provided in [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation) notation:
@@ -203,27 +207,27 @@ PUT range_index/_doc/2
 
 The following parameters are accepted by range types:
 
-[`coerce`](/reference/elasticsearch/mapping-reference/coerce.md)
+[`coerce`](coerce.md)
 :   Try to convert strings to numbers and truncate fractions for integers. Accepts `true` (default) and `false`.
 
-[`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md)
+[`doc_values`](doc-values.md)
 :   Should the field be stored on disk in a column-stride fashion, so that it can later be used for sorting, aggregations, or scripting? Accepts `true` (default) or `false`.
 
-[`index`](/reference/elasticsearch/mapping-reference/mapping-index.md)
+[`index`](mapping-index.md)
 :   Should the field be searchable? Accepts `true` (default) and `false`.
 
-[`store`](/reference/elasticsearch/mapping-reference/mapping-store.md)
-:   Whether the field value should be stored and retrievable separately from the [`_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md) field. Accepts `true` or `false` (default).
+[`store`](mapping-store.md)
+:   Whether the field value should be stored and retrievable separately from the [`_source`](mapping-source-field.md) field. Accepts `true` or `false` (default).
 
 
 ## Synthetic `_source` [range-synthetic-source]
 
-::::{important}
+::::{important} 
 Synthetic `_source` is Generally Available only for TSDB indices (indices that have `index.mode` set to `time_series`). For other indices synthetic `_source` is in technical preview. Features in technical preview may be changed or removed in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.
 ::::
 
 
-`range` fields support [synthetic `_source`](/reference/elasticsearch/mapping-reference/mapping-source-field.md#synthetic-source) in their default configuration.
+`range` fields support [synthetic `_source`](mapping-source-field.md#synthetic-source) in their default configuration.
 
 Synthetic source may sort `range` field values and remove duplicates for all `range` fields except `ip_range`. Ranges are sorted by their lower bound and then by upper bound. For example:
 
@@ -271,6 +275,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -291,6 +297,8 @@ Will become:
   ]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 Values of `ip_range` fields are not sorted but original order is not preserved. Duplicate ranges are removed. If `ip_range` field value is provided as a CIDR, it will be represented as a range of IP addresses in synthetic source.
 
@@ -329,6 +337,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -340,6 +350,8 @@ Will become:
 
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 $$$range-synthetic-source-inclusive$$$
 Range field values are always represented as inclusive on both sides with bounds adjusted accordingly. Default values for range bounds are represented as `null`. This is true even if range bound was explicitly provided. For example:
@@ -374,6 +386,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -384,6 +398,8 @@ Will become:
   }
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 $$$range-synthetic-source-default-bounds$$$
 Default values for range bounds are represented as `null` in synthetic source. This is true even if range bound was explicitly provided with default value. For example:
@@ -417,6 +433,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -427,6 +445,8 @@ Will become:
   }
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 `date` ranges are formatted using provided `format` or by default using `yyyy-MM-dd'T'HH:mm:ss.SSSZ` format. For example:
 
@@ -466,6 +486,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -482,5 +504,7 @@ Will become:
   ]
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 

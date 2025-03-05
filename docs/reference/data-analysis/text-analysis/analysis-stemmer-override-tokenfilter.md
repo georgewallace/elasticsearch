@@ -1,7 +1,5 @@
 ---
 navigation_title: "Stemmer override"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stemmer-override-tokenfilter.html
 ---
 
 # Stemmer override token filter [analysis-stemmer-override-tokenfilter]
@@ -42,7 +40,7 @@ PUT /my-index-000001
 
 Where the file looks like:
 
-```text
+```stemmer_override
 running, runs => run
 
 stemmer => stemmer

@@ -1,13 +1,11 @@
 ---
 navigation_title: "Percolator"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/percolator.html
 ---
 
 # Percolator field type [percolator]
 
 
-The `percolator` field type parses a json structure into a native query and stores that query, so that the [percolate query](/reference/query-languages/query-dsl-percolate-query.md) can use it to match provided documents.
+The `percolator` field type parses a json structure into a native query and stores that query, so that the [percolate query](query-dsl-percolate-query.md) can use it to match provided documents.
 
 Any field that contains a json object can be configured to be a percolator field. The percolator field type has no settings. Just configuring the `percolator` field type is sufficient to instruct Elasticsearch to treat a field as a query.
 
@@ -29,6 +27,8 @@ PUT my-index-000001
 }
 ```
 
+%  TESTSETUP
+
 Then you can index a query:
 
 ```console
@@ -42,18 +42,18 @@ PUT my-index-000001/_doc/match_value
 }
 ```
 
-::::{important}
-Fields referred to in a percolator query must **already** exist in the mapping associated with the index used for percolation. In order to make sure these fields exist, add or update a mapping via the [create index](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) or [update mapping](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-put-mapping) APIs.
+::::{important} 
+Fields referred to in a percolator query must **already** exist in the mapping associated with the index used for percolation. In order to make sure these fields exist, add or update a mapping via the [create index](indices-create-index.md) or [update mapping](indices-put-mapping.md) APIs.
 
 ::::
 
 
 
-## Reindexing your percolator queries [_reindexing_your_percolator_queries]
+## Reindexing your percolator queries [_reindexing_your_percolator_queries] 
 
 Reindexing percolator queries is sometimes required to benefit from improvements made to the `percolator` field type in new releases.
 
-Reindexing percolator queries can be reindexed by using the [reindex api](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-reindex). Lets take a look at the following index with a percolator field type:
+Reindexing percolator queries can be reindexed by using the [reindex api](docs-reindex.md). Lets take a look at the following index with a percolator field type:
 
 ```console
 PUT index
@@ -91,6 +91,8 @@ PUT queries/_doc/1?refresh
   }
 }
 ```
+
+%  TEST[continued]
 
 1. It is always recommended to define an alias for your index, so that in case of a reindex systems / applications don’t need to be changed to know that the percolator queries are now in a different index.
 
@@ -141,6 +143,8 @@ POST _aliases
 }
 ```
 
+%  TEST[continued]
+
 1. If you have an alias don’t forget to point it to the new index.
 
 
@@ -159,6 +163,8 @@ GET /queries/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 now returns matches from the new index:
 
@@ -199,11 +205,13 @@ now returns matches from the new index:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 3,/"took": "$body.took",/]
+
 1. Percolator query hit is now being presented from the new index.
 
 
 
-## Optimizing query time text analysis [_optimizing_query_time_text_analysis]
+## Optimizing query time text analysis [_optimizing_query_time_text_analysis] 
 
 When the percolator verifies a percolator candidate match it is going to parse, perform query time text analysis and actually run the percolator query on the document being percolated. This is done for each candidate match and every time the `percolate` query executes. If your query time text analysis is relatively expensive part of query parsing then text analysis can become the dominating factor time is being spent on when percolating. This query parsing overhead can become noticeable when the percolator ends up verifying many candidate percolator query matches.
 
@@ -224,6 +232,8 @@ Lets say we want to index the following percolator query:
   }
 }
 ```
+
+%  NOTCONSOLE
 
 with these settings and mapping:
 
@@ -254,6 +264,8 @@ PUT /test_index
 }
 ```
 
+%  TEST[continued]
+
 1. For the purpose of this example, this analyzer is considered expensive.
 
 
@@ -266,6 +278,8 @@ POST /test_index/_analyze
   "text" : "missing bicycles"
 }
 ```
+
+%  TEST[continued]
 
 This results the following response:
 
@@ -306,6 +320,8 @@ PUT /test_index/_doc/1?refresh
 }
 ```
 
+%  TEST[continued]
+
 1. It is important to select a whitespace analyzer here, otherwise the analyzer defined in the mapping will be used, which defeats the point of using this workflow. Note that `whitespace` is a built-in analyzer, if a different analyzer needs to be used, it needs to be configured first in the index’s settings.
 
 
@@ -326,6 +342,8 @@ GET /test_index/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 This results in a response like this:
 
@@ -369,8 +387,10 @@ This results in a response like this:
 }
 ```
 
+%  TESTRESPONSE[s/"took": 6,/"took": "$body.took",/]
 
-## Optimizing wildcard queries. [_optimizing_wildcard_queries]
+
+## Optimizing wildcard queries. [_optimizing_wildcard_queries] 
 
 Wildcard queries are more expensive than other queries for the percolator, especially if the wildcard expressions are large.
 
@@ -422,6 +442,8 @@ PUT my_queries1
 }
 ```
 
+%  TEST[continued]
+
 1. The analyzer that generates the prefix tokens to be used at index time only.
 2. Increase the `min_gram` and decrease `max_gram` settings based on your prefix search needs.
 3. This multifield should be used to do the prefix search with a `term` or `match` query instead of a `prefix` or `wildcard` query.
@@ -439,6 +461,8 @@ Then instead of indexing the following query:
 }
 ```
 
+%  NOTCONSOLE
+
 this query below should be indexed:
 
 ```console
@@ -451,6 +475,8 @@ PUT /my_queries1/_doc/1?refresh
   }
 }
 ```
+
+%  TEST[continued]
 
 This way can handle the second query more efficiently than the first query.
 
@@ -469,6 +495,8 @@ GET /my_queries1/_search
   }
 }
 ```
+
+%  TEST[continued]
 
 ```console-result
 {
@@ -508,6 +536,8 @@ GET /my_queries1/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took": 6,/"took": "$body.took",/]
 
 The same technique can also be used to speed up suffix wildcard searches. By using the `reverse` token filter before the `edge_ngram` token filter.
 
@@ -564,6 +594,8 @@ PUT my_queries2
 }
 ```
 
+%  TEST[continued]
+
 1. A custom analyzer is needed at search time too, because otherwise the query terms are not being reversed and would otherwise not match with the reserved suffix tokens.
 
 
@@ -579,6 +611,8 @@ Then instead of indexing the following query:
 }
 ```
 
+%  NOTCONSOLE
+
 the following query below should be indexed:
 
 ```console
@@ -591,6 +625,8 @@ PUT /my_queries2/_doc/2?refresh
   }
 }
 ```
+
+%  TEST[continued]
 
 1. The `match` query should be used instead of the `term` query, because text analysis needs to reverse the query terms.
 
@@ -611,36 +647,38 @@ GET /my_queries2/_search
 }
 ```
 
+%  TEST[continued]
 
-## Dedicated Percolator Index [_dedicated_percolator_index]
+
+## Dedicated Percolator Index [_dedicated_percolator_index] 
 
 Percolate queries can be added to any index. Instead of adding percolate queries to the index the data resides in, these queries can also be added to a dedicated index. The advantage of this is that this dedicated percolator index can have its own index settings (For example the number of primary and replica shards). If you choose to have a dedicated percolate index, you need to make sure that the mappings from the normal index are also available on the percolate index. Otherwise percolate queries can be parsed incorrectly.
 
 
-## Forcing Unmapped Fields to be Handled as Strings [_forcing_unmapped_fields_to_be_handled_as_strings]
+## Forcing Unmapped Fields to be Handled as Strings [_forcing_unmapped_fields_to_be_handled_as_strings] 
 
 In certain cases it is unknown what kind of percolator queries do get registered, and if no field mapping exists for fields that are referred by percolator queries then adding a percolator query fails. This means the mapping needs to be updated to have the field with the appropriate settings, and then the percolator query can be added. But sometimes it is sufficient if all unmapped fields are handled as if these were default text fields. In those cases one can configure the `index.percolator.map_unmapped_fields_as_text` setting to `true` (default to `false`) and then if a field referred in a percolator query does not exist, it will be handled as a default text field so that adding the percolator query doesn’t fail.
 
 
-## Limitations [_limitations_2]
+## Limitations [_limitations_2] 
 
 
-### Parent/child [parent-child]
+### Parent/child [parent-child] 
 
 Because the `percolate` query is processing one document at a time, it doesn’t support queries and filters that run against child documents such as `has_child` and `has_parent`.
 
 
-### Fetching queries [_fetching_queries]
+### Fetching queries [_fetching_queries] 
 
 There are a number of queries that fetch data via a get call during query parsing. For example the `terms` query when using terms lookup, `template` query when using indexed scripts and `geo_shape` when using pre-indexed shapes. When these queries are indexed by the `percolator` field type then the get call is executed once. So each time the `percolator` query evaluates these queries, the fetches terms, shapes etc. as the were upon index time will be used. Important to note is that fetching of terms that these queries do, happens both each time the percolator query gets indexed on both primary and replica shards, so the terms that are actually indexed can be different between shard copies, if the source index changed while indexing.
 
 
-### Script query [_script_query]
+### Script query [_script_query] 
 
 The script inside a `script` query can only access doc values fields. The `percolate` query indexes the provided document into an in-memory index. This in-memory index doesn’t support stored fields and because of that the `_source` field and other stored fields are not stored. This is the reason why in the `script` query the `_source` and other stored fields aren’t available.
 
 
-### Field aliases [_field_aliases]
+### Field aliases [_field_aliases] 
 
-Percolator queries that contain [field aliases](/reference/elasticsearch/mapping-reference/field-alias.md) may not always behave as expected. In particular, if a percolator query is registered that contains a field alias, and then that alias is updated in the mappings to refer to a different field, the stored query will still refer to the original target field. To pick up the change to the field alias, the percolator query must be explicitly reindexed.
+Percolator queries that contain [field aliases](field-alias.md) may not always behave as expected. In particular, if a percolator query is registered that contains a field alias, and then that alias is updated in the mappings to refer to a different field, the stored query will still refer to the original target field. To pick up the change to the field alias, the percolator query must be explicitly reindexed.
 

@@ -1,21 +1,16 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/certgen.html
----
-
 # elasticsearch-certgen [certgen]
 
 ::::{admonition} Deprecated in 6.1.
 :class: warning
 
-Replaced by [`elasticsearch-certutil`](/reference/elasticsearch/command-line-tools/certutil.md).
+Replaced by [`elasticsearch-certutil`](certutil.md).
 ::::
 
 
 The `elasticsearch-certgen` command simplifies the creation of certificate authorities (CA), certificate signing requests (CSR), and signed certificates for use with the Elastic Stack. Though this command is deprecated, you do not need to replace CAs, CSRs, or certificates that it created.
 
 
-## Synopsis [_synopsis]
+## Synopsis [_synopsis] 
 
 ```shell
 bin/elasticsearch-certgen
@@ -27,7 +22,7 @@ bin/elasticsearch-certgen
 ```
 
 
-## Description [_description_8]
+## Description [_description_8] 
 
 By default, the command runs in interactive mode and you are prompted for information about each instance. An instance is any piece of the Elastic Stack that requires a Transport Layer Security (TLS) or SSL certificate. Depending on your configuration, {{es}}, Logstash, {{kib}}, and Beats might all require a certificate and private key.
 
@@ -35,12 +30,12 @@ The minimum required value for each instance is a name. This can simply be the h
 
 Depending on the parameters that you specify, you are also prompted for necessary information such as the path for the output file and the CA private key password.
 
-The `elasticsearch-certgen` command also supports a silent mode of operation to enable easier batch operations. For more information, see [Using `elasticsearch-certgen` in Silent Mode](#certgen-silent).
+The `elasticsearch-certgen` command also supports a silent mode of operation to enable easier batch operations. For more information, see [Using `elasticsearch-certgen` in Silent Mode](certgen.md#certgen-silent).
 
-The output file is a zip file that contains the signed certificates and private keys for each instance. If you chose to generate a CA, which is the default behavior, the certificate and private key are included in the output file. If you chose to generate CSRs, you should provide them to your commercial or organization-specific certificate authority to obtain signed certificates. The signed certificates must be in PEM format to work with the {{stack}} {{security-features}}.
+The output file is a zip file that contains the signed certificates and private keys for each instance. If you chose to generate a CA, which is the default behavior, the certificate and private key are included in the output file. If you chose to generate CSRs, you should provide them to your commercial or organization-specific certificate authority to obtain signed certificates. The signed certificates must be in PEM format to work with the {{stack}} {security-features}.
 
 
-## Parameters [certgen-parameters]
+## Parameters [certgen-parameters] 
 
 `--cert <cert_file>`
 :   Specifies to generate new instance certificates and keys using an existing CA certificate, which is provided in the `<cert_file>` argument. This parameter cannot be used with the `-csr` parameter.
@@ -61,7 +56,7 @@ The output file is a zip file that contains the signed certificates and private 
 :   Returns all of the command parameters.
 
 `--in <input_file>`
-:   Specifies the file that is used to run in silent mode. The input file must be a YAML file, as described in [Using `elasticsearch-certgen` in Silent Mode](#certgen-silent).
+:   Specifies the file that is used to run in silent mode. The input file must be a YAML file, as described in [Using `elasticsearch-certgen` in Silent Mode](certgen.md#certgen-silent).
 
 `--key <key_file>`
 :   Specifies the *private-key* file for the CA certificate. This parameter is required whenever the `-cert` parameter is used.
@@ -85,10 +80,10 @@ The output file is a zip file that contains the signed certificates and private 
 :   Shows verbose output.
 
 
-## Examples [_examples_14]
+## Examples [_examples_14] 
 
 
-### Using `elasticsearch-certgen` in Silent Mode [certgen-silent]
+### Using `elasticsearch-certgen` in Silent Mode [certgen-silent] 
 
 To use the silent mode of operation, you must create a YAML file that contains information about the instances. It must match the following format:
 

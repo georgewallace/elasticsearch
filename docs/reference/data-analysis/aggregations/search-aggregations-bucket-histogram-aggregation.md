@@ -1,7 +1,5 @@
 ---
 navigation_title: "Histogram"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-histogram-aggregation.html
 ---
 
 # Histogram aggregation [search-aggregations-bucket-histogram-aggregation]
@@ -34,6 +32,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 And the following may be the response:
 
@@ -69,6 +69,8 @@ And the following may be the response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 ## Minimum document count [_minimum_document_count]
 
 The response above show that no documents has a price that falls within the range of `[100, 150)`. By default the response will fill gaps in the histogram with empty buckets. It is possible to change that and request buckets with a higher minimum count thanks to the `min_doc_count` setting:
@@ -89,6 +91,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 Response:
 
@@ -120,6 +124,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 $$$search-aggregations-bucket-histogram-aggregation-extended-bounds$$$
 By default the `histogram` returns all the buckets within the range of the data itself, that is, the documents with the smallest values (on which with histogram) will determine the min bucket (the bucket with the smallest key) and the documents with the highest values will determine the max bucket (the bucket with the highest key). Often, when requesting empty buckets, this causes a confusion, specifically, when the data is also filtered.
 
@@ -129,7 +135,7 @@ Lets say the you’re filtering your request to get all docs with values between
 
 With `extended_bounds` setting, you now can "force" the histogram aggregation to start building buckets on a specific `min` value and also keep on building buckets up to a `max` value (even if there are no documents anymore). Using `extended_bounds` only makes sense when `min_doc_count` is 0 (the empty buckets will never be returned if `min_doc_count` is greater than 0).
 
-Note that (as the name suggest) `extended_bounds` is **not** filtering buckets. Meaning, if the `extended_bounds.min` is higher than the values extracted from the documents, the documents will still dictate what the first bucket will be (and the same goes for the `extended_bounds.max` and the last bucket). For filtering buckets, one should nest the histogram aggregation under a range `filter` aggregation with the appropriate `from`/`to` settings.
+Note that (as the name suggest) `extended_bounds` is ***not*** filtering buckets. Meaning, if the `extended_bounds.min` is higher than the values extracted from the documents, the documents will still dictate what the first bucket will be (and the same goes for the `extended_bounds.max` and the last bucket). For filtering buckets, one should nest the histogram aggregation under a range `filter` aggregation with the appropriate `from`/`to` settings.
 
 Example:
 
@@ -156,10 +162,12 @@ POST /sales/_search?size=0
 }
 ```
 
-When aggregating ranges, buckets are based on the values of the returned documents. This means the response may include buckets outside of a query’s range. For example, if your query looks for values greater than 100, and you have a range covering 50 to 150, and an interval of 50, that document will land in 3 buckets - 50, 100, and 150. In general, it’s best to think of the query and aggregation steps as independent - the query selects a set of documents, and then the aggregation buckets those documents without regard to how they were selected. See [note on bucketing range fields](/reference/data-analysis/aggregations/search-aggregations-bucket-range-field-note.md) for more information and an example.
+%  TEST[setup:sales]
+
+When aggregating ranges, buckets are based on the values of the returned documents. This means the response may include buckets outside of a query’s range. For example, if your query looks for values greater than 100, and you have a range covering 50 to 150, and an interval of 50, that document will land in 3 buckets - 50, 100, and 150. In general, it’s best to think of the query and aggregation steps as independent - the query selects a set of documents, and then the aggregation buckets those documents without regard to how they were selected. See [note on bucketing range fields](search-aggregations-bucket-range-field-note.md) for more information and an example.
 
 $$$search-aggregations-bucket-histogram-aggregation-hard-bounds$$$
-The `hard_bounds` is a counterpart of `extended_bounds` and can limit the range of buckets in the histogram. It is particularly useful in the case of open [data ranges](/reference/elasticsearch/mapping-reference/range.md) that can result in a very large number of buckets.
+The `hard_bounds` is a counterpart of `extended_bounds` and can limit the range of buckets in the histogram. It is particularly useful in the case of open [data ranges](range.md) that can result in a very large number of buckets.
 
 Example:
 
@@ -186,12 +194,14 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 In this example even though the range specified in the query is up to 500, the histogram will only have 2 buckets starting at 100 and 150. All other buckets will be omitted even if documents that should go to this buckets are present in the results.
 
 
 ## Order [_order_2]
 
-By default the returned buckets are sorted by their `key` ascending, though the order behaviour can be controlled using the `order` setting. Supports the same `order` functionality as the [`Terms Aggregation`](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order).
+By default the returned buckets are sorted by their `key` ascending, though the order behaviour can be controlled using the `order` setting. Supports the same `order` functionality as the [`Terms Aggregation`](search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order).
 
 
 ## Offset [_offset]
@@ -221,6 +231,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 Response:
 
@@ -256,6 +268,8 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 
 ## Missing value [_missing_value_2]
 
@@ -277,6 +291,8 @@ POST /sales/_search?size=0
   }
 }
 ```
+
+%  TEST[setup:sales]
 
 1. Documents without a value in the `quantity` field will fall into the same bucket as documents that have the value `0`.
 
@@ -368,12 +384,16 @@ The `histogram` aggregation will sum the counts of each interval computed based 
 }
 ```
 
-::::{important}
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
+::::{important} 
 Histogram aggregation is a bucket aggregation, which partitions documents into buckets rather than calculating metrics over fields like metrics aggregations do. Each bucket represents a collection of documents which sub-aggregations can run on. On the other hand, a histogram field is a pre-aggregated field representing multiple values inside a single field: buckets of numerical data and a count of items/documents for each bucket. This mismatch between the histogram aggregations expected input (expecting raw documents) and the histogram field (that provides summary information) limits the outcome of the aggregation to only the doc counts for each bucket.
 
-**Consequently, when executing a histogram aggregation over a histogram field, no sub-aggregations are allowed.**
+***Consequently, when executing a histogram aggregation over a histogram field, no sub-aggregations are allowed.***
 
 ::::
 
 
 Also, when running histogram aggregation over histogram field the `missing` parameter is not supported.
+
+

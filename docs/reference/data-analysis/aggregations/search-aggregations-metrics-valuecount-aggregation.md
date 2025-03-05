@@ -1,7 +1,5 @@
 ---
 navigation_title: "Value count"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-valuecount-aggregation.html
 ---
 
 # Value count aggregation [search-aggregations-metrics-valuecount-aggregation]
@@ -20,6 +18,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 Response:
 
 ```console-result
@@ -33,11 +33,13 @@ Response:
 }
 ```
 
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
+
 The name of the aggregation (`types_count` above) also serves as the key by which the aggregation result can be retrieved from the returned response.
 
 ## Script [_script_16]
 
-If you need to count something more complex than the values in a single field you should run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
+If you need to count something more complex than the values in a single field you should run the aggregation on a [runtime field](runtime.md).
 
 ```console
 POST /sales/_search
@@ -64,10 +66,25 @@ POST /sales/_search
 }
 ```
 
+%  TEST[setup:sales]
+
+%  TEST[s/_search/_search?filter_path=aggregations/]
+
+% [source,console-result]
+% ----
+% {
+%   "aggregations": {
+%     "tags_count": {
+%       "value": 12
+%     }
+%   }
+% }
+% ----
+
 
 ## Histogram fields [search-aggregations-metrics-valuecount-aggregation-histogram-fields]
 
-When the `value_count` aggregation is computed on [histogram fields](/reference/elasticsearch/mapping-reference/histogram.md), the result of the aggregation is the sum of all numbers in the `counts` array of the histogram.
+When the `value_count` aggregation is computed on [histogram fields](histogram.md), the result of the aggregation is the sum of all numbers in the `counts` array of the histogram.
 
 For example, for the following index that stores pre-aggregated histograms with latency metrics for different networks:
 
@@ -100,9 +117,7 @@ POST /metrics_index/_search?size=0
 }
 ```
 
-1. For each histogram field the `value_count` aggregation will sum all numbers in the `counts` array.
-
-Eventually, the aggregation will add all values for all histograms and return the following result:
+For each histogram field the `value_count` aggregation will sum all numbers in the `counts` array <1>. Eventually, it will add all values for all histograms and return the following result:
 
 ```console-result
 {
@@ -114,5 +129,7 @@ Eventually, the aggregation will add all values for all histograms and return th
   }
 }
 ```
+
+%  TESTRESPONSE[skip:test not setup]
 
 

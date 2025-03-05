@@ -1,13 +1,11 @@
 ---
 navigation_title: "Knn"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-knn-query.html
 ---
 
 # Knn query [query-dsl-knn-query]
 
 
-Finds the *k* nearest vectors to a query vector, as measured by a similarity metric. *knn* query finds nearest vectors through approximate search on indexed dense_vectors. The preferred way to do approximate kNN search is through the [top level knn section](docs-content://solutions/search/vector/knn.md) of a search request. *knn* query is reserved for expert cases, where there is a need to combine this query with other queries, or perform a kNN search against a [semantic_text](/reference/elasticsearch/mapping-reference/semantic-text.md) field.
+Finds the *k* nearest vectors to a query vector, as measured by a similarity metric. *knn* query finds nearest vectors through approximate search on indexed dense_vectors. The preferred way to do approximate kNN search is through the [top level knn section](knn-search.md) of a search request. *knn* query is reserved for expert cases, where there is a need to combine this query with other queries, or perform a kNN search against a [semantic_text](semantic-text.md) field.
 
 ## Example request [knn-query-ex-request]
 
@@ -45,7 +43,10 @@ PUT my-image-index
     { "image-vector": [15, 11, 23], "file-type": "jpg", "title": "mountain lake lodge" }
     ```
 
-2. Run the search using the `knn` query, asking for the top 10 nearest vectors from each shard, and then combine shard results to get the top 3 global results.
+
+% TEST[continued]
+
+1. Run the search using the `knn` query, asking for the top 10 nearest vectors from each shard, and then combine shard results to get the top 3 global results.
 
     ```console
     POST my-image-index/_search
@@ -62,11 +63,13 @@ PUT my-image-index
     ```
 
 
+% TEST[continued]
+
 
 ## Top-level parameters for `knn` [knn-query-top-level-parameters]
 
 `field`
-:   (Required, string) The name of the vector field to search against. Must be a [`dense_vector` field with indexing enabled](/reference/elasticsearch/mapping-reference/dense-vector.md#index-vectors-knn-search), or a [`semantic_text` field](/reference/elasticsearch/mapping-reference/semantic-text.md) with a compatible dense vector inference model.
+:   (Required, string) The name of the vector field to search against. Must be a [`dense_vector` field with indexing enabled](dense-vector.md#index-vectors-knn-search), or a [`semantic_text` field](semantic-text.md) with a compatible dense vector inference model.
 
 
 `query_vector`
@@ -74,9 +77,9 @@ PUT my-image-index
 
 
 `query_vector_builder`
-:   (Optional, object) Query vector builder. A configuration object indicating how to build a query_vector before executing the request. You must provide either a `query_vector_builder` or `query_vector`, but not both. Refer to [Perform semantic search](docs-content://solutions/search/vector/knn.md#knn-semantic-search) to learn more.
+:   (Optional, object) Query vector builder. A configuration object indicating how to build a query_vector before executing the request. You must provide either a `query_vector_builder` or `query_vector`, but not both. Refer to [Perform semantic search](knn-search.md#knn-semantic-search) to learn more.
 
-If all queried fields are of type [semantic_text](/reference/elasticsearch/mapping-reference/semantic-text.md), the inference ID associated with the `semantic_text` field may be inferred.
+If all queried fields are of type [semantic_text](semantic-text.md), the inference ID associated with the `semantic_text` field may be inferred.
 
 
 `k`
@@ -90,18 +93,18 @@ If all queried fields are of type [semantic_text](/reference/elasticsearch/mappi
 `filter`
 :   (Optional, query object) Query to filter the documents that can match. The kNN search will return the top documents that also match this filter. The value can be a single query or a list of queries. If `filter` is not provided, all documents are allowed to match.
 
-The filter is a pre-filter, meaning that it is applied **during** the approximate kNN search to ensure that `num_candidates` matching documents are returned.
+The filter is a pre-filter, meaning that it is applied ***during*** the approximate kNN search to ensure that `num_candidates` matching documents are returned.
 
 
 `similarity`
-:   (Optional, float) The minimum similarity required for a document to be considered a match. The similarity value calculated relates to the raw [`similarity`](/reference/elasticsearch/mapping-reference/dense-vector.md#dense-vector-similarity) used. Not the document score. The matched documents are then scored according to [`similarity`](/reference/elasticsearch/mapping-reference/dense-vector.md#dense-vector-similarity) and the provided `boost` is applied.
+:   (Optional, float) The minimum similarity required for a document to be considered a match. The similarity value calculated relates to the raw [`similarity`](dense-vector.md#dense-vector-similarity) used. Not the document score. The matched documents are then scored according to [`similarity`](dense-vector.md#dense-vector-similarity) and the provided `boost` is applied.
 
 
 `rescore_vector`
 :   (Optional, object) Functionality in [preview]. Apply oversampling and rescoring to quantized vectors.
 
-::::{note}
-Rescoring only makes sense for quantized vectors; when [quantization](/reference/elasticsearch/mapping-reference/dense-vector.md#dense-vector-quantization) is not used, the original vectors are used for scoring. Rescore option will be ignored for non-quantized `dense_vector` fields.
+::::{note} 
+Rescoring only makes sense for quantized vectors; when [quantization](dense-vector.md#dense-vector-quantization) is not used, the original vectors are used for scoring. Rescore option will be ignored for non-quantized `dense_vector` fields.
 ::::
 
 
@@ -115,7 +118,7 @@ Rescoring only makes sense for quantized vectors; when [quantization](/reference
     * The top `k` rescored candidates will be returned.
 
 
-See [oversampling and rescoring quantized vectors](docs-content://solutions/search/vector/knn.md#dense-vector-knn-search-rescoring) for details.
+See [oversampling and rescoring quantized vectors](knn-search.md#dense-vector-knn-search-rescoring) for details.
 
 
 `boost`
@@ -131,10 +134,10 @@ See [oversampling and rescoring quantized vectors](docs-content://solutions/sear
 
 There are two ways to filter documents that match a kNN query:
 
-1. **pre-filtering** – filter is applied during the approximate kNN search to ensure that `k` matching documents are returned.
-2. **post-filtering** – filter is applied after the approximate kNN search completes, which results in fewer than k results, even when there are enough matching documents.
+1. ***pre-filtering*** – filter is applied during the approximate kNN search to ensure that `k` matching documents are returned.
+2. ***post-filtering*** – filter is applied after the approximate kNN search completes, which results in fewer than k results, even when there are enough matching documents.
 
-Pre-filtering is supported through the `filter` parameter of the `knn` query. Also filters from [aliases](docs-content://manage-data/data-store/aliases.md#filter-alias) are applied as pre-filters.
+Pre-filtering is supported through the `filter` parameter of the `knn` query. Also filters from [aliases](aliases.md#filter-alias) are applied as pre-filters.
 
 All other filters found in the Query DSL tree are applied as post-filters. For example, `knn` query finds the top 3 documents with the nearest vectors (k=3), which are combined with  `term` filter, that is post-filtered. The final set of documents will contain only a single document that passes the post-filter.
 
@@ -158,6 +161,8 @@ POST my-image-index/_search
   }
 }
 ```
+
+% TEST[continued]
 
 
 ## Hybrid search with knn query [knn-query-in-hybrid-search]
@@ -195,10 +200,12 @@ POST my-image-index/_search
 }
 ```
 
+% TEST[continued]
+
 
 ## Knn query inside a nested query [knn-query-with-nested-query]
 
-`knn` query can be used inside a nested query. The behaviour here is similar to [top level nested kNN search](docs-content://solutions/search/vector/knn.md#nested-knn-search):
+`knn` query can be used inside a nested query. The behaviour here is similar to [top level nested kNN search](knn-search.md#nested-knn-search):
 
 * kNN search over nested dense_vectors diversifies the top results over the top-level document
 * `filter`  over the top-level document metadata is supported and acts as a pre-filter
@@ -226,7 +233,11 @@ A sample query can look like below:
 }
 ```
 
+%  NOTCONSOLE
+
 
 ## Knn query with aggregations [knn-query-aggregations]
 
-`knn` query calculates aggregations on top `k` documents from each shard. Thus, the final results from aggregations contain `k * number_of_shards` documents. This is different from the [top level knn section](docs-content://solutions/search/vector/knn.md) where aggregations are calculated on the global top `k` nearest documents.
+`knn` query calculates aggregations on top `k` documents from each shard. Thus, the final results from aggregations contain `k * number_of_shards` documents. This is different from the [top level knn section](knn-search.md) where aggregations are calculated on the global top `k` nearest documents.
+
+

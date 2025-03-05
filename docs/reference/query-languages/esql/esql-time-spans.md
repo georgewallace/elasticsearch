@@ -1,7 +1,5 @@
 ---
 navigation_title: "Time spans"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/esql-time-spans.html
 ---
 
 # {{esql}} time spans [esql-time-spans]
@@ -14,10 +12,10 @@ Time spans represent intervals between two datetime values. There are currently 
 
 A time span requires two elements: an integer value and a temporal unit.
 
-Time spans work with grouping functions such as [BUCKET](/reference/query-languages/esql/esql-functions-operators.md#esql-bucket), scalar functions such as [DATE_TRUNC](/reference/query-languages/esql/esql-functions-operators.md#esql-date_trunc) and arithmetic operators such as [`+`](/reference/query-languages/esql/esql-functions-operators.md#esql-add) and [`-`](/reference/query-languages/esql/esql-functions-operators.md#esql-sub). Convert strings to time spans using [TO_DATEPERIOD](/reference/query-languages/esql/esql-functions-operators.md#esql-to_dateperiod), [TO_TIMEDURATION](/reference/query-languages/esql/esql-functions-operators.md#esql-to_timeduration), or the cast operators `::DATE_PERIOD`, `::TIME_DURATION`.
+Time spans work with grouping functions such as [BUCKET](esql-functions-operators.md#esql-bucket), scalar functions such as [DATE_TRUNC](esql-functions-operators.md#esql-date_trunc) and arithmetic operators such as [`+`](esql-functions-operators.md#esql-add) and [`-`](esql-functions-operators.md#esql-subtract). Convert strings to time spans using [TO_DATEPERIOD](esql-functions-operators.md#esql-to_dateperiod), [TO_TIMEDURATION](esql-functions-operators.md#esql-to_timeduration), or the cast operators `::DATE_PERIOD`, `::TIME_DURATION`.
 
 
-## Examples of using time spans in {{esql}} [esql-time-spans-examples]
+## Examples of using time spans in {{esql}} [esql-time-spans-examples] 
 
 With `BUCKET`:
 
@@ -102,7 +100,7 @@ POST /_query
 ```
 
 
-## Supported temporal units [esql-time-spans-table]
+## Supported temporal units [esql-time-spans-table] 
 
 | Temporal Units | Valid Abbreviations |
 | --- | --- |

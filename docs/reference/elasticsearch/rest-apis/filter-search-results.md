@@ -1,22 +1,15 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/filter-search-results.html
-applies_to:
-  stack: all
----
-
 # Filter search results [filter-search-results]
 
 You can use two methods to filter search results:
 
-* Use a boolean query with a `filter` clause. Search requests apply [boolean filters](/reference/query-languages/query-dsl-bool-query.md) to both search hits and [aggregations](/reference/data-analysis/aggregations/index.md).
-* Use the search API’s `post_filter` parameter. Search requests apply [post filters](#post-filter) only to search hits, not aggregations. You can use a post filter to calculate aggregations based on a broader result set, and then further narrow the results.
+* Use a boolean query with a `filter` clause. Search requests apply [boolean filters](query-dsl-bool-query.md) to both search hits and [aggregations](search-aggregations.md).
+* Use the search API’s `post_filter` parameter. Search requests apply [post filters](filter-search-results.md#post-filter) only to search hits, not aggregations. You can use a post filter to calculate aggregations based on a broader result set, and then further narrow the results.
 
-    You can also [rescore](#rescore) hits after the post filter to improve relevance and reorder results.
+    You can also [rescore](filter-search-results.md#rescore) hits after the post filter to improve relevance and reorder results.
 
 
 
-## Post filter [post-filter]
+## Post filter [post-filter] 
 
 When you use the `post_filter` parameter to filter search results, the search hits are filtered after the aggregations are calculated. A post filter has no impact on the aggregation results.
 
@@ -42,9 +35,11 @@ PUT /shirts/_doc/1?refresh
 }
 ```
 
+%  TESTSETUP
+
 Imagine a user has specified two filters:
 
-`color:red` and `brand:gucci`. You only want to show them red shirts made by Gucci in the search results. Normally you would do this with a [`bool` query](/reference/query-languages/query-dsl-bool-query.md):
+`color:red` and `brand:gucci`. You only want to show them red shirts made by Gucci in the search results. Normally you would do this with a [`bool` query](query-dsl-bool-query.md):
 
 ```console
 GET /shirts/_search
@@ -62,7 +57,7 @@ GET /shirts/_search
 
 However, you would also like to use *faceted navigation* to display a list of other options that the user could click on. Perhaps you have a `model` field that would allow the user to limit their search results to red Gucci `t-shirts` or `dress-shirts`.
 
-This can be done with a [`terms` aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md):
+This can be done with a [`terms` aggregation](search-aggregations-bucket-terms-aggregation.md):
 
 ```console
 GET /shirts/_search
@@ -128,28 +123,28 @@ GET /shirts/_search
 
 
 
-## Rescore filtered search results [rescore]
+## Rescore filtered search results [rescore] 
 
-Rescoring can help to improve precision by reordering just the top (eg 100 - 500) documents returned by the [`query`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) and [`post_filter`](#post-filter) phases, using a secondary (usually more costly) algorithm, instead of applying the costly algorithm to all documents in the index.
+Rescoring can help to improve precision by reordering just the top (eg 100 - 500) documents returned by the [`query`](search-search.md#request-body-search-query) and [`post_filter`](filter-search-results.md#post-filter) phases, using a secondary (usually more costly) algorithm, instead of applying the costly algorithm to all documents in the index.
 
 A `rescore` request is executed on each shard before it returns its results to be sorted by the node handling the overall search request.
 
 Currently the rescore API has only one implementation: the query rescorer, which uses a query to tweak the scoring. In the future, alternative rescorers may be made available, for example, a pair-wise rescorer.
 
-::::{note}
-An error will be thrown if an explicit [`sort`](/reference/elasticsearch/rest-apis/sort-search-results.md) (other than `_score` in descending order) is provided with a `rescore` query.
+::::{note} 
+An error will be thrown if an explicit [`sort`](sort-search-results.md) (other than `_score` in descending order) is provided with a `rescore` query.
 ::::
 
 
-::::{note}
+::::{note} 
 when exposing pagination to your users, you should not change `window_size` as you step through each page (by passing different `from` values) since that can alter the top hits causing results to confusingly shift as the user steps through pages.
 ::::
 
 
 
-### Query rescorer [query-rescorer]
+### Query rescorer [query-rescorer] 
 
-The query rescorer executes a second query only on the Top-K results returned by the [`query`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) and [`post_filter`](#post-filter) phases. The number of docs which will be examined on each shard can be controlled by the `window_size` parameter, which defaults to 10.
+The query rescorer executes a second query only on the Top-K results returned by the [`query`](search-search.md#request-body-search-query) and [`post_filter`](filter-search-results.md#post-filter) phases. The number of docs which will be examined on each shard can be controlled by the `window_size` parameter, which defaults to 10.
 
 By default the scores from the original query and the rescore query are combined linearly to produce the final `_score` for each document. The relative importance of the original query and of the rescore query can be controlled with the `query_weight` and `rescore_query_weight` respectively. Both default to `1`.
 
@@ -184,18 +179,20 @@ POST /_search
 }
 ```
 
+%  TEST[setup:my_index]
+
 The way the scores are combined can be controlled with the `score_mode`:
 
 | Score Mode | Description |
 | --- | --- |
 | `total` | Add the original score and the rescore query score. The default. |
-| `multiply` | Multiply the original score by the rescore query score. Usefulfor [`function query`](/reference/query-languages/query-dsl-function-score-query.md) rescores. |
+| `multiply` | Multiply the original score by the rescore query score. Usefulfor [`function query`](query-dsl-function-score-query.md) rescores. |
 | `avg` | Average the original score and the rescore query score. |
 | `max` | Take the max of original score and the rescore query score. |
 | `min` | Take the min of the original score and the rescore query score. |
 
 
-### Multiple rescores [multiple-rescores]
+### Multiple rescores [multiple-rescores] 
 
 It is also possible to execute multiple rescores in sequence:
 
@@ -241,6 +238,8 @@ POST /_search
    } ]
 }
 ```
+
+%  TEST[setup:my_index]
 
 The first one gets the results of the query then the second one gets the results of the first, etc. The second rescore will "see" the sorting done by the first rescore so it is possible to use a large window on the first rescore to pull documents into a smaller window for the second rescore.
 

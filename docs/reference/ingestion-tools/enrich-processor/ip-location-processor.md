@@ -1,7 +1,5 @@
 ---
 navigation_title: "IP Location"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/ip-location-processor.html
 ---
 
 # IP location processor [ip-location-processor]
@@ -15,11 +13,11 @@ By default, the processor uses the GeoLite2 City, GeoLite2 Country, and GeoLite2
 * `ingest.geoip.downloader.eager.download` is set to true
 * your cluster has at least one pipeline with a `geoip` or `ip_location` processor
 
-{{es}} automatically downloads updates for these databases from the Elastic GeoIP endpoint: [https://geoip.elastic.co/v1/database](https://geoip.elastic.co/v1/database?elastic_geoip_service_tos=agree). To get download statistics for these updates, use the [GeoIP stats API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-ingest-geo-ip-stats).
+{{es}} automatically downloads updates for these databases from the Elastic GeoIP endpoint: [https://geoip.elastic.co/v1/database](https://geoip.elastic.co/v1/database?elastic_geoip_service_tos=agree). To get download statistics for these updates, use the [GeoIP stats API](geoip-stats-api.md).
 
-If your cluster can’t connect to the Elastic GeoIP endpoint or you want to manage your own updates, see [Manage your own IP geolocation database updates](/reference/ingestion-tools/enrich-processor/geoip-processor.md#manage-geoip-database-updates).
+If your cluster can’t connect to the Elastic GeoIP endpoint or you want to manage your own updates, see [Manage your own IP geolocation database updates](geoip-processor.md#manage-geoip-database-updates).
 
-If you would like to have {{es}} download database files directly from Maxmind using your own provided license key, see [Create or update IP geolocation database configuration](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-ingest-put-ip-location-database).
+If you would like to have {{es}} download database files directly from Maxmind using your own provided license key, see [Create or update IP geolocation database configuration](put-ip-location-database-api.md).
 
 If {{es}} can’t connect to the endpoint for 30 days all updated databases will become invalid. {{es}} will stop enriching documents with ip geolocation data and will add `tags: ["_ip_location_expired_database"]` field instead.
 
@@ -31,7 +29,7 @@ $$$ingest-ip-location-options$$$
 | --- | --- | --- | --- |
 | `field` | yes | - | The field to get the IP address from for the geographical lookup. |
 | `target_field` | no | ip_location | The field that will hold the geographical information looked up from the database. |
-| `database_file` | no | GeoLite2-City.mmdb | The database filename referring to one of the automatically downloaded GeoLite2 databases (GeoLite2-City.mmdb, GeoLite2-Country.mmdb, or GeoLite2-ASN.mmdb), or the name of a supported database file in the `ingest-geoip` config directory, or the name of a [configured database](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-ingest-get-ip-location-database) (with the `.mmdb` suffix appended). |
+| `database_file` | no | GeoLite2-City.mmdb | The database filename referring to one of the automatically downloaded GeoLite2 databases (GeoLite2-City.mmdb, GeoLite2-Country.mmdb, or GeoLite2-ASN.mmdb), or the name of a supported database file in the `ingest-geoip` config directory, or the name of a [configured database](get-ip-location-database-api.md) (with the `.mmdb` suffix appended). |
 | `properties` | no | [`continent_name`, `country_iso_code`, `country_name`, `region_iso_code`, `region_name`, `city_name`, `location`] * | Controls what properties are added to the `target_field` based on the ip geolocation lookup. |
 | `ignore_missing` | no | `false` | If `true` and `field` does not exist, the processor quietly exits without modifying the document |
 | `first_only` | no | `true` | If `true` only first found ip geolocation data, will be returned, even if `field` contains array |
@@ -94,6 +92,8 @@ Which returns:
 }
 ```
 
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term":1/"_primary_term" : $body._primary_term/]
+
 Here is an example that uses the default country database and adds the geographical information to the `geo` field based on the `ip` field. Note that this database is downloaded automatically. So this:
 
 ```console
@@ -138,6 +138,8 @@ returns this:
 }
 ```
 
+%  TESTRESPONSE[s/"_seq_no": \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
+
 Not all IP addresses find geo information from the database, When this occurs, no `target_field` is inserted into the document.
 
 Here is an example of what documents will be indexed as when information for "80.231.5.0" cannot be found:
@@ -178,5 +180,7 @@ Which returns:
   }
 }
 ```
+
+%  TESTRESPONSE[s/"_seq_no" : \d+/"_seq_no" : $body._seq_no/ s/"_primary_term" : 1/"_primary_term" : $body._primary_term/]
 
 

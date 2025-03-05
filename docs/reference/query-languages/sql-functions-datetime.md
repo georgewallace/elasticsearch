@@ -1,8 +1,3 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-functions-datetime.html
----
-
 # Date/Time and Interval Functions and Operators [sql-functions-datetime]
 
 Elasticsearch SQL offers a wide range of facilities for performing date/time manipulations.
@@ -11,7 +6,7 @@ Elasticsearch SQL offers a wide range of facilities for performing date/time man
 
 A common requirement when dealing with date/time in general revolves around the notion of `interval`, a topic that is worth exploring in the context of {{es}} and Elasticsearch SQL.
 
-{{es}} has comprehensive support for [date math](/reference/elasticsearch/rest-apis/common-options.md#date-math) both inside [index names](/reference/elasticsearch/rest-apis/api-conventions.md#api-date-math-index-names) and [queries](/reference/elasticsearch/mapping-reference/mapping-date-format.md). Inside Elasticsearch SQL the former is supported as is by passing the expression in the table name, while the latter is supported through the standard SQL `INTERVAL`.
+{{es}} has comprehensive support for [date math](common-options.md#date-math) both inside [index names](api-conventions.md#api-date-math-index-names) and [queries](mapping-date-format.md). Inside Elasticsearch SQL the former is supported as is by passing the expression in the table name, while the latter is supported through the standard SQL `INTERVAL`.
 
 The table below shows the mapping between {{es}} and Elasticsearch SQL:
 
@@ -31,7 +26,7 @@ The table below shows the mapping between {{es}} and Elasticsearch SQL:
 
 `INTERVAL` allows either `YEAR` and `MONTH` to be mixed together *or* `DAY`, `HOUR`, `MINUTE` and `SECOND`.
 
-::::{tip}
+::::{tip} 
 Elasticsearch SQL accepts also the plural for each time unit (e.g. both `YEAR` and `YEARS` are valid).
 ::::
 
@@ -53,7 +48,7 @@ Example of the possible combinations below:
 
 ## Comparison [_comparison]
 
-Date/time fields can be compared to [date math](/reference/elasticsearch/rest-apis/common-options.md#date-math) expressions with the equality (`=`) and `IN` operators:
+Date/time fields can be compared to [date math](common-options.md#date-math) expressions with the equality (`=`) and `IN` operators:
 
 ```sql
 SELECT hire_date FROM emp WHERE hire_date = '1987-03-01||+4y/y';
@@ -150,7 +145,7 @@ CURDATE()
 
 **Description**: Returns the date (no time part) when the current query reached the server. It can be used both as a keyword: `CURRENT_DATE` or as a function with no arguments: `CURRENT_DATE()`.
 
-::::{note}
+::::{note} 
 Unlike CURRENT_DATE, `CURDATE()` can only be used as a function with no arguments and not as a keyword.
 ::::
 
@@ -181,7 +176,7 @@ SELECT CURDATE() AS result;
 2018-12-12
 ```
 
-Typically, this function (as well as its twin [TODAY())](#sql-functions-today) function is used for relative date filtering:
+Typically, this function (as well as its twin [TODAY())](sql-functions-datetime.md#sql-functions-today) function is used for relative date filtering:
 
 ```sql
 SELECT first_name FROM emp WHERE hire_date > TODAY() - INTERVAL 35 YEARS ORDER BY first_name ASC LIMIT 5;
@@ -192,7 +187,7 @@ Alejandro
 Amabile
 Anoosh
 Basil
-Brendon
+Cristinel
 ```
 
 
@@ -261,7 +256,7 @@ Anoosh
 Arumugam
 ```
 
-::::{important}
+::::{important} 
 Currently, using a *precision* greater than 6 doesn’t make any difference to the output of the function as the maximum number of second fractional digits returned is 6.
 ::::
 
@@ -309,7 +304,7 @@ SELECT CURRENT_TIMESTAMP(1) AS result;
 2018-12-12T14:48:52.4Z
 ```
 
-Typically, this function (as well as its twin [NOW())](#sql-functions-now) function is used for relative date/time filtering:
+Typically, this function (as well as its twin [NOW())](sql-functions-datetime.md#sql-functions-now) function is used for relative date/time filtering:
 
 ```sql
 SELECT first_name FROM emp WHERE hire_date > NOW() - INTERVAL 100 YEARS ORDER BY first_name ASC LIMIT 5;
@@ -323,7 +318,7 @@ Anoosh
 Arumugam
 ```
 
-::::{important}
+::::{important} 
 Currently, using a *precision* greater than 6 doesn’t make any difference to the output of the function as the maximum number of second fractional digits returned is 6.
 ::::
 
@@ -349,7 +344,7 @@ DATE_ADD(
 
 **Description**: Add the given number of date/time units to a date/datetime. If the number of units is negative then it’s subtracted from the date/datetime.
 
-::::{warning}
+::::{warning} 
 If the second argument is a long there is possibility of truncation since an integer value will be extracted and used from that long.
 ::::
 
@@ -481,7 +476,7 @@ SELECT DATE_DIFF('qq', '2019-09-04'::date, '2025-04-25'::date) AS "diffInQuarter
 23
 ```
 
-::::{note}
+::::{note} 
 For `hour` and `minute`, `DATEDIFF` doesn’t do any rounding, but instead first truncates the more detailed time fields on the 2 dates to zero and then calculates the subtraction.
 ::::
 
@@ -527,9 +522,9 @@ DATE_FORMAT(
 
 **Output**: string
 
-**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern is one of the specifiers used in the [MySQL DATE_FORMAT() function](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format).
+**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern is one of the specifiers used in the [MySQL DATE_FORMAT() function](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.md#function_date-format).
 
-::::{note}
+::::{note} 
 If the 1st argument is of type `time`, then pattern specified by the 2nd argument cannot contain date related units (e.g. *dd*, *MM*, *yyyy*, etc.). If it contains such units an error is returned. Ranges for month and day specifiers (%c, %D, %d, %e, %m) start at one, unlike MySQL, where they start at zero, due to the fact that MySQL permits the storing of incomplete dates such as *2014-00-00*. Elasticsearch in this case returns an error.
 ::::
 
@@ -575,9 +570,9 @@ DATE_PARSE(
 
 **Output**: date
 
-**Description**: Returns a date by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.html).
+**Description**: Returns a date by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.md).
 
-::::{note}
+::::{note} 
 If the parsing pattern does not contain all valid date units (e.g. *HH:mm:ss*, *dd-MM HH:mm:ss*, etc.) an error is returned as the function needs to return a value of `date` type which will contain date part.
 ::::
 
@@ -590,8 +585,8 @@ SELECT DATE_PARSE('07/04/2020', 'dd/MM/yyyy') AS "date";
 2020-04-07
 ```
 
-::::{note}
-The resulting `date` will have the time zone specified by the user through the [`time_zone`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-sql-query)/[`timezone`](docs-content://explore-analyze/query-filter/languages/sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters with no conversion applied.
+::::{note} 
+The resulting `date` will have the time zone specified by the user through the [`time_zone`](sql-search-api.md#sql-search-api-time-zone)/[`timezone`](sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters with no conversion applied.
 
 ```sql
 {
@@ -624,9 +619,9 @@ DATETIME_FORMAT(
 
 **Output**: string
 
-**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.html).
+**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.md).
 
-::::{note}
+::::{note} 
 If the 1st argument is of type `time`, then pattern specified by the 2nd argument cannot contain date related units (e.g. *dd*, *MM*, *yyyy*, etc.). If it contains such units an error is returned.
 ::::
 
@@ -672,9 +667,9 @@ DATETIME_PARSE(
 
 **Output**: datetime
 
-**Description**: Returns a datetime by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.html).
+**Description**: Returns a datetime by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.md).
 
-::::{note}
+::::{note} 
 If the parsing pattern contains only date or only time units (e.g. *dd/MM/yyyy*, *HH:mm:ss*, etc.) an error is returned as the function needs to return a value of `datetime` type which must contain both.
 ::::
 
@@ -695,8 +690,8 @@ SELECT DATETIME_PARSE('10:20:30 07/04/2020 Europe/Berlin', 'HH:mm:ss dd/MM/yyyy 
 2020-04-07T08:20:30.000Z
 ```
 
-::::{note}
-If timezone is not specified in the datetime string expression and the parsing pattern, the resulting `datetime` will have the time zone specified by the user through the [`time_zone`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-sql-query)/[`timezone`](docs-content://explore-analyze/query-filter/languages/sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters with no conversion applied.
+::::{note} 
+If timezone is not specified in the datetime string expression and the parsing pattern, the resulting `datetime` will have the time zone specified by the user through the [`time_zone`](sql-search-api.md#sql-search-api-time-zone)/[`timezone`](sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters with no conversion applied.
 
 ```sql
 {
@@ -729,9 +724,9 @@ TIME_PARSE(
 
 **Output**: time
 
-**Description**: Returns a time by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.html).
+**Description**: Returns a time by parsing the 1st argument using the format specified in the 2nd argument. The parsing format pattern used is the one from [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/time/format/DateTimeFormatter.md).
 
-::::{note}
+::::{note} 
 If the parsing pattern contains only date units (e.g. *dd/MM/yyyy*) an error is returned as the function needs to return a value of `time` type which will contain only time.
 ::::
 
@@ -752,8 +747,8 @@ SELECT TIME_PARSE('10:20:30-01:00', 'HH:mm:ssXXX') AS "time";
 11:20:30.000Z
 ```
 
-::::{note}
-If timezone is not specified in the time string expression and the parsing pattern, the resulting `time` will have the offset of the time zone specified by the user through the [`time_zone`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-sql-query)/[`timezone`](docs-content://explore-analyze/query-filter/languages/sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters at the Unix epoch date (`1970-01-01`) with no conversion applied.
+::::{note} 
+If timezone is not specified in the time string expression and the parsing pattern, the resulting `time` will have the offset of the time zone specified by the user through the [`time_zone`](sql-search-api.md#sql-search-api-time-zone)/[`timezone`](sql-jdbc.md#jdbc-cfg-timezone) REST/driver parameters at the Unix epoch date (`1970-01-01`) with no conversion applied.
 
 ```sql
 {
@@ -786,7 +781,7 @@ DATE_PART(
 
 **Output**: integer
 
-**Description**: Extract the specified unit from a date/datetime. It’s similar to [`EXTRACT`](#sql-functions-datetime-extract) but with different names and aliases for the units and provides more options (e.g.: `TZOFFSET`).
+**Description**: Extract the specified unit from a date/datetime. It’s similar to [`EXTRACT`](sql-functions-datetime.md#sql-functions-datetime-extract) but with different names and aliases for the units and provides more options (e.g.: `TZOFFSET`).
 
 | Datetime units to extract |
 | --- |
@@ -838,7 +833,7 @@ SELECT DATE_PART('month', CAST('2019-09-24' AS DATE)) AS month;
 9
 ```
 
-::::{note}
+::::{note} 
 For `week` and `weekday` the unit is extracted using the non-ISO calculation, which means that a given week is considered to start from Sunday, not Monday.
 ::::
 
@@ -851,7 +846,7 @@ SELECT DATE_PART('week', '2019-09-22T11:22:33.123Z'::datetime) AS week;
 39
 ```
 
-::::{note}
+::::{note} 
 The `tzoffset` returns the total number of minutes (signed) that represent the time zone’s offset.
 ::::
 
@@ -992,7 +987,7 @@ FORMAT(
 
 **Description**: Returns the date/datetime/time as a string using the [format](https://docs.microsoft.com/en-us/sql/t-sql/functions/format-transact-sql#arguments) specified in the 2nd argument. The formatting pattern used is the one from [Microsoft SQL Server Format Specification](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings).
 
-::::{note}
+::::{note} 
 If the 1st argument is of type `time`, then pattern specified by the 2nd argument cannot contain date related units (e.g. *dd*, *MM*, *yyyy*, etc.). If it contains such units an error is returned.<br> Format specifier `F` will be working similar to format specifier `f`. It will return the fractional part of seconds, and the number of digits will be same as of the number of `Fs` provided as input (up to 9 digits). Result will contain `0` appended in the end to match with number of `F` provided. e.g.: for a time part `10:20:30.1234` and pattern `HH:mm:ss.FFFFFF`, the output string of the function would be: `10:20:30.123400`.<br> Format specifier `y` will return year-of-era instead of one/two low-order digits. eg.: For year `2009`, `y` will be returning `2009` instead of `9`. For year `43`, `y` format specifier will return `43`. - Special characters like `"` , `\` and `%` will be returned as it is without any change. eg.: formatting date `17-sep-2020` with `%M` will return `%9`
 ::::
 
@@ -1038,9 +1033,9 @@ TO_CHAR(
 
 **Output**: string
 
-**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern conforms to [PostgreSQL Template Patterns for Date/Time Formatting](https://www.postgresql.org/docs/13/functions-formatting.html).
+**Description**: Returns the date/datetime/time as a string using the format specified in the 2nd argument. The formatting pattern conforms to [PostgreSQL Template Patterns for Date/Time Formatting](https://www.postgresql.org/docs/13/functions-formatting.md).
 
-::::{note}
+::::{note} 
 If the 1st argument is of type `time`, then the pattern specified by the 2nd argument cannot contain date related units (e.g. *dd*, *MM*, *YYYY*, etc.). If it contains such units an error is returned.<br> The result of the patterns `TZ` and `tz` (time zone abbreviations) in some cases differ from the results returned by the `TO_CHAR` in PostgreSQL. The reason is that the time zone abbreviations specified by the JDK are different from the ones specified by PostgreSQL. This function might show an actual time zone abbreviation instead of the generic `LMT` or empty string or offset returned by the PostgreSQL implementation. The summer/daylight markers might also differ between the two implementations (e.g. will show `HT` instead of `HST` for Hawaii).<br> The `FX`, `TM`, `SP` pattern modifiers are not supported and will show up as `FX`, `TM`, `SP` literals in the output.
 ::::
 
@@ -1344,7 +1339,7 @@ NOW()
 
 **Output**: datetime
 
-**Description**: This function offers the same functionality as [CURRENT_TIMESTAMP()](#sql-functions-current-timestamp) function: returns the datetime when the current query reached the server. This method always returns the same value for its every occurrence within the same query.
+**Description**: This function offers the same functionality as [CURRENT_TIMESTAMP()](sql-functions-datetime.md#sql-functions-current-timestamp) function: returns the datetime when the current query reached the server. This method always returns the same value for its every occurrence within the same query.
 
 ```sql
 SELECT NOW() AS result;
@@ -1354,7 +1349,7 @@ SELECT NOW() AS result;
 2018-12-12T14:48:52.448Z
 ```
 
-Typically, this function (as well as its twin [CURRENT_TIMESTAMP())](#sql-functions-current-timestamp) function is used for relative date/time filtering:
+Typically, this function (as well as its twin [CURRENT_TIMESTAMP())](sql-functions-datetime.md#sql-functions-current-timestamp) function is used for relative date/time filtering:
 
 ```sql
 SELECT first_name FROM emp WHERE hire_date > NOW() - INTERVAL 100 YEARS ORDER BY first_name ASC LIMIT 5;
@@ -1427,7 +1422,7 @@ TODAY()
 
 **Output**: date
 
-**Description**: This function offers the same functionality as [CURRENT_DATE()](#sql-functions-current-date) function: returns the date when the current query reached the server. This method always returns the same value for its every occurrence within the same query.
+**Description**: This function offers the same functionality as [CURRENT_DATE()](sql-functions-datetime.md#sql-functions-current-date) function: returns the date when the current query reached the server. This method always returns the same value for its every occurrence within the same query.
 
 ```sql
 SELECT TODAY() AS result;
@@ -1437,7 +1432,7 @@ SELECT TODAY() AS result;
 2018-12-12
 ```
 
-Typically, this function (as well as its twin [CURRENT_TIMESTAMP())](#sql-functions-current-timestamp) function is used for relative date filtering:
+Typically, this function (as well as its twin [CURRENT_TIMESTAMP())](sql-functions-datetime.md#sql-functions-current-timestamp) function is used for relative date filtering:
 
 ```sql
 SELECT first_name FROM emp WHERE hire_date > TODAY() - INTERVAL 35 YEARS ORDER BY first_name ASC LIMIT 5;
@@ -1448,7 +1443,7 @@ Alejandro
 Amabile
 Anoosh
 Basil
-Brendon
+Cristinel
 ```
 
 
@@ -1516,7 +1511,7 @@ EXTRACT(
 
 **Output**: integer
 
-**Description**: Extract fields from a date/datetime by specifying the name of a `datetime` function. The following
+**Description**: Extract fields from a date/datetime by specifying the name of a [datetime function](sql-functions-datetime.md). The following
 
 ```sql
 SELECT EXTRACT(DAY_OF_YEAR FROM CAST('2018-02-19T10:23:27Z' AS TIMESTAMP)) AS day;

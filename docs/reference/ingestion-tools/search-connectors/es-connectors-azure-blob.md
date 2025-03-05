@@ -1,48 +1,265 @@
 ---
 navigation_title: "Azure Blob Storage"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/es-connectors-azure-blob.html
 ---
 
 # Elastic Azure Blob Storage connector reference [es-connectors-azure-blob]
 
 
-The *Elastic Azure Blob Storage connector* is a [connector](/reference/ingestion-tools/search-connectors/index.md) for [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
+%  Attributes used in this file
+
+The *Elastic Azure Blob Storage connector* is a [connector](es-connectors.md) for [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
 
 This connector is written in Python using the [Elastic connector framework](https://github.com/elastic/connectors/tree/main).
 
 View the [**source code** for this connector](https://github.com/elastic/connectors/tree/main/connectors/sources/azure_blob_storage.py) (branch *main*, compatible with Elastic *9.0*).
 
-::::{important}
-As of Elastic 9.0, managed connectors on Elastic Cloud Hosted are no longer available. All connectors must be [self-managed](/reference/ingestion-tools/search-connectors/self-managed-connectors.md).
+::::{admonition} Choose your connector reference
+Are you using a managed connector on Elastic Cloud or a self-managed connector? Expand the documentation based on your deployment method.
+
 ::::
 
-## **Self-managed connector** [es-connectors-azure-blob-connector-client-reference]
 
-### Availability and prerequisites [es-connectors-azure-blob-client-availability-prerequisites]
+%  //////// //// //// //// //// //// //// ////////
 
-This connector is available as a self-managed connector. This self-managed connector is compatible with Elastic versions **8.6.0+**. To use this connector, satisfy all [self-managed connector requirements](/reference/ingestion-tools/search-connectors/self-managed-connectors.md).
+%  ////////   NATIVE CONNECTOR REFERENCE   ///////
+
+%  //////// //// //// //// //// //// //// ////////
 
 
-### Compatibility [es-connectors-azure-blob-client-compatability]
+## **Elastic managed connector reference** [es-connectors-azure-blob-native-connector-reference] 
+
+::::::{dropdown} View **Elastic managed connector** reference
+
+### Availability and prerequisites [es-connectors-azure-blob-availability-prerequisites] 
+
+This connector is available as a **managed connector** on Elastic Cloud, as of **8.9.1**.
+
+To use this connector natively in Elastic Cloud, satisfy all [managed connector requirements](es-native-connectors.md#es-native-connectors-prerequisites).
+
+
+### Compatibility [es-connectors-azure-blob-compatability] 
 
 This connector has not been tested with Azure Government. Therefore we cannot guarantee that it will work with Azure Government endpoints. For more information on Azure Government compared to Global Azure, refer to the [official Microsoft documentation](https://learn.microsoft.com/en-us/azure/azure-government/compare-azure-government-global-azure).
 
 
-### Create Azure Blob Storage connector [es-connectors-azure_blob_storage-create-connector-client]
+### Create Azure Blob Storage connector [es-connectors-azure_blob_storage-create-native-connector] 
 
 
-#### Use the UI [es-connectors-azure_blob_storage-client-create-use-the-ui]
+## Use the UI [es-connectors-azure_blob_storage-create-use-the-ui] 
 
 To create a new Azure Blob Storage connector:
 
-1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](docs-content://explore-analyze/query-filter/filtering.md#_finding_your_apps_and_objects).
+1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](https://www.elastic.co/guide/en/kibana/current/kibana-concepts-analysts.html#_finding_your_apps_and_objects).
+2. Follow the instructions to create a new native  **Azure Blob Storage** connector.
+
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
+
+
+## Use the API [es-connectors-azure_blob_storage-create-use-the-api] 
+
+You can use the {{es}} [Create connector API](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) to create a new native Azure Blob Storage connector.
+
+For example:
+
+```console
+PUT _connector/my-azure_blob_storage-connector
+{
+  "index_name": "my-elasticsearch-index",
+  "name": "Content synced from Azure Blob Storage",
+  "service_type": "azure_blob_storage",
+  "is_native": true
+}
+```
+
+%  TEST[skip:can’t test in isolation]
+
+:::::{dropdown} You’ll also need to **create an API key** for the connector to use.
+::::{note} 
+The user needs the cluster privileges `manage_api_key`, `manage_connector` and `write_connector_secrets` to generate API keys programmatically.
+
+::::
+
+
+To create an API key for the connector:
+
+1. Run the following command, replacing values where indicated. Note the `id` and `encoded` return values from the response:
+
+    ```console
+    POST /_security/api_key
+    {
+      "name": "my-connector-api-key",
+      "role_descriptors": {
+        "my-connector-connector-role": {
+          "cluster": [
+            "monitor",
+            "manage_connector"
+          ],
+          "indices": [
+            {
+              "names": [
+                "my-index_name",
+                ".search-acl-filter-my-index_name",
+                ".elastic-connectors*"
+              ],
+              "privileges": [
+                "all"
+              ],
+              "allow_restricted_indices": false
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+2. Use the `encoded` value to store a connector secret, and note the `id` return value from this response:
+
+    ```console
+    POST _connector/_secret
+    {
+      "value": "encoded_api_key"
+    }
+    ```
+
+
+%  TEST[skip:need to retrieve ids from the response]
+
++ . Use the API key `id` and the connector secret `id` to update the connector:
+
++
+
+```console
+PUT /_connector/my_connector_id>/_api_key_id
+{
+  "api_key_id": "API key_id",
+  "api_key_secret_id": "secret_id"
+}
+```
+
+%  TEST[skip:need to retrieve ids from the response]
+
+:::::
+
+
+Refer to the [{{es}} API documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) for details of all available Connector APIs.
+
+
+### Usage [es-connectors-azure-blob-usage] 
+
+To use this connector as a **managed connector**, see [*Elastic managed connectors*](es-native-connectors.md).
+
+For additional operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
+
+
+### Configuration [es-connectors-azure-blob-configuration] 
+
+The following configuration fields are required to set up the connector:
+
+Account name
+:   Name of Azure Blob Storage account.
+
+Account key
+:   [Account key](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal) for the Azure Blob Storage account.
+
+Blob endpoint
+:   Endpoint for the Blob Service.
+
+Containers
+:   List of containers to index. `*` will index all containers.
+
+
+### Documents and syncs [es-connectors-azure-blob-documents-syncs] 
+
+The connector will fetch all data available in the container.
+
+::::{note} 
+* Content from files bigger than 10 MB won’t be extracted. (Self-managed connectors can use the [self-managed local extraction service](es-connectors-content-extraction.md#es-connectors-content-extraction-local) to handle larger binary files.)
+* Permissions are not synced. ***All documents*** indexed to an Elastic deployment will be visible to ***all users with access*** to that Elastic Deployment.
+
+::::
+
+
+
+#### Sync types [es-connectors-azure-blob-sync-types] 
+
+[Full syncs](es-connectors-sync-types.md#es-connectors-sync-types-full) are supported by default for all connectors.
+
+This connector also supports [incremental syncs](es-connectors-sync-types.md#es-connectors-sync-types-incremental).
+
+
+### Sync rules [es-connectors-azure-sync-rules] 
+
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+
+Advanced sync rules are not available for this connector in the present version. Currently filtering is controlled via ingest pipelines.
+
+
+### Content extraction [es-connectors-azure-blob-content-extraction] 
+
+See [Content extraction](es-connectors-content-extraction.md).
+
+
+### Known issues [es-connectors-azure-blob-known-issues] 
+
+This connector has the following known issues:
+
+* **`lease data` and `tier` fields are not updated in Elasticsearch indices**
+
+    This is because the blob timestamp is not updated. Refer to [Github issue](https://github.com/elastic/connectors-python/issues/289).
+
+
+
+### Troubleshooting [es-connectors-azure-blob-troubleshooting] 
+
+See [Troubleshooting](es-connectors-troubleshooting.md).
+
+
+### Security [es-connectors-azure-blob-security] 
+
+See [Security](es-connectors-security.md).
+
+View the [source code for this connector](https://github.com/elastic/connectors/tree/main/connectors/sources/azure_blob_storage.py) (branch *main*, compatible with Elastic *9.0*)
+
+%  Closing the collapsible section
+
+::::::
+
+
+%  //////// //// //// //// //// //// //// ////////
+
+%  //////// CONNECTOR CLIENT REFERENCE     ///////
+
+%  //////// //// //// //// //// //// //// ////////
+
+
+## **Self-managed connector** [es-connectors-azure-blob-connector-client-reference] 
+
+::::::{dropdown} View **self-managed connector** reference
+
+### Availability and prerequisites [es-connectors-azure-blob-client-availability-prerequisites] 
+
+This connector is available as a self-managed **self-managed connector**. This self-managed connector is compatible with Elastic versions **8.6.0+**. To use this connector, satisfy all [self-managed connector requirements](es-build-connector.md).
+
+
+### Compatibility [es-connectors-azure-blob-client-compatability] 
+
+This connector has not been tested with Azure Government. Therefore we cannot guarantee that it will work with Azure Government endpoints. For more information on Azure Government compared to Global Azure, refer to the [official Microsoft documentation](https://learn.microsoft.com/en-us/azure/azure-government/compare-azure-government-global-azure).
+
+
+### Create Azure Blob Storage connector [es-connectors-azure_blob_storage-create-connector-client] 
+
+
+## Use the UI [es-connectors-azure_blob_storage-client-create-use-the-ui] 
+
+To create a new Azure Blob Storage connector:
+
+1. In the Kibana UI, navigate to the **Search → Content → Connectors** page from the main menu, or use the [global search field](https://www.elastic.co/guide/en/kibana/current/kibana-concepts-analysts.html#_finding_your_apps_and_objects).
 2. Follow the instructions to create a new  **Azure Blob Storage** self-managed connector.
 
 
-#### Use the API [es-connectors-azure_blob_storage-client-create-use-the-api]
+## Use the API [es-connectors-azure_blob_storage-client-create-use-the-api] 
 
-You can use the {{es}} [Create connector API](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector) to create a new self-managed Azure Blob Storage self-managed connector.
+You can use the {{es}} [Create connector API](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) to create a new self-managed Azure Blob Storage self-managed connector.
 
 For example:
 
@@ -55,8 +272,10 @@ PUT _connector/my-azure_blob_storage-connector
 }
 ```
 
-:::::{dropdown} You’ll also need to create an API key for the connector to use.
-::::{note}
+%  TEST[skip:can’t test in isolation]
+
+:::::{dropdown} You’ll also need to **create an API key** for the connector to use.
+::::{note} 
 The user needs the cluster privileges `manage_api_key`, `manage_connector` and `write_connector_secrets` to generate API keys programmatically.
 
 ::::
@@ -99,17 +318,22 @@ To create an API key for the connector:
 :::::
 
 
-Refer to the [{{es}} API documentation](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-connector) for details of all available Connector APIs.
+Refer to the [{{es}} API documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/connector-apis.html) for details of all available Connector APIs.
 
 
-### Usage [es-connectors-azure-blob-client-usage]
+### Usage [es-connectors-azure-blob-client-usage] 
 
-To use this connector as a **self-managed connector**, see [*Self-managed connectors*](/reference/ingestion-tools/search-connectors/self-managed-connectors.md) For additional usage operations, see [*Connectors UI in {{kib}}*](/reference/ingestion-tools/search-connectors/connectors-ui-in-kibana.md).
-
-
-### Configuration [es-connectors-azure-blob-client-configuration]
+To use this connector as a **self-managed connector**, see [*Self-managed connectors*](es-build-connector.md) For additional usage operations, see [*Connectors UI in {{kib}}*](es-connectors-usage.md).
 
 
+### Configuration [es-connectors-azure-blob-client-configuration] 
+
+::::{tip} 
+When using the [self-managed connector](es-build-connector.md) workflow, initially these fields will use the default configuration set in the [connector source code](https://github.com/elastic/connectors/tree/main/connectors/sources/azure_blob_storage.py). These are set in the `get_default_configuration` function definition.
+
+These configurable fields will be rendered with their respective **labels** in the Kibana UI. Once connected, you’ll be able to update these values in Kibana.
+
+::::
 
 
 The following configuration fields are required to set up the connector:
@@ -133,26 +357,28 @@ The following configuration fields are required to set up the connector:
 :   Number of concurrent downloads for fetching content. Default value is `100`.
 
 `use_text_extraction_service`
-:   Requires a separate deployment of the [Elastic Text Extraction Service](/reference/ingestion-tools/search-connectors/es-connectors-content-extraction.md#es-connectors-content-extraction-local). Requires that ingest pipeline settings disable text extraction. Default value is `False`.
+:   Requires a separate deployment of the [Elastic Text Extraction Service](es-connectors-content-extraction.md#es-connectors-content-extraction-local). Requires that ingest pipeline settings disable text extraction. Default value is `False`.
 
 
-### Deployment using Docker [es-connectors-azure-blob-client-docker]
+### Deployment using Docker [es-connectors-azure-blob-client-docker] 
 
 You can deploy the Azure Blob Storage connector as a self-managed connector using Docker. Follow these instructions.
 
-::::{dropdown} Step 1: Download sample configuration file
+::::{dropdown} **Step 1: Download sample configuration file**
 Download the sample configuration file. You can either download it manually or run the following command:
 
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
 
+%  NOTCONSOLE
+
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
 ::::
 
 
-::::{dropdown} Step 2: Update the configuration file for your self-managed connector
+::::{dropdown} **Step 2: Update the configuration file for your self-managed connector**
 Update the configuration file with the following settings to match your environment:
 
 * `elasticsearch.host`
@@ -180,7 +406,7 @@ Note: You can change other default configurations by simply uncommenting specifi
 ::::
 
 
-::::{dropdown} Step 3: Run the Docker image
+::::{dropdown} **Step 3: Run the Docker image**
 Run the Docker image with the Connector Service using the following command:
 
 ```sh
@@ -189,7 +415,7 @@ docker run \
 --network "elastic" \
 --tty \
 --rm \
-docker.elastic.co/integrations/elastic-connectors:9.0.0 \
+docker.elastic.co/integrations/elastic-connectors:9.0.0-beta1.0 \
 /app/bin/elastic-ingest \
 -c /config/config.yml
 ```
@@ -201,47 +427,47 @@ Refer to [`DOCKER.md`](https://github.com/elastic/connectors/tree/main/docs/DOCK
 
 Find all available Docker images in the [official registry](https://www.docker.elastic.co/r/integrations/elastic-connectors).
 
-::::{tip}
+::::{tip} 
 We also have a quickstart self-managed option using Docker Compose, so you can spin up all required services at once: Elasticsearch, Kibana, and the connectors service. Refer to this [README](https://github.com/elastic/connectors/tree/main/scripts/stack#readme) in the `elastic/connectors` repo for more information.
 
 ::::
 
 
 
-### Documents and syncs [es-connectors-azure-blob-client-documents-syncs]
+### Documents and syncs [es-connectors-azure-blob-client-documents-syncs] 
 
 The connector will fetch all data available in the container.
 
-::::{note}
-* Content from files bigger than 10 MB won’t be extracted by default. You can use the [self-managed local extraction service](/reference/ingestion-tools/search-connectors/es-connectors-content-extraction.md#es-connectors-content-extraction-local) to handle larger binary files.
-* Permissions are not synced. **All documents** indexed to an Elastic deployment will be visible to **all users with access** to that Elastic Deployment.
+::::{note} 
+* Content from files bigger than 10 MB won’t be extracted by default. You can use the [self-managed local extraction service](es-connectors-content-extraction.md#es-connectors-content-extraction-local) to handle larger binary files.
+* Permissions are not synced. ***All documents*** indexed to an Elastic deployment will be visible to ***all users with access*** to that Elastic Deployment.
 
 ::::
 
 
 
-#### Sync types [es-connectors-azure-blob-client-sync-types]
+#### Sync types [es-connectors-azure-blob-client-sync-types] 
 
-[Full syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-full) are supported by default for all connectors.
+[Full syncs](es-connectors-sync-types.md#es-connectors-sync-types-full) are supported by default for all connectors.
 
-This connector also supports [incremental syncs](/reference/ingestion-tools/search-connectors/content-syncs.md#es-connectors-sync-types-incremental).
+This connector also supports [incremental syncs](es-connectors-sync-types.md#es-connectors-sync-types-incremental).
 
 
-### Sync rules [es-connectors-azure-blob-client-sync-rules]
+### Sync rules [es-connectors-azure-blob-client-sync-rules] 
 
-[Basic sync rules](/reference/ingestion-tools/search-connectors/es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
+[Basic sync rules](es-sync-rules.md#es-sync-rules-basic) are identical for all connectors and are available by default.
 
 Advanced sync rules are not available for this connector in the present version. Currently filtering is controlled via ingest pipelines.
 
 
-### Content extraction [es-connectors-azure-blob-client-content-extraction]
+### Content extraction [es-connectors-azure-blob-client-content-extraction] 
 
-See [Content extraction](/reference/ingestion-tools/search-connectors/es-connectors-content-extraction.md).
+See [Content extraction](es-connectors-content-extraction.md).
 
 
-### End-to-end testing [es-connectors-azure-blob-client-testing]
+### End-to-end testing [es-connectors-azure-blob-client-testing] 
 
-The connector framework enables operators to run functional tests against a real data source. Refer to [Connector testing](/reference/ingestion-tools/search-connectors/self-managed-connectors.md#es-build-connector-testing) for more details.
+The connector framework enables operators to run functional tests against a real data source. Refer to [Connector testing](es-build-connector.md#es-build-connector-testing) for more details.
 
 To perform E2E testing for the Azure Blob Storage connector, run the following command:
 
@@ -256,7 +482,7 @@ make ftest NAME=azure_blob_storage DATA_SIZE=small
 ```
 
 
-### Known issues [es-connectors-azure-blob-client-known-issues]
+### Known issues [es-connectors-azure-blob-client-known-issues] 
 
 This connector has the following known issues:
 
@@ -266,11 +492,17 @@ This connector has the following known issues:
 
 
 
-### Troubleshooting [es-connectors-azure-blob-client-troubleshooting]
+### Troubleshooting [es-connectors-azure-blob-client-troubleshooting] 
 
-See [Troubleshooting](/reference/ingestion-tools/search-connectors/es-connectors-troubleshooting.md).
+See [Troubleshooting](es-connectors-troubleshooting.md).
 
 
-### Security [es-connectors-azure-blob-client-security]
+### Security [es-connectors-azure-blob-client-security] 
 
-See [Security](/reference/ingestion-tools/search-connectors/es-connectors-security.md).
+See [Security](es-connectors-security.md).
+
+%  Closing the collapsible section
+
+::::::
+
+

@@ -1,7 +1,5 @@
 ---
 navigation_title: "Exists"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html
 ---
 
 # Exists query [query-dsl-exists-query]
@@ -39,7 +37,7 @@ GET /_search
 
     * Empty strings, such as `""` or `"-"`
     * Arrays containing `null` and another value, such as `[null, "foo"]`
-    * A custom [`null-value`](/reference/elasticsearch/mapping-reference/null-value.md), defined in field mapping
+    * A custom [`null-value`](null-value.md), defined in field mapping
 
 
 
@@ -47,7 +45,7 @@ GET /_search
 
 ### Find documents missing indexed values [find-docs-null-values]
 
-To find documents that are missing an indexed value for a field, use the `must_not` [boolean query](/reference/query-languages/query-dsl-bool-query.md) with the `exists` query.
+To find documents that are missing an indexed value for a field, use the `must_not` [boolean query](query-dsl-bool-query.md) with the `exists` query.
 
 The following search returns documents that are missing an indexed value for the `user.id` field.
 

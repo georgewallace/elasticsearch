@@ -1,16 +1,14 @@
 ---
 navigation_title: "UAX URL email"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-uaxurlemail-tokenizer.html
 ---
 
 # UAX URL email tokenizer [analysis-uaxurlemail-tokenizer]
 
 
-The `uax_url_email` tokenizer is like the [`standard` tokenizer](/reference/data-analysis/text-analysis/analysis-standard-tokenizer.md) except that it recognises URLs and email addresses as single tokens.
+The `uax_url_email` tokenizer is like the [`standard` tokenizer](analysis-standard-tokenizer.md) except that it recognises URLs and email addresses as single tokens.
 
 
-## Example output [_example_output_18]
+## Example output [_example_output_18] 
 
 ```console
 POST _analyze
@@ -19,6 +17,44 @@ POST _analyze
   "text": "Email me at john.smith@global-international.com"
 }
 ```
+
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "Email",
+%       "start_offset": 0,
+%       "end_offset": 5,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "me",
+%       "start_offset": 6,
+%       "end_offset": 8,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "at",
+%       "start_offset": 9,
+%       "end_offset": 11,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "[john.smith@global-international.com](mailto:john.smith@global-international.com)",
+%       "start_offset": 12,
+%       "end_offset": 47,
+%       "type": "<EMAIL>",
+%       "position": 3
+%     }
+%   ]
+% }
+% ----------------------------
+% 
 
 The above sentence would produce the following terms:
 
@@ -33,7 +69,7 @@ while the `standard` tokenizer would produce:
 ```
 
 
-## Configuration [_configuration_21]
+## Configuration [_configuration_21] 
 
 The `uax_url_email` tokenizer accepts the following parameters:
 
@@ -41,7 +77,7 @@ The `uax_url_email` tokenizer accepts the following parameters:
 :   The maximum token length. If a token is seen that exceeds this length then it is split at `max_token_length` intervals. Defaults to `255`.
 
 
-## Example configuration [_example_configuration_14]
+## Example configuration [_example_configuration_14] 
 
 In this example, we configure the `uax_url_email` tokenizer to have a `max_token_length` of 5 (for demonstration purposes):
 
@@ -71,6 +107,72 @@ POST my-index-000001/_analyze
   "text": "john.smith@global-international.com"
 }
 ```
+
+% 
+% [source,console-result]
+% ----------------------------
+% {
+%   "tokens": [
+%     {
+%       "token": "john",
+%       "start_offset": 0,
+%       "end_offset": 4,
+%       "type": "<ALPHANUM>",
+%       "position": 0
+%     },
+%     {
+%       "token": "smith",
+%       "start_offset": 5,
+%       "end_offset": 10,
+%       "type": "<ALPHANUM>",
+%       "position": 1
+%     },
+%     {
+%       "token": "globa",
+%       "start_offset": 11,
+%       "end_offset": 16,
+%       "type": "<ALPHANUM>",
+%       "position": 2
+%     },
+%     {
+%       "token": "l",
+%       "start_offset": 16,
+%       "end_offset": 17,
+%       "type": "<ALPHANUM>",
+%       "position": 3
+%     },
+%     {
+%       "token": "inter",
+%       "start_offset": 18,
+%       "end_offset": 23,
+%       "type": "<ALPHANUM>",
+%       "position": 4
+%     },
+%     {
+%       "token": "natio",
+%       "start_offset": 23,
+%       "end_offset": 28,
+%       "type": "<ALPHANUM>",
+%       "position": 5
+%     },
+%     {
+%       "token": "nal.c",
+%       "start_offset": 28,
+%       "end_offset": 33,
+%       "type": "<ALPHANUM>",
+%       "position": 6
+%     },
+%     {
+%       "token": "om",
+%       "start_offset": 33,
+%       "end_offset": 35,
+%       "type": "<ALPHANUM>",
+%       "position": 7
+%     }
+%   ]
+% }
+% ----------------------------
+% 
 
 The above example produces the following terms:
 

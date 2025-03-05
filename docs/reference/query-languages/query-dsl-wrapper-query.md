@@ -1,7 +1,5 @@
 ---
 navigation_title: "Wrapper"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wrapper-query.html
 ---
 
 # Wrapper query [query-dsl-wrapper-query]

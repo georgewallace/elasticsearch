@@ -1,9 +1,4 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-doc-count-field.html
----
-
-# _doc_count field [mapping-doc-count-field]
+# `_doc_count` field [mapping-doc-count-field]
 
 Bucket aggregations always return a field named `doc_count` showing the number of documents that were aggregated and partitioned in each bucket. Computation of the value of `doc_count` is very simple. `doc_count` is incremented by 1 for every document collected in each bucket.
 
@@ -13,7 +8,7 @@ To allow for correct computation of the number of documents when working with pr
 
 When field `_doc_count` is added to a document, all bucket aggregations will respect its value and increment the bucket `doc_count` by the value of the field. If a document does not contain any `_doc_count` field, `_doc_count = 1` is implied by default.
 
-::::{important}
+::::{important} 
 * A `_doc_count` field can only store a single positive integer per document. Nested arrays are not allowed.
 * If a document contains no `_doc_count` fields, aggregators will increment by 1, which is the default behavior.
 
@@ -22,7 +17,7 @@ When field `_doc_count` is added to a document, all bucket aggregations will res
 
 ## Example [mapping-doc-count-field-example]
 
-The following [create index](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) API request creates a new index with the following field mappings:
+The following [create index](indices-create-index.md) API request creates a new index with the following field mappings:
 
 * `my_histogram`, a `histogram` field used to store percentile data
 * `my_text`, a `keyword` field used to store a title for the histogram
@@ -43,7 +38,7 @@ PUT my_index
 }
 ```
 
-The following [index](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-create) API requests store pre-aggregated data for two histograms: `histogram_1` and `histogram_2`.
+The following [index](docs-index_.md) API requests store pre-aggregated data for two histograms: `histogram_1` and `histogram_2`.
 
 ```console
 PUT my_index/_doc/1
@@ -70,7 +65,7 @@ PUT my_index/_doc/2
 1. Field `_doc_count` must be a positive integer storing the number of documents aggregated to produce each histogram.
 
 
-If we run the following [terms aggregation](/reference/data-analysis/aggregations/search-aggregations-bucket-terms-aggregation.md) on `my_index`:
+If we run the following [terms aggregation](search-aggregations-bucket-terms-aggregation.md) on `my_index`:
 
 ```console
 GET /_search
@@ -106,5 +101,7 @@ We will get the following response:
     }
 }
 ```
+
+%  TESTRESPONSE[skip:test not setup]
 
 

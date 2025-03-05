@@ -1,11 +1,6 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/doc-values.html
----
+# `doc_values` [doc-values]
 
-# doc_values [doc-values]
-
-Most fields are [indexed](/reference/elasticsearch/mapping-reference/mapping-index.md) by default, which makes them searchable. The inverted index allows queries to look up the search term in unique sorted list of terms, and from that immediately have access to the list of documents that contain the term.
+Most fields are [indexed](mapping-index.md) by default, which makes them searchable. The inverted index allows queries to look up the search term in unique sorted list of terms, and from that immediately have access to the list of documents that contain the term.
 
 Sorting, aggregations, and access to field values in scripts requires a different data access pattern. Instead of looking up the term and finding documents, we need to be able to look up the document and find the terms that it has in a field.
 
@@ -13,7 +8,7 @@ Doc values are the on-disk data structure, built at document index time, which m
 
 ## Doc-value-only fields [doc-value-only-fields]
 
-[Numeric types](/reference/elasticsearch/mapping-reference/number.md), [date types](/reference/elasticsearch/mapping-reference/date.md), the [boolean type](/reference/elasticsearch/mapping-reference/boolean.md), [ip type](/reference/elasticsearch/mapping-reference/ip.md), [geo_point type](/reference/elasticsearch/mapping-reference/geo-point.md) and the [keyword type](/reference/elasticsearch/mapping-reference/keyword.md) can also be queried when they are not [indexed](/reference/elasticsearch/mapping-reference/mapping-index.md) but only have doc values enabled. Query performance on doc values is much slower than on index structures, but offers an interesting tradeoff between disk usage and query performance for fields that are only rarely queried and where query performance is not as important. This makes doc-value-only fields a good fit for fields that are not expected to be normally used for filtering, for example gauges or counters on metric data.
+[Numeric types](number.md), [date types](date.md), the [boolean type](boolean.md), [ip type](ip.md), [geo_point type](geo-point.md) and the [keyword type](keyword.md) can also be queried when they are not [indexed](mapping-index.md) but only have doc values enabled. Query performance on doc values is much slower than on index structures, but offers an interesting tradeoff between disk usage and query performance for fields that are only rarely queried and where query performance is not as important. This makes doc-value-only fields a good fit for fields that are not expected to be normally used for filtering, for example gauges or counters on metric data.
 
 Doc-value-only fields can be configured as follows:
 
@@ -64,8 +59,8 @@ PUT my-index-000001
 2. The `session_id` has `doc_values` disabled, but can still be queried.
 
 
-::::{note}
-You cannot disable doc values for [`wildcard`](/reference/elasticsearch/mapping-reference/keyword.md#wildcard-field-type) fields.
+::::{note} 
+You cannot disable doc values for [`wildcard`](keyword.md#wildcard-field-type) fields.
 ::::
 
 

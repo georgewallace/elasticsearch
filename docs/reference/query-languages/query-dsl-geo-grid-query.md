@@ -1,18 +1,16 @@
 ---
 navigation_title: "Geo-grid"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-grid-query.html
 ---
 
 # Geo-grid query [query-dsl-geo-grid-query]
 
 
-Matches [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) and [`geo_shape`](/reference/elasticsearch/mapping-reference/geo-shape.md) values that intersect a grid cell from a GeoGrid aggregation.
+Matches [`geo_point`](geo-point.md) and [`geo_shape`](geo-shape.md) values that intersect a grid cell from a GeoGrid aggregation.
 
 The query is designed to match the documents that fall inside a bucket of a geogrid aggregation by providing the key of the bucket. For geohash and geotile grids, the query can be used for geo_point and geo_shape fields. For geo_hex grid, it can only be used for geo_point fields.
 
 
-### Example [geo-grid-query-ex]
+### Example [geo-grid-query-ex] 
 
 Assume the following the following documents are indexed:
 
@@ -49,6 +47,8 @@ PUT /my_locations/_doc/3?refresh
   "name": "Musée du Louvre"
 }
 ```
+
+%  TESTSETUP
 
 ## geohash grid [query-dsl-geo-grid-query-geohash]
 
@@ -104,6 +104,8 @@ GET /my_locations/_search
 }
 ```
 
+%  TESTRESPONSE[s/"took" : 10/"took" : $body.took/]
+
 We can extract the documents on one of those buckets by executing a geo_grid query using the bucket key with the following syntax:
 
 ```console
@@ -150,6 +152,8 @@ GET /my_locations/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took" : 1/"took" : $body.took/]
 
 
 ## geotile grid [query-dsl-geo-grid-query-geotile]
@@ -206,6 +210,8 @@ GET /my_locations/_search
 }
 ```
 
+%  TESTRESPONSE[s/"took" : 1/"took" : $body.took/]
+
 We can extract the documents on one of those buckets by executing a geo_grid query using the bucket key with the following syntax:
 
 ```console
@@ -252,6 +258,8 @@ GET /my_locations/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took" : 1/"took" : $body.took/]
 
 
 ## geohex grid [query-dsl-geo-grid-query-geohex]
@@ -308,6 +316,8 @@ GET /my_locations/_search
 }
 ```
 
+%  TESTRESPONSE[s/"took" : 2/"took" : $body.took/]
+
 We can extract the documents on one of those buckets by executing a geo_grid query using the bucket key with the following syntax:
 
 ```console
@@ -354,5 +364,7 @@ GET /my_locations/_search
   }
 }
 ```
+
+%  TESTRESPONSE[s/"took" : 26/"took" : $body.took/]
 
 

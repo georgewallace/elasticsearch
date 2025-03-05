@@ -1,7 +1,5 @@
 ---
 navigation_title: "Global"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-global-aggregation.html
 ---
 
 # Global aggregation [search-aggregations-bucket-global-aggregation]
@@ -9,7 +7,7 @@ mapped_pages:
 
 Defines a single bucket of all the documents within the search execution context. This context is defined by the indices and the document types you’re searching on, but is **not** influenced by the search query itself.
 
-::::{note}
+::::{note} 
 Global aggregators can only be placed as top level aggregators because it doesn’t make sense to embed a global aggregator within another bucket aggregator.
 ::::
 
@@ -36,6 +34,8 @@ POST /sales/_search?size=0
 }
 ```
 
+%  TEST[setup:sales]
+
 1. The `global` aggregation has an empty body
 2. The sub-aggregations that are registered for this `global` aggregation
 
@@ -60,6 +60,8 @@ The response for the above aggregation:
   }
 }
 ```
+
+%  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 1. The number of documents that were aggregated (in our case, all documents within the search context)
 2. The average price of all products in the index

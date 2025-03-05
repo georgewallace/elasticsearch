@@ -1,15 +1,13 @@
 ---
 navigation_title: "Moving percentiles"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-pipeline-moving-percentiles-aggregation.html
 ---
 
 # Moving percentiles aggregation [search-aggregations-pipeline-moving-percentiles-aggregation]
 
 
-Given an ordered series of [percentiles](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md), the Moving Percentile aggregation will slide a window across those percentiles and allow the user to compute the cumulative percentile.
+Given an ordered series of [percentiles](search-aggregations-metrics-percentile-aggregation.md), the Moving Percentile aggregation will slide a window across those percentiles and allow the user to compute the cumulative percentile.
 
-This is conceptually very similar to the [Moving Function](/reference/data-analysis/aggregations/search-aggregations-pipeline-movfn-aggregation.md) pipeline aggregation, except it works on the percentiles sketches instead of the actual buckets values.
+This is conceptually very similar to the [Moving Function](search-aggregations-pipeline-movfn-aggregation.md) pipeline aggregation, except it works on the percentiles sketches instead of the actual buckets values.
 
 ## Syntax [_syntax_19]
 
@@ -24,13 +22,15 @@ A `moving_percentiles` aggregation looks like this in isolation:
 }
 ```
 
+%  NOTCONSOLE
+
 $$$moving-percentiles-params$$$
 
 | Parameter Name | Description | Required | Default Value |
 | --- | --- | --- | --- |
-| `buckets_path` | Path to the percentile of interest (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for more details | Required |  |
+| `buckets_path` | Path to the percentile of interest (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for more details | Required |  |
 | `window` | The size of window to "slide" across the histogram. | Required |  |
-| `shift` | [Shift](/reference/data-analysis/aggregations/search-aggregations-pipeline-movfn-aggregation.md#shift-parameter) of window position. | Optional | 0 |
+| `shift` | [Shift](search-aggregations-pipeline-movfn-aggregation.md#shift-parameter) of window position. | Optional | 0 |
 
 `moving_percentiles` aggregations must be embedded inside of a `histogram` or `date_histogram` aggregation. They can be embedded like any other metric aggregation:
 
@@ -63,12 +63,14 @@ POST /_search
 }
 ```
 
+%  TEST[setup:sales]
+
 1. A `date_histogram` named "my_date_histo" is constructed on the "timestamp" field, with one-day intervals
 2. A `percentile` metric is used to calculate the percentiles of a field.
 3. Finally, we specify a `moving_percentiles` aggregation which uses "the_percentile" sketch as its input.
 
 
-Moving percentiles are built by first specifying a `histogram` or `date_histogram` over a field. You then add a percentile metric inside of that histogram. Finally, the `moving_percentiles` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at the percentiles aggregation inside of the histogram (see [`buckets_path` Syntax](/reference/data-analysis/aggregations/pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`).
+Moving percentiles are built by first specifying a `histogram` or `date_histogram` over a field. You then add a percentile metric inside of that histogram. Finally, the `moving_percentiles` is embedded inside the histogram. The `buckets_path` parameter is then used to "point" at the percentiles aggregation inside of the histogram (see [`buckets_path` Syntax](search-aggregations-pipeline.md#buckets-path-syntax) for a description of the syntax for `buckets_path`).
 
 And the following may be the response:
 
@@ -132,7 +134,13 @@ And the following may be the response:
 }
 ```
 
-The output format of the `moving_percentiles` aggregation is inherited from the format of the referenced [`percentiles`](/reference/data-analysis/aggregations/search-aggregations-metrics-percentile-aggregation.md) aggregation.
+%  TESTRESPONSE[s/"took": 11/"took": $body.took/]
+
+%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": $body._shards/]
+
+%  TESTRESPONSE[s/"hits": \.\.\./"hits": $body.hits/]
+
+The output format of the `moving_percentiles` aggregation is inherited from the format of the referenced [`percentiles`](search-aggregations-metrics-percentile-aggregation.md) aggregation.
 
 Moving percentiles pipeline aggregations always run with `skip` gap policy.
 

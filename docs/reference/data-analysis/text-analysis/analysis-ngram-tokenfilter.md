@@ -1,7 +1,5 @@
 ---
 navigation_title: "N-gram"
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-ngram-tokenfilter.html
 ---
 
 # N-gram token filter [analysis-ngram-tokenfilter]
@@ -11,17 +9,17 @@ Forms [n-grams](https://en.wikipedia.org/wiki/N-gram) of specified lengths from 
 
 For example, you can use the `ngram` token filter to change `fox` to `[ f, fo, o, ox, x ]`.
 
-This filter uses Lucene’s [NGramTokenFilter](https://lucene.apache.org/core/10_0_0/analysis/common/org/apache/lucene/analysis/ngram/NGramTokenFilter.md).
+This filter uses Lucene’s [NGramTokenFilter](https://lucene.apache.org/core/10_1_0/analysis/common/org/apache/lucene/analysis/ngram/NGramTokenFilter.md).
 
-::::{note}
-The `ngram` filter is similar to the [`edge_ngram` token filter](/reference/data-analysis/text-analysis/analysis-edgengram-tokenfilter.md). However, the `edge_ngram` only outputs n-grams that start at the beginning of a token.
+::::{note} 
+The `ngram` filter is similar to the [`edge_ngram` token filter](analysis-edgengram-tokenfilter.md). However, the `edge_ngram` only outputs n-grams that start at the beginning of a token.
 
 ::::
 
 
 ## Example [analysis-ngram-tokenfilter-analyze-ex]
 
-The following [analyze API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-analyze) request uses the `ngram` filter to convert `Quick fox` to 1-character and 2-character n-grams:
+The following [analyze API](indices-analyze.md) request uses the `ngram` filter to convert `Quick fox` to 1-character and 2-character n-grams:
 
 ```console
 GET _analyze
@@ -38,10 +36,116 @@ The filter produces the following tokens:
 [ Q, Qu, u, ui, i, ic, c, ck, k, f, fo, o, ox, x ]
 ```
 
+% [source,console-result]
+% --------------------------------------------------
+% {
+%   "tokens" : [
+%     {
+%       "token" : "Q",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "Qu",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "u",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "ui",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "i",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "ic",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "c",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "ck",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "k",
+%       "start_offset" : 0,
+%       "end_offset" : 5,
+%       "type" : "<ALPHANUM>",
+%       "position" : 0
+%     },
+%     {
+%       "token" : "f",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "fo",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "o",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "ox",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     },
+%     {
+%       "token" : "x",
+%       "start_offset" : 6,
+%       "end_offset" : 9,
+%       "type" : "<ALPHANUM>",
+%       "position" : 1
+%     }
+%   ]
+% }
+% --------------------------------------------------
+
 
 ## Add to an analyzer [analysis-ngram-tokenfilter-analyzer-ex]
 
-The following [create index API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-create) request uses the `ngram` filter to configure a new [custom analyzer](docs-content://manage-data/data-store/text-analysis/create-custom-analyzer.md).
+The following [create index API](indices-create-index.md) request uses the `ngram` filter to configure a new [custom analyzer](analysis-custom-analyzer.md).
 
 ```console
 PUT ngram_example
@@ -71,7 +175,7 @@ PUT ngram_example
 `preserve_original`
 :   (Optional, Boolean) Emits original token when set to `true`. Defaults to `false`.
 
-You can use the [`index.max_ngram_diff`](/reference/elasticsearch/index-settings/index-modules.md#index-max-ngram-diff) index-level setting to control the maximum allowed difference between the `max_gram` and `min_gram` values.
+You can use the [`index.max_ngram_diff`](index-modules.md#index-max-ngram-diff) index-level setting to control the maximum allowed difference between the `max_gram` and `min_gram` values.
 
 
 ## Customize [analysis-ngram-tokenfilter-customize]

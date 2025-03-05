@@ -1,16 +1,11 @@
----
-mapped_pages:
-  - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html
----
+# `_source` field [mapping-source-field]
 
-# _source field [mapping-source-field]
-
-The `_source` field contains the original JSON document body that was passed at index time. The `_source` field itself is not indexed (and thus is not searchable), but it is stored so that it can be returned when executing *fetch* requests, like [get](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get) or [search](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search).
+The `_source` field contains the original JSON document body that was passed at index time. The `_source` field itself is not indexed (and thus is not searchable), but it is stored so that it can be returned when executing *fetch* requests, like [get](docs-get.md) or [search](search-search.md).
 
 If disk usage is important to you, then consider the following options:
 
-* Using [synthetic `_source`](#synthetic-source), which reconstructs source content at the time of retrieval instead of storing it on disk. This shrinks disk usage, at the cost of slower access to `_source` in [Get](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-get) and [Search](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) queries.
-* [Disabling the `_source` field completely](#disable-source-field). This shrinks disk usage but disables features that rely on `_source`.
+* Using [synthetic `_source`](mapping-source-field.md#synthetic-source), which reconstructs source content at the time of retrieval instead of storing it on disk. This shrinks disk usage, at the cost of slower access to `_source` in [Get](docs-get.md) and [Search](search-search.md) queries.
+* [Disabling the `_source` field completely](mapping-source-field.md#disable-source-field). This shrinks disk usage but disables features that rely on `_source`.
 
 ## Synthetic `_source` [synthetic-source]
 
@@ -33,20 +28,22 @@ PUT idx
 }
 ```
 
+%  TESTSETUP
+
 While this on-the-fly reconstruction is *generally* slower than saving the source documents verbatim and loading them at query time, it saves a lot of storage space. Additional latency can be avoided by not loading `_source` field in queries when it is not needed.
 
 ### Supported fields [synthetic-source-fields]
 
 Synthetic `_source` is supported by all field types. Depending on implementation details, field types have different properties when used with synthetic `_source`.
 
-[Most field types](#synthetic-source-fields-native-list) construct synthetic `_source` using existing data, most commonly [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) and [stored fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#stored-fields). For these field types, no additional space is needed to store the contents of `_source` field. Due to the storage layout of [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md), the generated `_source` field undergoes [modifications](#synthetic-source-modifications) compared to the original document.
+[Most field types](mapping-source-field.md#synthetic-source-fields-native-list) construct synthetic `_source` using existing data, most commonly [`doc_values`](doc-values.md) and [stored fields](search-fields.md#stored-fields). For these field types, no additional space is needed to store the contents of `_source` field. Due to the storage layout of [`doc_values`](doc-values.md), the generated `_source` field undergoes [modifications](mapping-source-field.md#synthetic-source-modifications) compared to the original document.
 
-For all other field types, the original value of the field is stored as is, in the same way as the `_source` field in non-synthetic mode. In this case there are no modifications and field data in `_source` is the same as in the original document. Similarly, malformed values of fields that use [`ignore_malformed`](/reference/elasticsearch/mapping-reference/ignore-malformed.md) or [`ignore_above`](/reference/elasticsearch/mapping-reference/ignore-above.md) need to be stored as is. This approach is less storage efficient since data needed for `_source` reconstruction is stored in addition to other data required to index the field (like `doc_values`).
+For all other field types, the original value of the field is stored as is, in the same way as the `_source` field in non-synthetic mode. In this case there are no modifications and field data in `_source` is the same as in the original document. Similarly, malformed values of fields that use [`ignore_malformed`](ignore-malformed.md) or [`ignore_above`](ignore-above.md) need to be stored as is. This approach is less storage efficient since data needed for `_source` reconstruction is stored in addition to other data required to index the field (like `doc_values`).
 
 
 ### Synthetic `_source` restrictions [synthetic-source-restrictions]
 
-Some field types have additional restrictions. These restrictions are documented in the **synthetic `_source`** section of the field type’s [documentation](/reference/elasticsearch/mapping-reference/field-data-types.md).
+Some field types have additional restrictions. These restrictions are documented in the ***synthetic `_source`*** section of the field type’s [documentation](mapping-types.md).
 
 
 ### Synthetic `_source` modifications [synthetic-source-modifications]
@@ -73,6 +70,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -82,6 +81,8 @@ Will become:
   }
 }
 ```
+
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 This can cause some arrays to vanish:
 
@@ -101,6 +102,8 @@ PUT idx/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
+
 Will become:
 
 ```console-result
@@ -112,10 +115,12 @@ Will become:
 }
 ```
 
+%  TEST[s/^/{"_source":/ s/\n$/}/]
+
 
 #### Fields named as they are mapped [synthetic-source-modifications-field-names]
 
-Synthetic source names fields as they are named in the mapping. When used with [dynamic mapping](/reference/elasticsearch/mapping-reference/dynamic.md), fields with dots (`.`) in their names are, by default, interpreted as multiple objects, while dots in field names are preserved within objects that have [`subobjects`](/reference/elasticsearch/mapping-reference/subobjects.md) disabled. For example:
+Synthetic source names fields as they are named in the mapping. When used with [dynamic mapping](dynamic.md), fields with dots (`.`) in their names are, by default, interpreted as multiple objects, while dots in field names are preserved within objects that have [`subobjects`](subobjects.md) disabled. For example:
 
 $$$synthetic-source-objecty-example$$$
 
@@ -125,6 +130,8 @@ PUT idx/_doc/1
   "foo.bar.baz": 1
 }
 ```
+
+%  TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
 
 Will become:
 
@@ -138,11 +145,15 @@ Will become:
 }
 ```
 
-This impacts how source contents can be referenced in [scripts](docs-content://explore-analyze/scripting/modules-scripting-using.md). For instance, referencing a script in its original source form will return null:
+%  TEST[s/^/{"_source":/ s/\n$/}/]
+
+This impacts how source contents can be referenced in [scripts](modules-scripting-using.md). For instance, referencing a script in its original source form will return null:
 
 ```js
 "script": { "source": """  emit(params._source['foo.bar.baz'])  """ }
 ```
+
+%  NOTCONSOLE
 
 Instead, source references need to be in line with the mapping structure:
 
@@ -150,18 +161,24 @@ Instead, source references need to be in line with the mapping structure:
 "script": { "source": """  emit(params._source['foo']['bar']['baz'])  """ }
 ```
 
+%  NOTCONSOLE
+
 or simply
 
 ```js
 "script": { "source": """  emit(params._source.foo.bar.baz)  """ }
 ```
 
-The following [field APIs](docs-content://explore-analyze/scripting/modules-scripting-fields.md) are preferable as, in addition to being agnostic to the mapping structure, they make use of docvalues if available and fall back to synthetic source only when needed. This reduces source synthesizing, a slow and costly operation.
+%  NOTCONSOLE
+
+The following [field APIs](modules-scripting-fields.md) are preferable as, in addition to being agnostic to the mapping structure, they make use of docvalues if available and fall back to synthetic source only when needed. This reduces source synthesizing, a slow and costly operation.
 
 ```js
 "script": { "source": """  emit(field('foo.bar.baz').get(null))   """ }
 "script": { "source": """  emit($('foo.bar.baz', null))   """ }
 ```
+
+%  NOTCONSOLE
 
 
 #### Alphabetical sorting [synthetic-source-modifications-alphabetical]
@@ -171,12 +188,12 @@ Synthetic `_source` fields are sorted alphabetically. The [JSON RFC](https://www
 
 #### Representation of ranges [synthetic-source-modifications-ranges]
 
-Range field values (e.g. `long_range`) are always represented as inclusive on both sides with bounds adjusted accordingly. See [examples](/reference/elasticsearch/mapping-reference/range.md#range-synthetic-source-inclusive).
+Range field values (e.g. `long_range`) are always represented as inclusive on both sides with bounds adjusted accordingly. See [examples](range.md#range-synthetic-source-inclusive).
 
 
 #### Reduced precision of `geo_point` values [synthetic-source-precision-loss-for-point-types]
 
-Values of `geo_point` fields are represented in synthetic `_source` with reduced precision. See [examples](/reference/elasticsearch/mapping-reference/geo-point.md#geo-point-synthetic-source).
+Values of `geo_point` fields are represented in synthetic `_source` with reduced precision. See [examples](geo-point.md#geo-point-synthetic-source).
 
 
 #### Minimizing source modifications [synthetic-source-keep]
@@ -218,6 +235,8 @@ PUT idx_keep
 }
 ```
 
+%  TEST
+
 $$$synthetic-source-keep-example$$$
 
 ```console
@@ -234,6 +253,8 @@ PUT idx_keep/_doc/1
 }
 ```
 
+%  TEST[s/$/\nGET idx_keep\/_doc\/1?filter_path=_source\n/]
+
 returns the original source, with no array deduplication and sorting:
 
 ```console-result
@@ -249,43 +270,45 @@ returns the original source, with no array deduplication and sorting:
 }
 ```
 
+%  TEST[s/^/{"_source":/ s/\n$/}/]
+
 The option for capturing the source of arrays can be applied at index level, by setting `index.mapping.synthetic_source_keep` to `arrays`. This applies to all objects and fields in the index, except for the ones with explicit overrides of `synthetic_source_keep` set to `none`. In this case, the storage overhead grows with the number and sizes of arrays present in source of each document, naturally.
 
 
 
 ### Field types that support synthetic source with no storage overhead [synthetic-source-fields-native-list]
 
-The following field types support synthetic source using data from [`doc_values`](/reference/elasticsearch/mapping-reference/doc-values.md) or [stored fields](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#stored-fields), and require no additional storage space to construct the `_source` field.
+The following field types support synthetic source using data from [`doc_values`](doc-values.md) or [stored fields](search-fields.md#stored-fields), and require no additional storage space to construct the `_source` field.
 
-::::{note}
-If you enable the [`ignore_malformed`](/reference/elasticsearch/mapping-reference/ignore-malformed.md) or [`ignore_above`](/reference/elasticsearch/mapping-reference/ignore-above.md) settings, then additional storage is required to store ignored field values for these types.
+::::{note} 
+If you enable the [`ignore_malformed`](ignore-malformed.md) or [`ignore_above`](ignore-above.md) settings, then additional storage is required to store ignored field values for these types.
 ::::
 
 
-* [`aggregate_metric_double`](/reference/elasticsearch/mapping-reference/aggregate-metric-double.md#aggregate-metric-double-synthetic-source)
-* [`annotated-text`](/reference/elasticsearch-plugins/mapper-annotated-text-usage.md#annotated-text-synthetic-source)
-* [`binary`](/reference/elasticsearch/mapping-reference/binary.md#binary-synthetic-source)
-* [`boolean`](/reference/elasticsearch/mapping-reference/boolean.md#boolean-synthetic-source)
-* [`byte`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`date`](/reference/elasticsearch/mapping-reference/date.md#date-synthetic-source)
-* [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md#date-nanos-synthetic-source)
-* [`dense_vector`](/reference/elasticsearch/mapping-reference/dense-vector.md#dense-vector-synthetic-source)
-* [`double`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`flattened`](/reference/elasticsearch/mapping-reference/flattened.md#flattened-synthetic-source)
-* [`float`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md#geo-point-synthetic-source)
-* [`half_float`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`histogram`](/reference/elasticsearch/mapping-reference/histogram.md)
-* [`integer`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`ip`](/reference/elasticsearch/mapping-reference/ip.md#ip-synthetic-source)
-* [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md#keyword-synthetic-source)
-* [`long`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`range` types](/reference/elasticsearch/mapping-reference/range.md#range-synthetic-source)
-* [`scaled_float`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`short`](/reference/elasticsearch/mapping-reference/number.md#numeric-synthetic-source)
-* [`text`](/reference/elasticsearch/mapping-reference/text.md#text-synthetic-source)
-* [`version`](/reference/elasticsearch/mapping-reference/version.md#version-synthetic-source)
-* [`wildcard`](/reference/elasticsearch/mapping-reference/keyword.md#wildcard-synthetic-source)
+* [`aggregate_metric_double`](aggregate-metric-double.md#aggregate-metric-double-synthetic-source)
+* [`annotated-text`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/mapper-annotated-text-usage.html#annotated-text-synthetic-source)
+* [`binary`](binary.md#binary-synthetic-source)
+* [`boolean`](boolean.md#boolean-synthetic-source)
+* [`byte`](number.md#numeric-synthetic-source)
+* [`date`](date.md#date-synthetic-source)
+* [`date_nanos`](date_nanos.md#date-nanos-synthetic-source)
+* [`dense_vector`](dense-vector.md#dense-vector-synthetic-source)
+* [`double`](number.md#numeric-synthetic-source)
+* [`flattened`](flattened.md#flattened-synthetic-source)
+* [`float`](number.md#numeric-synthetic-source)
+* [`geo_point`](geo-point.md#geo-point-synthetic-source)
+* [`half_float`](number.md#numeric-synthetic-source)
+* [`histogram`](histogram.md#histogram-synthetic-source)
+* [`integer`](number.md#numeric-synthetic-source)
+* [`ip`](ip.md#ip-synthetic-source)
+* [`keyword`](keyword.md#keyword-synthetic-source)
+* [`long`](number.md#numeric-synthetic-source)
+* [`range` types](range.md#range-synthetic-source)
+* [`scaled_float`](number.md#numeric-synthetic-source)
+* [`short`](number.md#numeric-synthetic-source)
+* [`text`](text.md#text-synthetic-source)
+* [`version`](version.md#version-synthetic-source)
+* [`wildcard`](keyword.md#wildcard-synthetic-source)
 
 
 
@@ -309,9 +332,9 @@ PUT my-index-000001
 
 Users often disable the `_source` field without thinking about the consequences, and then live to regret it. If the `_source` field isn’t available then a number of features are not supported:
 
-* The [`update`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update), [`update_by_query`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-update-by-query), and [`reindex`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-reindex) APIs.
-* In the {{kib}} [Discover](docs-content://explore-analyze/discover.md) application, field data will not be displayed.
-* On the fly [highlighting](/reference/elasticsearch/rest-apis/highlighting.md).
+* The [`update`](docs-update.md), [`update_by_query`](docs-update-by-query.md), and [`reindex`](docs-reindex.md) APIs.
+* In the {{kib}} [Discover](https://www.elastic.co/guide/en/kibana/current/discover.md) application, field data will not be displayed.
+* On the fly [highlighting](highlighting.md).
 * The ability to reindex from one Elasticsearch index to another, either to change mappings or analysis, or to upgrade an index to a new major version.
 * The ability to debug queries or aggregations by viewing the original document used at index time.
 * Potentially in the future, the ability to repair index corruption automatically.
@@ -319,8 +342,8 @@ Users often disable the `_source` field without thinking about the consequences,
 ::::
 
 
-::::{tip}
-If disk space is a concern, rather increase the [compression level](/reference/elasticsearch/index-settings/index-modules.md#index-codec) instead of disabling the `_source`.
+::::{tip} 
+If disk space is a concern, rather increase the [compression level](index-modules.md#index-codec) instead of disabling the `_source`.
 ::::
 
 
@@ -329,8 +352,8 @@ If disk space is a concern, rather increase the [compression level](/reference/e
 
 An expert-only feature is the ability to prune the contents of the `_source` field after the document has been indexed, but before the `_source` field is stored.
 
-::::{warning}
-Removing fields from the `_source` has similar downsides to disabling `_source`, especially the fact that you cannot reindex documents from one Elasticsearch index to another. Consider using [source filtering](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md#source-filtering) instead.
+::::{warning} 
+Removing fields from the `_source` has similar downsides to disabling `_source`, especially the fact that you cannot reindex documents from one Elasticsearch index to another. Consider using [source filtering](search-fields.md#source-filtering) instead.
 ::::
 
 
@@ -381,3 +404,6 @@ GET logs/_search
 
 1. These fields will be removed from the stored `_source` field.
 2. We can still search on this field, even though it is not in the stored `_source`.
+
+
+
