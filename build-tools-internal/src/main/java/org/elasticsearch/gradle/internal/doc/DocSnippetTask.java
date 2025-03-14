@@ -71,6 +71,8 @@ public abstract class DocSnippetTask extends DefaultTask {
             return new AsciidocSnippetParser(getDefaultSubstitutions().get());
         } else if (docFile.getName().endsWith(".mdx")) {
             return new MdxSnippetParser(getDefaultSubstitutions().get());
+        } else if (docFile.getName().endsWith(".md")) {
+            return new MdSnippetParser(getDefaultSubstitutions().get());
         }
         throw new InvalidUserDataException("Unsupported file type: " + docFile.getName());
     }

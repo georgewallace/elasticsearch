@@ -386,6 +386,7 @@ public abstract class RestTestsFromDocSnippetTask extends DocSnippetTask {
         }
 
         private void body(Snippet snippet, boolean inSetup) {
+            System.out.println("snippet: " + snippet.contents());
             ParsingUtils.parse(snippet.contents(), SYNTAX, (matcher, last) -> {
                 if (matcher.group("comment") != null) {
                     // Comment

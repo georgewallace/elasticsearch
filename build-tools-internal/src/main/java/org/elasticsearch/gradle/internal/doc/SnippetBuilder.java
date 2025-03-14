@@ -169,6 +169,7 @@ class SnippetBuilder {
                 subst = subst.replace("$body", "\\$body");
                 subst = subst.replace("$_path", "\\$_path");
                 subst = subst.replace("\\n", "\n");
+                System.out.println("pattern: " + pattern + " subst: " + subst);
                 contents = contents.replaceAll(pattern, subst);
             }
         }

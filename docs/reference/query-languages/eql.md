@@ -1340,7 +1340,7 @@ PUT /_cluster/settings
 }
 ```
 % TEST[setup:host]
-% TEST[s/127.0.0.1:930\d+/${transport_host}/]
+% TEST[s/127.0.0.1:930\d+/\${transport_host}/]
 
 To target a data stream or index on a remote cluster, use the `<cluster>:<target>` syntax.
 

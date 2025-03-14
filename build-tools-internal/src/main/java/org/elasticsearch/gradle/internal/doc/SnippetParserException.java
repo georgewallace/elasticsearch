@@ -24,7 +24,7 @@ public class SnippetParserException extends RuntimeException {
     }
 
     public SnippetParserException(File file, int lineNumber, InvalidUserDataException e) {
-        super("Error parsing snippet in " + file.getName() + " at line " + lineNumber, e);
+        super("Error parsing snippet in " + file.getAbsolutePath() + " at line " + lineNumber, e);
         this.file = file;
         this.lineNumber = lineNumber;
     }
