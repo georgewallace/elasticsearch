@@ -34,6 +34,13 @@ ext.docsFileTree = fileTree(projectDir) {
     // We can't conditionally control output, this would be missing the ingest-attachment component
     exclude 'reference/cat/plugins.asciidoc'
   }
+
+  //
+  exclude 'reference/query-languages/query-dsl-script-score-query.md'
+  exclude 'reference/query-languages/query-dsl-knn-query.md'
+
+  // test commands in wrong place
+  exclude 'reference/data-analysis/text-analysis/analysis-lang-analyzer.md'
 }
 
 tasks.named("yamlRestTest") {
