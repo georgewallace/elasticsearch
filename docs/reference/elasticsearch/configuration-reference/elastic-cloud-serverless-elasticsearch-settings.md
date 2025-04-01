@@ -30,11 +30,11 @@ This fully managed approach means many traditional {{es}} infrastructure APIs an
 
 To ensure optimal performance, follow these recommendations for sizing individual indices on {{es-serverless}}:
 
-| Use case | Maximum index size | Project configuration |
-| --- | --- | --- |
-| Vector search | 150GB | Vector optimized |
-| General search (non data-stream) | 300GB | General purpose |
-| Other uses (non data-stream) | 600GB | General purpose |
+| Use case                         | Maximum index size | Project configuration |
+| -------------------------------- | ------------------ | --------------------- |
+| Vector search                    | 150GB              | Vector optimized      |
+| General search (non data-stream) | 300GB              | General purpose       |
+| Other uses (non data-stream)     | 600GB              | General purpose       |
 
 For large datasets that exceed the recommended maximum size for a single index, consider splitting your data across smaller indices and using an alias to search them collectively.
 
@@ -73,7 +73,7 @@ Index management
 
 When attempting to use an unavailable API, you’ll receive a clear error message:
 
-```json
+```js
 {
  "error": {
    "root_cause": [

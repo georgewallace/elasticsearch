@@ -62,8 +62,15 @@ public abstract class DocSnippetTask extends DefaultTask {
     }
 
     List<Snippet> parseDocFile(File rootDir, File docFile) {
-        SnippetParser parser = parserForFileType(docFile);
-        return parser.parseDoc(rootDir, docFile);
+        try {
+            SnippetParser parser = parserForFileType(docFile);
+            return parser.parseDoc(rootDir, docFile);
+        } catch (Exception e) {
+            System.out.println("[md-parse] Error parsing " + docFile.getAbsolutePath());
+            System.out.println(e.getMessage());
+
+            throw e;
+        }
     }
 
     private SnippetParser parserForFileType(File docFile) {

@@ -38,9 +38,27 @@ ext.docsFileTree = fileTree(projectDir) {
   //
   exclude 'reference/query-languages/query-dsl-script-score-query.md'
   exclude 'reference/query-languages/query-dsl-knn-query.md'
+  // exclude 'reference/elasticsearch/rest-apis/sort-search-results.md'
 
-  // test commands in wrong place
+  // // test commands in wrong place
   exclude 'reference/data-analysis/text-analysis/analysis-lang-analyzer.md'
+  exclude 'reference/data-analysis/aggregations/search-aggregations-bucket-diversified-sampler-aggregation.md'
+  exclude 'reference/elasticsearch/rest-apis/reciprocal-rank-fusion.md'
+  exclude 'reference/elasticsearch/rest-apis/retrieve-inner-hits.md'
+
+  // // escape regex
+  exclude 'reference/elasticsearch/rest-apis/search-suggesters.md'
+  exclude 'reference/elasticsearch/rest-apis/search-multiple-data-streams-indices.md'
+  exclude 'reference/elasticsearch/mapping-reference/text.md'
+  exclude 'reference/elasticsearch/mapping-reference/ip.md'
+  exclude 'reference/elasticsearch/mapping-reference/mapping-source-field.md'
+  exclude 'reference/elasticsearch/mapping-reference/*.md'
+
+  // test continued at the top
+  exclude 'reference/elasticsearch/rest-apis/sort-search-results.md'
+
+  // NOTCONSOLE dropped
+  exclude 'reference/data-analysis/aggregations/search-aggregations-bucket-geohashgrid-aggregation.md' // line 194
 }
 
 tasks.named("yamlRestTest") {
@@ -57,26 +75,33 @@ tasks.named("yamlRestTest") {
 tasks.named("buildRestTests").configure {
   // enabled = false
   getExpectedUnconvertedCandidates().addAll(
-          'reference/ml/anomaly-detection/ml-configuring-transform.asciidoc',
-          'reference/ml/anomaly-detection/apis/delete-calendar-event.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-bucket.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-category.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-influencer.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-job-stats.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-job.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-overall-buckets.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-record.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/post-data.asciidoc',
-          'reference/ml/anomaly-detection/apis/revert-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/update-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/update-job.asciidoc',
-          'reference/security/authentication/user-cache.asciidoc',
-          'reference/security/authorization/run-as-privilege.asciidoc',
-          'reference/security/ccs-clients-integrations/http.asciidoc',
-          'reference/rest-api/watcher/put-watch.asciidoc',
-          'reference/rest-api/watcher/stats.asciidoc',
-          'reference/watcher/example-watches/watching-time-series-data.asciidoc'
+          // 'reference/ml/anomaly-detection/ml-configuring-transform.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/delete-calendar-event.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-bucket.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-category.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-influencer.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-job-stats.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-job.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-overall-buckets.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-record.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/get-snapshot.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/post-data.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/revert-snapshot.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/update-snapshot.asciidoc',
+          // 'reference/ml/anomaly-detection/apis/update-job.asciidoc',
+          // 'reference/security/authentication/user-cache.asciidoc',
+          // 'reference/security/authorization/run-as-privilege.asciidoc',
+          // 'reference/security/ccs-clients-integrations/http.asciidoc',
+          // 'reference/rest-api/watcher/put-watch.asciidoc',
+          // 'reference/rest-api/watcher/stats.asciidoc',
+          // 'reference/watcher/example-watches/watching-time-series-data.asciidoc'
+          'reference/elasticsearch-plugins/analysis-nori-speech.md',
+          'reference/elasticsearch-plugins/cloud/ec-plugins-guide.md',
+          'reference/elasticsearch-plugins/discovery-ec2-usage.md',
+          'reference/elasticsearch-plugins/mapper-annotated-text-usage.md',
+          'reference/elasticsearch/configuration-reference/elastic-cloud-serverless-elasticsearch-settings.md',
+          'reference/ingestion-tools/search-connectors/es-connectors-mongodb.md',
+          'reference/ingestion-tools/search-connectors/es-dls-e2e-guide.md',
   )
 }
 

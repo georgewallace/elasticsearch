@@ -77,7 +77,7 @@ abstract class SnippetParser {
             String line = linesList.get(lineNumber);
             try {
                 parseLine(snippets, lineNumber, line);
-            } catch (InvalidUserDataException e) {
+            } catch (Exception e) {
                 throw new SnippetParserException(file, lineNumber, e);
             }
         }
