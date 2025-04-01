@@ -268,7 +268,6 @@ For example:
 ```
 % NOTCONSOLE
 
-
 ### Document level security [es-connectors-gmail-client-document-level-security]
 
 Document level security (DLS) enables you to restrict access to documents based on a user’s permissions. Refer to [configuration](#es-connectors-gmail-client-configuration) on this page for how to enable DLS for this connector.
