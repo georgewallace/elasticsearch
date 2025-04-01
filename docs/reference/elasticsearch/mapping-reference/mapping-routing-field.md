@@ -42,7 +42,7 @@ GET my-index-000001/_search
 }
 ```
 
-1. Querying on the `_routing` field (also see the [`ids` query](/reference/query-languages/query-dsl-ids-query.md))
+1. Querying on the `_routing` field (also see the [`ids` query](/reference/query-languages/query-dsl/query-dsl-ids-query.md))
 
 
 ::::{note}
