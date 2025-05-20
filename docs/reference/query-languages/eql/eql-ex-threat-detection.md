@@ -32,6 +32,7 @@ To get started:
       "priority": 500
     }
     ```
+    %  NOTCONSOLE
 
 2. Download [`normalized-T1117-AtomicRed-regsvr32.json`](https://raw.githubusercontent.com/elastic/elasticsearch/master/docs/src/yamlRestTest/resources/normalized-T1117-AtomicRed-regsvr32.json).
 3. Use the [bulk API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-bulk) to index the data to a matching stream:
@@ -52,6 +53,7 @@ To get started:
     health status index                                 docs.count
     yellow open   .ds-my-data-stream-2099.12.07-000001         150
     ```
+    %  TESTRESPONSE[s/.ds-my-data-stream-2099.12.07-000001/.+/ non_json]
 
 
 
@@ -68,6 +70,7 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events    <1>
   "size": 200                                               <3>
 }
 ```
+%  TEST[setup:atomic_red_regsvr32]
 
 1. `?filter_path=-hits.events` excludes the `hits.events` property from the response. This search is only intended to get an event count, not a list of matching events.
 2. Matches any event with a `process.name` of `regsvr32.exe`.
@@ -90,6 +93,7 @@ The response returns 143 related events.
   }
 }
 ```
+%  TESTRESPONSE[s/"took": 60/"took": $body.took/]
 
 
 ## Check for command line artifacts [eql-ex-check-for-command-line-artifacts]
@@ -104,6 +108,7 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches one event with an `event.type` of `creation`, indicating the start of a `regsvr32.exe` process. Based on the event’s `process.command_line` value, `regsvr32.exe` used `scrobj.dll` to register a script, `RegSvr32.sct`. This fits the behavior of a Squiblydoo attack.
 
@@ -150,6 +155,9 @@ The query matches one event with an `event.type` of `creation`, indicating the s
   }
 }
 ```
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+%  TESTRESPONSE[s/"_id": "gl5MJXMBMk1dGnErnBW8"/"_id": $body.hits.events.0._id/]
 
 
 ## Check for malicious script loads [eql-ex-check-for-malicious-script-loads]
@@ -164,6 +172,7 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches an event, confirming `scrobj.dll` was loaded.
 
@@ -200,6 +209,9 @@ The query matches an event, confirming `scrobj.dll` was loaded.
   }
 }
 ```
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.events.0._index/]
+%  TESTRESPONSE[s/"_id": "ol5MJXMBMk1dGnErnBW8"/"_id": $body.hits.events.0._id/]
 
 
 ## Determine the likelihood of success [eql-ex-detemine-likelihood-of-success]
@@ -223,6 +235,7 @@ GET /my-data-stream/_eql/search
   """
 }
 ```
+%  TEST[setup:atomic_red_regsvr32]
 
 The query matches a sequence, indicating the attack likely succeeded.
 
@@ -329,4 +342,9 @@ The query matches a sequence, indicating the attack likely succeeded.
   }
 }
 ```
+%  TESTRESPONSE[s/  \.\.\.\n/"is_partial": false, "is_running": false, "took": $body.took, "timed_out": false,/]
+%  TESTRESPONSE[s/"_index": ".ds-my-data-stream-2099.12.07-000001"/"_index": $body.hits.sequences.0.events.0._index/]
+%  TESTRESPONSE[s/"_id": "gl5MJXMBMk1dGnErnBW8"/"_id": $body.hits.sequences.0.events.0._id/]
+%  TESTRESPONSE[s/"_id": "ol5MJXMBMk1dGnErnBW8"/"_id": $body.hits.sequences.0.events.1._id/]
+%  TESTRESPONSE[s/"_id": "EF5MJXMBMk1dGnErnBa9"/"_id": $body.hits.sequences.0.events.2._id/]
 

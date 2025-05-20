@@ -47,6 +47,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  NOTCONSOLE
 
 1. A set of typical search requests, together with their provided ratings.
 2. A definition of the evaluation metric to calculate.
@@ -81,6 +82,7 @@ GET /my-index-000001/_rank_eval
   ]
 }
 ```
+%  NOTCONSOLE
 
 1. The search request's ID, used to group result details later.
 2. The query being evaluated.
@@ -155,6 +157,7 @@ GET /my_index/_rank_eval
   "requests": [...]
 }
 ```
+%  NOTCONSOLE
 
 1. The template ID used for requests.
 2. The template ID stored in the cluster state.
@@ -193,6 +196,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  TEST[setup:my_index]
 
 The `precision` metric takes optional parameters, including:
 
@@ -232,6 +236,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  TEST[setup:my_index]
 
 The `recall` metric takes optional parameters including:
 
@@ -265,6 +270,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  TEST[setup:my_index]
 
 The `mean_reciprocal_rank` metric takes optional parameters including:
 
@@ -299,6 +305,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  TEST[setup:my_index]
 
 The `dcg` metric takes optional parameters including:
 
@@ -339,6 +346,7 @@ GET /my-index-000001/_rank_eval
   }
 }
 ```
+%  TEST[setup:my_index]
 
 The `expected_reciprocal_rank` metric takes parameters including:
 
@@ -391,6 +399,7 @@ The response has the following format:
   }
 }
 ```
+%  NOTCONSOLE
 
 1. The overall evaluation quality calculated by the defined metric.
 2. The `details` section contains one entry for every query in the original `requests` section, keyed by the search request ID.

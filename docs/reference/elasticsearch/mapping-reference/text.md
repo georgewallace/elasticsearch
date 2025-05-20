@@ -205,6 +205,7 @@ PUT idx/_doc/1
   ]
 }
 ```
+%  TEST[s/^/{"_source":/ s/\n$/}/]
 
 Will become:
 
@@ -275,6 +276,7 @@ PUT my-index-000001/_mapping
   }
 }
 ```
+%  TEST[continued]
 
 1. The mapping that you specify for `my_field` should consist of the existing mapping for that field, plus the `fielddata` parameter.
 
