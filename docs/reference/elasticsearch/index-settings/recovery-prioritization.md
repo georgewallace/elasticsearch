@@ -51,5 +51,4 @@ PUT index_4/_settings
   "index.priority": 1
 }
 ```
-% TEST[continued]
 

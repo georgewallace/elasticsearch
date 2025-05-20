@@ -70,7 +70,6 @@ The response for the above aggregation:
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
 The `geo_centroid` aggregation is more interesting when combined as a sub-aggregation to other bucket aggregations.
 
@@ -91,7 +90,6 @@ POST /museums/_search?size=0
   }
 }
 ```
-% TEST[continued]
 
 The above example uses `geo_centroid` as a sub-aggregation to a [terms](/reference/aggregations/search-aggregations-bucket-terms-aggregation.md) bucket aggregation for finding the central location for museums in each city.
 
@@ -143,7 +141,6 @@ The response for the above aggregation:
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
 
 ## Geo Centroid Aggregation on `geo_shape` fields [geocentroid-aggregation-geo-shape]
@@ -188,7 +185,6 @@ POST /places/_search?size=0
   }
 }
 ```
-% TEST
 
 ```console-result
 {
@@ -204,9 +200,8 @@ POST /places/_search?size=0
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
-::::{admonition} Using `geo_centroid` as a sub-aggregation of `geohash_grid`
+::::{admonition} Using geo_centroid as a sub-aggregation of geohash_grid
 :class: warning
 
 The [`geohash_grid`](/reference/aggregations/search-aggregations-bucket-geohashgrid-aggregation.md) aggregation places documents, not individual geopoints, into buckets. If a document’s `geo_point` field contains [multiple values](/reference/elasticsearch/mapping-reference/array.md), the document could be assigned to multiple buckets, even if one or more of its geopoints are outside the bucket boundaries.

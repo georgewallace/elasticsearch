@@ -12,13 +12,13 @@ Range field types represent a continuous range of values between an upper and lo
 The following range types are supported:
 
 `integer_range`
-:   A range of signed 32-bit integers with a minimum value of `-231` and maximum of `231-1`.
+:   A range of signed 32-bit integers with a minimum value of `-2^31` and maximum of `2^31 - 1`.
 
 `float_range`
 :   A range of single-precision 32-bit IEEE 754 floating point values.
 
 `long_range`
-:   A range of signed 64-bit integers with a minimum value of `-263` and maximum of `263-1`.
+:   A range of signed 64-bit integers with a minimum value of `-2^63` and maximum of `2^63 - 1`.
 
 `double_range`
 :   A range of double-precision 64-bit IEEE 754 floating point values.
@@ -62,7 +62,6 @@ PUT range_index/_doc/1?refresh
   }
 }
 ```
-% TESTSETUP
 
 1. `date_range` types accept the same field parameters defined by the [`date`](/reference/elasticsearch/mapping-reference/date.md) type.
 2. Example indexing a meeting with 10 to 20 attendees, not including 20.
@@ -120,7 +119,6 @@ The result produced by the above query.
   }
 }
 ```
-% TESTRESPONSE[s/"took": 13/"took" : $body.took/]
 
 The following is an example of a `date_range` query over the `date_range` field named "time_frame".
 
@@ -179,7 +177,6 @@ This query produces a similar result:
   }
 }
 ```
-% TESTRESPONSE[s/"took": 13/"took" : $body.took/]
 
 ## IP Range [ip-range]
 
@@ -273,7 +270,6 @@ PUT idx/_doc/1
   ]
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 
@@ -295,7 +291,6 @@ Will become:
   ]
 }
 ```
-% TEST[s/^/{"_source":/ s/\n$/}/]
 
 Values of `ip_range` fields are not sorted but original order is not preserved. Duplicate ranges are removed. If `ip_range` field value is provided as a CIDR, it will be represented as a range of IP addresses in synthetic source.
 
@@ -333,7 +328,6 @@ PUT idx/_doc/1
   ]
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 
@@ -346,7 +340,6 @@ Will become:
 
 }
 ```
-% TEST[s/^/{"_source":/ s/\n$/}/]
 
 $$$range-synthetic-source-inclusive$$$
 Range field values are always represented as inclusive on both sides with bounds adjusted accordingly. Default values for range bounds are represented as `null`. This is true even if range bound was explicitly provided. For example:
@@ -380,7 +373,6 @@ PUT idx/_doc/1
   }
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 
@@ -392,7 +384,6 @@ Will become:
   }
 }
 ```
-% TEST[s/^/{"_source":/ s/\n$/}/]
 
 $$$range-synthetic-source-default-bounds$$$
 Default values for range bounds are represented as `null` in synthetic source. This is true even if range bound was explicitly provided with default value. For example:
@@ -425,7 +416,6 @@ PUT idx/_doc/1
   }
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 
@@ -437,7 +427,6 @@ Will become:
   }
 }
 ```
-% TEST[s/^/{"_source":/ s/\n$/}/]
 
 `date` ranges are formatted using provided `format` or by default using `yyyy-MM-dd'T'HH:mm:ss.SSSZ` format. For example:
 
@@ -476,7 +465,6 @@ PUT idx/_doc/1
   ]
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 
@@ -494,6 +482,5 @@ Will become:
   ]
 }
 ```
-% TEST[s/^/{"_source":/ s/\n$/}/]
 
 

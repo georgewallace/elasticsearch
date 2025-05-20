@@ -32,7 +32,6 @@ $$$split-options$$$
   }
 }
 ```
-% NOTCONSOLE
 
 1. Treat all consecutive whitespace characters as a single separator
 
@@ -48,5 +47,4 @@ If the `preserve_trailing` option is enabled, any trailing empty fields in the i
   }
 }
 ```
-% NOTCONSOLE
 

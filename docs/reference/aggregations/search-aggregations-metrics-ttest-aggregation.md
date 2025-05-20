@@ -22,7 +22,6 @@ A `t_test` aggregation looks like this in isolation:
   }
 }
 ```
-% NOTCONSOLE
 
 Assuming that we have a record of node start up times before and after upgrade, let’s look at a t-test to see if upgrade affected the node start up time in a meaningful way.
 
@@ -41,7 +40,6 @@ GET node_upgrade/_search
   }
 }
 ```
-% TEST[setup:node_upgrade]
 
 1. The field `startup_time_before` must be a numeric field.
 2. The field `startup_time_after` must be a numeric field.
@@ -61,7 +59,6 @@ The response will return the p-value or probability value for the test. It is th
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 1. The p-value.
 
@@ -114,7 +111,6 @@ GET node_upgrade/_search
   }
 }
 ```
-% TEST[setup:node_upgrade]
 
 1. The field `startup_time_before` must be a numeric field.
 2. Any query that separates two groups can be used here.
@@ -134,7 +130,6 @@ GET node_upgrade/_search
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 1. The p-value.
 
@@ -176,7 +171,5 @@ GET node_upgrade/_search
   }
 }
 ```
-% TEST[setup:node_upgrade]
-% TEST[s/_search/_search?filter_path=aggregations/]
 
 

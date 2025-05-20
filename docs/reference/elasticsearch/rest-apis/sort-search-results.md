@@ -30,16 +30,15 @@ PUT /my-index-000001
   }
 }
 ```
-% TEST[continued]
 
 ```console
 GET /my-index-000001/_search
 {
   "sort" : [
     { "post_date" : {"order" : "asc", "format": "strict_date_optional_time_nanos"}},
-    "user",
     { "name" : "desc" },
     { "age" : "desc" },
+    "user",
     "_score"
   ],
   "query" : {
@@ -47,7 +46,17 @@ GET /my-index-000001/_search
   }
 }
 ```
-% TEST[continued]
+Order matters when defining multiple sort fields, because {{es}} attempts to sort on the first field in the array. Each subsequent field in the array is only used if the previous fields result in a tie. If documents have identical values across all specified sort fields, {{es}} uses the document ID as the final tie-breaker.
+
+Here's how the example query attempts to sort results:
+
+- First by `post_date` 
+- If `post_date` values are identical, sorts by `name` 
+- If both `post_date` and `name` are identical, sorts by `age`
+- If the first three fields are identical, sorts by `user` 
+- If all previous fields are identical, sorts by `_score`
+
+By default, Elasticsearch sorts `numeric` fields in descending order and `string` fields in ascending order unless you explicitly specify otherwise. All three formats shown in the example above are valid. Some make the sort order explicit, while others rely on Elasticsearch’s default behavior.
 
 ::::{note}
 `_doc` has no real use-case besides being the most efficient sort order. So if you don’t care about the order in which documents are returned, then you should sort by `_doc`. This especially helps when [scrolling](/reference/elasticsearch/rest-apis/paginate-search-results.md#scroll-search-results).
@@ -70,7 +79,6 @@ GET /my-index-000001/_search
   }
 }
 ```
-% TEST[continued]
 
 
 ## Sort order [_sort_order]
@@ -105,7 +113,7 @@ Elasticsearch supports sorting by array or multi-valued fields. The `mode` optio
 `median`
 :   Use the median of all values as sort value. Only applicable for number based array fields.
 
-The default sort mode in the ascending sort order is `min` — the lowest value is picked. The default sort mode in the descending order is `max` — the highest value is picked.
+The default sort mode in the ascending sort order is `min` — the lowest value is picked. The default sort mode in the descending order is `max` — the highest value is picked.
 
 
 ### Sort mode example usage [_sort_mode_example_usage]
@@ -147,7 +155,6 @@ PUT /index_double
   }
 }
 ```
-% TEST[continued]
 
 ```console
 PUT /index_long
@@ -159,7 +166,6 @@ PUT /index_long
   }
 }
 ```
-% TEST[continued]
 
 Since `field` is mapped as a `double` in the first index and as a `long` in the second index, it is not possible to use this field to sort requests that query both indices by default. However you can force the type to one or the other with the `numeric_type` option in order to force a specific type for all indices:
 
@@ -175,7 +181,6 @@ POST /index_long,index_double/_search
    ]
 }
 ```
-% TEST[continued]
 
 In the example above, values for the `index_long` index are casted to a double in order to be compatible with the values produced by the `index_double` index. It is also possible to transform a floating point field into a `long` but note that in this case floating points are replaced by the largest value that is less than or equal (greater than or equal if the value is negative) to the argument and is equal to a mathematical integer.
 
@@ -191,7 +196,6 @@ PUT /index_double
   }
 }
 ```
-% TEST[continued]
 
 ```console
 PUT /index_long
@@ -203,7 +207,6 @@ PUT /index_long
   }
 }
 ```
-% TEST[continued]
 
 Values in these indices are stored with different resolutions so sorting on these fields will always sort the `date` before the `date_nanos` (ascending order). With the `numeric_type` type option it is possible to set a single resolution for the sort, setting to `date` will convert the `date_nanos` to the millisecond resolution while `date_nanos` will convert the values in the `date` field to the nanoseconds resolution:
 
@@ -219,7 +222,6 @@ POST /index_long,index_double/_search
    ]
 }
 ```
-% TEST[continued]
 
 ::::{warning}
 To avoid overflow, the conversion to `date_nanos` cannot be applied on dates before 1970 and after 2262 as nanoseconds are represented as longs.

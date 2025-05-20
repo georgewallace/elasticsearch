@@ -37,7 +37,6 @@ GET reviews/_search
   }
 }
 ```
-% TEST[setup:reviews]
 
 1. `rating` must be a numeric field
 
@@ -57,7 +56,6 @@ The resulting median absolute deviation of `2` tells us that there is a fair amo
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 
 ## Approximation [_approximation]
@@ -80,7 +78,6 @@ GET reviews/_search
   }
 }
 ```
-% TEST[setup:reviews]
 
 The default `compression` value for this aggregation is `1000`. At this compression level this aggregation is usually within 5% of the exact result, but observed performance will depend on the sample data.
 
@@ -118,7 +115,6 @@ GET reviews/_search?filter_path=aggregations
   }
 }
 ```
-% TEST[setup:reviews]
 
 Which will result in:
 
@@ -156,6 +152,5 @@ GET reviews/_search
   }
 }
 ```
-% TEST[setup:reviews]
 
 

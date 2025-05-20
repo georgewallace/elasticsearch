@@ -105,5 +105,4 @@ PUT test/_settings
   "index.routing.allocation.include._ip": "192.168.2.*"
 }
 ```
-% TEST[skip:indexes don’t assign]
 

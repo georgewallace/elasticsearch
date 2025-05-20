@@ -80,7 +80,6 @@ The response for the above aggregation:
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 
 
 ## Geo Bounds Aggregation on `geo_shape` fields [geobounds-aggregation-geo-shape]
@@ -122,7 +121,6 @@ POST /places/_search?size=0
   }
 }
 ```
-% TEST
 
 ```console-result
 {
@@ -143,5 +141,4 @@ POST /places/_search?size=0
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"_shards": $body._shards,"hits":$body.hits,"timed_out":false,/]
 

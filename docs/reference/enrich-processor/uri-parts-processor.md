@@ -41,7 +41,6 @@ Here is an example definition of the URI parts processor:
   ]
 }
 ```
-% NOTCONSOLE
 
 When the above processor executes on the following document:
 
@@ -52,7 +51,6 @@ When the above processor executes on the following document:
   }
 }
 ```
-% NOTCONSOLE
 
 It produces this result:
 
@@ -74,5 +72,4 @@ It produces this result:
   }
 }
 ```
-% NOTCONSOLE
 

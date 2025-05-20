@@ -116,7 +116,6 @@ The access control index will contain documents similar to this example:
   }
 }
 ```
-% NOTCONSOLE
 
 This document contains the Elasticsearch query that describes which documents the user `john@example.com` has access to. The access control information is stored in the `access_control` field. In this case the user has access only to documents that contain `"john@example.co"` or `"Engineering Members"` in the `_allow_access_control` field.
 
@@ -182,7 +181,6 @@ POST /_security/api_key
   }
 }
 ```
-% TEST[skip:TODO]
 
 The response will look like this:
 
@@ -195,7 +193,6 @@ The response will look like this:
   "encoded": "Qk05dy1JZ0JhRDNyNGpLQ3MwUmk6elRzdGU5QjZUY21SSWdkMldnQ1RMZw=="
 }
 ```
-% NOTCONSOLE
 
 The `api_key` field contains the API key that can be used to query the Search Application with the appropriate DLS restrictions.
 
@@ -228,7 +225,6 @@ GET .search-acl-filter-source1
     }
 }
 ```
-% NOTCONSOLE
 
 ```js
 GET .search-acl-filter-source2
@@ -250,7 +246,6 @@ GET .search-acl-filter-source2
     }
 }
 ```
-% NOTCONSOLE
 
 `.search-acl-filter-source1` and `.search-acl-filter-source2` define the access control identities for `source1` and `source2`.
 

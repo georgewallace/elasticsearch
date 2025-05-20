@@ -23,7 +23,7 @@ Statistics are returned in a format suitable for humans (e.g. `"exists_time": "1
 
 ## Date Math [date-math]
 
-Most parameters which accept a formatted date value — such as `gt` and `lt` in [`range` queries](/reference/query-languages/query-dsl/query-dsl-range-query.md), or `from` and `to` in [`daterange` aggregations](/reference/aggregations/search-aggregations-bucket-daterange-aggregation.md) — understand date maths.
+Most parameters which accept a formatted date value — such as `gt` and `lt` in [`range` queries](/reference/query-languages/query-dsl/query-dsl-range-query.md), or `from` and `to` in [`daterange` aggregations](/reference/aggregations/search-aggregations-bucket-daterange-aggregation.md) — understand date maths.
 
 The expression starts with an anchor date, which can either be `now`, or a date string ending with `||`. This anchor date can optionally be followed by one or more maths expressions:
 
@@ -79,7 +79,6 @@ All REST APIs accept a `filter_path` parameter that can be used to reduce the re
 ```console
 GET /_search?q=kimchy&filter_path=took,hits.hits._id,hits.hits._score
 ```
-% TEST[setup:my_index]
 
 Responds:
 
@@ -96,15 +95,12 @@ Responds:
   }
 }
 ```
-% TESTRESPONSE[s/"took" : 3/"took" : $body.took/]
-% TESTRESPONSE[s/1.6375021/$body.hits.hits.0._score/]
 
 It also supports the `*` wildcard character to match any field or part of a field’s name:
 
 ```console
 GET /_cluster/state?filter_path=metadata.indices.*.stat*
 ```
-% TEST[s/^/PUT my-index-000001\n/]
 
 Responds:
 
@@ -123,7 +119,6 @@ And the `**` wildcard can be used to include fields without knowing the exact pa
 ```console
 GET /_cluster/state?filter_path=routing_table.indices.**.state
 ```
-% TEST[s/^/PUT my-index-000001\n/]
 
 Responds:
 
@@ -146,7 +141,6 @@ It is also possible to exclude one or more fields by prefixing the filter with t
 ```console
 GET /_count?filter_path=-_shards
 ```
-% TEST[setup:my_index]
 
 Responds:
 
@@ -161,7 +155,6 @@ And for more control, both inclusive and exclusive filters can be combined in th
 ```console
 GET /_cluster/state?filter_path=metadata.indices.*.state,-metadata.indices.logstash-*
 ```
-% TEST[s/^/PUT my-index-000001\nPUT my-index-000002\nPUT my-index-000003\nPUT logstash-2016.01\n/]
 
 Responds:
 
@@ -211,7 +204,6 @@ The `flat_settings` flag affects rendering of the lists of settings. When the `f
 ```console
 GET my-index-000001/_settings?flat_settings=true
 ```
-% TEST[setup:my_index]
 
 Returns:
 
@@ -230,16 +222,12 @@ Returns:
   }
 }
 ```
-% TESTRESPONSE[s/1474389951325/$body.my-index-000001.settings.index\\.creation_date/]
-% TESTRESPONSE[s/n6gzFZTgS664GUfx0Xrpjw/$body.my-index-000001.settings.index\\.uuid/]
-% TESTRESPONSE[s/"index.version.created": .../"index.version.created": $body.my-index-000001.settings.index\\.version\\.created/]
 
 When the `flat_settings` flag is `false`, settings are returned in a more human readable structured format:
 
 ```console
 GET my-index-000001/_settings?flat_settings=false
 ```
-% TEST[setup:my_index]
 
 Returns:
 
@@ -268,9 +256,6 @@ Returns:
   }
 }
 ```
-% TESTRESPONSE[s/1474389951325/$body.my-index-000001.settings.index.creation_date/]
-% TESTRESPONSE[s/n6gzFZTgS664GUfx0Xrpjw/$body.my-index-000001.settings.index.uuid/]
-% TESTRESPONSE[s/"created": .../"created": $body.my-index-000001.settings.index.version.created/]
 
 By default `flat_settings` is set to `false`.
 
@@ -279,7 +264,7 @@ By default `flat_settings` is set to `false`.
 
 Some queries and APIs support parameters to allow inexact *fuzzy* matching, using the `fuzziness` parameter.
 
-When querying `text` or `keyword` fields, `fuzziness` is interpreted as a [Levenshtein Edit Distance](https://en.wikipedia.org/wiki/Levenshtein_distance) — the number of one character changes that need to be made to one string to make it the same as another string.
+When querying `text` or `keyword` fields, `fuzziness` is interpreted as a [Levenshtein Edit Distance](https://en.wikipedia.org/wiki/Levenshtein_distance) — the number of one character changes that need to be made to one string to make it the same as another string.
 
 The `fuzziness` parameter can be specified as:
 
@@ -309,7 +294,6 @@ By default when a request returns an error Elasticsearch doesn’t include the s
 ```console
 POST /my-index-000001/_search?size=surprise_me
 ```
-% TEST[s/surprise_me/surprise_me&error_trace=false/ catch:bad_request]
 
 The response looks like:
 
@@ -338,7 +322,6 @@ But if you set `error_trace=true`:
 ```console
 POST /my-index-000001/_search?size=surprise_me&error_trace=true
 ```
-% TEST[catch:bad_request]
 
 The response looks like:
 
@@ -364,7 +347,4 @@ The response looks like:
   "status": 400
 }
 ```
-% TESTRESPONSE[s/"stack_trace": "Failed to parse int parameter.+..."/"stack_trace": $body.error.root_cause.0.stack_trace/]
-% TESTRESPONSE[s/"stack_trace": "java.lang.IllegalArgum.+..."/"stack_trace": $body.error.stack_trace/]
-% TESTRESPONSE[s/"stack_trace": "java.lang.Number.+..."/"stack_trace": $body.error.caused_by.stack_trace/]
 

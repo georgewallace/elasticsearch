@@ -58,11 +58,10 @@ POST my-index-000001/_search
   "_source": false
 }
 ```
-% TEST[setup:my_index]
-% TEST[s/_search/_search?filter_path=hits/]
 
 1. Both full field names and wildcard patterns are accepted.
 2. Use the `format` parameter to apply a custom format for the field’s values.
+
 
 ::::{note}
 By default, document metadata fields like `_id` or `_index` are not returned when the requested `fields` option uses wildcard patterns like `*`. However, when explicitly requested using the field name, the `_id`, `_routing`, `_ignored`, `_index` and `_version` metadata fields can be retrieved.
@@ -108,8 +107,6 @@ The response includes values as a flat list in the `fields` section for each hit
   }
 }
 ```
-% TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-% TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 
 #### Retrieve nested fields [search-fields-nested]
@@ -196,9 +193,6 @@ The response will group `first` and `last` name instead of returning them as a f
   }
 }
 ```
-% TESTRESPONSE[s/"took": 2/"took": $body.took/]
-% TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-% TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 Nested fields will be grouped by their nested paths, no matter the pattern used to retrieve them. For example, if you query only for the `user.first` field from the previous example:
 
@@ -209,7 +203,6 @@ POST my-index-000001/_search
   "_source": false
 }
 ```
-% TEST[continued]
 
 The response returns only the user’s first name, but still maintains the structure of the nested `user` array:
 
@@ -246,9 +239,6 @@ The response returns only the user’s first name, but still maintains the struc
   }
 }
 ```
-% TESTRESPONSE[s/"took": 2/"took": $body.took/]
-% TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-% TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 However, when the `fields` pattern targets the nested `user` field directly, no values will be returned because the pattern doesn’t match any leaf fields.
 
@@ -331,9 +321,6 @@ The response will contain field results under the  `session_data.object.*` path,
   }
 }
 ```
-% TESTRESPONSE[s/"took" : 2/"took": $body.took/]
-% TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-% TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 ::::
 
@@ -416,9 +403,6 @@ The response will contain ignored field values under the  `ignored_field_values`
   }
 }
 ```
-% TESTRESPONSE[s/"took" : 2/"took": $body.took/]
-% TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-% TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 ::::
 
@@ -496,7 +480,7 @@ GET /_search
 
 ### Other methods of retrieving data [field-retrieval-methods]
 
-::::{admonition} Using `fields` is typically better
+::::{admonition} Using fields is typically better
 These options are usually not required. Using the `fields` option is typically the better choice, unless you absolutely need to force loading a stored or `docvalue_fields`.
 
 ::::
@@ -538,10 +522,10 @@ GET my-index-000001/_search
   ]
 }
 ```
-% TEST[setup:my_index]
 
 1. Both full field names and wildcard patterns are accepted.
 2. Using object notation, you can pass a `format` parameter to apply a custom format for the field’s doc values. [Date fields](/reference/elasticsearch/mapping-reference/date.md) support a [date `format`](/reference/elasticsearch/mapping-reference/mapping-date-format.md). [Numeric fields](/reference/elasticsearch/mapping-reference/number.md) support a [DecimalFormat pattern](https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.md). Other field datatypes do not support the `format` parameter.
+
 
 ::::{tip}
 You cannot use the `docvalue_fields` parameter to retrieve doc values for nested objects. If you specify a nested object, the search returns an empty array (`[ ]`) for the field. To access nested fields, use the [`inner_hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) parameter’s `docvalue_fields` property.
@@ -591,7 +575,7 @@ Stored field values fetched from the document itself are always returned as an a
 Also only leaf fields can be returned via the `stored_fields` option. If an object field is specified, it will be ignored.
 
 ::::{note}
-On its own, `stored_fields` cannot be used to load fields in nested objects — if a field contains a nested object in its path, then no data will be returned for that stored field. To access nested fields, `stored_fields` must be used within an [`inner_hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) block.
+On its own, `stored_fields` cannot be used to load fields in nested objects — if a field contains a nested object in its path, then no data will be returned for that stored field. To access nested fields, `stored_fields` must be used within an [`inner_hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) block.
 ::::
 
 
@@ -645,7 +629,6 @@ GET /_search
   }
 }
 ```
-% TEST[setup:sales]
 
 Script fields can work on fields that are not stored (`price` in the above case), and allow to return custom values to be returned (the evaluated value of the script).
 
@@ -664,7 +647,6 @@ GET /_search
   }
 }
 ```
-% TEST[setup:my_index]
 
 Note the `_source` keyword here to navigate the json-like model.
 

@@ -49,7 +49,7 @@ GET /_analyze
 
 The API returns the following response. Note that one version of each token has a `keyword` attribute of `true`.
 
-::::{dropdown} **Response**
+::::{dropdown} Response
 ```console-result
 {
   "detail": {
@@ -130,7 +130,6 @@ The API returns the following response. Note that one version of each token has 
   }
 }
 ```
-% TESTRESPONSE[s/"tokenizer": .../"tokenizer": $body.detail.tokenizer/]
 
 ::::
 
@@ -156,7 +155,7 @@ The API returns the following response. Note the following changes:
 * The non-keyword version of `running` was stemmed to `run`.
 * The non-keyword version of `jumping` was stemmed to `jump`.
 
-::::{dropdown} **Response**
+::::{dropdown} Response
 ```console-result
 {
   "detail": {
@@ -241,8 +240,6 @@ The API returns the following response. Note the following changes:
   }
 }
 ```
-% TESTRESPONSE[s/"tokenizer": .../"tokenizer": $body.detail.tokenizer/]
-% TESTRESPONSE[s/"tokens": …​/"tokens": $body.$_path/]
 
 ::::
 
@@ -268,7 +265,7 @@ GET /_analyze
 
 The API returns the following response. Note that the duplicate tokens for `fox` and `and` have been removed.
 
-::::{dropdown} **Response**
+::::{dropdown} Response
 ```console-result
 {
   "detail": {
@@ -341,8 +338,6 @@ The API returns the following response. Note that the duplicate tokens for `fox`
   }
 }
 ```
-% TESTRESPONSE[s/"tokenizer": .../"tokenizer": $body.detail.tokenizer/]
-% TESTRESPONSE[s/"tokens": …​/"tokens": $body.$_path/]
 
 ::::
 

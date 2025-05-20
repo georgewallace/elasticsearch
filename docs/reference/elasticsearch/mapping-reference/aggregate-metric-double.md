@@ -42,15 +42,13 @@ PUT my-index
 `time_series_metric`
 :   (Optional, string) Marks the field as a [time series metric](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-metric). The value is the metric type. You can’t update this parameter for existing fields.
 
-    ::::{dropdown} Valid `time_series_metric` values for `aggregate_metric_double` fields
+    **Valid `time_series_metric` values for `aggregate_metric_double` fields**:
+
     `gauge`
     :   A metric that represents a single numeric that can arbitrarily increase or decrease. For example, a temperature or available disk space.
 
     `null` (Default)
     :   Not a time series metric.
-
-    ::::
-
 
 
 ## Uses [aggregate-metric-double-uses]
@@ -115,8 +113,6 @@ PUT stats-index/_doc/2
   }
 }
 ```
-% TEST[continued]
-% TEST[s/_doc/2/_doc/2?refresh=wait_for/]
 
 You can run `min`, `max`, `sum`, `value_count`, and `avg` aggregations on a `agg_metric` field.
 
@@ -132,7 +128,6 @@ POST stats-index/_search?size=0
   }
 }
 ```
-% TEST[continued]
 
 The aggregation results are based on related metric sub-field values.
 
@@ -158,7 +153,6 @@ The aggregation results are based on related metric sub-field values.
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"timed_out": false,"_shards": $body._shards,"hits": $body.hits,/]
 
 Queries on a `aggregate_metric_double` field use the `default_metric` value.
 
@@ -174,7 +168,6 @@ GET stats-index/_search
   }
 }
 ```
-% TEST[continued]
 
 The search returns the following hit. The value of the `default_metric` field, `max`, matches the query value.
 
@@ -205,7 +198,6 @@ The search returns the following hit. The value of the `default_metric` field, `
   }
 }
 ```
-% TESTRESPONSE[s/.../"took": $body.took,"timed_out": false,"_shards": $body._shards,/]
 
 
 ## Synthetic `_source` [aggregate-metric-double-synthetic-source]
@@ -252,7 +244,6 @@ PUT idx/_doc/1
   }
 }
 ```
-% TEST[s/$/\nGET idx/_doc/1?filter_path=_source\n/]
 
 Will become:
 

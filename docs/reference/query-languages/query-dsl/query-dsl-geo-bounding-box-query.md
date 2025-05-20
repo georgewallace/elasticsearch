@@ -65,7 +65,6 @@ PUT /my_geoshapes/_doc/1
   }
 }
 ```
-% TESTSETUP
 
 Use a `geo_bounding_box` filter to match `geo_point` values that intersect a bounding box. To define the box, provide geopoint values for two opposite corners.
 

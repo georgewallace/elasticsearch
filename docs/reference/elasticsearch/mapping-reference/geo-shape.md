@@ -64,7 +64,6 @@ PUT /example
   }
 }
 ```
-% TESTSETUP
 
 
 ### Input Structure [input-structure]

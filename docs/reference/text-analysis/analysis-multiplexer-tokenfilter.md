@@ -64,7 +64,6 @@ POST /multiplexer_example/_analyze
   "text" : "Going HOME"
 }
 ```
-% TEST[continued]
 
 And it’d respond:
 

@@ -63,7 +63,6 @@ PUT _connector/my-notion-connector
   "service_type": "notion"
 }
 ```
-% TEST[skip:can’t test in isolation]
 
 :::::{dropdown} You’ll also need to create an API key for the connector to use.
 ::::{note}
@@ -130,7 +129,6 @@ Download the sample configuration file. You can either download it manually or r
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
-% NOTCONSOLE
 
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
@@ -305,7 +303,6 @@ Indexing every page where the title contains `Demo Page`:
     ]
   }
 ```
-% NOTCONSOLE
 
 **Example 2**
 
@@ -323,7 +320,6 @@ Indexing every database where the title contains `Demo Database`:
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 3**
 
@@ -347,7 +343,6 @@ Indexing every database where the title contains `Demo Database` and every page 
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 4**
 
@@ -365,7 +360,6 @@ Indexing all pages in the workspace:
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 5**
 
@@ -380,7 +374,6 @@ Indexing all the pages and databases connected to the workspace:
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 6**
 
@@ -401,7 +394,6 @@ Indexing all the rows of a database where the record is `true` for the column `T
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 7**
 
@@ -416,7 +408,6 @@ Indexing all rows of a specific database:
   ]
 }
 ```
-% NOTCONSOLE
 
 **Example 8**
 
@@ -451,7 +442,6 @@ Indexing all blocks defined in `searches` and `database_query_filters`:
   ]
 }
 ```
-% NOTCONSOLE
 
 ::::{note}
 In this example the `filter` object syntax for `database_query_filters` is defined per the [Notion documentation](https://developers.notion.com/reference/post-database-query-filter).

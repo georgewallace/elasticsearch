@@ -38,7 +38,6 @@ Internally, this document is indexed as a simple, flat list of key-value pairs, 
   "manager.name.last":  "Smith"
 }
 ```
-% NOTCONSOLE
 
 An explicit mapping for the above document could look like this:
 

@@ -47,7 +47,6 @@ PUT _connector/my-postgresql-connector
   "service_type": "postgresql"
 }
 ```
-% TEST[skip:can’t test in isolation]
 
 :::::{dropdown} You’ll also need to create an API key for the connector to use.
 ::::{note}
@@ -172,7 +171,7 @@ Set the following configuration fields:
 `ssl_ca`
 :   Content of SSL certificate (if SSL is enabled). If SSL is disabled, the `ssl_ca` value will be ignored.
 
-    ::::{dropdown} **Expand** to see an example certificate
+    ::::{dropdown} Expand to see an example certificate
     ```
     -----BEGIN CERTIFICATE-----
     MIID+jCCAuKgAwIBAgIGAJJMzlxLMA0GCSqGSIb3DQEBCwUAMHoxCzAJBgNVBAYT
@@ -214,7 +213,6 @@ Download the sample configuration file. You can either download it manually or r
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
-% NOTCONSOLE
 
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
@@ -349,7 +347,6 @@ $$$es-connectors-postgresql-client-sync-rules-advanced-examples-1$$$
   }
 ]
 ```
-% NOTCONSOLE
 
 $$$es-connectors-postgresql-client-sync-rules-advanced-examples-1-id-columns$$$
 **Multiple table queries with `id_columns`**
@@ -374,7 +371,6 @@ In 8.15.0, we added a new optional `id_columns` field in our advanced sync rules
   }
 ]
 ```
-% NOTCONSOLE
 
 This example uses the `id_columns` field to specify the unique fields `emp_id` and `c_id` for the `employee` and `customer` tables, respectively.
 
@@ -389,7 +385,6 @@ $$$es-connectors-postgresql-client-sync-rules-advanced-examples-2$$$
   }
 ]
 ```
-% NOTCONSOLE
 
 $$$es-connectors-postgresql-client-sync-rules-advanced-examples-3$$$
 **`JOIN` operations**
@@ -402,7 +397,6 @@ $$$es-connectors-postgresql-client-sync-rules-advanced-examples-3$$$
   }
 ]
 ```
-% NOTCONSOLE
 
 ::::{warning}
 When using advanced rules, a query can bypass the configuration field `tables`. This will happen if the query specifies a table that doesn’t appear in the configuration. This can also happen if the configuration specifies `*` to fetch all tables while the advanced sync rule requests for only a subset of tables.

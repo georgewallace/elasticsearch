@@ -31,7 +31,6 @@ GET /products/_search
   }
 }
 ```
-% TEST[s/_search/_search?filter_path=aggregations/]
 
 1. `multi_terms` aggregation can work with the same field types as a [`terms aggregation`](/reference/aggregations/search-aggregations-bucket-terms-aggregation.md#search-aggregations-bucket-terms-aggregation-order) and supports most of the terms aggregation parameters.
 
@@ -83,7 +82,6 @@ Response:
   }
 }
 ```
-% TESTRESPONSE[s/...//]
 
 1. an upper bound of the error on the document counts for each term, see <<search-aggregations-bucket-multi-terms-aggregation-approximate-counts,below>
 2. when there are lots of unique terms, Elasticsearch only returns the top terms; this number is the sum of the document counts for all buckets that are not part of the response
@@ -150,7 +148,6 @@ GET /products/_search
   }
 }
 ```
-% TEST[s/_search/_search?filter_path=aggregations/]
 
 Response:
 
@@ -191,7 +188,6 @@ Response:
   }
 }
 ```
-% TESTRESPONSE[s/...//]
 
 
 ## Missing value [_missing_value_3]
@@ -220,7 +216,6 @@ GET /products/_search
   }
 }
 ```
-% TEST[s/_search/_search?filter_path=aggregations/]
 
 Response:
 
@@ -277,7 +272,6 @@ Response:
   }
 }
 ```
-% TESTRESPONSE[s/...//]
 
 1. Documents without a value in the `product` field will fall into the same bucket as documents that have the value `Product Z`.
 
@@ -326,7 +320,6 @@ GET /products/_search
   }
 }
 ```
-% TEST[s/_search/_search?filter_path=aggregations/]
 
 ```console-result
 {
@@ -385,6 +378,5 @@ GET /products/_search
   }
 }
 ```
-% TESTRESPONSE[s/...//]
 
 

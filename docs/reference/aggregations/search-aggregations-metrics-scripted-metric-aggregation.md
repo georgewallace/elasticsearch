@@ -39,7 +39,6 @@ POST ledger/_search?size=0
   }
 }
 ```
-% TEST[setup:ledger]
 
 1. `init_script` is an optional parameter, all other scripts are required.
 
@@ -59,8 +58,6 @@ The response for the above aggregation:
   }
 }
 ```
-% TESTRESPONSE[s/"took": 218/"took": $body.took/]
-% TESTRESPONSE[s/.../"_shards": $body._shards, "hits": $body.hits, "timed_out": false,/]
 
 The above example can also be specified using stored scripts as follows:
 
@@ -90,7 +87,6 @@ POST ledger/_search?size=0
   }
 }
 ```
-% TEST[setup:ledger,stored_scripted_metric_script]
 
 1. script parameters for `init`, `map` and `combine` scripts must be specified in a global `params` object so that it can be shared between the scripts.
 
@@ -161,7 +157,6 @@ Lets say that documents 1 and 3 end up on shard A and documents 2 and 4 end up o
 ```js
 "state" : {}
 ```
-% NOTCONSOLE
 
 
 ### After init_script [_after_init_script]
@@ -227,7 +222,6 @@ The reduce_script receives a `states` array containing the result of the combine
     120
 ]
 ```
-% NOTCONSOLE
 
 It reduces the responses for the shards down to a final overall profit figure (by summing the values) and returns this as the result of the aggregation to produce the response:
 
@@ -242,7 +236,6 @@ It reduces the responses for the shards down to a final overall profit figure (b
   }
 }
 ```
-% NOTCONSOLE
 
 
 

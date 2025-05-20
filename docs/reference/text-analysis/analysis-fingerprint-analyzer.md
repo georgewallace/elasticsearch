@@ -117,5 +117,4 @@ PUT /fingerprint_example
   }
 }
 ```
-% TEST[s/\n$/\nstartyaml\n  - compare_analyzers: {index: fingerprint_example, first: fingerprint, second: rebuilt_fingerprint}\nendyaml\n/]
 

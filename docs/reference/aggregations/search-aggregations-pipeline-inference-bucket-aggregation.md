@@ -31,7 +31,6 @@ A `inference` aggregation looks like this in isolation:
   }
 }
 ```
-% NOTCONSOLE
 
 1. The unique identifier or alias for the trained model.
 2. The optional inference config which overrides the model’s default settings
@@ -158,7 +157,6 @@ GET kibana_sample_data_logs/_search
   }
 }
 ```
-% TEST[skip:setup kibana sample data]
 
 1. A composite bucket aggregation that aggregates the data by `client_ip`.
 2. A series of metrics and bucket sub-aggregations.

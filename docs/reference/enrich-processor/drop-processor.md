@@ -26,5 +26,4 @@ $$$drop-options$$$
   }
 }
 ```
-% NOTCONSOLE
 

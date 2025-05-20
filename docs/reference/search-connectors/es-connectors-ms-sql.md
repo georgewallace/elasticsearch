@@ -47,7 +47,6 @@ PUT _connector/my-mssql-connector
   "service_type": "mssql"
 }
 ```
-% TEST[skip:can’t test in isolation]
 
 :::::{dropdown} You’ll also need to create an API key for the connector to use.
 ::::{note}
@@ -175,7 +174,7 @@ The following configuration fields are required to set up the connector:
 `ssl_ca`
 :   Content of SSL certificate. If SSL is disabled, the `ssl_ca` value will be ignored.
 
-    ::::{dropdown} **Expand** to see an example certificate
+    ::::{dropdown} Expand to see an example certificate
     ```
     -----BEGIN CERTIFICATE-----
     MIID+jCCAuKgAwIBAgIGAJJMzlxLMA0GCSqGSIb3DQEBCwUAMHoxCzAJBgNVBAYT
@@ -201,7 +200,6 @@ Download the sample configuration file. You can either download it manually or r
 ```sh
 curl https://raw.githubusercontent.com/elastic/connectors/main/config.yml.example --output ~/connectors-config/config.yml
 ```
-% NOTCONSOLE
 
 Remember to update the `--output` argument value if your directory name is different, or you want to use a different config file name.
 
@@ -335,7 +333,6 @@ These rules fetch all records from both the `employee` and `customer` tables. Th
   }
 ]
 ```
-% NOTCONSOLE
 
 $$$es-connectors-ms-sql-client-sync-rules-example-one-where$$$
 **Example: One WHERE query**
@@ -350,7 +347,6 @@ This rule fetches only the records from the `employee` table where the `emp_id` 
   }
 ]
 ```
-% NOTCONSOLE
 
 $$$es-connectors-ms-sql-client-sync-rules-example-one-join$$$
 **Example: One JOIN query**
@@ -365,7 +361,6 @@ This rule fetches records by performing an INNER JOIN between the `employee` and
   }
 ]
 ```
-% NOTCONSOLE
 
 ::::{warning}
 When using advanced rules, a query can bypass the configuration field `tables`. This will happen if the query specifies a table that doesn’t appear in the configuration. This can also happen if the configuration specifies `*` to fetch all tables while the advanced sync rule requests for only a subset of tables.

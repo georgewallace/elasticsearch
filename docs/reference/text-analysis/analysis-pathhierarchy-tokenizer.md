@@ -182,7 +182,6 @@ GET file-path-test/_search
   }
 }
 ```
-% TEST[continued]
 
 It’s simple to match or filter documents with file paths that exist within a particular directory using the `file_path.tree` field.
 
@@ -196,7 +195,6 @@ GET file-path-test/_search
   }
 }
 ```
-% TEST[continued]
 
 With the reverse parameter for this tokenizer, it’s also possible to match from the other end of the file path, such as individual file names or a deep level subdirectory. The following example shows a search for all files named `my_photo1.jpg` within any directory via the `file_path.tree_reversed` field configured to use the reverse parameter in the mapping.
 
@@ -212,7 +210,6 @@ GET file-path-test/_search
   }
 }
 ```
-% TEST[continued]
 
 Viewing the tokens generated with both forward and reverse is instructive in showing the tokens created for the same file path value.
 
@@ -229,7 +226,6 @@ POST file-path-test/_analyze
   "text": "/User/alice/photos/2017/05/16/my_photo1.jpg"
 }
 ```
-% TEST[continued]
 
 It’s also useful to be able to filter with file paths when combined with other types of searches, such as this example looking for any files paths with `16` that also must be in Alice’s photo directory.
 
@@ -248,5 +244,4 @@ GET file-path-test/_search
   }
 }
 ```
-% TEST[continued]
 
