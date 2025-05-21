@@ -208,7 +208,7 @@ Correct (usage of [$$NOW](https://www.mongodb.com/docs/manual/reference/aggregat
       {
         "$addFields": {
           "current_date": {
-            "$toDate": "$$NOW"
+            "$toDate": "$NOW"
           }
         }
       },
