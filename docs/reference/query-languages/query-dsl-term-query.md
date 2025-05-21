@@ -98,6 +98,7 @@ To see the difference in search results, try the following example.
       "full_text":   "Quick Brown Foxes!"
     }
     ```
+    %  TEST[continued]
 
     Because `full_text` is a `text` field, {{es}} changes `Quick Brown Foxes!` to `[quick, brown, fox]` during analysis.
 
@@ -113,6 +114,7 @@ To see the difference in search results, try the following example.
       }
     }
     ```
+    %  TEST[continued]
 
     Because the `full_text` field no longer contains the **exact** term `Quick Brown Foxes!`, the `term` query search returns no results.
 
@@ -128,6 +130,7 @@ To see the difference in search results, try the following example.
       }
     }
     ```
+    %  TEST[continued]
 
     Unlike the `term` query, the `match` query analyzes your provided search term, `Quick Brown Foxes!`, before performing a search. The `match` query then returns any documents containing the `quick`, `brown`, or `fox` tokens in the `full_text` field.
 
@@ -162,6 +165,7 @@ To see the difference in search results, try the following example.
       }
     }
     ```
+    %  TESTRESPONSE[s/"took" : 1/"took" : $body.took/]
 
 
 

@@ -690,6 +690,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     "full_name": <string>, "email": <string>, "has_password": <boolean>,
     "metadata": <object>}`.
     ```
+    %  NOTCONSOLE
 
     The `full_name`, `email` and `metadata` fields are omitted if empty.
 
@@ -705,6 +706,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     "privileges": <string_list>, "resources": <string_list>}], "run_as": <string_list>,
     "metadata": <object>}}`.
     ```
+    %  NOTCONSOLE
 
     The `global`, `field_security`, `except`, `query`, `allow_restricted_indices` and `metadata` fields are omitted if empty.
 
@@ -716,6 +718,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     `{"name": <string>, "roles": <string_list>, "role_templates": [{"template": <string>,
     "format": <string>}], "rules": <object>, "enabled": <boolean>, "metadata": <object>}`.
     ```
+    %  NOTCONSOLE
 
     The `roles` and `role_templates` fields are omitted if empty. The `rules` object has a recursively nested schema, identical to what is passed in the [API request for mapping roles](docs-content://deploy-manage/users-roles/cluster-or-deployment-auth/mapping-users-groups-to-roles.md).
 
@@ -727,6 +730,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     `{"application": <string>, "name": <string>, "actions": <string_list>,
     "metadata": <object>}`.
     ```
+    %  NOTCONSOLE
 
 
 `password`
@@ -735,6 +739,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     ```js
     `{"user":{"name": <string>}}`
     ```
+    %  NOTCONSOLE
 
 
 `enable`
@@ -743,6 +748,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     ```js
     `{"user":{"name": <string>}}`
     ```
+    %  NOTCONSOLE
 
 
 `disable`
@@ -751,6 +757,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     ```js
     `{"user":{"name": <string>}}`
     ```
+    %  NOTCONSOLE
 
 
 `apikey`
@@ -760,6 +767,7 @@ The schemas of the security config objects mentioned above are as follows. They 
     `{"id": <string>, "name": <string>, "expiration": <string>, "role_descriptors": [<object>],
     "metadata": [<object>]}`
     ```
+    %  NOTCONSOLE
 
     The `role_descriptors` objects have the same schema as the `role_descriptor` object that is part of the above `role` config object.
 
@@ -773,6 +781,7 @@ The object for an API key update will differ in that it will not include a `name
     `{"type": <string>, "user": {"name": <string>, "has_password": <boolean>},
     "has_access_token": <boolean>}`
     ```
+    %  NOTCONSOLE
 
 
 `apikeys`
@@ -782,6 +791,7 @@ The object for an API key update will differ in that it will not include a `name
     `{"ids": <string_list>, "name": <string>, "owned_by_authenticated_user":
     <boolean>, "user":{"name": <string>, "realm": <string>}}`
     ```
+    %  NOTCONSOLE
 
     The object for a bulk API key update will differ in that it will not include `name`, `owned_by_authenticated_user`, or `user`. Instead, it may include `metadata` and `role_descriptors`, which have the same schemas as the fields in the `apikey` config object above.
 
@@ -792,6 +802,7 @@ The object for an API key update will differ in that it will not include a `name
     ```js
     `{"namespace":<string>,"service":<string>,"name":<string>}`
     ```
+    %  NOTCONSOLE
 
 ### Extra audit event attributes for specific events [_extra_audit_event_attributes_for_specific_events]
 
