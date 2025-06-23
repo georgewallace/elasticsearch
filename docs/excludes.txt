@@ -1,0 +1,11 @@
+reference/query-languages/esql/esql-multivalued-fields.md
+reference/query-languages/esql/esql-lookup-join.md
+reference/scripting-languages/painless/brief-painless-walkthrough.md
+reference/query-languages/eql.md
+reference/query-languages/query-dsl/query-dsl-rank-feature-query.md
+reference/elasticsearch/index-lifecycle-actions/ilm-searchable-snapshot.md
+reference/elasticsearch/rest-apis/paginate-search-results.md
+reference/elasticsearch-plugins/mapper-annotated-text-usage.md
+reference/aggregations/search-aggregations-bucket-rare-terms-aggregation.md
+reference/aggregations/search-aggregations-bucket-multi-terms-aggregation.md
+
