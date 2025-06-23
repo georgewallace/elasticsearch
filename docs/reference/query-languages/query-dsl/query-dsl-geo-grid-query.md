@@ -69,6 +69,7 @@ GET /my_locations/_search
   }
 }
 ```
+% TODO figure out why this is getting added to the test and the response, instead of just the response
 %  TESTRESPONSE[s/"took" : 10/"took" : $body.took/]
 
 ```console-result

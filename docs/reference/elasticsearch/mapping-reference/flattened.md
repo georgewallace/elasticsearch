@@ -127,9 +127,6 @@ POST my-index-000001/_search
   "_source": false
 }
 ```
-%  TESTRESPONSE[s/"took": 2/"took": $body.took/]
-%  TESTRESPONSE[s/"max_score" : 1.0/"max_score" : $body.hits.max_score/]
-%  TESTRESPONSE[s/"_score" : 1.0/"_score" : $body.hits.hits.0._score/]
 
 ```console-result
 {

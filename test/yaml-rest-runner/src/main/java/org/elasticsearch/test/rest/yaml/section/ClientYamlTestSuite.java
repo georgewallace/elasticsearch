@@ -80,8 +80,11 @@ public class ClientYamlTestSuite {
                     params
                 )
         ) {
+            Files.readAllLines(file).forEach(line -> System.out.println(line));
             return parse(api, filename, Optional.of(file), parser);
         } catch (Exception e) {
+            // print file
+            Files.readAllLines(file).forEach(line -> System.out.println(line));
             throw new IOException("Error parsing " + api + "/" + filename, e);
         }
     }

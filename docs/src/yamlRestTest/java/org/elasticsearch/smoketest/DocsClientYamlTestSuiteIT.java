@@ -150,6 +150,7 @@ public class DocsClientYamlTestSuiteIT extends ESClientYamlSuiteTestCase {
         Request request = new Request("GET", "_cat/templates");
         request.addParameter("h", "name");
         String templates = EntityUtils.toString(adminClient().performRequest(request).getEntity());
+        // logger.info("Templates after test: {}", templates);
         if (false == "".equals(templates)) {
             for (String template : templates.split("\n")) {
                 if (isXPackTemplate(template)) continue;

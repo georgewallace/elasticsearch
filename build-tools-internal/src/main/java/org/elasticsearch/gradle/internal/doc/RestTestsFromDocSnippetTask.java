@@ -424,18 +424,18 @@ public abstract class RestTestsFromDocSnippetTask extends DocSnippetTask {
             // Replace the extension
             String fileName = dest.getName(dest.getNameCount() - 1).toString();
             if (hasMultipleDocImplementations(test.path())) {
-                String fileNameWithoutExt = dest.getName(dest.getNameCount() - 1).toString().replace(".asciidoc", "").replace(".mdx", "");
+                String fileNameWithoutExt = dest.getName(dest.getNameCount() - 1).toString().replace(".asciidoc", "").replace(".mdx", "").replace(".md", "");
 
                 if (getMigrationMode().get() == false) {
                     throw new InvalidUserDataException(
-                        "Found multiple files with the same name '" + fileNameWithoutExt + "' but different extensions: [asciidoc, mdx]"
+                        "Found multiple files with the same name '" + fileNameWithoutExt + "' but different extensions: [asciidoc, mdx, md]"
                     );
                 }
                 getLogger().warn("Found multiple doc file types for " + test.path() + ". Generating tests for all of them.");
                 dest = dest.getParent().resolve(fileName + ".yml");
 
             } else {
-                dest = dest.getParent().resolve(fileName.replace(".asciidoc", ".yml").replace(".mdx", ".yml"));
+                dest = dest.getParent().resolve(fileName.replace(".asciidoc", ".yml").replace(".mdx", ".yml").replace(".md", ".yml"));
 
             }
 
