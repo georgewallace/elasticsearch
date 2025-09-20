@@ -77,6 +77,13 @@ The following command will create a query ruleset called `my-ruleset` with two q
 * The first rule will generate a [Pinned Query](/reference/query-languages/query-dsl/query-dsl-pinned-query.md) pinning the [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md)s `id1` and `id2` when the `query_string` metadata value is a fuzzy match to either `puggles` or `pugs` *and* the user’s location is in the US.
 * The second rule will generate a query that excludes the [`_id`](/reference/elasticsearch/mapping-reference/mapping-id-field.md) `id3` specifically from the `my-index-000001` index and `id4` from the `my-index-000002` index when the `query_string` metadata value contains `beagles`.
 
+<!--
+```console
+PUT /my-index-000001
+```
+% TESTSETUP
+-->
+
 ```console
 PUT /_query_rules/my-ruleset
 {

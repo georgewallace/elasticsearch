@@ -22,6 +22,14 @@ This tutorial uses a test dataset from [Atomic Red Team](https://github.com/redc
 
 To get started:
 
+<!--
+```console
+DELETE /_data_stream/*
+DELETE /_index_template/*
+```
+% TEARDOWN
+-->
+
 1. Create an [index template](docs-content://manage-data/data-store/templates.md) with [data stream enabled](docs-content://manage-data/data-store/data-streams/set-up-data-stream.md#create-index-template):
 
     ```console
@@ -46,6 +54,7 @@ To get started:
     ```console
     GET /_cat/indices/my-data-stream?v=true&h=health,status,index,docs.count
     ```
+    % TEST[setup:atomic_red_regsvr32]
 
     The response should show a `docs.count` of `150`.
 

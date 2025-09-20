@@ -38,6 +38,24 @@ You can use the `search_after` parameter to retrieve the next page of hits using
 
 Using `search_after` requires multiple search requests with the same `query` and `sort` values. The first step is to run an initial request. The following example sorts the results by two fields (`date` and `tie_breaker_id`):
 
+<!--
+```console
+PUT twitter
+{
+  "mappings": {
+    "properties": {
+      "tie_breaker_id": {
+        "type": "keyword"
+      },
+      "date": {
+        "type": "date"
+      }
+    }
+  }
+}
+```
+-->
+
 ```console
 GET twitter/_search
 {

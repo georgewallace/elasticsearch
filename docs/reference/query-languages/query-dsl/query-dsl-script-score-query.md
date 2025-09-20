@@ -30,7 +30,7 @@ GET /_search
   }
 }
 ```
-
+% TEARDOWN
 
 ## Top-level parameters for `script_score` [script-score-top-level-params]
 
@@ -370,7 +370,7 @@ PUT my-index-000001/_doc/2
 
 POST my-index-000001/_refresh
 ```
-%  TESTSETUP
+% TESTSETUP
 
 #### Cosine similarity [vector-functions-cosine]
 
@@ -609,7 +609,7 @@ GET my-index-000001/_search
   }
 }
 ```
-
+% TEST[setup:my_index]
 
 #### Bit vectors and vector functions [vector-functions-bit-vectors]
 

@@ -102,7 +102,7 @@ POST /_search
   }
 }
 ```
-%  TEST[setup:sales]
+% TEST[setup:sales]
 
 1. `buckets_path` instructs this max_bucket aggregation that we want the maximum value of the `sales` aggregation in the `sales_per_month` date histogram.
 

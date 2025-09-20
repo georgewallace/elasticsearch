@@ -37,6 +37,21 @@ Unlike other metric aggregations, the `matrix_stats` aggregation does not suppor
 
 The following example demonstrates the use of matrix stats to describe the relationship between income and poverty.
 
+<!--
+```console
+PUT /statistics/_doc/0
+{"poverty": 24.0, "income": 50000.0}
+
+PUT /statistics/_doc/1
+{"poverty": 13.0, "income": 95687.0}
+
+PUT /statistics/_doc/2
+{"poverty": 69.0, "income": 7890.0}
+
+POST /_refresh
+```
+% TESTSETUP
+-->
 $$$stats-aggregation-example$$$
 
 ```console

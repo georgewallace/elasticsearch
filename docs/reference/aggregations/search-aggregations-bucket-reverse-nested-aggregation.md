@@ -40,6 +40,14 @@ PUT /issues
 
 The following aggregations will return the top commenters' username that have commented and per top commenter the top tags of the issues the user has commented on:
 
+<!--
+```console
+POST /issues/_doc/0?refresh
+{"tags": ["tag_1"], "comments": [{"username": "username_1"}]}
+```
+% TEST[continued]
+-->
+
 ```console
 GET /issues/_search
 {

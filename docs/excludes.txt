@@ -1,11 +1,11 @@
 reference/query-languages/esql/esql-multivalued-fields.md
-reference/query-languages/esql/esql-lookup-join.md
-reference/scripting-languages/painless/brief-painless-walkthrough.md
-reference/query-languages/eql.md
-reference/query-languages/query-dsl/query-dsl-rank-feature-query.md
-reference/elasticsearch/index-lifecycle-actions/ilm-searchable-snapshot.md
-reference/elasticsearch/rest-apis/paginate-search-results.md
-reference/elasticsearch-plugins/mapper-annotated-text-usage.md
-reference/aggregations/search-aggregations-bucket-rare-terms-aggregation.md
-reference/aggregations/search-aggregations-bucket-multi-terms-aggregation.md
+reference/elasticsearch/mapping-reference/keyword
+reference/query-languages/query-dsl/query-dsl-terms-set-query
+reference/query-languages/query-dsl/query-dsl-distance-feature-query
+reference/elasticsearch/rest-apis/collapse-search-results
+reference/text-analysis/analysis-keyword-repeat-tokenfilter
+reference/query-languages/query-dsl/query-dsl-parent-id-query
+reference/enrich-processor/grok-processor
+reference/query-languages/query-dsl/query-dsl-distance-feature-query
 
+reference/elasticsearch/rest-apis/search-suggesters

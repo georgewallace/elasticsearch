@@ -39,6 +39,14 @@ While no schema is required to use EQL, we recommend using the [ECS](ecs://refer
 
 ## Run an EQL search [run-an-eql-search]
 
+<!--
+```console
+DELETE /_data_stream/*
+DELETE /_index_template/*
+```
+% TEARDOWN
+-->
+
 Use the [EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) to run a [basic EQL query](/reference/query-languages/eql/eql-syntax.md#eql-basic-syntax).
 
 ```console
@@ -50,7 +58,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 By default, basic EQL queries return the 10 most recent matching events in the `hits.events` property. These hits are sorted by timestamp, converted to milliseconds since the [Unix epoch](https://en.wikipedia.org/wiki/Unix_time), in ascending order.
 
@@ -123,8 +130,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
-
 
 ## Search for a sequence of events [eql-search-sequence]
 
@@ -141,7 +146,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The response’s `hits.sequences` property contains the 10 most recent matching sequences.
 
@@ -217,7 +221,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 Use `!` to match [missing events](/reference/query-languages/eql/eql-syntax.md#eql-missing-events): events in a sequence that do not meet a condition within a given timespan:
 
@@ -233,7 +236,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 Missing events are indicated in the response as `missing": true`:
 
@@ -314,7 +316,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 If a field value should be shared across all events, use the `sequence by` keyword. The following query is equivalent to the previous one.
 
@@ -329,7 +330,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The `hits.sequences.join_keys` property contains the shared field values.
 
@@ -366,7 +366,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 
 ## Sample chronologically unordered events [eql-search-sample]
@@ -921,7 +920,6 @@ GET /my-data-stream/_eql/search?filter_path=hits.events._source.@timestamp,hits.
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The API returns the following response.
 
@@ -980,7 +978,6 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events._source
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 1. Both full field names and wildcard patterns are accepted.
 2. Use the `format` parameter to apply a custom format for the field’s values.
@@ -1061,7 +1058,6 @@ GET /my-data-stream/_eql/search?filter_path=-hits.events._source
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The API returns:
 
@@ -1110,7 +1106,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The event category field must be mapped as a [`keyword`](/reference/elasticsearch/mapping-reference/keyword.md) family field type. The timestamp field should be mapped as a [`date`](/reference/elasticsearch/mapping-reference/date.md) field type. [`date_nanos`](/reference/elasticsearch/mapping-reference/date_nanos.md) timestamp fields are not supported. You cannot use a [`nested`](/reference/elasticsearch/mapping-reference/nested.md) field or the sub-fields of a `nested` field as the timestamp or event category field.
 
@@ -1133,7 +1128,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 
 ## Filter using Query DSL [eql-search-filter-query-dsl]
@@ -1157,7 +1151,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 
 ## Run an async EQL search [eql-search-async]
@@ -1176,7 +1169,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 If the request doesn’t finish within the timeout period, the search becomes async and returns a response that includes:
 
@@ -1260,7 +1252,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 You can use the [get async EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search)'s `keep_alive` parameter to later change the retention period. The new retention period starts after the get request runs.
 
@@ -1292,7 +1283,6 @@ GET /my-data-stream/_eql/search
 }
 ```
 %  TEST[setup:sec_logs]
-%  TEST[teardown:data_stream_cleanup]
 
 The response includes a search ID. `is_partial` and `is_running` are `false`, indicating the EQL search was synchronous and returned complete results.
 

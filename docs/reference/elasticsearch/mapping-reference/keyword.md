@@ -265,6 +265,7 @@ PUT idx/_doc/1
   "kwd": ["foo", null, "bar"]
 }
 ```
+% TEST[s/$/\nGET idx\/_doc\/1?filter_path=_source\n/]
 
 Will become:
 

@@ -96,6 +96,8 @@ POST _search
   }
 }
 ```
+% TEST[setup:messages]
+% TEST[s/^/PUT my-index-000001\/_mapping\n{"properties":{"user":{"properties":{"id":{"type":"keyword"}}}}}\n/]
 
 The suggest text can in the above example also be specified as suggestion specific option. The suggest text specified on suggestion level override the suggest text on the global level.
 
@@ -222,7 +224,6 @@ POST test/_doc?refresh=true
 POST test/_doc?refresh=true
 {"title": "nobel prize"}
 ```
-%  TESTSETUP
 
 Once you have the analyzers and mappings set up you can use the `phrase` suggester in the same spot you'd use the `term` suggester:
 
@@ -868,7 +869,6 @@ PUT place_path_category
   }
 }
 ```
-%  TESTSETUP
 
 1. Defines a `category` context named *place_type* where the categories must be sent with the suggestions.
 2. Defines a `geo` context named *location* where the categories must be sent with the suggestions.

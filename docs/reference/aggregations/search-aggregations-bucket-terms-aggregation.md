@@ -9,6 +9,50 @@ mapped_pages:
 
 A multi-bucket value source based aggregation where buckets are dynamically built - one per unique value.
 
+<!--
+```console
+PUT /products
+{
+  "mappings": {
+    "properties": {
+      "genre": {
+        "type": "keyword"
+      },
+      "product": {
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+POST /products/_bulk?refresh
+{"index":{"_id":0}}
+{"genre": "rock", "product": "Product A"}
+{"index":{"_id":1}}
+{"genre": "rock", "product": "Product B"}
+{"index":{"_id":2}}
+{"genre": "rock", "product": "Product C"}
+{"index":{"_id":3}}
+{"genre": "jazz", "product": "Product D"}
+{"index":{"_id":4}}
+{"genre": "jazz", "product": "Product E"}
+{"index":{"_id":5}}
+{"genre": "electronic", "product": "Anthology A"}
+{"index":{"_id":6}}
+{"genre": "electronic", "product": "Anthology A"}
+{"index":{"_id":7}}
+{"genre": "electronic", "product": "Product F"}
+{"index":{"_id":8}}
+{"genre": "electronic", "product": "Product G"}
+{"index":{"_id":9}}
+{"genre": "electronic", "product": "Product H"}
+{"index":{"_id":10}}
+{"genre": "electronic", "product": "Product I"}
+```
+% TESTSETUP
+
+-->
+
 Example:
 
 $$$terms-aggregation-example$$$
@@ -23,7 +67,7 @@ GET /_search
   }
 }
 ```
-%  TEST[s/_search/_search\?filter_path=aggregations/]
+%  TEST[s/_search/_search?filter_path=aggregations/]
 
 Response:
 

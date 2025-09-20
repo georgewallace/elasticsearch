@@ -21,6 +21,42 @@ In all these cases the terms being selected are not simply the most popular term
 
 In the simplest case, the *foreground* set of interest is the search results matched by a query and the *background* set used for statistical comparisons is the index or indices from which the results were gathered.
 
+<!--
+```console
+PUT /reports
+{
+  "mappings": {
+    "properties": {
+      "force": {
+        "type": "keyword"
+      },
+      "crime_type": {
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+POST /reports/_bulk?refresh
+{"index":{"_id":0}}
+{"force": "British Transport Police", "crime_type": "Bicycle theft"}
+{"index":{"_id":1}}
+{"force": "British Transport Police", "crime_type": "Bicycle theft"}
+{"index":{"_id":2}}
+{"force": "British Transport Police", "crime_type": "Bicycle theft"}
+{"index":{"_id":3}}
+{"force": "British Transport Police", "crime_type": "Robbery"}
+{"index":{"_id":4}}
+{"force": "Metropolitan Police Service", "crime_type": "Robbery"}
+{"index":{"_id":5}}
+{"force": "Metropolitan Police Service", "crime_type": "Bicycle theft"}
+{"index":{"_id":6}}
+{"force": "Metropolitan Police Service", "crime_type": "Robbery"}
+{"index":{"_id":7}}
+{"force": "Metropolitan Police Service", "crime_type": "Robbery"}
+```
+% TESTSETUP
+-->
 Example:
 
 $$$significantterms-aggregation-example$$$

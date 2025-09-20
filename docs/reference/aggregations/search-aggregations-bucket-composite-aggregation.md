@@ -18,6 +18,62 @@ Unlike the other `multi-bucket` aggregations, you can use the `composite` aggreg
 
 The composite buckets are built from the combinations of the values extracted/created for each document and each combination is considered as a composite bucket.
 
+<!--
+```console
+PUT /sales
+{
+  "mappings": {
+    "properties": {
+      "product": {
+          "type": "keyword"
+      },
+      "timestamp": {
+          "type": "date"
+      },
+      "price": {
+          "type": "long"
+      },
+      "shop": {
+          "type": "keyword"
+      },
+      "location": {
+          "type": "geo_point"
+      },
+      "nested": {
+          "type": "nested",
+          "properties": {
+            "product": {
+                "type": "keyword"
+            },
+            "timestamp": {
+                "type": "date"
+            },
+            "price": {
+                "type": "long"
+            },
+            "shop": {
+                "type": "keyword"
+            }
+          }
+       }
+    }
+  }
+}
+
+POST /sales/_bulk?refresh
+{"index":{"_id":0}}
+{"product": "mad max", "price": "20", "timestamp": "2017-05-09T14:35"}
+{"index":{"_id":1}}
+{"product": "mad max", "price": "25", "timestamp": "2017-05-09T12:35"}
+{"index":{"_id":2}}
+{"product": "rocky", "price": "10", "timestamp": "2017-05-08T09:10"}
+{"index":{"_id":3}}
+{"product": "mad max", "price": "27", "timestamp": "2017-05-10T07:07"}
+{"index":{"_id":4}}
+{"product": "apocalypse now", "price": "10", "timestamp": "2017-05-11T08:35"}
+```
+% TESTSETUP
+-->
 For example, consider the following document:
 
 ```js

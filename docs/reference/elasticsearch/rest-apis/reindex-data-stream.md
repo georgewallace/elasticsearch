@@ -26,6 +26,14 @@ The reindex data stream API is used to upgrade the backing indices of a data str
 
 This api runs in the background because reindexing all indices in a large data stream is expected to take a large amount of time and resources. The endpoint will return immediately and a persistent task will be created to run in the background. The current status of the task can be checked with the [reindex status API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-get-migrate-reindex-status). This status will be available for 24 hours after the task completes, whether it finished successfully or failed. If the status is still available for a task, the task must be cancelled before it can be re-run. A running or recently completed data stream reindex task can be cancelled using the [reindex cancel API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-cancel-migrate-reindex).
 
+<!--
+```console
+POST /_migration/reindex/my-data-stream/_cancel
+DELETE _data_stream/my-data-stream
+DELETE _index_template/my-data-stream-template
+```
+% TEARDOWN
+-->
 ## {{api-request-title}} [data-stream-reindex-api-request]
 
 `POST /_migration/reindex`

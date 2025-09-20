@@ -30,7 +30,6 @@ PUT /my-index-000001
   }
 }
 ```
-%  TEST[continued]
 
 ```console
 GET /my-index-000001/_search
