@@ -37,23 +37,40 @@ ext.docsFileTree = fileTree(projectDir) {
     // We can't conditionally control output, this would be missing the ingest-attachment component
     exclude 'reference/cat/plugins.asciidoc'
   }
- exclude 'reference/elasticsearch/rest-apis/search-suggesters.md'
+
+ // TESTSETUP NOT FIRST
  exclude 'reference/query-languages/query-dsl/query-dsl-script-score-query.md'
- exclude 'reference/elasticsearch/rest-apis/retrieve-inner-hits.md'
- exclude 'reference/elasticsearch/rest-apis/search-profile.md'
- exclude 'reference/elasticsearch/mapping-reference/keyword.md'
+
+  // expected ',' or '}', but got :
+ exclude 'reference/elasticsearch/rest-apis/search-suggesters.md'
+
+ // mapping values are not allowed here
+ exclude 'reference/query-languages/esql/esql-multivalued-fields.md'
+
+ // expected [2xx] status code but api returned [404 Not Found]
  exclude 'reference/query-languages/query-dsl/query-dsl-terms-set-query.md'
- exclude 'reference/enrich-processor/grok-processor.md'
- exclude 'reference/query-languages/query-dsl/query-dsl-distance-feature-query.md'
- exclude 'reference/scripting-languages/painless/painless-update-by-query-context.md'
- exclude 'reference/elasticsearch/rest-apis/search-profile.md'
- exclude 'reference/query-languages/query-dsl/query-dsl-distance-feature-query.md'
- exclude 'reference/elasticsearch/rest-apis/sort-search-results.md'
- exclude 'reference/text-analysis/analysis-keyword-repeat-tokenfilter.md'
- exclude 'reference/elasticsearch/rest-apis/collapse-search-results.md'
- exclude 'reference/scripting-languages/painless/using-datetime-in-painless.md'
  exclude 'reference/scripting-languages/painless/use-painless-scripts-in-runtime-fields.md'
  exclude 'reference/query-languages/query-dsl/query-dsl-parent-id-query.md'
+ exclude 'reference/scripting-languages/painless/painless-update-by-query-context.md'
+ exclude 'reference/query-languages/query-dsl/query-dsl-distance-feature-query.md'
+
+ // expected [2xx] status code but api returned [400 Bad Request]
+ exclude 'reference/elasticsearch/rest-apis/collapse-search-results.md'
+ exclude 'reference/elasticsearch/rest-apis/sort-search-results.md'
+
+ // Expected a map containing ..
+ // exclude 'reference/elasticsearch/rest-apis/retrieve-inner-hits.md'
+ exclude 'reference/elasticsearch/rest-apis/search-profile.md'
+ exclude 'reference/elasticsearch/mapping-reference/keyword.md' 
+ exclude 'reference/text-analysis/analysis-keyword-repeat-tokenfilter.md'
+ exclude 'reference/enrich-processor/grok-processor.md'
+ exclude 'reference/elasticsearch/rest-apis/search-profile.md'
+
+ // No such index
+ exclude 'reference/scripting-languages/painless/using-datetime-in-painless.md'
+ exclude 'reference/scripting-languages/painless/use-painless-scripts-in-runtime-fields.md'
+ 
+
   // Read additional excludes from a file
   // This is just for iterating quickly.. Adding them here avoids having to recompile a bunch of stuff on changes
   def additionalExcludes = file('excludes.txt')

@@ -66,10 +66,10 @@ The following suggest response example includes the suggestion response for `my-
   }
 }
 ```
-%  TESTRESPONSE[s/"_shards": \.\.\./"_shards": "$body._shards",/]
-%  TESTRESPONSE[s/"hits": …​/"hits": "$body.hits",/]
-%  TESTRESPONSE[s/"took": 2,/"took": "$body.took",/]
-%  TESTRESPONSE[s/"my-suggest-2": \.\.\./"my-suggest-2": "$body.suggest.my-suggest-2"/]
+% TESTRESPONSE[s/"_shards": \.\.\./"_shards": "$body._shards",/]
+% TESTRESPONSE[s/"hits": .../"hits": "$body.hits",/]
+% TESTRESPONSE[s/"took": 2,/"took": "$body.took",/]
+% TESTRESPONSE[s/"my-suggest-2": \.\.\./"my-suggest-2": "$body.suggest.my-suggest-2"/]
 
 Each options array contains an option object that includes the suggested text, its document frequency and score compared to the suggest entry text. The meaning of the score depends on the used suggester. The term suggester's score is based on the edit distance.
 
