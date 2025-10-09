@@ -117,6 +117,7 @@ Follow these steps:
       }
     }
     ```
+    % TEST[skip:uses ML]
 
     1. [Adaptive allocations](docs-content://deploy-manage/autoscaling/trained-model-autoscaling.md#enabling-autoscaling-through-apis-adaptive-allocations) will be enabled with the minimum of 1 and the maximum of 10 allocations.
 
@@ -145,6 +146,7 @@ Follow these steps:
       }
     }
     ```
+    % TEST[skip:uses ML]
 
 
 
@@ -175,6 +177,7 @@ GET /index/_search
    }
 }
 ```
+% TEST[skip:uses ML]
 
 
 ## Example: Semantic re-ranking with a Hugging Face model [text-similarity-reranker-retriever-example-eland]
@@ -220,7 +223,8 @@ Follow these steps to load the model and create a semantic re-ranker.
       }
     }
     ```
-
+    % TEST[skip:uses ELSER]
+    
 4. Define a `text_similarity_rerank` retriever.
 
     ```console
@@ -244,5 +248,6 @@ Follow these steps to load the model and create a semantic re-ranker.
       }
     }
     ```
+    % TEST[skip:uses ELSER]
 
     This retriever uses a standard `match` query to search the `movie` index for films tagged with the genre "drama". It then re-ranks the results based on semantic similarity to the text in the `inference_text` parameter, using the model we uploaded to {{es}}.
