@@ -62,8 +62,15 @@ public abstract class DocSnippetTask extends DefaultTask {
     }
 
     List<Snippet> parseDocFile(File rootDir, File docFile) {
-        SnippetParser parser = parserForFileType(docFile);
-        return parser.parseDoc(rootDir, docFile);
+        try {
+            SnippetParser parser = parserForFileType(docFile);
+            return parser.parseDoc(rootDir, docFile);
+        } catch (Exception e) {
+            System.out.println("[md-parse] Error parsing " + docFile.getAbsolutePath());
+            System.out.println(e.getMessage());
+
+            throw e;
+        }
     }
 
     private SnippetParser parserForFileType(File docFile) {
@@ -71,6 +78,8 @@ public abstract class DocSnippetTask extends DefaultTask {
             return new AsciidocSnippetParser(getDefaultSubstitutions().get());
         } else if (docFile.getName().endsWith(".mdx")) {
             return new MdxSnippetParser(getDefaultSubstitutions().get());
+        } else if (docFile.getName().endsWith(".md")) {
+            return new MdSnippetParser(getDefaultSubstitutions().get());
         }
         throw new InvalidUserDataException("Unsupported file type: " + docFile.getName());
     }

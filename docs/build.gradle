@@ -16,14 +16,16 @@ apply plugin: 'elasticsearch.docs-test'
 apply plugin: 'elasticsearch.rest-resources'
 
 ext.docsFileTree = fileTree(projectDir) {
-  include '**/*.asciidoc'
-  include '**/*.mdx'
+  // include '**/*.asciidoc'
+  include '**/*.md'
+  // include 'reference/query-languages/eql.md'
+  // include 'reference/elasticsearch/mapping-reference/flattened.md'
   // That is where the snippets go, not where they come from!
   exclude 'build/**'
   exclude 'build-idea/**'
   exclude 'build-eclipse/**'
   // Just syntax examples
-  exclude 'README.asciidoc'
+  exclude 'README.md'
   // Broken code snippet tests
   exclude 'reference/graph/explore.asciidoc'
   // These files simply don't pass yet. We should figure out how to fix them.
@@ -35,10 +37,74 @@ ext.docsFileTree = fileTree(projectDir) {
     // We can't conditionally control output, this would be missing the ingest-attachment component
     exclude 'reference/cat/plugins.asciidoc'
   }
-}
+
+  // expected [2xx] status code but api returned [400 Bad Request]
+  exclude 'reference/elasticsearch/rest-apis/collapse-search-results.md'
+  exclude 'reference/elasticsearch/rest-apis/sort-search-results.md'
+  exclude 'reference/elasticsearch/rest-apis/retrieve-stored-fields.md'
+
+  // Expected a map containing ..
+
+  // Expected a map containing... expected "SimpleTopScoreDocCollector" but was "TopScoreDocCollector"
+  exclude 'reference/elasticsearch/rest-apis/search-profile.md'
+  
+  // Expected a map containing... my_vector: expected "8100012a7f" but was <missing>  my_vector: expected a list but was <missing>
+  exclude 'reference/elasticsearch/mapping-reference/dense-vector.md'
+
+  // in 9.3.0 vector is not returned. but in 9.1.5 it is. 
+  exclude 'reference/elasticsearch/rest-apis/reciprocal-rank-fusion.md'
+
+  // extra fields in newer versions
+  exclude 'reference/query-languages/esql/esql-multivalued-fields.md'
+  exclude 'reference/query-languages/esql/esql-rest.md'
+
+  exclude 'reference/enrich-processor/recover-failure-document-processor.md'
+
+  //Didn't match (?:(?<comment>#.+)|(?:(?:(?<method>GET|PUT|POST|HEAD|OPTIONS|DELETE)\s+(?<pathAndQuery>[^\n]+)(?<body>(?:\n(?!GET|PUT|POST|HEAD|OPTIONS|DELETE|startyaml|#)[^\n]+)+)?)|(?:startyaml(?s)(?<yaml>.+?)(?-s)endyaml)))\n+:
+  exclude 'reference/elasticsearch/rest-apis/retrievers/retrievers-examples.md'
+  exclude 'reference/elasticsearch/rest-apis/retrievers/rescorer-retriever.md'
+  exclude 'reference/elasticsearch/rest-apis/retrievers/text-similarity-reranker-retriever.md'
+  exclude 'reference/elasticsearch/rest-apis/retrievers.md'
+  
+  // (console-result)// NOTCONSOLE: Result can't be first in file
+  exclude 'reference/elasticsearch/rest-apis/find-text-structure-examples.md'
+  
+  // Invalid block quote - when moving quote get Unexpected character ('&quot;' (code 34)): was expecting comma to separate Object entries
+  exclude 'reference/query-languages/query-dsl/query-dsl-kql-query.md'
+  // requires inference endpoint
+  exclude 'reference/elasticsearch/mapping-reference/semantic-text.md'
+
+  // Unexpected character ('.' (code 46)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false')
+  exclude 'reference/elasticsearch/index-settings/bbq.md'
+
+  // No setup
+  exclude 'reference/elasticsearch/rest-apis/rescore-search-results.md'
+  exclude 'reference/elasticsearch/rest-apis/retrievers/linear-retriever.md'
+  
+  // Sorting by range field [my_range] is not supported
+  exclude 'reference/elasticsearch/mapping-reference/range.md'
+
+  // retrievers datasource issues with movies/books/restaurants
+  exclude 'reference/elasticsearch/rest-apis/retrievers/rrf-retriever.md'
+
+  // New 9.x content need to setup tests
+  exclude 'reference/elasticsearch/mapping-reference/rank-vectors.md'
+  exclude 'reference/query-languages/esql/esql-search-tutorial.md'
+
+  // Expected a map containing&#10;cursor: expected &quot; different cursor returned.
+  exclude 'reference/query-languages/sql/sql-rest-columnar.md'
+  
+  // stashed value not found for key [body.cursor]
+  exclude 'reference/query-languages/sql/sql-pagination.md'  
+
+  //  expected [2xx] status code but api [raw[method=POST path=_reindex]] returned [401 Unauthorized]
+  exclude 'reference/elasticsearch/rest-apis/reindex-indices.md'
+
+  exclude 'reference/aggregations/search-aggregations-pipeline-normalize-aggregation.md'
+  }
 
 tasks.named("yamlRestTest") {
-  enabled = false
+  // enabled = false
   if (buildParams.snapshotBuild == false) {
     // LOOKUP is not available in snapshots
     systemProperty 'tests.rest.blacklist', [
@@ -49,28 +115,37 @@ tasks.named("yamlRestTest") {
 
 /* List of files that have snippets that will not work until platinum tests can occur ... */
 tasks.named("buildRestTests").configure {
-  enabled = false
+  // enabled = false
   getExpectedUnconvertedCandidates().addAll(
-          'reference/ml/anomaly-detection/ml-configuring-transform.asciidoc',
-          'reference/ml/anomaly-detection/apis/delete-calendar-event.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-bucket.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-category.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-influencer.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-job-stats.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-job.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-overall-buckets.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-record.asciidoc',
-          'reference/ml/anomaly-detection/apis/get-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/post-data.asciidoc',
-          'reference/ml/anomaly-detection/apis/revert-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/update-snapshot.asciidoc',
-          'reference/ml/anomaly-detection/apis/update-job.asciidoc',
-          'reference/security/authentication/user-cache.asciidoc',
-          'reference/security/authorization/run-as-privilege.asciidoc',
-          'reference/security/ccs-clients-integrations/http.asciidoc',
-          'reference/rest-api/watcher/put-watch.asciidoc',
-          'reference/rest-api/watcher/stats.asciidoc',
-          'reference/watcher/example-watches/watching-time-series-data.asciidoc'
+//           // 'reference/ml/anomaly-detection/ml-configuring-transform.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/delete-calendar-event.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-bucket.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-category.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-influencer.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-job-stats.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-job.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-overall-buckets.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-record.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/get-snapshot.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/post-data.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/revert-snapshot.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/update-snapshot.asciidoc',
+//           // 'reference/ml/anomaly-detection/apis/update-job.asciidoc',
+//           // 'reference/security/authentication/user-cache.asciidoc',
+//           // 'reference/security/authorization/run-as-privilege.asciidoc',
+//           // 'reference/security/ccs-clients-integrations/http.asciidoc',
+//           // 'reference/rest-api/watcher/put-watch.asciidoc',
+//           // 'reference/rest-api/watcher/stats.asciidoc',
+//           // 'reference/watcher/example-watches/watching-time-series-data.asciidoc'
+            'reference/elasticsearch-plugins/analysis-nori-speech.md',
+            'reference/elasticsearch-plugins/cloud/ec-plugins-guide.md',
+            'reference/elasticsearch-plugins/discovery-ec2-usage.md',
+            // 'reference/elasticsearch-plugins/mapper-annotated-text-usage.md',
+            'reference/enrich-processor/date-processor.md',
+//           // 'reference/elasticsearch/configuration-reference/elastic-cloud-serverless-elasticsearch-settings.md',
+//           // 'reference/aggregations/search-aggregations-bucket-geohashgrid-aggregation.md',
+//           // 'reference/search-connectors/es-connectors-mongodb.md',
+//           // 'reference/search-connectors/es-dls-e2e-guide.md',
   )
 }
 
