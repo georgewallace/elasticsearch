@@ -45,47 +45,7 @@ example_order: 2
      "hits": ...,
      "aggregations": {
         "users_per_day": {
-           "buckets": [
-              {
-                 "key_as_string": "2019-01-01T00:00:00.000Z",
-                 "key": 1546300800000,
-                 "doc_count": 2,
-                 "distinct_users": {
-                    "value": 2
-                 },
-                 "total_new_users": {
-                    "value": 2
-                 }
-              },
-              {
-                 "key_as_string": "2019-01-02T00:00:00.000Z",
-                 "key": 1546387200000,
-                 "doc_count": 2,
-                 "distinct_users": {
-                    "value": 2
-                 },
-                 "total_new_users": {
-                    "value": 3
-                 },
-                 "incremental_new_users": {
-                    "value": 1.0
-                 }
-              },
-              {
-                 "key_as_string": "2019-01-03T00:00:00.000Z",
-                 "key": 1546473600000,
-                 "doc_count": 3,
-                 "distinct_users": {
-                    "value": 3
-                 },
-                 "total_new_users": {
-                    "value": 4
-                 },
-                 "incremental_new_users": {
-                    "value": 1.0
-                 }
-              }
-           ]
+           "buckets": ...
         }
      }
   }
