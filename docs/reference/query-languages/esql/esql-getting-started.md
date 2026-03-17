@@ -116,6 +116,10 @@ Each {{esql}} query starts with a [source command](commands/source-commands.md).
 
 The [`FROM`](commands/from.md) source command returns a table with documents from a data stream, index, or alias. Each row in the resulting table represents a document. This query returns up to 1000 documents from the `sample_data` index:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 ```
@@ -125,6 +129,10 @@ Each column corresponds to a field, and can be accessed by the name of that fiel
 ::::{tip}
 {{esql}} keywords are case-insensitive. The following query is identical to the previous one:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 from sample_data
 ```
@@ -144,6 +152,10 @@ A source command can be followed by one or more [processing commands](commands/p
 
 For example, you can use the [`LIMIT`](commands/limit.md) command to limit the number of rows that are returned, up to a maximum of 10,000 rows:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | LIMIT 3
@@ -152,6 +164,10 @@ FROM sample_data
 ::::{tip}
 For readability, you can put each command on a separate line. However, you don’t have to. The following query is identical to the previous one:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data | LIMIT 3
 ```
@@ -169,6 +185,10 @@ FROM sample_data | LIMIT 3
 
 Another processing command is the [`SORT`](commands/sort.md) command. By default, the rows returned by `FROM` don’t have a defined sort order. Use the `SORT` command to sort rows on one or more columns:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | SORT @timestamp DESC
@@ -179,6 +199,10 @@ FROM sample_data
 
 Use the [`WHERE`](commands/where.md) command to query the data. For example, to find all events with a duration longer than 5ms:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | WHERE event_duration > 5000000
@@ -186,6 +210,10 @@ FROM sample_data
 
 `WHERE` supports several [operators](functions-operators/operators.md). For example, you can use [`LIKE`](functions-operators/operators.md#esql-like) to run a wildcard query against the `message` column:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | WHERE message LIKE "Connected*"
@@ -207,6 +235,10 @@ You can chain processing commands, separated by a pipe character: `|`. Each proc
 
 The following example first sorts the table on `@timestamp`, and next limits the result set to 3 rows:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | SORT @timestamp DESC
@@ -223,6 +255,10 @@ The order of processing commands is important. First limiting the result set to 
 
 Use the [`EVAL`](commands/eval.md) command to append columns to a table, with calculated values. For example, the following query appends a `duration_ms` column. The values in the column are computed by dividing `event_duration` by 1,000,000. In other words: `event_duration` converted from nanoseconds to milliseconds.
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | EVAL duration_ms = event_duration/1000000.0
@@ -230,6 +266,10 @@ FROM sample_data
 
 `EVAL` supports several [functions](commands/eval.md). For example, to round a number to the closest number with the specified number of digits, use the [`ROUND`](functions-operators/math-functions.md#esql-round) function:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | EVAL duration_ms = ROUND(event_duration/1000000.0, 1)
@@ -240,6 +280,10 @@ FROM sample_data
 
 {{esql}} can not only be used to query your data, you can also use it to aggregate your data. Use the [`STATS`](commands/stats-by.md) command to calculate statistics. For example, the median duration:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | STATS median_duration = MEDIAN(event_duration)
@@ -247,6 +291,10 @@ FROM sample_data
 
 You can calculate multiple stats with one command:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | STATS median_duration = MEDIAN(event_duration), max_duration = MAX(event_duration)
@@ -254,6 +302,10 @@ FROM sample_data
 
 Use `BY` to group calculated stats by one or more columns. For example, to calculate the median duration per client IP:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | STATS median_duration = MEDIAN(event_duration) BY client_ip
@@ -266,6 +318,10 @@ You can access columns by their name. If a name contains special characters, [it
 
 Assigning an explicit name to a column created by `EVAL` or `STATS` is optional. If you don’t provide a name, the new column name is equal to the function expression. For example:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | EVAL event_duration/1000000.0
@@ -273,6 +329,10 @@ FROM sample_data
 
 In this query, `EVAL` adds a new column named `event_duration/1000000.0`. Because its name contains special characters, to access this column, quote it with backticks:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | EVAL event_duration/1000000.0
@@ -286,6 +346,10 @@ To track statistics over time, {{esql}} enables you to create histograms using t
 
 Combine `BUCKET` with [`STATS`](commands/stats-by.md) to create a histogram. For example, to count the number of events per hour:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | STATS c = COUNT(*) BY bucket = BUCKET(@timestamp, 24, "2023-10-23T00:00:00Z", "2023-10-23T23:59:59Z")
@@ -293,6 +357,10 @@ FROM sample_data
 
 Or the median duration per hour:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | KEEP @timestamp, event_duration
@@ -362,6 +430,10 @@ On the demo environment at [ela.st/ql](https://ela.st/ql/), an enrich policy cal
 :::::::
 After creating and executing a policy, you can use it with the `ENRICH` command:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | KEEP @timestamp, client_ip, event_duration
@@ -371,6 +443,10 @@ FROM sample_data
 
 You can use the new `env` column that’s added by the `ENRICH` command in subsequent commands. For example, to calculate the median duration per environment:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | KEEP @timestamp, client_ip, event_duration
@@ -396,6 +472,10 @@ To structure unstructured strings at query time, you can use the {{esql}} [`DISS
 
 In this case, no regular expressions are needed, as the `message` is straightforward: "Connected to ", followed by the server IP. To match this string, you can use the following `DISSECT` command:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | DISSECT message "Connected to %{server_ip}"
@@ -405,6 +485,10 @@ This adds a `server_ip` column to those rows that have a `message` that matches 
 
 You can use the new `server_ip` column that’s added by the `DISSECT` command in subsequent commands. For example, to determine how many connections each server has accepted:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | WHERE STARTS_WITH(message, "Connected to")

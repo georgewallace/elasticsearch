@@ -16,6 +16,7 @@ example_order: 28
 --- !result
 
 --- !test
+stage: cooking_blog
 steps:
   - action:
       kind: EXAMPLE_CODE

@@ -12,6 +12,7 @@ example_order: 15
 --- !result
 
 --- !test
+stage: sample_data
 steps:
   - action:
       kind: EXAMPLE_CODE

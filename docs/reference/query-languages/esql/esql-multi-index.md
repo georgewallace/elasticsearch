@@ -13,6 +13,10 @@ products:
 
 With {{esql}}, you can execute a single query across multiple indices, data streams, or aliases. To do so, use wildcards and date arithmetic. The following example uses a comma-separated list and a wildcard:
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees-00001,other-employees-*
 ```

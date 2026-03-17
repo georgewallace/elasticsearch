@@ -108,6 +108,10 @@ To obtain constant values of different types, use one of the numeric [conversion
 * double slash `//` for single line comments
 * `/*` and `*/` for block comments
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 // Query the employees index
 FROM employees
@@ -119,6 +123,10 @@ FROM /* Query the employees index */ employees
 | WHERE height > 2
 ```
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees
 /* Query the

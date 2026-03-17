@@ -14,6 +14,10 @@ Often users will input `date`, `date_period`, `time_duration`, `ip` or `version`
 
 Without implicit casting users must explicitly code these `to_X` functions in their queries, when string literals don’t match the target data types they are assigned or compared to. Here is an example of using `to_datetime` to explicitly perform a data type conversion.
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees
 | EVAL dd_ns1=date_diff("day", to_datetime("2023-12-02T11:00:00.00Z"), birth_date)
@@ -29,6 +33,10 @@ Implicit casting automatically converts string literals to the target data type.
 
 The first query can be coded without calling the `to_datetime` function, as follows:
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees
 | EVAL dd_ns1=date_diff("day", "2023-12-02T11:00:00.00Z", birth_date)

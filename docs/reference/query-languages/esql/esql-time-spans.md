@@ -29,6 +29,10 @@ or the [cast operators](/reference/query-languages/esql/functions-operators/oper
 
 With `BUCKET`:
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees
 | WHERE hire_date >= "1985-01-01T00:00:00Z" AND hire_date < "1986-01-01T00:00:00Z"
@@ -47,6 +51,10 @@ FROM employees
 
 With `DATE_TRUNC`:
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees
 | KEEP first_name, last_name, hire_date
@@ -61,6 +69,10 @@ FROM employees
 
 With `+` and/or `-`:
 
+<!--
+--- !example
+stage: sample_data
+-->
 ```esql
 FROM sample_data
 | WHERE @timestamp > NOW() - 1 hour
@@ -71,6 +83,10 @@ FROM sample_data
 
 When a time span is provided as a named parameter in string format, `TO_DATEPERIOD`, `::DATE_PERIOD`, `TO_TIMEDURATION` or `::TIME_DURATION` can be used to convert to its corresponding time span value for arithmetic operations like `+` and/or `-`.
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 POST /_query
 {
@@ -84,6 +100,10 @@ POST /_query
 
 When a time span is provided as a named parameter in string format, it can be automatically converted to its corresponding time span value in grouping functions and scalar functions, like `BUCKET` and `DATE_TRUNC`.
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 POST /_query
 {
@@ -97,6 +117,10 @@ POST /_query
 }
 ```
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 POST /_query
 {

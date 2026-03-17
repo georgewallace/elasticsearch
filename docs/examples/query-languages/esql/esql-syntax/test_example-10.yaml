@@ -15,6 +15,7 @@ example_order: 10
 --- !result
 
 --- !test
+stage: employees
 steps:
   - action:
       kind: EXAMPLE_CODE

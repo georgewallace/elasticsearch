@@ -64,6 +64,10 @@ FROM ul_logs, apps METADATA _index, _version
 
 Similar to index fields, once an aggregation is performed, a metadata field will no longer be accessible to subsequent commands, unless used as a grouping field:
 
+<!--
+--- !example
+stage: employees
+-->
 ```esql
 FROM employees METADATA _index, _id
 | STATS max = MAX(emp_no) BY _index
