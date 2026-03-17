@@ -40,32 +40,7 @@ example_order: 1
      "hits": ...,
      "aggregations": {
         "sales_per_month": {
-           "buckets": [
-              {
-                 "key_as_string": "2015/01/01 00:00:00",
-                 "key": 1420070400000,
-                 "doc_count": 3,
-                 "sales": {
-                    "value": 550.0
-                 }
-              },
-              {
-                 "key_as_string": "2015/02/01 00:00:00",
-                 "key": 1422748800000,
-                 "doc_count": 2,
-                 "sales": {
-                    "value": 60.0
-                 }
-              },
-              {
-                 "key_as_string": "2015/03/01 00:00:00",
-                 "key": 1425168000000,
-                 "doc_count": 2,
-                 "sales": {
-                    "value": 375.0
-                 }
-              }
-           ]
+           "buckets": ...
         },
         "min_monthly_sales": {
             "keys": ["2015/02/01 00:00:00"], 

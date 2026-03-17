@@ -54,6 +54,7 @@ example_order: 2
     }
   }
 --- !test
+stage: twitter
 steps:
   - action:
       kind: EXAMPLE_CODE

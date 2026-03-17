@@ -28,10 +28,20 @@ example_order: 3
   {
     "bool": [true, false, true, false]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "bool": [false, false, true, true]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "bool": [false, false, true, true]
+    }
   }
 --- !test
 steps:

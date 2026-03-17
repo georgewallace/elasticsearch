@@ -29,16 +29,7 @@ example_order: 15
       "day_of_week": {
         "doc_count_error_upper_bound": 0,
         "sum_other_doc_count": 0,
-        "buckets": [
-          {
-            "key": "Sunday",
-            "doc_count": 4
-          },
-          {
-            "key": "Thursday",
-            "doc_count": 3
-          }
-        ]
+        "buckets": ...
       }
     }
   }

@@ -50,78 +50,7 @@ example_order: 3
           "month" : 1425168000000,
           "type" : "t-shirt"
         },
-        "buckets" : [
-          {
-            "key" : {
-              "month" : 1420070400000,
-              "type" : "bag"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 4.838709677419355
-            }
-          },
-          {
-            "key" : {
-              "month" : 1420070400000,
-              "type" : "hat"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 6.451612903225806
-            }
-          },
-          {
-            "key" : {
-              "month" : 1420070400000,
-              "type" : "t-shirt"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 6.451612903225806
-            }
-          },
-          {
-            "key" : {
-              "month" : 1422748800000,
-              "type" : "hat"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 1.7857142857142858
-            }
-          },
-          {
-            "key" : {
-              "month" : 1422748800000,
-              "type" : "t-shirt"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 0.35714285714285715
-            }
-          },
-          {
-            "key" : {
-              "month" : 1425168000000,
-              "type" : "hat"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 6.451612903225806
-            }
-          },
-          {
-            "key" : {
-              "month" : 1425168000000,
-              "type" : "t-shirt"
-            },
-            "doc_count" : 1,
-            "avg_price" : {
-              "value" : 5.645161290322581
-            }
-          }
-        ]
+        "buckets" : ...
       }
     }
   }

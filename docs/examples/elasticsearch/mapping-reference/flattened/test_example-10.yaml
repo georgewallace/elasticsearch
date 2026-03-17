@@ -30,11 +30,21 @@ example_order: 10
       "field": [ "foo" ]
     }
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "flattened": {
-      "field": "foo"
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "flattened": {
+        "field": "foo"
+      }
     }
   }
 --- !test

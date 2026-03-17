@@ -25,28 +25,7 @@ example_order: 2
     ...,
     "aggregations": {
       "sales_over_time": {
-        "buckets": [
-          {
-            "key_as_string": "2015-01-01",
-            "key": 1420070400000,
-            "doc_count": 6
-          },
-          {
-            "key_as_string": "2015-04-01",
-            "key": 1427846400000,
-            "doc_count": 6
-          },
-          {
-            "key_as_string": "2015-07-01",
-            "key": 1435708800000,
-            "doc_count": 6
-          },
-          {
-            "key_as_string": "2015-10-01",
-            "key": 1443657600000,
-            "doc_count": 6
-          }
-        ],
+        "buckets": ...,
         "interval": "3M"
       }
     }

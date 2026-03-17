@@ -28,10 +28,20 @@ example_order: 2
   {
     "long": [0, 0, -123466, 87612]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "long": [-123466, 0, 0, 87612]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "long": [-123466, 0, 0, 87612]
+    }
   }
 --- !test
 steps:

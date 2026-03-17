@@ -4,6 +4,13 @@ title: Default
 description: 
 
 setup:
-
+  - action:
+      kind: ELASTIC_CONSOLE_CODE
+      code: |
+        PUT /my-index-000001
 
 teardown:
+  - action:
+      kind: ELASTIC_CONSOLE_CODE
+      code: |
+        DELETE /my-index-000001?ignore_unavailable=true

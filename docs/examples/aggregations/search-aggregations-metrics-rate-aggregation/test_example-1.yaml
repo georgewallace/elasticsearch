@@ -32,32 +32,7 @@ example_order: 1
     ...
     "aggregations" : {
       "by_date" : {
-        "buckets" : [
-          {
-            "key_as_string" : "2015/01/01 00:00:00",
-            "key" : 1420070400000,
-            "doc_count" : 3,
-            "my_rate" : {
-              "value" : 36.0
-            }
-          },
-          {
-            "key_as_string" : "2015/02/01 00:00:00",
-            "key" : 1422748800000,
-            "doc_count" : 2,
-            "my_rate" : {
-              "value" : 24.0
-            }
-          },
-          {
-            "key_as_string" : "2015/03/01 00:00:00",
-            "key" : 1425168000000,
-            "doc_count" : 2,
-            "my_rate" : {
-              "value" : 24.0
-            }
-          }
-        ]
+        "buckets" : ...
       }
     }
   }

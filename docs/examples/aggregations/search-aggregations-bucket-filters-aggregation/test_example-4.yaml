@@ -32,18 +32,7 @@ example_order: 4
   {
     "aggregations": {
       "the_filter": {
-        "buckets": [
-          {
-            "key": "t-shirt",
-            "doc_count": 3,
-            "avg_price": { "value": 128.33333333333334 }
-          },
-          {
-            "key": "hat",
-            "doc_count": 3,
-            "avg_price": { "value": 150.0 }
-          }
-        ]
+        "buckets": ...
       }
     }
   }

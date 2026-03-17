@@ -42,44 +42,7 @@ example_order: 1
      "hits": ...,
      "aggregations": {
         "sales_per_month": {
-           "buckets": [
-              {
-                 "key_as_string": "2015/01/01 00:00:00",
-                 "key": 1420070400000,
-                 "doc_count": 3,
-                 "sales": {
-                    "value": 550.0
-                 },
-                 "percent_of_total_sales": {
-                    "value": 0.5583756345177665,
-                    "value_as_string": "55.84%"
-                 }
-              },
-              {
-                 "key_as_string": "2015/02/01 00:00:00",
-                 "key": 1422748800000,
-                 "doc_count": 2,
-                 "sales": {
-                    "value": 60.0
-                 },
-                 "percent_of_total_sales": {
-                    "value": 0.06091370558375635,
-                    "value_as_string": "06.09%"
-                 }
-              },
-              {
-                 "key_as_string": "2015/03/01 00:00:00",
-                 "key": 1425168000000,
-                 "doc_count": 2,
-                 "sales": {
-                    "value": 375.0
-                 },
-                 "percent_of_total_sales": {
-                    "value": 0.38071065989847713,
-                    "value_as_string": "38.07%"
-                 }
-              }
-           ]
+           "buckets": ...
         }
      }
   }

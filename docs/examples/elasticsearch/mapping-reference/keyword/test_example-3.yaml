@@ -28,10 +28,20 @@ example_order: 3
   {
     "kwd": ["foo", "foo", "bar", "baz"]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "kwd": ["foo", "foo", "bar", "baz"]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "kwd": ["foo", "foo", "bar", "baz"]
+    }
   }
 --- !test
 steps:

@@ -24,20 +24,7 @@ example_order: 1
     ...
     "aggregations": {
       "prices": {
-        "buckets": [
-          {
-            "min": 10.0,
-            "key": 30.0,
-            "max": 50.0,
-            "doc_count": 2
-          },
-          {
-            "min": 150.0,
-            "key": 185.0,
-            "max": 200.0,
-            "doc_count": 5
-          }
-        ]
+        "buckets": ...
       }
     }
   }

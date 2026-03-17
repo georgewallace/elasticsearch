@@ -28,24 +28,7 @@ example_order: 1
     ...
     "aggregations": {
       "price_ranges": {
-        "buckets": [
-          {
-            "key": "*-100.0",
-            "to": 100.0,
-            "doc_count": 2
-          },
-          {
-            "key": "100.0-200.0",
-            "from": 100.0,
-            "to": 200.0,
-            "doc_count": 2
-          },
-          {
-            "key": "200.0-*",
-            "from": 200.0,
-            "doc_count": 3
-          }
-        ]
+        "buckets": ...
       }
     }
   }

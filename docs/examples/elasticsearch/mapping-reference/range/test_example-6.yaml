@@ -46,23 +46,33 @@ example_order: 6
       }
     ]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "my_range": [
-      {
-          "gte": 1,
-          "lte": 100
-      },
-      {
-          "gte": 200,
-          "lte": 300
-      },
-      {
-          "gte": 200,
-          "lte": 500
-      }
-    ]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "my_range": [
+        {
+            "gte": 1,
+            "lte": 100
+        },
+        {
+            "gte": 200,
+            "lte": 300
+        },
+        {
+            "gte": 200,
+            "lte": 500
+        }
+      ]
+    }
   }
 --- !test
 steps:

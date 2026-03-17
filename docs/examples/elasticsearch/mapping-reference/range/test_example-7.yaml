@@ -35,14 +35,23 @@ example_order: 7
       }
     ]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "my_range": {
-        "gte": "10.0.0.0",
-        "lte": "10.0.0.255"
-      }
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
 
+      "my_range": {
+          "gte": "10.0.0.0",
+          "lte": "10.0.0.255"
+        }
+    }
   }
 --- !test
 steps:

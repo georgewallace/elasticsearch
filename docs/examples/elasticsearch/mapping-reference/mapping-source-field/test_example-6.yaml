@@ -18,17 +18,26 @@ example_order: 6
     },
     "ids": [ 200, 100, 300, 100 ]
   }
+  GET idx_keep/_doc/1
 --- !result
 |
   {
-    "path": {
-      "to": [
-        { "foo": [3, 2, 1] },
-        { "foo": [30, 20, 10] }
-      ],
-      "bar": "baz"
-    },
-    "ids": [ 200, 100, 300, 100 ]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+      "path": {
+        "to": [
+          { "foo": [3, 2, 1] },
+          { "foo": [30, 20, 10] }
+        ],
+        "bar": "baz"
+      },
+      "ids": [ 200, 100, 300, 100 ]
+    }
   }
 --- !test
 steps:

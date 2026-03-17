@@ -28,10 +28,20 @@ example_order: 2
   {
     "versions": ["8.0.0-beta1", "8.5.0", "0.90.12", "2.6.1", "1.3.4", "1.3.4"]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "versions": ["0.90.12", "1.3.4", "2.6.1", "8.0.0-beta1", "8.5.0"]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "versions": ["0.90.12", "1.3.4", "2.6.1", "8.0.0-beta1", "8.5.0"]
+    }
   }
 --- !test
 steps:

@@ -30,11 +30,21 @@ example_order: 8
       "field": [ "apple", "apple", "banana", "avocado", "10", "200", "AVOCADO", "Banana", "Tangerine" ]
     }
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "flattened": {
-      "field": [ "10", "200", "AVOCADO", "Banana", "Tangerine", "apple", "avocado", "banana" ]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "flattened": {
+        "field": [ "10", "200", "AVOCADO", "Banana", "Tangerine", "apple", "avocado", "banana" ]
+      }
     }
   }
 --- !test

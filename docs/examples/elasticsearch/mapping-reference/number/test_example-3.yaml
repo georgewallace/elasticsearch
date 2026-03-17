@@ -28,10 +28,20 @@ example_order: 3
   {
     "f": 123
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "f": 100.0
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "f": 100.0
+    }
   }
 --- !test
 steps:

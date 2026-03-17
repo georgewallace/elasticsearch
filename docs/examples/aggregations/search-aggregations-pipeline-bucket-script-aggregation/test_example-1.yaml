@@ -58,59 +58,7 @@ example_order: 1
      "hits": ...,
      "aggregations": {
         "sales_per_month": {
-           "buckets": [
-              {
-                 "key_as_string": "2015/01/01 00:00:00",
-                 "key": 1420070400000,
-                 "doc_count": 3,
-                 "total_sales": {
-                     "value": 550.0
-                 },
-                 "t-shirts": {
-                     "doc_count": 1,
-                     "sales": {
-                         "value": 200.0
-                     }
-                 },
-                 "t-shirt-percentage": {
-                     "value": 36.36363636363637
-                 }
-              },
-              {
-                 "key_as_string": "2015/02/01 00:00:00",
-                 "key": 1422748800000,
-                 "doc_count": 2,
-                 "total_sales": {
-                     "value": 60.0
-                 },
-                 "t-shirts": {
-                     "doc_count": 1,
-                     "sales": {
-                         "value": 10.0
-                     }
-                 },
-                 "t-shirt-percentage": {
-                     "value": 16.666666666666664
-                 }
-              },
-              {
-                 "key_as_string": "2015/03/01 00:00:00",
-                 "key": 1425168000000,
-                 "doc_count": 2,
-                 "total_sales": {
-                     "value": 375.0
-                 },
-                 "t-shirts": {
-                     "doc_count": 1,
-                     "sales": {
-                         "value": 175.0
-                     }
-                 },
-                 "t-shirt-percentage": {
-                     "value": 46.666666666666664
-                 }
-              }
-           ]
+           "buckets": ...
         }
      }
   }

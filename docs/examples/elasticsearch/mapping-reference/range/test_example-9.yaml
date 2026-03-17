@@ -31,12 +31,22 @@ example_order: 9
       "lte": 2147483647
     }
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "my_range": {
-      "gte": null,
-      "lte": null
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "my_range": {
+        "gte": null,
+        "lte": null
+      }
     }
   }
 --- !test

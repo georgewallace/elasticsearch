@@ -32,14 +32,24 @@ example_order: 4
       "jumped over the lazy dog"
     ]
   }
+  GET idx/_doc/1
 --- !result
 |
   {
-    "text": [
-      "the quick brown fox",
-      "the quick brown fox",
-      "jumped over the lazy dog"
-    ]
+    "_index": ...,
+    "_id": ...,
+    "_version": ...,
+    "_seq_no": ...,
+    "_primary_term": ...,
+    "found": true,
+    "_source": {
+
+      "text": [
+        "the quick brown fox",
+        "the quick brown fox",
+        "jumped over the lazy dog"
+      ]
+    }
   }
 --- !test
 steps:

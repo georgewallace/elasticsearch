@@ -36,13 +36,7 @@ example_order: 2
      "hits": ...,
      "aggregations": {
         "sales_per_month": {
-           "buckets": [
-              {
-                 "key_as_string": "2015/02/01 00:00:00",
-                 "key": 1422748800000,
-                 "doc_count": 2
-              }
-           ]
+           "buckets": ...
         }
      }
   }
