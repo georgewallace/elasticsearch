@@ -1,4 +1,4 @@
-# Source: search-aggregations-bucket-geohashgrid-aggregation.md
+# Source: aggregations/search-aggregations-bucket-geohashgrid-aggregation.md
 --- !metadata
 id: example-2
 language: elastic_console
