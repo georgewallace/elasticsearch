@@ -11,6 +11,7 @@ example_order: 2
 --- !result
 |
   {
+    ...
     "metadata" : {
       "indices" : {
         "my-index-000001": {"state": "open"}

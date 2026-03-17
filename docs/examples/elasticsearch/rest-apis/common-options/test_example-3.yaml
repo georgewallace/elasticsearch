@@ -11,6 +11,7 @@ example_order: 3
 --- !result
 |
   {
+    ...
     "routing_table": {
       "indices": {
         "my-index-000001": {

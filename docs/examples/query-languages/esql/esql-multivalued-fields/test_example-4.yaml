@@ -29,6 +29,7 @@ example_order: 4
 --- !result
 |
   {
+    ...
     "took": 28,
     "is_partial": false,
     "columns": [

@@ -33,12 +33,7 @@ example_order: 5
 --- !result
 |
   {
-    "_index": ...,
-    "_id": ...,
-    "_version": ...,
-    "_seq_no": ...,
-    "_primary_term": ...,
-    "found": true,
+    ...
     "_source": {
 
       "ip": ["::afff:4567:890a", "10.10.12.123", "192.168.0.1", "2001:db8::1:0:0:1"]

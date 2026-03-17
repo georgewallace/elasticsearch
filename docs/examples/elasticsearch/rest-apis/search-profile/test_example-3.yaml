@@ -43,6 +43,7 @@ example_order: 3
 --- !result
 |
   {
+    ...
     "profile": {
       "shards": [
         {

@@ -42,12 +42,7 @@ example_order: 6
 --- !result
 |
   {
-    "_index": ...,
-    "_id": ...,
-    "_version": ...,
-    "_seq_no": ...,
-    "_primary_term": ...,
-    "found": true,
+    ...
     "_source": {
 
       "agg_metric": {

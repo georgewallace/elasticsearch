@@ -32,12 +32,7 @@ example_order: 2
 --- !result
 |
   {
-    "_index": ...,
-    "_id": ...,
-    "_version": ...,
-    "_seq_no": ...,
-    "_primary_term": ...,
-    "found": true,
+    ...
     "_source": {
 
       "long": [-123466, 0, 0, 87612]

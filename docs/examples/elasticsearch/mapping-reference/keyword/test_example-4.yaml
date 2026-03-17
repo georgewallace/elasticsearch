@@ -32,12 +32,7 @@ example_order: 4
 --- !result
 |
   {
-    "_index": ...,
-    "_id": ...,
-    "_version": ...,
-    "_seq_no": ...,
-    "_primary_term": ...,
-    "found": true,
+    ...
     "_source": {
 
       "kwd": ["bar", "baz", "foo", "bang"]

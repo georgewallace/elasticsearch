@@ -27,6 +27,7 @@ example_order: 12
     "aggregations": {
       "sales_over_time": {
         "buckets": {
+          ...
           "2015-01-01": {
             "key_as_string": "2015-01-01",
             "key": 1420070400000,

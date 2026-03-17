@@ -38,12 +38,7 @@ example_order: 9
 --- !result
 |
   {
-    "_index": ...,
-    "_id": ...,
-    "_version": ...,
-    "_seq_no": ...,
-    "_primary_term": ...,
-    "found": true,
+    ...
     "_source": {
 
       "flattened": {
