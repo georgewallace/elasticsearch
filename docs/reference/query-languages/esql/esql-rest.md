@@ -19,6 +19,10 @@ The [Search and filter with {{esql}}](/reference/query-languages/esql/esql-searc
 
 The [`_query` API](https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-esql) accepts an {{esql}} query string in the `query` parameter, runs it, and returns the results. For example:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query?format=txt
 {
@@ -47,6 +51,10 @@ We recommend using [Console](docs-content://explore-analyze/query-filter/tools/c
 
 When creating the query, using triple quotes (`"""`) allows you to use special characters like quotes (`"`) without having to escape them. They also make it easier to write multi-line requests.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query?format=txt
 {
@@ -66,6 +74,10 @@ POST /_query?format=txt
 
 For example:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query?format=yaml
 {
@@ -121,6 +133,10 @@ Compact binary encoding. To be used by applications.
 
 Specify a Query DSL query in the `filter` parameter to filter the set of documents that an {{esql}} query runs on.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query?format=txt
 {
@@ -193,6 +209,10 @@ POST /_query?format=txt
 
 By default, {{esql}} returns results as rows. For example, `FROM` returns each individual document as one row. For the `json`, `yaml`, `cbor` and `smile` [formats](#esql-rest-format), {{esql}} can return the results in a columnar fashion where one row represents all the values of a certain column in the results.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query?format=json
 {
@@ -237,6 +257,10 @@ Syntax: the `locale` parameter accepts language tags in the (case-insensitive) f
 
 For example, to return a month name in French:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -256,6 +280,10 @@ POST /_query
 
 Values, for example for a condition, can be passed to a query "inline", by integrating the value in the query string itself:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -273,6 +301,10 @@ POST /_query
 
 To avoid any attempts of hacking or code injection, extract the values in a separate list of parameters. Use question mark placeholders (`?`) in the query string for each of the parameters:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -293,6 +325,10 @@ The parameters can be named parameters or positional parameters.
 
 Named parameters use question mark placeholders (`?`) followed by a string.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -311,6 +347,10 @@ POST /_query
 
 Positional parameters use question mark placeholders (`?`) followed by an integer.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -335,6 +375,10 @@ Executing an {{esql}} query is commonly quite fast, however queries across large
 
 Queries initiated by the async query API may return results or not. The `wait_for_completion_timeout` property determines how long to wait for the results. If the results are not available by this time, a [query id](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-esql-async-query#esql-async-query-api-response-body-query-id) is returned which can be later used to retrieve the results. For example:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query/async
 {

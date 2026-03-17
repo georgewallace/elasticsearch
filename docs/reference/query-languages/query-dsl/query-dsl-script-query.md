@@ -21,6 +21,10 @@ Using scripts can result in slower search speeds. See [Scripts, caching, and sea
 
 ## Example request [script-query-ex-request]
 
+<!--
+--- !example
+stage: ledger
+-->
 ```console
 GET /_search
 {
@@ -46,6 +50,10 @@ GET /_search
 
 You can achieve the same results in a search query by using runtime fields. Use the [`fields`](/reference/elasticsearch/rest-apis/retrieve-selected-fields.md) parameter on the `_search` API to fetch values as part of the same query:
 
+<!--
+--- !example
+stage: ledger
+-->
 ```console
 GET /_search
 {

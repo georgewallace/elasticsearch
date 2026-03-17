@@ -42,6 +42,10 @@ params.max + params.base_cost > 10
 
 Note that the values are extracted from the `params` map. The script is in the form of an expression that returns `true` or `false`. In context, the aggregation looks like this:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET /seats/_search
 {

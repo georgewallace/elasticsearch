@@ -135,6 +135,10 @@ Once the security model is configured, you can add remote clusters.
 
 The following [cluster update settings](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cluster-put-settings) API request adds three remote clusters: `cluster_one`, `cluster_two`, and `cluster_three`.
 
+<!--
+--- !example
+stage: host
+-->
 ```console
 PUT _cluster/settings
 {
@@ -202,6 +206,10 @@ FROM *:my-index-000001
 
 Using the `"include_ccs_metadata": true` option, users can request that ES|QL {{ccs}} responses include metadata about the search on each cluster (when the response format is JSON). Here we show an example using the async search endpoint. {{ccs-cap}} metadata is also present in the synchronous search endpoint response when requested. If the search returns partial results and there are partial shard or remote cluster failures, `_clusters` metadata containing the failures will be included in the response regardless of the `include_ccs_metadata` parameter.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST /_query/async?format=json
 {

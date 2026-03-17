@@ -35,6 +35,10 @@ $$$moving-percentiles-params$$$
 
 `moving_percentiles` aggregations must be embedded inside of a `histogram` or `date_histogram` aggregation. They can be embedded like any other metric aggregation:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {

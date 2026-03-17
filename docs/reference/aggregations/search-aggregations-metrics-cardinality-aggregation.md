@@ -11,6 +11,10 @@ A `single-value` metrics aggregation that calculates an approximate count of dis
 
 Assume you are indexing store sales and would like to count the unique number of sold products that match a query:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -43,6 +47,10 @@ Response:
 
 This aggregation also supports the `precision_threshold` option:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -100,6 +108,10 @@ Pre-computing hashes is usually only useful on very large and/or high-cardinalit
 
 If you need the cardinality of the combination of two fields, create a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) combining them and aggregate it.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -125,6 +137,10 @@ POST /sales/_search?size=0
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

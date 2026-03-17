@@ -37,6 +37,11 @@ To disable stop words for phrases a field utilising three analyzer settings will
 2. A `search_analyzer` setting for non-phrase queries that will remove stop words
 3. A `search_quote_analyzer` setting for phrase queries that will not remove stop words
 
+<!--
+--- !example
+topic: analyzer
+subtopic: _default
+-->
 ```console
 PUT my-index-000001
 {

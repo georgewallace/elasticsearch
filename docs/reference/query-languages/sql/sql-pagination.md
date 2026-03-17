@@ -12,6 +12,10 @@ products:
 
 Using the example from the [previous section](sql-rest-format.md), one can continue to the next page by sending back the cursor field. In the case of CSV, TSV and TXT formats, the cursor is returned in the `Cursor` HTTP header.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=json
 {

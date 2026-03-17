@@ -24,6 +24,10 @@ For the most up-to-date API details, refer to [Search APIs](https://www.elastic.
 
 Any `_search` request can be profiled by adding a top-level `profile` parameter:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {
@@ -473,6 +477,10 @@ The rewriting process is complex and difficult to display, since queries can cha
 
 To demonstrate a slightly more complex query and the associated results, we can profile the following query:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {

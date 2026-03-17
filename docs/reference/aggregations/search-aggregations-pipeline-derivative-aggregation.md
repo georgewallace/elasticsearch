@@ -33,6 +33,10 @@ $$$derivative-params$$$
 
 The following snippet calculates the derivative of the total monthly `sales`:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -124,6 +128,10 @@ And the following may be the response:
 
 A second order derivative can be calculated by chaining the derivative pipeline aggregation onto the result of another derivative pipeline aggregation as in the following example which will calculate both the first and the second order derivative of the total monthly sales:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -221,6 +229,10 @@ And the following may be the response:
 
 The derivative aggregation allows the units of the derivative values to be specified. This returns an extra field in the response `normalized_value` which reports the derivative value in the desired x-axis units. In the below example we calculate the derivative of the total sales per month but ask for the derivative of the sales as in the units of sales per day:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

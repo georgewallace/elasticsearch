@@ -50,6 +50,10 @@ The standard [Painless API](https://www.elastic.co/guide/en/elasticsearch/painle
 
 To run the examples, first follow the steps in [context examples](/reference/scripting-languages/painless/painless-context-examples.md).
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {
@@ -105,6 +109,10 @@ POST _watcher/watch/_execute
 
 The following action condition script controls execution of the my_log action based on the value of the seats sold for the plays in the data set. The script aggregates the total sold seats for each play and returns true if there is at least one play that has sold over $10,000.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {

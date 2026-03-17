@@ -13,6 +13,10 @@ Example:
 
 $$$ip-range-example$$$
 
+<!--
+--- !example
+stage: iprange
+-->
 ```console
 GET /ip_addresses/_search
 {
@@ -62,6 +66,10 @@ IP ranges can also be defined as CIDR masks:
 
 $$$ip-range-cidr-example$$$
 
+<!--
+--- !example
+stage: iprange
+-->
 ```console
 GET /ip_addresses/_search
 {
@@ -115,6 +123,10 @@ Setting the `keyed` flag to `true` will associate a unique string key with each 
 
 $$$ip-range-keyed-example$$$
 
+<!--
+--- !example
+stage: iprange
+-->
 ```console
 GET /ip_addresses/_search
 {
@@ -163,6 +175,10 @@ It is also possible to customize the key for each range:
 
 $$$ip-range-keyed-customized-keys-example$$$
 
+<!--
+--- !example
+stage: iprange
+-->
 ```console
 GET /ip_addresses/_search
 {

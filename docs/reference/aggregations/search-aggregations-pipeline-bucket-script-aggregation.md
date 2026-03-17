@@ -40,6 +40,10 @@ $$$bucket-script-params$$$
 
 The following snippet calculates the ratio percentage of t-shirt sales compared to total sales each month:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

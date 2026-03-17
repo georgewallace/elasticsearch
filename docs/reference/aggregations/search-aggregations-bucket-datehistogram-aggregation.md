@@ -57,6 +57,10 @@ As an example, here is an aggregation requesting bucket intervals of a month in 
 
 $$$datehistogram-aggregation-calendar-interval-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -76,6 +80,10 @@ If you attempt to use multiples of calendar units, the aggregation will fail bec
 
 $$$datehistogram-aggregation-calendar-interval-multiples-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -140,6 +148,10 @@ If we try to recreate the "month" `calendar_interval` from earlier, we can appro
 
 $$$datehistogram-aggregation-fixed-interval-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -159,6 +171,10 @@ But if we try to use a calendar unit that is not supported, such as weeks, we’
 
 $$$datehistogram-aggregation-fixed-interval-unsupported-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -227,6 +243,10 @@ If you don’t specify `format`, the first date [format](/reference/elasticsearc
 
 $$$datehistogram-aggregation-format-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -533,6 +553,10 @@ Setting the `keyed` flag to `true` associates a unique string key with each buck
 
 $$$datehistogram-aggregation-keyed-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -586,6 +610,10 @@ If the data in your documents doesn’t exactly match what you’d like to aggre
 
 $$$datehistogram-aggregation-runtime-field$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -623,6 +651,10 @@ The `missing` parameter defines how to treat documents that are missing a value.
 
 $$$datehistogram-aggregation-missing-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -654,6 +686,10 @@ When you need to aggregate the results by day of the week, run a `terms` aggrega
 
 $$$datehistogram-aggregation-day-of-week-runtime-field$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

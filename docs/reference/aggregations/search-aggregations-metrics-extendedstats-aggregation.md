@@ -13,6 +13,10 @@ The `extended_stats` aggregations is an extended version of the [`stats`](/refer
 
 Assuming the data consists of documents representing exams grades (between 0 and 100) of students
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 GET /exams/_search
 {
@@ -66,6 +70,10 @@ The name of the aggregation (`grades_stats` above) also serves as the key by whi
 
 By default, the `extended_stats` metric will return an object called `std_deviation_bounds`, which provides an interval of plus/minus two standard deviations from the mean. This can be a useful way to visualize variance of your data. If you want a different boundary, for example three standard deviations, you can set `sigma` in the request:
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 GET /exams/_search
 {
@@ -102,6 +110,10 @@ The standard deviation and its bounds are displayed by default, but they are not
 
 If you need to aggregate on a value that isn’t indexed, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). Say the we found out that the grades we’ve been working on were for an exam that was above the level of the students and we want to "correct" it:
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 GET /exams/_search
 {
@@ -131,6 +143,10 @@ GET /exams/_search
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 GET /exams/_search
 {

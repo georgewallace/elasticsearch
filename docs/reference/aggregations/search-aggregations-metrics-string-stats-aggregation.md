@@ -19,6 +19,10 @@ The string stats aggregation returns the following results:
 
 For example:
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST /my-index-000001/_search?size=0
 {
@@ -54,6 +58,10 @@ The name of the aggregation (`message_stats` above) also serves as the key by wh
 
 The computation of the Shannon Entropy value is based on the probability of each character appearing in all terms collected by the aggregation. To view the probability distribution for all characters, we can add the `show_distribution` (default: `false`) parameter.
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST /my-index-000001/_search?size=0
 {
@@ -121,6 +129,10 @@ The `distribution` object shows the probability of each character appearing in a
 
 If you need to get the `string_stats` for something more complex than a single field, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST /my-index-000001/_search
 {
@@ -147,6 +159,10 @@ POST /my-index-000001/_search
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST /my-index-000001/_search?size=0
 {

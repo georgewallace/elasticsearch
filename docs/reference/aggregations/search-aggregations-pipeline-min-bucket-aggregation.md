@@ -32,6 +32,10 @@ $$$min-bucket-params$$$
 
 The following snippet calculates the minimum of the total monthly `sales`:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

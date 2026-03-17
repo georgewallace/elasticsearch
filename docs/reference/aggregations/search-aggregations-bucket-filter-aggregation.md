@@ -13,6 +13,10 @@ Example:
 
 $$$filter-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {
@@ -53,6 +57,10 @@ For example, use this:
 
 $$$filter-aggregation-top-good$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {
@@ -68,6 +76,10 @@ Instead of this:
 
 $$$filter-aggregation-top-bad$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {
@@ -91,6 +103,10 @@ For example, use this:
 
 $$$filter-aggregation-many-good$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {
@@ -115,6 +131,10 @@ Instead of this:
 
 $$$filter-aggregation-many-bad$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {

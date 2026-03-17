@@ -21,6 +21,10 @@ Assume your data consists of website load times. You may have a service agreemen
 
 Let’s look at a range of percentiles representing load time:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -66,6 +70,10 @@ From this information you can determine you are hitting the 99% load time target
 
 By default the `keyed` flag is set to `true` associates a unique string key with each bucket and returns the ranges as a hash rather than an array. Setting the `keyed` flag to `false` will disable this behavior:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -113,6 +121,10 @@ Response:
 
 If you need to run the aggregation against values that aren’t indexed, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if our load times are in milliseconds but we want percentiles calculated in seconds:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -147,6 +159,10 @@ GET latency/_search
 
 The HDR Histogram can be used by specifying the `hdr` object in the request:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -177,6 +193,10 @@ The HDRHistogram only supports positive values and will error if it is passed a 
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {

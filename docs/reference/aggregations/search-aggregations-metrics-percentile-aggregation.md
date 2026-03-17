@@ -19,6 +19,10 @@ Assume your data consists of website load times. The average and median load tim
 
 Let’s look at a range of percentiles representing load time:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -71,6 +75,10 @@ As you can see, the aggregation will return a calculated value for each percenti
 
 Often, administrators are only interested in outliers — the extreme percentiles. We can specify just the percents we are interested in (requested percentiles must be a value between 0-100 inclusive):
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -94,6 +102,10 @@ GET latency/_search
 
 By default the `keyed` flag is set to `true` which associates a unique string key with each bucket and returns the ranges as a hash rather than an array. Setting the `keyed` flag to `false` will disable this behavior:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -165,6 +177,10 @@ Response:
 
 If you need to run the aggregation against values that aren’t indexed, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if our load times are in milliseconds but you want percentiles calculated in seconds:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -222,6 +238,10 @@ Percentile aggregations are also [non-deterministic](https://en.wikipedia.org/wi
 
 Approximate algorithms must balance memory utilization with estimation accuracy. This balance can be controlled using a `compression` parameter:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -254,6 +274,10 @@ A "node" uses roughly 32 bytes of memory, so under worst-case scenarios (large a
 
 The default implementation of TDigest is optimized for performance, scaling to millions or even billions of sample values while maintaining acceptable accuracy levels (close to 1% relative error for millions of samples in some cases). There’s an option to use an implementation optimized for accuracy by setting parameter `execution_hint` to value `high_accuracy`:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -284,6 +308,10 @@ This option can lead to improved accuracy (relative error close to 0.01% for mil
 
 The HDR Histogram can be used by specifying the `hdr` parameter in the request:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -314,6 +342,10 @@ The HDRHistogram only supports positive values and will error if it is passed a 
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {

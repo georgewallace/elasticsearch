@@ -16,6 +16,10 @@ The `min` and `max` aggregation operate on the `double` representation of the da
 
 Computing the max price value across all documents
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -46,6 +50,10 @@ As can be seen, the name of the aggregation (`max_price` above) also serves as t
 
 If you need to get the `max` of something more complex than a single field, run an aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -76,6 +84,10 @@ POST /sales/_search
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

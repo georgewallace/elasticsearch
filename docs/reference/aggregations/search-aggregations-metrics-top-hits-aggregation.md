@@ -50,6 +50,10 @@ If you **only** need `docvalue_fields`, `size`, and `sort` then [Top metrics](/r
 
 In the following example we group the sales by type and per type we show the last sale. For each sale only the date and price fields are being included in the source.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -191,6 +195,10 @@ In the example below we search across crawled webpages. For each webpage we stor
 
 Also a `max` aggregator is defined which is used by the `terms` aggregator’s order feature to return the buckets by relevancy order of the most relevant document in a bucket.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -400,6 +408,10 @@ In the example below a nested hit resides in the first slot of the field `nested
 
 `top_hits` can be used in pipeline aggregations that consume a single value per bucket, such as `bucket_selector` that applies per bucket filtering, similar to using a HAVING clause in SQL. This requires setting `size` to 1, and specifying the right path for the value to be passed to the wrapping aggregator. The latter can be a `_source`, a `_sort` or a `_score` value. For example:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

@@ -151,6 +151,10 @@ Valid value types are strings, numbers and booleans.
 
 An example using [match](/reference/query-languages/esql/functions-operators/search-functions.md#esql-match):
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {
@@ -165,6 +169,10 @@ FROM library
 
 You can also use [query parameters](/reference/query-languages/esql/esql-rest.md#esql-rest-params) in function named parameters:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_query
 {

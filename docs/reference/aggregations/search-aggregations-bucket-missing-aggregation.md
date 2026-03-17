@@ -13,6 +13,10 @@ Example:
 
 $$$missing-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

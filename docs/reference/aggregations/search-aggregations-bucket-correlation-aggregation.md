@@ -71,6 +71,10 @@ The following snippet correlates the individual terms in the field `version` wit
 
 This example is only using the 10s percentiles.
 
+<!--
+--- !example
+stage: correlate_latency
+-->
 ```console
 POST correlate_latency/_search?size=0&filter_path=aggregations
 {

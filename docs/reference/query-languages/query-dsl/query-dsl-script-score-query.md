@@ -578,6 +578,10 @@ For `bit` vectors, this is just the square root of the sum of `1` bits.
 
 For example, the script below implements a cosine similarity using these two functions:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET my-index-000001/_search
 {

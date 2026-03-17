@@ -40,6 +40,10 @@ This example takes the values from a min and max aggregation, calculates the dif
 
 Note that the values are extracted from the `params` map. In context, the aggregation looks like this:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET /seats/_search
 {

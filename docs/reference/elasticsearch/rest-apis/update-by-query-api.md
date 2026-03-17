@@ -25,6 +25,10 @@ The simplest usage of `_update_by_query` just performs an update on every docume
 
 To update selected documents, specify a query in the request body:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST my-index-000001/_update_by_query?conflicts=proceed
 {
@@ -52,6 +56,10 @@ POST my-index-000001,my-index-000002/_update_by_query
 
 Limit the update by query operation to shards that a particular routing value:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST my-index-000001/_update_by_query?routing=1
 ```
@@ -61,6 +69,10 @@ POST my-index-000001/_update_by_query?routing=1
 
 By default update by query uses scroll batches of 1000. You can change the batch size with the `scroll_size` parameter:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST my-index-000001/_update_by_query?scroll_size=100
 ```
@@ -70,6 +82,10 @@ POST my-index-000001/_update_by_query?scroll_size=100
 
 Update a document using a unique attribute:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST my-index-000001/_update_by_query
 {
@@ -134,6 +150,10 @@ This API only enables you to modify the source of matching documents, you cannot
 
 Update by query can use the [ingest pipelines](docs-content://manage-data/ingest/transform-enrich/ingest-pipelines.md) feature by specifying a `pipeline`:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 PUT _ingest/pipeline/set-foo
 {
@@ -239,6 +259,10 @@ Just like when setting it on the `_update_by_query` API, `requests_per_second` c
 
 Slice an update by query manually by providing a slice id and total number of slices to each request:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST my-index-000001/_update_by_query
 {
@@ -288,6 +312,10 @@ Which results in a sensible `total` like this one:
 
 You can also let update by query automatically parallelize using [slice-scroll](paginate-search-results.md#slice-scroll) to slice on `_id`. Use `slices` to specify the number of slices to use:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST my-index-000001/_update_by_query?refresh&slices=5
 {

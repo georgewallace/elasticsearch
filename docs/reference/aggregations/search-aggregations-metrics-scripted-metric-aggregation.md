@@ -26,6 +26,10 @@ Using scripts can result in slower search speeds. See [Scripts, caching, and sea
 
 Example:
 
+<!--
+--- !example
+stage: ledger
+-->
 ```console
 POST ledger/_search?size=0
 {
@@ -69,6 +73,10 @@ The response for the above aggregation:
 
 The above example can also be specified using stored scripts as follows:
 
+<!--
+--- !example
+stage: ledger,stored_scripted_metric_script
+-->
 ```console
 POST ledger/_search?size=0
 {

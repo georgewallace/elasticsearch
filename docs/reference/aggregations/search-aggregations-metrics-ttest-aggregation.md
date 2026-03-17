@@ -26,6 +26,10 @@ A `t_test` aggregation looks like this in isolation:
 
 Assuming that we have a record of node start up times before and after upgrade, let’s look at a t-test to see if upgrade affected the node start up time in a meaningful way.
 
+<!--
+--- !example
+stage: node_upgrade
+-->
 ```console
 GET node_upgrade/_search
 {
@@ -85,6 +89,10 @@ The `t_test` aggregation supports unpaired and paired two-sample t-tests. The ty
 
 It is also possible to run unpaired t-test on different sets of records using filters. For example, if we want to test the difference of startup times before upgrade between two different groups of nodes, we use the same field `startup_time_before` by separate groups of nodes using terms filters on the group name field:
 
+<!--
+--- !example
+stage: node_upgrade
+-->
 ```console
 GET node_upgrade/_search
 {
@@ -146,6 +154,10 @@ Populations don’t have to be in the same index. If data sets are located in di
 
 If you need to run the `t_test` on values that aren’t represented cleanly by a field you should, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if you want to adjust out load times for the before values:
 
+<!--
+--- !example
+stage: node_upgrade
+-->
 ```console
 GET node_upgrade/_search
 {

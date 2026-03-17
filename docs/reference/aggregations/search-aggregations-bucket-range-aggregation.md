@@ -13,6 +13,10 @@ Example:
 
 $$$range-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -70,6 +74,10 @@ Setting the `keyed` flag to `true` will associate a unique string key with each 
 
 $$$range-aggregation-keyed-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -123,6 +131,10 @@ It is also possible to customize the key for each range:
 
 $$$range-aggregation-custom-keys-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -178,6 +190,10 @@ If the data in your documents doesn’t exactly match what you’d like to aggre
 
 $$$range-aggregation-runtime-field-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -217,6 +233,10 @@ The following example, not only "bucket" the documents to the different buckets 
 
 $$$range-aggregation-sub-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {

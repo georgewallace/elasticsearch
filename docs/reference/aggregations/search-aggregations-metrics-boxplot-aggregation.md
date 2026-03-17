@@ -26,6 +26,10 @@ A `boxplot` aggregation looks like this in isolation:
 
 Let’s look at a boxplot representing load time:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -72,6 +76,10 @@ In this case, the lower and upper whisker values are equal to the min and max. I
 
 If you need to create a boxplot for values that aren’t indexed exactly you should create a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) and get the boxplot of that. For example, if your load times are in milliseconds but you want values calculated in seconds, use a runtime field to convert them:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -113,6 +121,10 @@ Boxplot as other percentile aggregations are also [non-deterministic](https://en
 
 Approximate algorithms must balance memory utilization with estimation accuracy. This balance can be controlled using a `compression` parameter:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -143,6 +155,10 @@ A "node" uses roughly 32 bytes of memory, so under worst-case scenarios (large a
 
 The default implementation of TDigest is optimized for performance, scaling to millions or even billions of sample values while maintaining acceptable accuracy levels (close to 1% relative error for millions of samples in some cases). There’s an option to use an implementation optimized for accuracy by setting parameter `execution_hint` to value `high_accuracy`:
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {
@@ -169,6 +185,10 @@ This option can lead to improved accuracy (relative error close to 0.01% for mil
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: latency
+-->
 ```console
 GET latency/_search
 {

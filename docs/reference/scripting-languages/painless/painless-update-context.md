@@ -58,6 +58,10 @@ To run this example, first follow the steps in [context examples](/reference/scr
 
 The following query updates a document to be sold, and sets the cost to the actual price paid after discounts:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST /seats/_update/3
 {

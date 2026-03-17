@@ -28,6 +28,10 @@ We might want to see which tags are strongly associated with `#elasticsearch` on
 
 $$$diversified-sampler-aggregation-example$$$
 
+<!--
+--- !example
+stage: stackoverflow
+-->
 ```console
 POST /stackoverflow/_search?size=0
 {
@@ -93,6 +97,10 @@ In this scenario we might want to diversify on a combination of field values. We
 
 $$$diversified-sampler-aggregation-runtime-field-example$$$
 
+<!--
+--- !example
+stage: stackoverflow
+-->
 ```console
 POST /stackoverflow/_search?size=0
 {

@@ -35,6 +35,10 @@ $$$extended-stats-bucket-params$$$
 
 The following snippet calculates the extended stats for monthly `sales` bucket:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

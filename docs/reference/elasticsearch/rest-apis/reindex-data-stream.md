@@ -81,6 +81,10 @@ Start by calling the API:
 
 $$$reindex-data-stream-start$$$
 
+<!--
+--- !example
+stage: my_data_stream
+-->
 ```console
 POST _migration/reindex
 {

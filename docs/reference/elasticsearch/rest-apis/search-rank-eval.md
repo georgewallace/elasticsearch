@@ -179,6 +179,10 @@ P@k works well as a simple evaluation metric that has the benefit of being easy 
 Documents in the collection need to be rated as either relevant or irrelevant with respect to the current query.
 P@k is a set-based metric and does not take into account the position of the relevant documents within the top k results, so a ranking of ten results that contains one relevant result in position 10 is equally as good as a ranking of ten results that contains one relevant result in position 1.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_rank_eval
 {
@@ -220,6 +224,10 @@ R@k works well as a simple evaluation metric that has the benefit of being easy 
 Documents in the collection need to be rated as either relevant or irrelevant with respect to the current query. 
 R@k is a set-based metric and does not take into account the position of the relevant documents within the top k results, so a ranking of ten results that contains one relevant result in position 10 is equally as good as a ranking of ten results that contains one relevant result in position 1.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_rank_eval
 {
@@ -254,6 +262,10 @@ For every query in the test suite, this metric calculates the reciprocal of the 
 For example, finding the first relevant result in position 3 means the reciprocal rank is 1/3.
 The reciprocal rank for each query is averaged across all queries in the test suite to give the [mean reciprocal rank](https://en.wikipedia.org/wiki/Mean_reciprocal_rank).
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_rank_eval
 {
@@ -289,6 +301,10 @@ In contrast to the two metrics above, [discounted cumulative gain](https://en.wi
 The assumption is that highly relevant documents are more useful for the user when appearing at the top of the result list.
 Therefore, the DCG formula reduces the contribution that high ratings for documents on lower search ranks have on the overall DCG metric.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_rank_eval
 {
@@ -330,6 +346,10 @@ However, the same document will contribute much less to the score if it appears 
 In this way, the ERR metric discounts documents that are shown after very relevant documents.
 This introduces a notion of dependency in the ordering of relevant documents that, for example, precision or DCG don't account for.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_rank_eval
 {

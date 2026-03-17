@@ -437,6 +437,10 @@ status:(active OR pending) title:(full text search)^2
 
 If you need to use any of the characters which function as operators in your query itself (and not as operators), then you should escape them with a leading backslash. For instance, to search for `(1+1)=2`, you would need to write your query as `\(1\+1\)\=2`. When using JSON for the request body, two preceding backslashes (`\\`) are required; the backslash is a reserved escaping character in JSON strings.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {

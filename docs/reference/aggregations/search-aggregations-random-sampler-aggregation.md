@@ -21,6 +21,10 @@ This aggregation is not to be confused with the [sampler aggregation](/reference
 ::::
 
 
+<!--
+--- !example
+stage: kibana_sample_data_ecommerce
+-->
 ```console
 GET kibana_sample_data_ecommerce/_search?size=0&track_total_hits=false
 {

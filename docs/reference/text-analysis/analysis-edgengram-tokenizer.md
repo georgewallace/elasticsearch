@@ -132,6 +132,10 @@ Below is an example of how to set up a field for *search-as-you-type*.
 
 Note that the `max_gram` value for the index analyzer is `10`, which limits indexed terms to 10 characters. Search terms are not truncated, meaning that search terms longer than 10 characters may not match any indexed terms.
 
+<!--
+--- !example
+skip: true
+-->
 ```console
 PUT my-index-000001
 {

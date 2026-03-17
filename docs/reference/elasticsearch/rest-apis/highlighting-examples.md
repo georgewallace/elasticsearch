@@ -25,6 +25,10 @@ This page provides practical examples of how to configure highlighting in {{es}}
 
 You can specify highlighter settings globally and selectively override them for individual fields.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -49,6 +53,10 @@ GET /_search
 
 You can specify a `highlight_query` to take additional information into account when highlighting. For example, the following query includes both the search query and rescore query in the `highlight_query`. Without the `highlight_query`, highlighting would only take the search query into account.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -112,6 +120,10 @@ GET /_search
 
 The `type` field allows to force a specific highlighter type. The allowed values are: `unified`, `plain` and `fvh`. The following is an example that forces the use of the plain highlighter:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -131,6 +143,10 @@ GET /_search
 
 By default, the highlighting will wrap highlighted text in `<em>` and `</em>`. This can be controlled by setting `pre_tags` and `post_tags`, for example:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -150,6 +166,10 @@ GET /_search
 
 When using the fast vector highlighter, you can specify additional tags and the "importance" is ordered.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -169,6 +189,10 @@ GET /_search
 
 You can also use the built-in `styled` tag schema:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -189,6 +213,10 @@ GET /_search
 
 By default, only fields that contains a query match are highlighted. Set `require_field_match` to `false` to highlight all fields.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -651,6 +679,10 @@ Technically it is also fine to add fields to `matched_fields` that don’t share
 
 Elasticsearch highlights the fields in the order that they are sent, but per the JSON spec, objects are unordered. If you need to be explicit about the order in which fields are highlighted specify the `fields` as an array:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -671,6 +703,10 @@ None of the highlighters built into Elasticsearch care about the order that the 
 
 Each field highlighted can control the size of the highlighted fragment in characters (defaults to `100`), and the maximum number of fragments to return (defaults to `5`). For example:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -688,6 +724,10 @@ GET /_search
 
 On top of this it is possible to specify that highlighted fragments need to be sorted by score:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -706,6 +746,10 @@ GET /_search
 
 If the `number_of_fragments` value is set to `0` then no fragments are produced, instead the whole content of the field is returned, and of course it is highlighted. This can be very handy if short texts (like document title or address) need to be highlighted but no fragmentation is required. Note that `fragment_size` is ignored in this case.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -726,6 +770,10 @@ When using `fvh` one can use `fragment_offset` parameter to control the margin t
 
 In the case where there is no matching fragment to highlight, the default is to not return anything. Instead, we can return a snippet of text from the beginning of the field by setting `no_match_size` (default `0`) to the length of the text that you want returned. The actual length may be shorter or longer than specified as it tries to break on a word boundary.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -784,6 +832,10 @@ PUT /example
 
 When using the `plain` highlighter, you can choose between the `simple` and `span` fragmenters:
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 GET my-index-000001/_search
 {
@@ -837,6 +889,10 @@ Response:
 ```
 %  TESTRESPONSE[s/\.\.\./"took": $body.took,"timed_out": false,"_shards": $body._shards,/]
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 GET my-index-000001/_search
 {

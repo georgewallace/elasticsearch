@@ -16,6 +16,10 @@ The number of buckets returned will always be less than or equal to the target n
 
 Requesting a target of 2 buckets.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

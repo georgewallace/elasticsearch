@@ -11,6 +11,10 @@ A `single-value` metrics aggregation that sums up numeric values that are extrac
 
 Assuming the data consists of documents representing sales records we can sum the sale price of all hats with:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -48,6 +52,10 @@ The name of the aggregation (`hat_prices` above) also serves as the key by which
 
 If you need to get the `sum` for something more complex than a single field, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -86,6 +94,10 @@ POST /sales/_search?size=0
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default documents missing the value will be ignored but it is also possible to treat them as if they had a value. For example, this treats all hat sales without a price as being `100`.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

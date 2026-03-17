@@ -14,6 +14,10 @@ By default, SQL searches are synchronous. They wait for complete results before 
 
 To avoid long waits, run an async SQL search. Set `wait_for_completion_timeout` to a duration you’d like to wait for synchronous results.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST _sql?format=json
 {
@@ -78,6 +82,10 @@ GET _sql/async/FnR0TDhyWUVmUmVtWXRWZER4MXZiNFEad2F5UDk2ZVdTVHV1S0xDUy00SklUdzozM
 
 By default, {{es}} stores async SQL searches for five days. After this period, {{es}} deletes the search and its results, even if the search is still running. To change this retention period, use the `keep_alive` parameter.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST _sql?format=json
 {

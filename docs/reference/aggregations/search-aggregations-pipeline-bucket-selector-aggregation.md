@@ -44,6 +44,10 @@ $$$bucket-selector-params$$$
 
 The following snippet only retains buckets where the total sales for the month is more than 200:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

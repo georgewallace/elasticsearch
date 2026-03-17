@@ -95,6 +95,10 @@ Re-analyzing *large* result sets will require a lot of time and memory. This agg
 
 Example:
 
+<!--
+--- !example
+stage: categorize_text
+-->
 ```console
 POST log-messages/_search?filter_path=aggregations
 {
@@ -148,6 +152,10 @@ Response:
 
 Here is an example using `categorization_filters`
 
+<!--
+--- !example
+stage: categorize_text
+-->
 ```console
 POST log-messages/_search?filter_path=aggregations
 {
@@ -205,6 +213,10 @@ Note how the `foo_<number>` tokens are not part of the category results
 
 Here is an example using `categorization_filters`. The default analyzer uses the `ml_standard` tokenizer which is similar to a whitespace tokenizer but filters out tokens that could be interpreted as hexadecimal numbers. The default analyzer also uses the `first_line_with_letters` character filter, so that only the first meaningful line of multi-line messages is considered. But, it may be that a token is a known highly-variable token (formatted usernames, emails, etc.). In that case, it is good to supply custom `categorization_filters` to filter out those tokens for better categories. These filters may also reduce memory usage as fewer tokens are held in memory for the categories. (If there are sufficient examples of different usernames, emails, etc., then categories will form that naturally discard them as variables, but for small input data where only one example exists this won’t happen.)
 
+<!--
+--- !example
+stage: categorize_text
+-->
 ```console
 POST log-messages/_search?filter_path=aggregations
 {
@@ -252,6 +264,10 @@ The resulting categories are now very broad, merging the log groups. (A `similar
 
 This aggregation can have both sub-aggregations and itself be a sub-aggregation. This allows gathering the top daily categories and the top sample doc as below.
 
+<!--
+--- !example
+stage: categorize_text
+-->
 ```console
 POST log-messages/_search?filter_path=aggregations
 {

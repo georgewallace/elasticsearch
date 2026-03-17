@@ -21,6 +21,10 @@ The following snippet "buckets" the products based on their `price` by interval 
 
 $$$histogram-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -77,6 +81,10 @@ The response above show that no documents has a price that falls within the rang
 
 $$$histogram-aggregation-min-doc-count-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -139,6 +147,10 @@ Example:
 
 $$$histogram-aggregation-extended-bounds-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -170,6 +182,10 @@ Example:
 
 $$$histogram-aggregation-hard-bounds-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -213,6 +229,10 @@ By default, the buckets are returned as an ordered array. It is also possible to
 
 $$$histogram-aggregation-keyed-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -270,6 +290,10 @@ The `missing` parameter defines how documents that are missing a value should be
 
 $$$histogram-aggregation-missing-value-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

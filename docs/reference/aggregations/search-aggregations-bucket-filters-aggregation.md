@@ -204,6 +204,10 @@ Example:
 
 $$$filters-aggregation-sortable-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0&filter_path=aggregations
 {

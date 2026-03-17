@@ -137,6 +137,10 @@ GET twitter/_search
 
 Repeat this process by updating the `search_after` array every time you retrieve a new page of results. If a [refresh](docs-content://manage-data/data-store/near-real-time-search.md) occurs between these requests, the order of your results may change, causing inconsistent results across pages. To prevent this, you can create a [point in time (PIT)](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-open-point-in-time) to preserve the current index state over your searches.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST /my-index-000001/_pit?keep_alive=1m
 ```
@@ -330,6 +334,10 @@ The results that are returned from a scroll request reflect the state of the dat
 
 In order to use scrolling, the initial search request should specify the `scroll` parameter in the query string, which tells Elasticsearch how long it should keep the search context alive (see [Keeping the search context alive](#scroll-search-context)), eg `?scroll=1m`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST /my-index-000001/_search?scroll=1m
 {
@@ -376,6 +384,10 @@ Scroll requests have optimizations that make them faster when the sort order is 
 ::::
 
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search?scroll=1m
 {
@@ -456,6 +468,10 @@ DELETE /_search/scroll/DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAAD4WYm9laVYtZndUQlNsdDcwakFMN
 
 When paging through a large number of documents, it can be helpful to split the search into multiple slices to consume them independently:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 GET /my-index-000001/_search?scroll=1m
 {
@@ -507,6 +523,10 @@ Another way to avoid this high cost is to use the `doc_values` of another field 
 * The value for each document should be set once when the document is created and never updated. This ensures that each slice gets deterministic results.
 * The cardinality of the field should be high. This ensures that each slice gets approximately the same amount of documents.
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 GET /my-index-000001/_search?scroll=1m
 {

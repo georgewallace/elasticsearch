@@ -15,6 +15,10 @@ For the most up-to-date details, refer to [Search APIs](https://www.elastic.co/d
 
 Several suggestions can be specified per request. Each suggestion is identified with an arbitrary name. In the example below two suggestions are requested. Both `my-suggest-1` and `my-suggest-2` suggestions use the `term` suggester, but have a different `text`.
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST _search
 {
@@ -1131,6 +1135,10 @@ Sometimes you need to know the exact type of a suggester in order to parse its r
 
 Considering the following example with two suggesters `term` and `phrase`:
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST _search?typed_keys
 {

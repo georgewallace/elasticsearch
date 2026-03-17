@@ -19,6 +19,10 @@ Assume our data represents product reviews on a one to five star scale. Such rev
 
 In this example we have a product which has an average rating of 3 stars. Let’s look at its ratings' median absolute deviation to determine how much they vary
 
+<!--
+--- !example
+stage: reviews
+-->
 ```console
 GET reviews/_search
 {
@@ -65,6 +69,10 @@ The naive implementation of calculating median absolute deviation stores the ent
 
 The tradeoff between resource usage and accuracy of a TDigest’s quantile approximation, and therefore the accuracy of this aggregation’s approximation of median absolute deviation, is controlled by the `compression` parameter. A higher `compression` setting provides a more accurate approximation at the cost of higher memory usage. For more about the characteristics of the TDigest `compression` parameter see [Compression](/reference/aggregations/search-aggregations-metrics-percentile-aggregation.md#search-aggregations-metrics-percentile-aggregation-compression).
 
+<!--
+--- !example
+stage: reviews
+-->
 ```console
 GET reviews/_search
 {
@@ -88,6 +96,10 @@ The default `compression` value for this aggregation is `1000`. At this compress
 
 In the example above, product reviews are on a scale of one to five. If you want to modify them to a scale of one to ten, use a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: reviews
+-->
 ```console
 GET reviews/_search?filter_path=aggregations
 {
@@ -141,6 +153,10 @@ The `missing` parameter defines how documents that are missing a value should be
 
 Let’s be optimistic and assume some reviewers loved the product so much that they forgot to give it a rating. We’ll assign them five stars
 
+<!--
+--- !example
+stage: reviews
+-->
 ```console
 GET reviews/_search
 {

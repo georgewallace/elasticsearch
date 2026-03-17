@@ -13,6 +13,10 @@ Example:
 
 $$$daterange-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -76,6 +80,10 @@ The `missing` parameter defines how documents that are missing a value should be
 
 $$$daterange-aggregation-missing-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -206,6 +214,10 @@ The `time_zone` parameter is also applied to rounding in date math expressions. 
 
 $$$daterange-aggregation-timezone-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -237,6 +249,10 @@ Setting the `keyed` flag to `true` will associate a unique string key with each 
 
 $$$daterange-aggregation-keyed-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -286,6 +302,10 @@ It is also possible to customize the key for each range:
 
 $$$daterange-aggregation-keyed-multiple-keys-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

@@ -38,6 +38,10 @@ doc['sold'].value == false && doc['cost'].value < 25
 
 Defining `cost` as a script parameter enables the cost to be configured in the script query request. For example, the following request finds all available theatre seats for evening performances that are under $25.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET seats/_search
 {

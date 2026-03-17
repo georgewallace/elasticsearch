@@ -30,6 +30,10 @@ A `rate` aggregation looks like this in isolation:
 
 The following request will group all sales records into monthly buckets and then convert the number of sales transactions in each bucket into per annual sales rate.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -98,6 +102,10 @@ The response will return the annual rate of transactions in each bucket. Since t
 
 Instead of counting the number of documents, it is also possible to calculate a sum of all values of the fields in the documents in each bucket or the number of values in each bucket. The following request will group all sales records into monthly bucket and than calculate the total monthly sales and convert them into average daily sales.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -168,6 +176,10 @@ The response will contain the average daily sale prices for each month.
 
 You can also take advantage of `composite` aggregations to calculate the average daily sale price for each item in your inventory
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search?filter_path=aggregations&size=0
 {
@@ -302,6 +314,10 @@ The response will contain the average daily sale prices for each month per item.
 
 By adding the `mode` parameter with the value `value_count`, we can change the calculation from `sum` to the number of values of the field:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {
@@ -416,6 +432,10 @@ There is also an additional limitations if the date histogram is not a direct pa
 
 If you need to run the aggregation against values that aren’t indexed, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md). For example, if we need to adjust our prices before calculating rates:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET sales/_search
 {

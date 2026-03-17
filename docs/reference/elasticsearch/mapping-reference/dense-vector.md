@@ -561,6 +561,10 @@ PUT my-index-000001
 
 Changing the `type` to `int4_hnsw` makes sure vectors indexed after the change will use an int4 scalar quantized representation and HNSW (e.g., for KNN queries). That includes new segments created by [merging](/reference/elasticsearch/index-settings/merge.md) previously created segments.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 PUT /my-index-000001/_mapping
 {

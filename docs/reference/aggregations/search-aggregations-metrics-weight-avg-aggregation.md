@@ -43,6 +43,10 @@ $$$weight-params$$$
 
 If our documents have a `"grade"` field that holds a 0-100 numeric score, and a `"weight"` field which holds an arbitrary numeric weight, we can calculate the weighted average using:
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search
 {
@@ -189,6 +193,10 @@ Which should look like:
 
 By default, the aggregation excludes documents with a missing or `null` value for the `value` or `weight` field. Use the `missing` parameter to specify a default value for these documents instead.
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search
 {

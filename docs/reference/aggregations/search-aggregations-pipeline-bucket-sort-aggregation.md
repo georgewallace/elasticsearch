@@ -47,6 +47,10 @@ $$$bucket-sort-params$$$
 
 The following snippet returns the buckets corresponding to the 3 months with the highest total sales in descending order:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -132,6 +136,10 @@ It is also possible to use this aggregation in order to truncate the result buck
 
 The following example simply truncates the result so that only the second bucket is returned:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

@@ -12,6 +12,10 @@ products:
 
 You can filter the results that SQL will run on using a standard {{es}} Query DSL by specifying the query in the filter parameter.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {
@@ -42,6 +46,10 @@ Douglas Adams  |The Hitchhiker's Guide to the Galaxy|180            |1979-10-12T
 ::::{tip}
 A useful and less obvious usage for standard Query DSL filtering is to search documents by a specific [routing key](elasticsearch://reference/elasticsearch/rest-apis/search-shard-routing.md#search-routing). Because Elasticsearch SQL does not support a `routing` parameter, one can specify a [`terms` filter for the `_routing` field](elasticsearch://reference/elasticsearch/mapping-reference/mapping-routing-field.md) instead:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {

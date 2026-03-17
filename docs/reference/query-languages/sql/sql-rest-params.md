@@ -12,6 +12,10 @@ products:
 
 Using values in a query condition, for example, or in a `HAVING` statement can be done "inline", by integrating the value in the query string itself:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {
@@ -22,6 +26,10 @@ POST /_sql?format=txt
 
 or it can be done by extracting the values in a separate list of parameters and using question mark placeholders (`?`) in the query string:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {

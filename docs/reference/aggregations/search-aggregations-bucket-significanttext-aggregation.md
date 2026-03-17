@@ -31,6 +31,10 @@ Example:
 
 $$$significanttext-aggregation-example$$$
 
+<!--
+--- !example
+stage: news
+-->
 ```console
 GET news/_search
 {
@@ -132,6 +136,10 @@ The uncleansed documents have thrown up some odd-looking terms that are, on the 
 
 $$$significanttext-aggregation-pozmantier-example$$$
 
+<!--
+--- !example
+stage: news
+-->
 ```console
 GET news/_search
 {
@@ -198,6 +206,10 @@ Fortunately similar documents tend to rank similarly so as part of examining the
 
 $$$significanttext-aggregation-filter-duplicate-text-example$$$
 
+<!--
+--- !example
+stage: news
+-->
 ```console
 GET news/_search
 {
@@ -353,6 +365,10 @@ The default source of statistical information for background term frequencies is
 
 $$$significanttext-aggregation-custom-background-example$$$
 
+<!--
+--- !example
+stage: news
+-->
 ```console
 GET news/_search
 {
@@ -389,6 +405,10 @@ Ordinarily the indexed field name and the original JSON field being retrieved sh
 
 $$$significanttext-aggregation-mappings-example$$$
 
+<!--
+--- !example
+stage: news
+-->
 ```console
 GET news/_search
 {

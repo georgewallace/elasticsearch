@@ -12,6 +12,10 @@ products:
 
 The SQL Translate API accepts SQL in a JSON document and translates it into native {{es}} queries. For example:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql/translate
 {

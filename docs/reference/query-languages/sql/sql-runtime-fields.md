@@ -14,6 +14,10 @@ Use the `runtime_mappings` parameter to extract and create [runtime fields](docs
 
 The following search creates a `release_day_of_week` runtime field from `release_date` and returns it in the response.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST _sql?format=txt
 {

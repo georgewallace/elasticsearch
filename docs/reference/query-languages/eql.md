@@ -49,6 +49,10 @@ DELETE /_index_template/*
 
 Use the [EQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-eql-search) to run a [basic EQL query](/reference/query-languages/eql/eql-syntax.md#eql-basic-syntax).
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -120,6 +124,10 @@ By default, basic EQL queries return the 10 most recent matching events in the `
 
 Use the `size` parameter to get a smaller or larger set of hits:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -135,6 +143,10 @@ GET /my-data-stream/_eql/search
 
 Use EQL’s [sequence syntax](/reference/query-languages/eql/eql-syntax.md#eql-sequences) to search for a series of ordered events. List the event items in ascending chronological order, with the most recent event listed last:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -210,6 +222,10 @@ The response’s `hits.sequences` property contains the 10 most recent matching 
 
 Use [`with maxspan`](/reference/query-languages/eql/eql-syntax.md#eql-with-maxspan-keywords) to constrain matching sequences to a timespan:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -224,6 +240,10 @@ GET /my-data-stream/_eql/search
 
 Use `!` to match [missing events](/reference/query-languages/eql/eql-syntax.md#eql-missing-events): events in a sequence that do not meet a condition within a given timespan:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -305,6 +325,10 @@ Missing events are indicated in the response as `missing": true`:
 
 Use the [`by` keyword](/reference/query-languages/eql/eql-syntax.md#eql-by-keyword) to match events that share the same field values:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -319,6 +343,10 @@ GET /my-data-stream/_eql/search
 
 If a field value should be shared across all events, use the `sequence by` keyword. The following query is equivalent to the previous one.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -354,6 +382,10 @@ The `hits.sequences.join_keys` property contains the shared field values.
 
 Use the [`until` keyword](/reference/query-languages/eql/eql-syntax.md#eql-until-keyword) to specify an expiration event for sequences. Matching sequences must end before this event.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -911,6 +943,10 @@ By default, each hit in the search response includes the document `_source`, whi
 
 You can use the [`filter_path`](/reference/elasticsearch/rest-apis/common-options.md#common-options-response-filtering) query parameter to filter the API response. For example, the following search returns only the timestamp and PID from the `_source` of each matching event.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search?filter_path=hits.events._source.@timestamp,hits.events._source.process.pid
 {
@@ -961,6 +997,10 @@ Because it consults the index mappings, the `fields` parameter provides several 
 
 The following search request uses the `fields` parameter to retrieve values for the `event.type` field, all fields starting with `process.`, and the `@timestamp` field. The request also uses the `filter_path` query parameter to exclude the `_source` of each hit.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search?filter_path=-hits.events._source
 {
@@ -1039,6 +1079,10 @@ Use the `runtime_mappings` parameter to extract and create [runtime fields](docs
 
 The following search creates a `day_of_week` runtime field from the `@timestamp` and returns it in the response.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search?filter_path=-hits.events._source
 {
@@ -1095,6 +1139,10 @@ The API returns:
 
 The EQL search API uses the `@timestamp` and `event.category` fields from the [ECS](ecs://reference/index.md) by default. To specify different fields, use the `timestamp_field` and `event_category_field` parameters:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1118,6 +1166,10 @@ If you don’t specify a tiebreaker field or the events also share the same tieb
 
 To specify a tiebreaker field, use the `tiebreaker_field` parameter. If you use the [ECS](ecs://reference/index.md), we recommend using `event.sequence` as the tiebreaker field.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1134,6 +1186,10 @@ GET /my-data-stream/_eql/search
 
 The `filter` parameter uses [Query DSL](/reference/query-languages/querydsl.md) to limit the documents on which an EQL query runs.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1159,6 +1215,10 @@ By default, EQL search requests are synchronous and wait for complete results be
 
 To avoid long waits, run an async EQL search. Set `wait_for_completion_timeout` to a duration you’d like to wait for synchronous results.
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1241,6 +1301,10 @@ GET /_eql/search/status/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FS
 
 By default, the EQL search API stores async searches for five days. After this period, any searches and their results are deleted. Use the `keep_alive` parameter to change this retention period:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1272,6 +1336,10 @@ DELETE /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERn
 
 By default, the EQL search API only stores async searches. To save a synchronous search, set `keep_on_completion` to `true`:
 
+<!--
+--- !example
+stage: sec_logs
+-->
 ```console
 GET /my-data-stream/_eql/search
 {
@@ -1325,6 +1393,10 @@ The EQL search API supports [cross-cluster search](docs-content://explore-analyz
 
 The following [cluster update settings](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-cluster-put-settings) request adds two remote clusters: `cluster_one` and `cluster_two`.
 
+<!--
+--- !example
+stage: host
+-->
 ```console
 PUT /_cluster/settings
 {

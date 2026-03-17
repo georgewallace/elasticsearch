@@ -45,6 +45,10 @@ Math.min(params['num_terms'], params['min_actors_to_see'])
 
 The following request finds seats to performances with at least two of the three specified actors.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET seats/_search
 {

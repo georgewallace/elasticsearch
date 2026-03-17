@@ -37,6 +37,10 @@ Here are some examples for the human readable formats:
 
 ## CSV [_csv]
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=csv
 {
@@ -60,6 +64,10 @@ James S.A. Corey,Leviathan Wakes,561,2011-06-02T00:00:00.000Z
 
 or:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=csv&delimiter=%3b
 {
@@ -83,6 +91,10 @@ James S.A. Corey;Leviathan Wakes;561;2011-06-02T00:00:00.000Z
 
 ## JSON [_json]
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=json
 {
@@ -116,6 +128,10 @@ Which returns:
 
 ## TSV [_tsv]
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=tsv
 {
@@ -140,6 +156,10 @@ James S.A. Corey	Leviathan Wakes	561	2011-06-02T00:00:00.000Z
 
 ## TXT [_txt]
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {
@@ -165,6 +185,10 @@ James S.A. Corey |Leviathan Wakes     |561            |2011-06-02T00:00:00.000Z
 
 ## YAML [_yaml]
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=yaml
 {

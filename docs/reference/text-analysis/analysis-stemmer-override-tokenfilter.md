@@ -18,6 +18,11 @@ Rules are mappings in the form of `token1[, ..., tokenN] => override`.
 
 Here is an example:
 
+<!--
+--- !example
+topic: analysis-stemmer-override-tokenfilter
+subtopic: _rules-path
+-->
 ```console
 PUT /my-index-000001
 {
@@ -50,6 +55,11 @@ stemmer => stemmer
 
 You can also define the overrides rules inline:
 
+<!--
+--- !example
+topic: analysis-stemmer-override-tokenfilter
+subtopic: _inline-rules
+-->
 ```console
 PUT /my-index-000001
 {

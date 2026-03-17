@@ -13,6 +13,10 @@ To use `function_score`, the user has to define a query and one or more function
 
 `function_score` can be used with only one function like this:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -33,6 +37,10 @@ GET /_search
 
 Furthermore, several functions can be combined. In this case one can optionally choose to apply the function only if a document matches a given filtering query
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -138,6 +146,10 @@ The `function_score` query provides several types of score functions.
 
 The `script_score` function allows you to wrap another query and customize the scoring of it optionally with a computation derived from other numeric field values in the doc using a script expression. Here is a simple sample:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -171,6 +183,10 @@ On top of the different scripting field values and expression, the `_score` scri
 
 Scripts compilation is cached for faster execution. If the script has parameters that it needs to take into account, it is preferable to reuse the same script, and provide parameters to it:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -218,6 +234,10 @@ It was possible to set a seed without setting a field, but this has been depreca
 ::::
 
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -240,6 +260,10 @@ The `field_value_factor` function allows you to use a field from a document to i
 
 As an example, imagine you have a document indexed with a numeric `my-int` field and wish to influence the score of a document with this field, an example doing so would look like:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {
@@ -323,6 +347,10 @@ To use distance scoring on a query that has numerical fields, the user has to de
 
 In the above example, the field is a [`geo_point`](/reference/elasticsearch/mapping-reference/geo-point.md) and origin can be provided in geo format. `scale` and `offset` must be given with a unit in this case. If your field is a date field, you can set `scale` and `offset` as days, weeks, and so on. Example:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {

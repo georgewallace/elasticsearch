@@ -52,6 +52,10 @@ doc['actors'].size()  <1>
 
 The following request returns the calculated day of week and the number of actors that appear in each play:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET seats/_search
 {

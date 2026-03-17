@@ -12,6 +12,10 @@ products:
 
 The [SQL search API](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-sql-query) accepts SQL in a JSON document, executes it, and returns the results. For example:
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=txt
 {

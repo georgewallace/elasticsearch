@@ -51,6 +51,10 @@ The following snippet runs the `bucket_count_ks_test` on the individual terms in
 
 This example is only using the deciles of `latency`.
 
+<!--
+--- !example
+stage: correlate_latency
+-->
 ```console
 POST correlate_latency/_search?size=0&filter_path=aggregations
 {

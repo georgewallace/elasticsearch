@@ -55,6 +55,10 @@ To run this example, first follow the steps in [context examples](/reference/scr
 
 The following query finds all seats in a specific section that have not been sold and lowers the price by 2:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST /seats/_update_by_query
 {

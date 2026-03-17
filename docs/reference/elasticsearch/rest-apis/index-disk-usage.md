@@ -15,6 +15,10 @@ The `_disk_usage` API analyzes how much disk space each field in an index or dat
 
 The following request analyzes the disk usage of the index `my-index-000001`:
 
+<!--
+--- !example
+stage: messages
+-->
 ```console
 POST /my-index-000001/_disk_usage?run_expensive_tasks=true
 ```

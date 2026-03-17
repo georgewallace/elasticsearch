@@ -19,6 +19,10 @@ Highlighting requires the actual content of a field. If the field is not stored 
 
 For example, to get highlights for the `content` field in each search hit using the default highlighter, include a `highlight` object in the request body that specifies the `content` field:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {

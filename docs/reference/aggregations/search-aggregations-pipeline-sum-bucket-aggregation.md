@@ -32,6 +32,10 @@ $$$sum-bucket-params$$$
 
 The following snippet calculates the sum of all the total monthly `sales` buckets:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

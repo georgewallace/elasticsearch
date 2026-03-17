@@ -18,6 +18,10 @@ Example:
 
 $$$global-aggregation-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {

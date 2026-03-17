@@ -45,6 +45,10 @@ A sibling pipeline aggregation which calculates the mean value of a specified me
 
 The following `avg_monthly_sales` aggregation uses `avg_bucket` to calculate average sales per month:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST _search
 {

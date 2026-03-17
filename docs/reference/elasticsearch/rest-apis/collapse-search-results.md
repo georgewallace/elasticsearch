@@ -12,6 +12,10 @@ You can use the `collapse` parameter to collapse search results based on field v
 
 For example, the following search collapses results by `user.id` and sorts them by `http.response.bytes`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET my-index-000001/_search
 {
@@ -57,6 +61,10 @@ Collapsing is applied to the top hits only and does not affect aggregations.
 
 It is also possible to expand each collapsed top hits with the [`inner hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) option.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {
@@ -96,6 +104,10 @@ See [inner hits](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) for 
 
 It is also possible to request multiple [`inner hits`](/reference/elasticsearch/rest-apis/retrieve-inner-hits.md) for each collapsed hit. This can be useful when you want to get multiple representations of the collapsed hits.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {
@@ -157,6 +169,10 @@ The `max_concurrent_group_searches` request parameter can be used to control the
 
 Field collapsing can be used with the [`search_after`](/reference/elasticsearch/rest-apis/paginate-search-results.md#search-after) parameter. Using `search_after` is only supported when sorting and collapsing on the same field. Secondary sorts are also not allowed. For example, we can collapse and sort on `user.id`, while paging through the results using `search_after`:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {
@@ -178,6 +194,10 @@ GET /my-index-000001/_search
 
 You can use field collapsing alongside the [`rescore`](/reference/elasticsearch/rest-apis/rescore-search-results.md#rescore) search parameter. Rescorers run on every shard for the top-ranked document per collapsed field. To maintain a reliable order, it is recommended to cluster documents sharing the same collapse field value on one shard. This is achieved by assigning the collapse field value as the [routing key](/reference/elasticsearch/rest-apis/search-shard-routing.md#search-routing) during indexing:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST /my-index-000001/_doc?routing=xyz      <1>
 {
@@ -195,6 +215,10 @@ By doing this, you guarantee that only one top document per collapse key gets re
 
 The following request utilizes field collapsing on the `user.id` field and then rescores the top groups with a [query rescorer](/reference/elasticsearch/rest-apis/rescore-search-results.md#query-rescorer):
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search
 {

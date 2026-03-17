@@ -35,6 +35,10 @@ To run this example, first follow the steps in [context examples](/reference/scr
 
 The following query finds all unsold seats, with lower *row* values scored higher.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 GET /seats/_search
 {

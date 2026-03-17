@@ -16,6 +16,10 @@ To search multiple data streams and indices, add them as comma-separated values 
 
 The following request searches the `my-index-000001` and `my-index-000002` indices.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001,my-index-000002/_search
 {
@@ -33,6 +37,10 @@ You can also search multiple data streams and indices using an index pattern.
 
 The following request targets the `my-index-*` index pattern. The request searches any data streams or indices in the cluster that start with `my-index-`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-*/_search
 {
@@ -47,6 +55,10 @@ GET /my-index-*/_search
 
 You can exclude specific indices from a search. The request will retrieve data from all indices starting with `my-index-`, except for `my-index-01`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-*/_search
 {
@@ -76,6 +88,10 @@ To search all data streams and indices in a cluster, omit the target from the re
 
 The following requests are equivalent and search all data streams and indices in the cluster.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {

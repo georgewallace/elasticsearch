@@ -85,6 +85,11 @@ Using a replacement string that changes the length of the original text will wor
 
 This example inserts a space whenever it encounters a lower-case letter followed by an upper-case letter (i.e. `fooBarBaz` → `foo Bar Baz`), allowing camelCase words to be queried individually:
 
+<!--
+--- !example
+subtopic: topic_2
+skip: true
+-->
 ```console
 PUT my-index-000001
 {
@@ -135,6 +140,11 @@ The above returns the following terms:
 
 Querying for `bar` will find the document correctly, but highlighting on the result will produce incorrect highlights, because our character filter changed the length of the original text:
 
+<!--
+--- !example
+subtopic: topic_2
+skip: true
+-->
 ```console
 PUT my-index-000001/_doc/1?refresh
 {
@@ -162,7 +172,7 @@ The output from the above is:
 ```console-result
 {
   "timed_out": false,
-  "took": $body.took,
+  "took": 11.2,
   "_shards": {
     "total": 1,
     "successful": 1,
@@ -193,7 +203,7 @@ The output from the above is:
   }
 }
 ```
-% TESTRESPONSE[s/"took".*/"took": "$body.took",/]
+% TESTRESPONSE[s/"took"./*"took": "$body.took",/]
 
 1. Note the incorrect highlight.
 

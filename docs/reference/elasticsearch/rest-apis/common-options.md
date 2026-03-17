@@ -76,6 +76,10 @@ Assuming `now` is `2001-01-01 12:00:00`, some examples are:
 
 All REST APIs accept a `filter_path` parameter that can be used to reduce the response returned by Elasticsearch. This parameter takes a comma separated list of filters expressed with the dot notation:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search?q=kimchy&filter_path=took,hits.hits._id,hits.hits._score
 ```
@@ -143,6 +147,10 @@ Responds:
 
 It is also possible to exclude one or more fields by prefixing the filter with the char `-`:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_count?filter_path=-_shards
 ```
@@ -208,6 +216,10 @@ GET /_search?filter_path=hits.hits._source&_source=title&sort=rating:desc
 
 The `flat_settings` flag affects rendering of the lists of settings. When the `flat_settings` flag is `true`, settings are returned in a flat format:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET my-index-000001/_settings?flat_settings=true
 ```
@@ -236,6 +248,10 @@ Returns:
 
 When the `flat_settings` flag is `false`, settings are returned in a more human readable structured format:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET my-index-000001/_settings?flat_settings=false
 ```

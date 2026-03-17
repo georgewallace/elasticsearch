@@ -50,6 +50,10 @@ The standard [Painless API](https://www.elastic.co/guide/en/elasticsearch/painle
 
 To run the examples, first follow the steps in [context examples](/reference/scripting-languages/painless/painless-context-examples.md).
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {
@@ -117,6 +121,10 @@ POST _watcher/watch/_execute
 
 The following action transform changes each value in the mod_log action into a `String`. This transform does not change the values in the unmod_log action.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {
@@ -180,6 +188,10 @@ This example uses the streaming API in a very similar manner. The differences be
 
 The following example shows scripted watch and action transforms within the context of a complete watch. This watch also uses a scripted [condition](/reference/scripting-languages/painless/painless-watcher-condition-context.md).
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {
@@ -289,6 +301,10 @@ POST _watcher/watch/_execute
 
 The following example shows the use of metadata and transforming dates into a readable format.
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 POST _watcher/watch/_execute
 {

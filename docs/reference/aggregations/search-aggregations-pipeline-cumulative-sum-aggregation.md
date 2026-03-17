@@ -31,6 +31,10 @@ $$$cumulative-sum-params$$$
 
 The following snippet calculates the cumulative sum of the total monthly `sales`:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

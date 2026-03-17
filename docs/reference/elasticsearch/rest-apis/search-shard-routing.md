@@ -29,6 +29,10 @@ To limit the set of nodes and shards eligible for a search request, use the sear
 
 For example, the following request searches `my-index-000001` with a `preference` of `_local`. This restricts the search to shards on the local node. If the local node contains no shard copies of the index’s data, the request uses adaptive replica selection to another eligible node as a fallback.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search?preference=_local
 {
@@ -52,6 +56,10 @@ You can use this option to serve cached results for frequently used and resource
 
 The following request searches `my-index-000001` with a `preference` string of `my-custom-shard-string`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search?preference=my-custom-shard-string
 {
@@ -76,6 +84,10 @@ When you index a document, you can specify an optional [routing value](/referenc
 
 For example, the following indexing request routes a document using `my-routing-value`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST /my-index-000001/_doc?routing=my-routing-value
 {
@@ -90,6 +102,10 @@ POST /my-index-000001/_doc?routing=my-routing-value
 
 You can use the same routing value in the search API’s `routing` query parameter. This ensures the search runs on the same shard used to index the document.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search?routing=my-routing-value
 {
@@ -104,6 +120,10 @@ GET /my-index-000001/_search?routing=my-routing-value
 
 You can also provide multiple comma-separated routing values:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search?routing=my-routing-value,my-routing-value-2
 {
@@ -127,6 +147,10 @@ For tips on preventing indices with large numbers of shards, see [*Size your sha
 
 You can use the `max_concurrent_shard_requests` query parameter to control maximum number of concurrent shards a search request can hit per node. This prevents a single request from overloading a cluster. The parameter defaults to a maximum of `5`.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /my-index-000001/_search?max_concurrent_shard_requests=3
 {

@@ -18,6 +18,10 @@ A query on StackOverflow data for the popular term `javascript` OR the rarer ter
 
 $$$sampler-aggregation-example$$$
 
+<!--
+--- !example
+stage: stackoverflow
+-->
 ```console
 POST /stackoverflow/_search?size=0
 {
@@ -84,6 +88,10 @@ Without the `sampler` aggregation the request query considers the full "long tai
 
 $$$sampler-aggregation-no-sampler-example$$$
 
+<!--
+--- !example
+stage: stackoverflow
+-->
 ```console
 POST /stackoverflow/_search?size=0
 {

@@ -13,6 +13,10 @@ The stats that are returned consist of: `min`, `max`, `sum`, `count` and `avg`.
 
 Assuming the data consists of documents representing exams grades (between 0 and 100) of students
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search?size=0
 {
@@ -48,6 +52,10 @@ The name of the aggregation (`grades_stats` above) also serves as the key by whi
 
 If you need to get the `stats` for something more complex than a single field, run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search
 {
@@ -76,6 +84,10 @@ POST /exams/_search
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search?size=0
 {

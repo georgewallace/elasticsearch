@@ -75,6 +75,10 @@ It’s possible for conflicting names to arise, for fields that are defined with
 
 1. A pass-through object is defined next to a field that has the same name as one of the pass-through object sub-fields, e.g.
 
+    <!--
+    --- !example
+    skip: true
+    -->
     ```console
     PUT my-index-000001/_doc/1
     {
@@ -125,6 +129,10 @@ It’s possible for conflicting names to arise, for fields that are defined with
 
 It is possible to configure a pass-through field as a container for  [time-series dimensions](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#time-series-dimension). In this case, all sub-fields get annotated with the same parameter under the covers, and they’re also included in [routing path](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#dimension-based-routing) and [tsid](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md#tsid) calculations, thus simplifying the [TSDS](docs-content://manage-data/data-store/data-streams/time-series-data-stream-tsds.md) setup:
 
+<!--
+--- !example
+skip: true
+-->
 ```console
 PUT _index_template/my-metrics
 {

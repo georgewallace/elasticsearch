@@ -39,6 +39,10 @@ The following search request uses the `fields` parameter to retrieve values for 
 
 Using object notation, you can pass a [`format`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-search) argument to customize the format of returned date or geospatial values.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST my-index-000001/_search
 {
@@ -520,6 +524,10 @@ Doc values are stored for supported fields by default. However, doc values are n
 
 The following search request uses the `docvalue_fields` parameter to retrieve doc values for the `user.id` field, all fields starting with `http.response.`, and the `@timestamp` field:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET my-index-000001/_search
 {
@@ -622,6 +630,10 @@ GET /_search
 
 You can use the `script_fields` parameter to retrieve a [script evaluation](docs-content://explore-analyze/scripting.md) (based on different fields) for each hit. For example:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 GET /_search
 {
@@ -653,6 +665,10 @@ Script fields can work on fields that are not stored (`price` in the above case)
 
 Script fields can also access the actual `_source` document and extract specific elements to be returned from it by using `params['_source']`. Here is an example:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 GET /_search
 {

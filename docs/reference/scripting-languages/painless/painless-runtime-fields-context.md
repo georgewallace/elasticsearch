@@ -98,6 +98,10 @@ Then, run the following request to define a runtime field named `day_of_week`. T
 
 Because `day_of_week` is a runtime field, it isn’t indexed, and the included script only runs at query time:
 
+<!--
+--- !example
+stage: seats
+-->
 ```console
 PUT seats/_mapping
 {

@@ -108,6 +108,10 @@ The Normalize Aggregation supports multiple methods to transform the bucket valu
 
 The following snippet calculates the percent of total sales for each month:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

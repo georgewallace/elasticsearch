@@ -11,6 +11,10 @@ A `single-value` metrics aggregation that counts the number of values that are e
 
 `value_count` does not de-duplicate values, so even if a field has duplicates each value will be counted individually.
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search?size=0
 {
@@ -41,6 +45,10 @@ The name of the aggregation (`types_count` above) also serves as the key by whic
 
 If you need to count something more complex than the values in a single field you should run the aggregation on a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md).
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {

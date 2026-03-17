@@ -47,6 +47,10 @@ Paths are relative from the position of the pipeline aggregation; they are not a
 
 $$$buckets-path-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -77,6 +81,10 @@ POST /_search
 
 $$$buckets-path-sibling-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -102,7 +110,6 @@ POST /_search
   }
 }
 ```
-% TEST[setup:sales]
 
 1. `buckets_path` instructs this max_bucket aggregation that we want the maximum value of the `sales` aggregation in the `sales_per_month` date histogram.
 
@@ -111,6 +118,11 @@ If a Sibling pipeline agg references a multi-bucket aggregation, such as a `term
 
 $$$buckets-path-specific-bucket-example$$$
 
+<!--
+--- !example
+subtopic: subtopic-1
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -147,7 +159,6 @@ POST /_search
   }
 }
 ```
-% TEST[setup:sales]
 
 1. `buckets_path` selects the hats and bags buckets (via `['hat']`/`['bag']``) to use in the script specifically, instead of fetching all the buckets from `sale_type` aggregation
 
@@ -159,6 +170,10 @@ Instead of pathing to a metric, `buckets_path` can use a special `"_count"` path
 
 $$$buckets-path-count-example$$$
 
+<!--
+--- !example
+subtopic: subtopic-1
+-->
 ```console
 POST /_search
 {
@@ -185,6 +200,10 @@ The `buckets_path` can also use `"_bucket_count"` and path to a multi-bucket agg
 
 $$$buckets-path-bucket-count-example$$$
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /sales/_search
 {
@@ -216,7 +235,6 @@ POST /sales/_search
   }
 }
 ```
-% TEST[setup:sales]
 
 1. By using `_bucket_count` instead of a metric name, we can filter out `histo` buckets where they contain no buckets for the `categories` aggregation
 

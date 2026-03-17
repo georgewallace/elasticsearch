@@ -14,6 +14,10 @@ The most well known way of displaying the results of an SQL query result in gene
 
 The following formats can be returned in columnar orientation: `json`, `yaml`, `cbor` and `smile`.
 
+<!--
+--- !example
+stage: library
+-->
 ```console
 POST /_sql?format=json
 {

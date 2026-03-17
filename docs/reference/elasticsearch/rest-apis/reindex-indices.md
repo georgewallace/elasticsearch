@@ -45,6 +45,10 @@ You can learn how to:
 
 Use the Reindex API to copy all documents from one index to another.
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST _reindex
 {
@@ -153,6 +157,10 @@ Reindexing from remote clusters does not support manual or automatic slicing.
 
 Slice a reindex request manually by providing a slice id and total number of slices to each request:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST _reindex
 {
@@ -209,6 +217,10 @@ which results in a sensible `total` like this one:
 You can also let the reindex API automatically parallelize using [sliced scroll](paginate-search-results.md#slice-scroll) to slice on `_id`.
 Use `slices` to specify the number of slices to use:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST _reindex?slices=5&refresh
 {
@@ -341,6 +353,10 @@ POST _reindex
 
 You can limit the documents by adding a query to the `source`. For example, the following request only copies documents with a `user.id` of `kimchy` into `my-new-index-000001`:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {
@@ -364,6 +380,10 @@ POST _reindex
 You can limit the number of processed documents by setting `max_docs`.
 For example, this request copies a single document from `my-index-000001` to `my-new-index-000001`:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {
@@ -383,6 +403,10 @@ POST _reindex
 The `index` attribute in `source` can be a list, allowing you to copy from lots of sources in one request.
 This will copy documents from the `my-index-000001` and `my-index-000002` indices:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {
@@ -406,6 +430,10 @@ The reindex API makes no effort to handle ID collisions so the last document wri
 You can use source filtering to reindex a subset of the fields in the original documents.
 For example, the following request only reindexes the `user.id` and `_doc` fields of each document:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {
@@ -524,6 +552,10 @@ The previous method can also be used in conjunction with [changing a field name]
 
 The reindex API can be used to extract a random subset of the source for testing:
 
+<!--
+--- !example
+stage: my_index_big
+-->
 ```console
 POST _reindex
 {
@@ -552,6 +584,10 @@ Like `_update_by_query`, the reindex API supports a script that modifies the doc
 Unlike `_update_by_query`, the script is allowed to modify the document's metadata.
 This example bumps the version of the source document:
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {
@@ -597,6 +633,10 @@ serverless: preview
 
 Reindex supports reindexing from a remote {{es}} cluster:
 
+<!--
+--- !example
+stage: host
+-->
 ```console
 POST _reindex
 {
@@ -638,6 +678,10 @@ It is also possible (and encouraged) to authenticate with the remote cluster thr
 ::::{applies-switch}
 
 :::{applies-item} { "stack": "ga 9.3", "serverless": "preview" }
+<!--
+--- !example
+stage: host
+-->
 ```console
 POST _reindex
 {
@@ -665,6 +709,10 @@ POST _reindex
 :::
 
 :::{applies-item} { "stack": "ga 9.0" }
+<!--
+--- !example
+stage: host
+-->
 ```console
 POST _reindex
 {
@@ -730,6 +778,10 @@ Reindexing from a remote server uses an on-heap buffer that defaults to a maximu
 If the remote index includes very large documents you'll need to use a smaller batch size.
 The example below sets the batch size to `10` which is very, very small.
 
+<!--
+--- !example
+stage: host
+-->
 ```console
 POST _reindex
 {
@@ -760,6 +812,10 @@ It is also possible to set the socket read timeout on the remote connection with
 Both default to 30 seconds.
 This example sets the socket read timeout to one minute and the connection timeout to 10 seconds:
 
+<!--
+--- !example
+stage: host
+-->
 ```console
 POST _reindex
 {
@@ -841,6 +897,10 @@ By default, version conflicts abort the reindexing process.
 To continue reindexing in the case of conflicts, set `conflicts` to `proceed`.
 This may be necessary when retrying a failed reindex operation, as the destination index could be left in a partial state.
 
+<!--
+--- !example
+stage: my_index
+-->
 ```console
 POST _reindex
 {

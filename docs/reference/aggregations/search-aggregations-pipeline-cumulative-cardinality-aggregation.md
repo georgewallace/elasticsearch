@@ -33,6 +33,10 @@ $$$cumulative-cardinality-params$$$
 
 The following snippet calculates the cumulative cardinality of the total daily `users`:
 
+<!--
+--- !example
+stage: user_hits
+-->
 ```console
 GET /user_hits/_search
 {
@@ -126,6 +130,10 @@ The `cumulative_cardinality` agg will show you the total, distinct count since t
 
 This can be accomplished by adding a `derivative` aggregation to our query:
 
+<!--
+--- !example
+stage: user_hits
+-->
 ```console
 GET /user_hits/_search
 {

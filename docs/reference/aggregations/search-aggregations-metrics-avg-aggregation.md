@@ -11,6 +11,10 @@ A `single-value` metrics aggregation that computes the average of numeric values
 
 Assuming the data consists of documents representing exams grades (between 0 and 100) of students we can average their scores with:
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search?size=0
 {
@@ -41,6 +45,10 @@ The name of the aggregation (`avg_grade` above) also serves as the key by which 
 
 Let’s say the exam was exceedingly difficult, and you need to apply a grade correction. Average a [runtime field](docs-content://manage-data/data-store/mapping/runtime-fields.md) to get a corrected average:
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search?size=0
 {
@@ -71,6 +79,10 @@ POST /exams/_search?size=0
 
 The `missing` parameter defines how documents that are missing a value should be treated. By default they will be ignored but it is also possible to treat them as if they had a value.
 
+<!--
+--- !example
+stage: exams
+-->
 ```console
 POST /exams/_search?size=0
 {

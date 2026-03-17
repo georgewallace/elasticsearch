@@ -36,6 +36,10 @@ $$$moving-fn-params$$$
 
 `moving_fn` aggregations must be embedded inside of a `histogram` or `date_histogram` aggregation. They can be embedded like any other metric aggregation:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -130,6 +134,10 @@ The Moving Function aggregation allows the user to specify any arbitrary script 
 
 For example, this script will simply return the first value from the window, or `NaN` if no values are available:
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -196,6 +204,10 @@ $$$max-params$$$
 | --- | --- |
 | `values` | The window of values to find the maximum |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -234,6 +246,10 @@ $$$min-params$$$
 | --- | --- |
 | `values` | The window of values to find the minimum |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -272,6 +288,10 @@ $$$sum-params$$$
 | --- | --- |
 | `values` | The window of values to find the sum of |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -311,6 +331,10 @@ $$$stddev-params$$$
 | `values` | The window of values to find the standard deviation of |
 | `avg` | The average of the window |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -354,6 +378,10 @@ $$$unweightedavg-params$$$
 | --- | --- |
 | `values` | The window of values to find the sum of |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -395,6 +423,10 @@ $$$linearweightedavg-params$$$
 | --- | --- |
 | `values` | The window of values to find the sum of |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -436,6 +468,10 @@ $$$ewma-params$$$
 | `values` | The window of values to find the sum of |
 | `alpha` | Exponential decay |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -482,6 +518,10 @@ $$$holt-params$$$
 | `alpha` | Level decay value |
 | `beta` | Trend decay value |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
@@ -534,6 +574,10 @@ $$$holtwinters-params$$$
 | `period` | The periodicity of the data |
 | `multiplicative` | True if you wish to use multiplicative holt-winters, false to use additive |
 
+<!--
+--- !example
+stage: sales
+-->
 ```console
 POST /_search
 {
