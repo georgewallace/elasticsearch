@@ -50,6 +50,10 @@ Start an [{{es}} instance](docs-content://deploy-manage/deploy/self-managed/inst
 
 1. From the {{kib}} Console, create [mappings](docs-content://manage-data/data-store/mapping.md) for the sample data:
 
+    <!--
+    --- !example
+    stage: seats
+    -->
     ```console
     PUT /seats
     {
@@ -72,6 +76,10 @@ Start an [{{es}} instance](docs-content://deploy-manage/deploy/self-managed/inst
 
 2. Configure a script ingest processor that parses each document as {{es}} ingests the `seat` data. The following ingest script processes the `date` and `time` fields and stores the result in a `datetime` field:
 
+    <!--
+    --- !example
+    stage: seats
+    -->
     ```console
     PUT /_ingest/pipeline/seats
     {
@@ -88,6 +96,10 @@ Start an [{{es}} instance](docs-content://deploy-manage/deploy/self-managed/inst
 
 3. Ingest some sample data using the `seats` ingest pipeline that you defined in the previous step.
 
+    <!--
+    --- !example
+    stage: seats
+    -->
     ```console
     POST seats/_bulk?pipeline=seats&refresh=true
     {"create":{"_index":"seats","_id":"1"}}
