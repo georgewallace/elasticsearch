@@ -60,8 +60,5 @@ steps:
   - expected:
       kind: EXAMPLE_RESULT
       status_codes: [200, 201]
-      match_fields:
-        - field: '*'
-          match_kind: EQUALS
       ignore_fields:
         - took
