@@ -79,7 +79,7 @@ example_order: 1
                           },
                           "_version": -3
                       },
-                      "timestamp": "2025-09-04T22:32:12.800709Z"
+                      "timestamp": "2016-11-08T19:43:03.850+0000"
                   }
               }
           }
@@ -97,3 +97,5 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version
+        - _ingest.timestamp

@@ -45,7 +45,7 @@ example_order: 3
             "message": "<GITHUB_NAME> the PR is ready for review"
           },
           "_ingest": {
-            "timestamp": "2023-02-01T16:53:14.560005377Z"
+            "timestamp": "2016-11-08T19:43:03.850+0000"
           }
         }
       }
@@ -63,3 +63,5 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version
+        - _ingest.timestamp

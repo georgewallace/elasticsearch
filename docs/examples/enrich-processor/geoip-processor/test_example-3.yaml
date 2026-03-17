@@ -50,3 +50,6 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _primary_term
+        - _seq_no
+        - _version

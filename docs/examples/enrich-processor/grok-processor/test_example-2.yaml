@@ -64,3 +64,5 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version
+        - _ingest.timestamp

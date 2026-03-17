@@ -44,7 +44,7 @@ example_order: 3
             "foo": ["foo1", "foo2"]
           },
           "_ingest" : {
-            "timestamp" : "2020-09-30T12:55:17.742795Z"
+            "timestamp" : ...
           }
         }
       }
@@ -62,3 +62,4 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version

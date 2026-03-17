@@ -48,7 +48,7 @@ example_order: 1
             "os" : "Ubuntu"
           },
           "_ingest" : {
-            "timestamp" : "2019-03-11T21:54:37.909224Z"
+            "timestamp" : "2016-11-08T19:43:03.850+0000"
           }
         }
       }
@@ -66,3 +66,5 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version
+        - _ingest.timestamp

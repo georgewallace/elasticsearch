@@ -51,7 +51,7 @@ example_order: 2
             "my_field": "Windows"
           },
           "_ingest": {
-            "timestamp": "2023-05-05T16:04:16.456475214Z"
+            "timestamp": "2016-11-08T19:43:03.850+0000"
           }
         }
       }
@@ -69,3 +69,5 @@ steps:
           match_kind: EQUALS
       ignore_fields:
         - took
+        - _version
+        - _ingest.timestamp

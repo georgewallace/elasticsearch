@@ -6,3 +6,7 @@ setup:
 
 
 teardown:
+  - action:
+      kind: ELASTIC_CONSOLE_CODE
+      code: |
+        DELETE _connector/my-s3-connector?delete_sync_jobs=true&ignore_unavailable=true
