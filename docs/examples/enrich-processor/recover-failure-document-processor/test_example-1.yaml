@@ -99,3 +99,5 @@ steps:
         - took
         - _version
         - _ingest.timestamp
+        - _seq_no
+        - _primary_term

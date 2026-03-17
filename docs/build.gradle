@@ -178,6 +178,44 @@ testClusters.matching { it.name == "yamlRestTest"}.configureEach {
   }
 }
 
+// Extend the root :run task cluster with the same docs-oriented configuration used
+// by yamlRestTest above. This ensures that ./gradlew :run provisions a cluster
+// suitable for running docs/examples exemplipy tests without any manual setup.
+rootProject.testClusters.matching { it.name == "runTask" }.configureEach {
+  // Enable all xpack features so docs examples that require a trial licence work.
+  setting 'xpack.license.self_generated.type', 'trial'
+
+  // enable regexes in painless so docs example snippets that use them don't fail
+  setting 'script.painless.regex.enabled', 'true'
+
+  // Suppress ILM/SLM history indices so they don't interfere with example output
+  setting 'indices.lifecycle.history_index_enabled', 'false'
+  setting 'slm.history_index_enabled', 'false'
+
+  // Whitelist reindexing from the local node so reindex-from-remote examples work
+  setting 'reindex.remote.whitelist', '127.0.0.1:*'
+
+  // Analysis config files (same set as yamlRestTest)
+  Closure configFile = {
+    extraConfigFile it, file("src/test/cluster/config/$it")
+  }
+  configFile 'analysis/example_word_list.txt'
+  configFile 'analysis/hyphenation_patterns.xml'
+  configFile 'analysis/synonym.txt'
+  configFile 'analysis/stemmer_override.txt'
+  configFile 'userdict_ja.txt'
+  configFile 'userdict_ko.txt'
+  configFile 'KeywordTokenizer.rbbi'
+
+  // Hunspell dictionaries used by analysis docs examples
+  extraConfigFile 'hunspell/en_US/en_US.aff', project(":server").file('src/test/resources/indices/analyze/conf_dir/hunspell/en_US/en_US.aff')
+  extraConfigFile 'hunspell/en_US/en_US.dic', project(":server").file('src/test/resources/indices/analyze/conf_dir/hunspell/en_US/en_US.dic')
+
+  // GeoIP databases used by ingest pipeline docs examples
+  extraConfigFile 'ingest-geoip/GeoLite2-City.mmdb', file("src/yamlRestTest/resources/GeoLite2-City.mmdb")
+  extraConfigFile 'ingest-geoip/GeoLite2-Country.mmdb', file("src/yamlRestTest/resources/GeoLite2-Country.mmdb")
+}
+
 tasks.named("yamlRestTest").configure {
   def repoFolder = "${layout.buildDirectory.asFile.get()}/cluster/shared/repo"
   doFirst {
@@ -2082,3 +2120,171 @@ tasks.register('verifyDocsLuceneVersion') {
 tasks.named('check') {
   dependsOn 'verifyDocsLuceneVersion'
 }
+
+// ---------------------------------------------------------------------------
+// Exemplipy doc-example tests
+//
+// Runs code examples extracted from Markdown docs against a live Elasticsearch
+// cluster using the Exemplipy tool (https://github.com/elastic/exemplipy).
+//
+// YAML test files live in docs/examples/ and are committed to source control.
+// Developers can edit them directly to adjust test expectations, then re-run
+// without needing to regenerate from docs.
+//
+// Workflow:
+//   1. (First time, or after docs change) Regenerate YAML test files:
+//        ./gradlew :docs:importExemplipy
+//      This writes into docs/examples/<docs-subpath>/ and overwrites existing
+//      files, so commit any hand-edits before re-importing.
+//
+//   2. Run tests against a live cluster:
+//        ./gradlew :docs:runExemplipy
+//      Reads from docs/examples/ — no re-import required.
+//
+// Prerequisites:
+//   - uv must be on PATH (https://docs.astral.sh/uv/)
+//   - An Elasticsearch cluster must be running and reachable
+//
+// Exemplipy is pulled directly from GitHub via uvx. No local checkout needed.
+// docs/cli_config.yaml configures api-excludes, log level, and report format.
+//
+// Project properties (all optional):
+//   -Pexemplipy.git.ref=<ref>       Git branch/tag/commit to pull exemplipy from.
+//                                   Defaults to 'gradle-integration-v2'.
+//                                   Switch to 'main' once the PR is merged.
+//   -Pexemplipy.dir=<path>          Override: use a local exemplipy checkout
+//                                   instead of pulling from GitHub (dev workflow).
+//   -Pexemplipy.es.url=<url>        Elasticsearch URL.
+//                                   Defaults to http://localhost:9200
+//   -Pexemplipy.es.user=<user>      Elasticsearch username.
+//                                   Defaults to elastic-admin (./gradlew :run default)
+//   -Pexemplipy.es.password=<pass>  Elasticsearch password.
+//                                   Defaults to elastic-password (./gradlew :run default)
+//   -Pexemplipy.docs=<subpath>      Subdirectory of docs/reference to import.
+//                                   Defaults to '.' (all of docs/reference/)
+//                                   Example: -Pexemplipy.docs=text-analysis
+//   -Pexemplipy.tests=<subpath>     Subdirectory of docs/examples to run.
+//                                   Defaults to running all tests under docs/examples/
+// ---------------------------------------------------------------------------
+
+ext {
+  // Git ref to pull exemplipy from. Change to 'main' once the PR is merged.
+  exemplipyGitRef   = findProperty('exemplipy.git.ref')     ?: 'gradle-integration-v2'
+  // Optional local checkout override — if set, uses `uv run` from that dir
+  // instead of pulling from GitHub. Useful during exemplipy development.
+  exemplipyLocalDir = findProperty('exemplipy.dir')
+  exemplipyEsUrl    = findProperty('exemplipy.es.url')      ?: 'http://localhost:9200'
+  exemplipyEsUser   = findProperty('exemplipy.es.user')     ?: 'elastic-admin'
+  exemplipyEsPass   = findProperty('exemplipy.es.password') ?: 'elastic-password'
+  exemplipyDocsPath = findProperty('exemplipy.docs')        ?: '.'
+  // Persistent test store under docs/examples/ — committed to source control
+  exemplipyTestsDir = findProperty('exemplipy.tests')
+                        ? "${projectDir}/examples/${findProperty('exemplipy.tests')}"
+                        : "${projectDir}/examples"
+}
+
+// Regenerate YAML test files from Markdown docs into docs/examples/.
+// Run this when doc examples change. Overwrites existing files — commit any
+// hand-edits before re-importing.
+tasks.register('importExemplipy', Exec) {
+  group = 'Exemplipy'
+  description = 'Regenerate Exemplipy YAML test files from Markdown docs.'
+
+  def docsSourceFile = file("${projectDir}/reference/${exemplipyDocsPath}")
+  def docsSourceDir  = docsSourceFile.absolutePath
+  // When the source is a single .md file, the dest is its parent directory
+  // so the YAML files land in examples/<parent>/ rather than examples/<file>.md/
+  // Use new File() (keeps path relative) not Groovy file() (resolves to absolute).
+  def importDestDir  = docsSourceFile.isFile()
+      ? "${projectDir}/examples/${new File(exemplipyDocsPath).parent ?: '.'}"
+      : "${projectDir}/examples/${exemplipyDocsPath}"
+
+  // Accept both a directory (default) and a single .md file so that
+  // -Pexemplipy.docs=path/to/file.md works in addition to -Pexemplipy.docs=dir/
+  inputs.files(docsSourceDir)
+  // Output is tracked so Gradle skips this task when docs haven't changed.
+  outputs.dir(importDestDir)
+
+  doFirst {
+    if (!['uv'].any { exec -> ['which', exec].execute().waitFor() == 0 }) {
+      throw new GradleException(
+        "uv is required to run exemplipy tasks.\n" +
+        "Install it from https://docs.astral.sh/uv/"
+      )
+    }
+    logger.lifecycle("Importing examples from: ${docsSourceDir}")
+    logger.lifecycle("Writing YAML tests to:   ${importDestDir}")
+    logger.lifecycle("Commit docs/examples/ to source control after reviewing.")
+  }
+
+  if (exemplipyLocalDir) {
+    workingDir exemplipyLocalDir
+    commandLine 'uv', 'run', 'import-examples',
+      '--docs', docsSourceDir,
+      '--dest', importDestDir
+  } else {
+    workingDir projectDir
+    commandLine 'uvx', '--refresh', '--from',
+      "exemplipy @ git+https://github.com/elastic/exemplipy@${exemplipyGitRef}",
+      'import-examples',
+      '--docs', docsSourceDir,
+      '--dest', importDestDir
+  }
+}
+
+// Run Exemplipy YAML tests from docs/examples/ against a live cluster.
+// Does not re-import — edit docs/examples/ directly or run importExemplipy first.
+tasks.register('runExemplipy', Exec) {
+  group = 'Exemplipy'
+  description = 'Run Exemplipy YAML tests against a live Elasticsearch cluster.'
+
+  doFirst {
+    def testsDir = new File(exemplipyTestsDir.toString())
+    if (!testsDir.exists()) {
+      throw new GradleException(
+        "Examples directory not found: ${exemplipyTestsDir}\n" +
+        "Run './gradlew :docs:importExemplipy' to generate it from docs."
+      )
+    }
+    logger.lifecycle("Running exemplipy tests from: ${exemplipyTestsDir}")
+    logger.lifecycle("Target cluster:               ${exemplipyEsUrl}")
+  }
+
+  // Report level and log verbosity come from docs/cli_config.yaml.
+  // Only cluster connection details are passed on the CLI since they are
+  // runtime values not known at config-file authoring time.
+  if (exemplipyLocalDir) {
+    workingDir exemplipyLocalDir
+    commandLine 'uv', 'run', 'run-examples',
+      '--examples',       exemplipyTestsDir,
+      '-u',               exemplipyEsUrl,
+      '--es-user',        exemplipyEsUser,
+      '--es-password',    exemplipyEsPass,
+      '-r',               'TEST_CASE',
+      '--log-to-file'
+  } else {
+    workingDir projectDir
+    commandLine 'uvx', '--refresh', '--from',
+      "exemplipy @ git+https://github.com/elastic/exemplipy@${exemplipyGitRef}",
+      'run-examples',
+      '--examples',       exemplipyTestsDir,
+      '-u',               exemplipyEsUrl,
+      '--es-user',        exemplipyEsUser,
+      '--es-password',    exemplipyEsPass,
+      '-r',               'TEST_CASE',
+      '--log-to-file'
+  }
+
+  environment 'ES_URL',                exemplipyEsUrl
+  environment 'ES_USER',               exemplipyEsUser
+  environment 'ES_PASSWORD',           exemplipyEsPass
+  environment 'EXEMPLIPY_OUTPUTS_DIR', "${layout.buildDirectory.get().asFile}/exemplipy-report"
+}
+
+// Convenience task: import YAML test files from docs then immediately run them.
+tasks.register('syncExemplipy') {
+  group = 'Exemplipy'
+  description = 'Import YAML test files from docs then run them against a live cluster.'
+  dependsOn 'importExemplipy', 'runExemplipy'
+}
+tasks.named('runExemplipy').configure { mustRunAfter('importExemplipy') }
