@@ -1,0 +1,74 @@
+# Source: elasticsearch-plugins/analysis-polish-stop.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-polish-stop
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /polish_stop_example
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "analyzer_with_stop": {
+              "tokenizer": "standard",
+              "filter": [
+                "lowercase",
+                "polish_stop"
+              ]
+            }
+          },
+          "filter": {
+            "polish_stop": {
+              "type": "polish_stop",
+              "stopwords": [
+                "_polish_",
+                "jeść"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET polish_stop_example/_analyze
+  {
+    "analyzer": "analyzer_with_stop",
+    "text": "Gdzie kucharek sześć, tam nie ma co jeść."
+  }
+--- !result
+|
+  {
+    "tokens" : [
+      {
+        "token" : "kucharek",
+        "start_offset" : 6,
+        "end_offset" : 14,
+        "type" : "<ALPHANUM>",
+        "position" : 1
+      },
+      {
+        "token" : "sześć",
+        "start_offset" : 15,
+        "end_offset" : 20,
+        "type" : "<ALPHANUM>",
+        "position" : 2
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

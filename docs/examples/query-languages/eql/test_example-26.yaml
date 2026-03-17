@@ -1,0 +1,24 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-26
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 26
+--- !code
+|
+  GET /_eql/search/FjlmbndxNmJjU0RPdExBTGg0elNOOEEaQk9xSjJBQzBRMldZa1VVQ2pPa01YUToxMDY=
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

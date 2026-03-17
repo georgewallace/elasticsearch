@@ -1,0 +1,27 @@
+# Source: query-languages/esql/kibana/docs/functions/sha256.md
+--- !metadata
+id: example-1
+language: esql
+topic: sha256
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM sample_data
+  | WHERE message != "Connection error"
+  | EVAL sha256 = sha256(message)
+  | KEEP message, sha256
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

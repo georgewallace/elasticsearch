@@ -1,0 +1,41 @@
+# Source: elasticsearch/mapping-reference/mapping-tier-field.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapping-tier-field
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT index_1/_doc/1
+  {
+    "text": "Document in index 1"
+  }
+
+  PUT index_2/_doc/2?refresh=true
+  {
+    "text": "Document in index 2"
+  }
+
+  GET index_1,index_2/_search
+  {
+    "query": {
+      "terms": {
+        "_tier": ["data_hot", "data_warm"] 
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

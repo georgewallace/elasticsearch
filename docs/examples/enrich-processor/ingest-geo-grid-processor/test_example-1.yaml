@@ -1,0 +1,60 @@
+# Source: enrich-processor/ingest-geo-grid-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: ingest-geo-grid-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT geocells
+  {
+    "mappings": {
+      "properties": {
+        "geocell": {
+          "type": "geo_shape"
+        }
+      }
+    }
+  }
+
+  PUT _ingest/pipeline/geotile2shape
+  {
+    "description": "translate rectangular z/x/y geotile to bounding box",
+    "processors": [
+      {
+        "geo_grid": {
+          "field": "geocell",
+          "tile_type": "geotile"
+        }
+      }
+    ]
+  }
+
+  PUT _ingest/pipeline/geohex2shape
+  {
+    "description": "translate H3 cell to polygon",
+    "processors": [
+      {
+        "geo_grid": {
+          "field": "geocell",
+          "tile_type": "geohex",
+          "target_format": "wkt"
+        }
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

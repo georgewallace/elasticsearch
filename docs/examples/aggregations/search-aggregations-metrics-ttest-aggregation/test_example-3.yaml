@@ -1,0 +1,52 @@
+# Source: search-aggregations-metrics-ttest-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-metrics-ttest-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET node_upgrade/_search
+  {
+    "size": 0,
+    "runtime_mappings": {
+      "startup_time_before.adjusted": {
+        "type": "long",
+        "script": {
+          "source": "emit(doc['startup_time_before'].value - params.adjustment)",
+          "params": {
+            "adjustment": 10
+          }
+        }
+      }
+    },
+    "aggs": {
+      "startup_time_ttest": {
+        "t_test": {
+          "a": {
+            "field": "startup_time_before.adjusted"
+          },
+          "b": {
+            "field": "startup_time_after"
+          },
+          "type": "paired"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: node_upgrade
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

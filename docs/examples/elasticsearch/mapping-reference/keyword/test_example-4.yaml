@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/keyword.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: keyword
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "kwd": { "type": "keyword", "ignore_above": 3 }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "kwd": ["foo", "foo", "bang", "bar", "baz"]
+  }
+--- !result
+|
+  {
+    "kwd": ["bar", "baz", "foo", "bang"]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

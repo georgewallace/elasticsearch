@@ -1,0 +1,55 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /armenian_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "armenian_stop": {
+            "type":       "stop",
+            "stopwords":  "_armenian_" 
+          },
+          "armenian_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["օրինակ"] 
+          },
+          "armenian_stemmer": {
+            "type":       "stemmer",
+            "language":   "armenian"
+          }
+        },
+        "analyzer": {
+          "rebuilt_armenian": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "armenian_stop",
+              "armenian_keywords",
+              "armenian_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

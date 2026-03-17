@@ -1,0 +1,28 @@
+# Source: query-languages/esql/_snippets/commands/examples/stats.csv-spec/statsGroupByMultipleValues.md
+--- !metadata
+id: example-1
+language: esql
+topic: statsGroupByMultipleValues
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | EVAL hired = DATE_FORMAT("yyyy", hire_date)
+  | STATS avg_salary = AVG(salary) BY hired, languages.long
+  | EVAL avg_salary = ROUND(avg_salary)
+  | SORT hired, languages.long
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

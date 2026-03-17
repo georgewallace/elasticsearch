@@ -1,0 +1,54 @@
+# Source: elasticsearch/rest-apis/vector-tile-search.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: vector-tile-search
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET museums/_mvt/location/13/4207/2692
+  {
+    "grid_agg": "geotile",
+    "grid_precision": 2,
+    "fields": [
+      "name",
+      "price"
+    ],
+    "query": {
+      "term": {
+        "included": true
+      }
+    },
+    "aggs": {
+      "min_price": {
+        "min": {
+          "field": "price"
+        }
+      },
+      "max_price": {
+        "max": {
+          "field": "price"
+        }
+      },
+      "avg_price": {
+        "avg": {
+          "field": "price"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

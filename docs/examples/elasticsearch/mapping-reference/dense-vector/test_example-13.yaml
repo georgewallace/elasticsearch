@@ -1,0 +1,37 @@
+# Source: elasticsearch/mapping-reference/dense-vector.md
+--- !metadata
+id: example-13
+language: elastic_console
+topic: dense-vector
+subtopic: default
+example_order: 13
+--- !code
+|
+  PUT my-index-000001
+  {
+      "mappings": {
+          "properties": {
+              "text_embedding": {
+                  "type": "dense_vector",
+                  "dims": 384,
+                  "index_options": {
+                      "type": "flat"
+                  }
+              }
+          }
+      }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

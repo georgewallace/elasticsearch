@@ -1,0 +1,54 @@
+# Source: query-languages/query-dsl/query-dsl-script-score-query.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: query-dsl-script-score-query
+subtopic: default
+example_order: 8
+--- !code
+|
+  GET my-index-000001/_search
+  {
+    "query": {
+      "script_score": {
+        "query" : {
+          "bool" : {
+            "filter" : {
+              "term" : {
+                "status" : "published"
+              }
+            }
+          }
+        },
+        "script": {
+          "source": """
+            float[] v = doc['my_dense_vector'].vectorValue;
+            float vm = doc['my_dense_vector'].magnitude;
+            float dotProduct = 0;
+            for (int i = 0; i < v.length; i++) {
+              dotProduct += v[i] * params.queryVector[i];
+            }
+            return dotProduct / (vm * (float) params.queryVectorMag);
+          """,
+          "params": {
+            "queryVector": [4, 3.4, -0.2],
+            "queryVectorMag": 5.25357
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

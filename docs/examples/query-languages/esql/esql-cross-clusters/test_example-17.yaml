@@ -1,0 +1,25 @@
+# Source: query-languages/esql/esql-cross-clusters.md
+--- !metadata
+id: example-17
+language: esql
+topic: esql-cross-clusters
+subtopic: default
+example_order: 17
+--- !code
+|
+  FROM my-index-000001,cluster*:my-index-*,cluster_three:-my-index-000001
+  | LIMIT 10
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

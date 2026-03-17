@@ -1,0 +1,26 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-11
+language: esql
+topic: esql-search-tutorial
+subtopic: default
+example_order: 11
+--- !code
+|
+  FROM cooking_blog
+  | WHERE match(title, "fluffy pancakes breakfast", {"minimum_should_match": 2})
+  | LIMIT 1000
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

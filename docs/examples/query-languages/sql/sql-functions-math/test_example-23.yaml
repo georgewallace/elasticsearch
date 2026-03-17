@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-23
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 23
+--- !code
+|
+  SELECT POWER(5, -1), POWER(5, -2);
+
+    POWER(5, -1) |  POWER(5, -2)
+  ---------------+---------------
+  0.2            |0.04
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

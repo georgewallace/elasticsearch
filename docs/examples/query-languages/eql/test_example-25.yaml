@@ -1,0 +1,39 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-25
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 25
+--- !code
+|
+  GET /my-data-stream/_eql/search
+  {
+    "keep_on_completion": true,
+    "wait_for_completion_timeout": "2s",
+    "query": """
+      process where process.name == "cmd.exe"
+    """
+  }
+--- !result
+|
+  {
+    "id": "FjlmbndxNmJjU0RPdExBTGg0elNOOEEaQk9xSjJBQzBRMldZa1VVQ2pPa01YUToxMDY=",
+    "is_partial": false,
+    "is_running": false,
+    "took": 52,
+    "timed_out": false,
+    "hits": ...
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

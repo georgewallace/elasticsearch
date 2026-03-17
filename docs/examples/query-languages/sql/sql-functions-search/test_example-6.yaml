@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-6
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 6
+--- !code
+|
+  SELECT author, name, SCORE() FROM library WHERE QUERY('name:dune');
+
+      author     |       name        |    SCORE()
+  ---------------+-------------------+---------------
+  Frank Herbert  |Dune               |2.2886353
+  Frank Herbert  |Dune Messiah       |1.8893257
+  Frank Herbert  |Children of Dune   |1.6086556
+  Frank Herbert  |God Emperor of Dune|1.4005898
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

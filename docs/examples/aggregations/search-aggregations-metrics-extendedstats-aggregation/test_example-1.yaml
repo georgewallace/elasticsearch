@@ -1,0 +1,59 @@
+# Source: search-aggregations-metrics-extendedstats-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-metrics-extendedstats-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /exams/_search
+  {
+    "size": 0,
+    "aggs": {
+      "grades_stats": { "extended_stats": { "field": "grade" } }
+    }
+  }
+--- !result
+|
+  {
+    ...
+
+    "aggregations": {
+      "grades_stats": {
+        "count": 2,
+        "min": 50.0,
+        "max": 100.0,
+        "avg": 75.0,
+        "sum": 150.0,
+        "sum_of_squares": 12500.0,
+        "variance": 625.0,
+        "variance_population": 625.0,
+        "variance_sampling": 1250.0,
+        "std_deviation": 25.0,
+        "std_deviation_population": 25.0,
+        "std_deviation_sampling": 35.35533905932738,
+        "std_deviation_bounds": {
+          "upper": 125.0,
+          "lower": 25.0,
+          "upper_population": 125.0,
+          "lower_population": 25.0,
+          "upper_sampling": 145.71067811865476,
+          "lower_sampling": 4.289321881345245
+        }
+      }
+    }
+  }
+--- !test
+stage: exams
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

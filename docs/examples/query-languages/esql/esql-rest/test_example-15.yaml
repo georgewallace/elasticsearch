@@ -1,0 +1,30 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-15
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 15
+--- !code
+|
+  POST /_query/async/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=/stop
+--- !result
+|
+  {
+    "is_running": false,
+    "took": 48,
+    "is_partial": true,
+    "columns": ...
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

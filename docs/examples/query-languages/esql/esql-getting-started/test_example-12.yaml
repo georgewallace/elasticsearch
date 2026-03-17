@@ -1,0 +1,25 @@
+# Source: query-languages/esql/esql-getting-started.md
+--- !metadata
+id: example-12
+language: esql
+topic: esql-getting-started
+subtopic: default
+example_order: 12
+--- !code
+|
+  FROM sample_data
+  | STATS median_duration = MEDIAN(event_duration)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

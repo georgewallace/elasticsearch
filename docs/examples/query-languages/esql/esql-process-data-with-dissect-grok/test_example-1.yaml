@@ -1,0 +1,26 @@
+# Source: query-languages/esql/esql-process-data-with-dissect-grok.md
+--- !metadata
+id: example-1
+language: esql
+topic: esql-process-data-with-dissect-grok
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a = "2023-01-23T12:15:00.000Z - some text - 127.0.0.1"
+  | DISSECT a """%{date} - %{msg} - %{ip}"""
+  | KEEP date, msg, ip
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

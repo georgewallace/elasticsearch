@@ -1,0 +1,83 @@
+# Source: query-languages/query-dsl/query-dsl-nested-query.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: query-dsl-nested-query
+subtopic: default
+example_order: 6
+--- !code
+|
+  PUT my-index
+  {
+    "mappings": {
+      "properties": {
+        "comments": {
+          "type": "nested"
+        }
+      }
+    }
+  }
+
+  PUT my-index/_doc/1?refresh
+  {
+    "comments": [
+      {
+        "author": "kimchy"
+      }
+    ]
+  }
+
+  PUT my-index/_doc/2?refresh
+  {
+    "comments": [
+      {
+        "author": "kimchy"
+      },
+      {
+        "author": "nik9000"
+      }
+    ]
+  }
+
+  PUT my-index/_doc/3?refresh
+  {
+    "comments": [
+      {
+        "author": "nik9000"
+      }
+    ]
+  }
+
+  POST my-index/_search
+  {
+    "query": {
+      "nested": {
+        "path": "comments",
+        "query": {
+          "bool": {
+            "must_not": [
+              {
+                "term": {
+                  "comments.author": "nik9000"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

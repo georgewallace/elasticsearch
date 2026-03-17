@@ -1,0 +1,67 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 8
+--- !code
+|
+  GET /retrievers_example/_search
+  {
+      "retriever": {
+          "linear": {
+              "query": "artificial intelligence",
+              "fields": ["text", "text_semantic", "topic^2"],
+              "normalizer": "minmax"
+          }
+      }
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 3,
+              "relation": "eq"
+          },
+          "max_score": 2.0,
+          "hits": [
+              {
+                  "_index": "retrievers_example",
+                  "_id": "2",
+                  "_score": 2.0
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "1",
+                  "_score": 1.2
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "3",
+                  "_score": 0.1
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

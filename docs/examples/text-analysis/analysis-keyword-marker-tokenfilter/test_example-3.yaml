@@ -1,0 +1,152 @@
+# Source: text-analysis/analysis-keyword-marker-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-keyword-marker-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /_analyze
+  {
+    "tokenizer": "whitespace",
+    "filter": [
+      {
+        "type": "keyword_marker",
+        "keywords": [ "jumping" ]
+      },
+      "stemmer"
+    ],
+    "text": "fox running and jumping",
+    "explain": true,
+    "attributes": "keyword"
+  }
+--- !result
+|
+  {
+    "detail": {
+      "custom_analyzer": true,
+      "charfilters": [],
+      "tokenizer": {
+        "name": "whitespace",
+        "tokens": [
+          {
+            "token": "fox",
+            "start_offset": 0,
+            "end_offset": 3,
+            "type": "word",
+            "position": 0
+          },
+          {
+            "token": "running",
+            "start_offset": 4,
+            "end_offset": 11,
+            "type": "word",
+            "position": 1
+          },
+          {
+            "token": "and",
+            "start_offset": 12,
+            "end_offset": 15,
+            "type": "word",
+            "position": 2
+          },
+          {
+            "token": "jumping",
+            "start_offset": 16,
+            "end_offset": 23,
+            "type": "word",
+            "position": 3
+          }
+        ]
+      },
+      "tokenfilters": [
+        {
+          "name": "__anonymous__keyword_marker",
+          "tokens": [
+            {
+              "token": "fox",
+              "start_offset": 0,
+              "end_offset": 3,
+              "type": "word",
+              "position": 0,
+              "keyword": false
+            },
+            {
+              "token": "running",
+              "start_offset": 4,
+              "end_offset": 11,
+              "type": "word",
+              "position": 1,
+              "keyword": false
+            },
+            {
+              "token": "and",
+              "start_offset": 12,
+              "end_offset": 15,
+              "type": "word",
+              "position": 2,
+              "keyword": false
+            },
+            {
+              "token": "jumping",
+              "start_offset": 16,
+              "end_offset": 23,
+              "type": "word",
+              "position": 3,
+              "keyword": true
+            }
+          ]
+        },
+        {
+          "name": "stemmer",
+          "tokens": [
+            {
+              "token": "fox",
+              "start_offset": 0,
+              "end_offset": 3,
+              "type": "word",
+              "position": 0,
+              "keyword": false
+            },
+            {
+              "token": "run",
+              "start_offset": 4,
+              "end_offset": 11,
+              "type": "word",
+              "position": 1,
+              "keyword": false
+            },
+            {
+              "token": "and",
+              "start_offset": 12,
+              "end_offset": 15,
+              "type": "word",
+              "position": 2,
+              "keyword": false
+            },
+            {
+              "token": "jumping",
+              "start_offset": 16,
+              "end_offset": 23,
+              "type": "word",
+              "position": 3,
+              "keyword": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

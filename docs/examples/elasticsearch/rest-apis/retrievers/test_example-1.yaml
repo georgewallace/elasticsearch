@@ -1,0 +1,38 @@
+# Source: elasticsearch/rest-apis/retrievers.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: retrievers
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET books/_search
+  {
+    "retriever": {
+      "linear": {
+        "query": "elasticsearch",
+        "fields": [
+          "title^3",                
+          "description^2",          
+          "title_semantic",         
+          "description_semantic^2"
+        ],
+        "normalizer": "minmax"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

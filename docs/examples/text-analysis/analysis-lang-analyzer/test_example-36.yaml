@@ -1,0 +1,46 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-36
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 36
+--- !code
+|
+  PUT /thai_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "thai_stop": {
+            "type":       "stop",
+            "stopwords":  "_thai_" 
+          }
+        },
+        "analyzer": {
+          "rebuilt_thai": {
+            "tokenizer":  "thai",
+            "filter": [
+              "lowercase",
+              "decimal_digit",
+              "thai_stop"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

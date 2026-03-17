@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-40
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 40
+--- !code
+|
+  SELECT DATE_FORMAT(CAST('2020-04-05' AS DATE), '%d/%m/%Y') AS "date";
+
+        date
+  ------------------
+  05/04/2020
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

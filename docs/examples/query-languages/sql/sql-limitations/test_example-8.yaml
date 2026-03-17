@@ -1,0 +1,26 @@
+# Source: query-languages/sql/sql-limitations.md
+--- !metadata
+id: example-8
+language: sql
+topic: sql-limitations
+subtopic: default
+example_order: 8
+--- !code
+|
+  SELECT age, ROUND(AVG(salary)) AS avg FROM test GROUP BY age ORDER BY avg;
+
+  SELECT age, MAX(salary) - MIN(salary) AS diff FROM test GROUP BY age ORDER BY diff;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

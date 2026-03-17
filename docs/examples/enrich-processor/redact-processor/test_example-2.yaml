@@ -1,0 +1,66 @@
+# Source: enrich-processor/redact-processor.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: redact-processor
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "description": "Hide my IP",
+      "processors": [
+        {
+          "redact": {
+            "field": "message",
+            "patterns": [
+              "%{IP:REDACTED}",
+              "%{EMAILADDRESS:REDACTED}"
+            ],
+            "prefix": "*",
+            "suffix": "*"
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "message": "55.3.244.1 GET /index.html 15824 0.043 test@elastic.co"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          "_index": "_index",
+          "_id": "_id",
+          "_version": "-3",
+          "_source": {
+            "message": "*REDACTED* GET /index.html 15824 0.043 *REDACTED*"
+          },
+          "_ingest": {
+            "timestamp": "2023-02-01T16:53:14.560005377Z"
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

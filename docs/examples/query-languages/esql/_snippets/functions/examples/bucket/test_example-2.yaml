@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/functions/examples/bucket.md
+--- !metadata
+id: example-2
+language: esql
+topic: bucket
+subtopic: default
+example_order: 2
+--- !code
+|
+  FROM employees
+  | WHERE hire_date >= "1985-01-01T00:00:00Z" AND hire_date < "1986-01-01T00:00:00Z"
+  | STATS hires_per_month = COUNT(*) BY month = BUCKET(hire_date, 20, "1985-01-01T00:00:00Z", "1986-01-01T00:00:00Z")
+  | SORT month
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

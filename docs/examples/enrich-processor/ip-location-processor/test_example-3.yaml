@@ -1,0 +1,52 @@
+# Source: enrich-processor/ip-location-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: ip-location-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT _ingest/pipeline/ip_location
+  {
+    "description" : "Add ip geolocation info",
+    "processors" : [
+      {
+        "ip_location" : {
+          "field" : "ip"
+        }
+      }
+    ]
+  }
+
+  PUT my-index-000001/_doc/my_id?pipeline=ip_location
+  {
+    "ip": "80.231.5.0"
+  }
+
+  GET my-index-000001/_doc/my_id
+--- !result
+|
+  {
+    "_index" : "my-index-000001",
+    "_id" : "my_id",
+    "_version" : 1,
+    "_seq_no" : 71,
+    "_primary_term": 1,
+    "found" : true,
+    "_source" : {
+      "ip" : "80.231.5.0"
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

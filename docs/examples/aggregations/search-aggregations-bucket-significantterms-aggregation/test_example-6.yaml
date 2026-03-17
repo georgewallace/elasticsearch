@@ -1,0 +1,41 @@
+# Source: search-aggregations-bucket-significantterms-aggregation.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: search-aggregations-bucket-significantterms-aggregation
+subtopic: default
+example_order: 6
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "match": {
+        "city": "madrid"
+      }
+    },
+    "aggs": {
+      "tags": {
+        "significant_terms": {
+          "field": "tag",
+          "background_filter": {
+            "term": { "text": "spain" }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

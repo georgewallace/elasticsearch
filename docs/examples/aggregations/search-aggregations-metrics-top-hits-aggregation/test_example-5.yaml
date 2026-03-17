@@ -1,0 +1,89 @@
+# Source: search-aggregations-metrics-top-hits-aggregation.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: search-aggregations-metrics-top-hits-aggregation
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /sales/_search
+  {
+    "query": {
+      "term": { "tags": "car" }
+    },
+    "aggs": {
+      "by_sale": {
+        "nested": {
+          "path": "comments"
+        },
+        "aggs": {
+          "by_user": {
+            "terms": {
+              "field": "comments.username",
+              "size": 1
+            },
+            "aggs": {
+              "by_nested": {
+                "top_hits": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "by_sale": {
+        "by_user": {
+          "buckets": [
+            {
+              "key": "baddriver007",
+              "doc_count": 1,
+              "by_nested": {
+                "hits": {
+                  "total" : {
+                     "value": 1,
+                     "relation": "eq"
+                  },
+                  "max_score": 0.3616575,
+                  "hits": [
+                    {
+                      "_index": "sales",
+                      "_id": "1",
+                      "_nested": {
+                        "field": "comments",  
+                        "offset": 0 
+                      },
+                      "_score": 0.3616575,
+                      "_source": {
+                        "comment": "This car could have better brakes", 
+                        "username": "baddriver007"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+            ...
+          ]
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

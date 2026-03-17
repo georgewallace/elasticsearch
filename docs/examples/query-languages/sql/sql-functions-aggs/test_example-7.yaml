@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-7
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 7
+--- !code
+|
+  SELECT COUNT(ALL last_name) AS count_all, COUNT(DISTINCT last_name) count_distinct FROM emp;
+
+     count_all   |  count_distinct
+  ---------------+------------------
+  100            |96
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

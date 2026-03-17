@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-19
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 19
+--- !code
+|
+  SELECT languages + 1 AS l FROM emp GROUP BY l;
+
+         l
+  ---------------
+  null
+  2
+  3
+  4
+  5
+  6
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

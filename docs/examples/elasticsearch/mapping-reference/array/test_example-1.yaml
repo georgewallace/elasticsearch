@@ -1,0 +1,57 @@
+# Source: elasticsearch/mapping-reference/array.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: array
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001/_doc/1
+  {
+    "message": "some arrays in this document...",
+    "tags":  [ "elasticsearch", "wow" ], 
+    "lists": [ 
+      {
+        "name": "prog_list",
+        "description": "programming list"
+      },
+      {
+        "name": "cool_list",
+        "description": "cool stuff list"
+      }
+    ]
+  }
+
+  PUT my-index-000001/_doc/2 
+  {
+    "message": "no arrays in this document...",
+    "tags":  "elasticsearch",
+    "lists": {
+      "name": "prog_list",
+      "description": "programming list"
+    }
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "match": {
+        "tags": "elasticsearch" 
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

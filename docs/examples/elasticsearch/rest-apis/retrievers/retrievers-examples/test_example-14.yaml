@@ -1,0 +1,93 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-14
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 14
+--- !code
+|
+  GET /retrievers_example/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "rrf": {
+                          "retrievers": [
+                              {
+                                  "linear": {
+                                      "min_score": 0.5,
+                                      "retrievers": [
+                                          {
+                                              "retriever": {
+                                                  "standard": {
+                                                      "query": {
+                                                          "query_string": {
+                                                              "query": "artificial intelligence",
+                                                              "default_field": "text"
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      ],
+                                      "rank_window_size": 100,
+                                      "normalizer": "minmax"
+                                  }
+                              }
+                          ],
+                          "rank_window_size": 50
+                      }
+                  }
+              ],
+              "rank_window_size": 20
+          }
+      },
+      "size": 10
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 1,
+              "relation": "eq"
+          },
+          "max_score": 0.016393442,
+          "hits": [
+              {
+                  "_index": "retrievers_example",
+                  "_id": "2",
+                  "_score": 0.016393442,
+                  "_source": {
+                      "vector": [0.12, 0.56, 0.78],
+                      "text": "Artificial intelligence is transforming medicine, from advancing diagnostics and tailoring treatment plans to empowering predictive patient care for improved health outcomes.",
+                      "year": 2023,
+                      "topic": ["ai", "medicine"],
+                      "timestamp": "2022-01-01T12:10:30"
+                  }
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

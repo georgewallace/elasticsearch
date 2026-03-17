@@ -1,0 +1,35 @@
+# Source: search-connectors/api-tutorial.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: api-tutorial
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT _connector/my-connector-id/_configuration
+  {
+    "values": {
+      "host": "127.0.0.1",
+      "port": 5432,
+      "username": "myuser",
+      "password": "mypassword",
+      "database": "chinook",
+      "schema": "public",
+      "tables": "album,artist"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

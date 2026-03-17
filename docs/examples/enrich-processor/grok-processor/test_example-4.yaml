@@ -1,0 +1,24 @@
+# Source: enrich-processor/grok-processor.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: grok-processor
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET _ingest/processor/grok?ecs_compatibility=v1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

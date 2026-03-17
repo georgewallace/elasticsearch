@@ -1,0 +1,24 @@
+# Source: query-languages/eql/eql-syntax.md
+--- !metadata
+id: example-18
+language: eql
+topic: eql-syntax
+subtopic: default
+example_order: 18
+--- !code
+|
+  network where ?user.id != null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

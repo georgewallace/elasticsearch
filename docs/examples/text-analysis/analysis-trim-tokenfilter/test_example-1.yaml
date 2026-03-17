@@ -1,0 +1,39 @@
+# Source: text-analysis/analysis-trim-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-trim-tokenfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET _analyze
+  {
+    "tokenizer" : "keyword",
+    "text" : " fox "
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": " fox ",
+        "start_offset": 0,
+        "end_offset": 5,
+        "type": "word",
+        "position": 0
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

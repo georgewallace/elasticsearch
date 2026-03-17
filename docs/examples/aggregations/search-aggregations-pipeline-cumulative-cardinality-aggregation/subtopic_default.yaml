@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-pipeline-cumulative-cardinality-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

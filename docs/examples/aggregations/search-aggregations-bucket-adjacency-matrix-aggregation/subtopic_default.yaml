@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-bucket-adjacency-matrix-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

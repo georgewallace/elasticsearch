@@ -1,0 +1,26 @@
+# Source: query-languages/esql/_snippets/functions/examples/v_dot_product.md
+--- !metadata
+id: example-1
+language: esql
+topic: v_dot_product
+subtopic: default
+example_order: 1
+--- !code
+|
+  from colors
+  | eval similarity = v_dot_product(rgb_vector, [0, 255, 255])
+  | sort similarity desc, color asc
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

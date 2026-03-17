@@ -1,0 +1,87 @@
+# Source: scripting-languages/painless/painless-field-context.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: painless-field-context
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET seats/_search
+  {
+    "size": 2,
+    "query": {
+      "match_all": {}
+    },
+    "script_fields": {
+      "day-of-week": {
+        "script": {
+          "source": "doc['datetime'].value.getDayOfWeekEnum().getDisplayName(TextStyle.FULL, Locale.ENGLISH)"
+        }
+      },
+      "number-of-actors": {
+        "script": {
+          "source": "doc['actors'].size()"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took" : 68,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 11,
+        "relation" : "eq"
+      },
+      "max_score" : 1.0,
+      "hits" : [
+        {
+          "_index" : "seats",
+          "_id" : "1",
+          "_score" : 1.0,
+          "fields" : {
+            "day-of-week" : [
+              "Thursday"
+            ],
+            "number-of-actors" : [
+              4
+            ]
+          }
+        },
+        {
+          "_index" : "seats",
+          "_id" : "2",
+          "_score" : 1.0,
+          "fields" : {
+            "day-of-week" : [
+              "Thursday"
+            ],
+            "number-of-actors" : [
+              1
+            ]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

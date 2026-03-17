@@ -1,0 +1,93 @@
+# Source: search-aggregations-pipeline-movfn-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-pipeline-movfn-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /_search
+  {
+    "size": 0,
+    "aggs": {
+      "my_date_histo": {                  
+        "date_histogram": {
+          "field": "date",
+          "calendar_interval": "1M"
+        },
+        "aggs": {
+          "the_sum": {
+            "sum": { "field": "price" }   
+          },
+          "the_movfn": {
+            "moving_fn": {
+              "buckets_path": "the_sum",  
+              "window": 10,
+              "script": "MovingFunctions.unweightedAvg(values)"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+     "took": 11,
+     "timed_out": false,
+     "_shards": ...,
+     "hits": ...,
+     "aggregations": {
+        "my_date_histo": {
+           "buckets": [
+               {
+                   "key_as_string": "2015/01/01 00:00:00",
+                   "key": 1420070400000,
+                   "doc_count": 3,
+                   "the_sum": {
+                      "value": 550.0
+                   },
+                   "the_movfn": {
+                      "value": null
+                   }
+               },
+               {
+                   "key_as_string": "2015/02/01 00:00:00",
+                   "key": 1422748800000,
+                   "doc_count": 2,
+                   "the_sum": {
+                      "value": 60.0
+                   },
+                   "the_movfn": {
+                      "value": 550.0
+                   }
+               },
+               {
+                   "key_as_string": "2015/03/01 00:00:00",
+                   "key": 1425168000000,
+                   "doc_count": 2,
+                   "the_sum": {
+                      "value": 375.0
+                   },
+                   "the_movfn": {
+                      "value": 305.0
+                   }
+               }
+           ]
+        }
+     }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

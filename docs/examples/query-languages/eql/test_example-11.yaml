@@ -1,0 +1,156 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 11
+--- !code
+|
+  GET /my-index*/_eql/search
+  {
+    "query": """
+      sample by host
+        [any where uptime > 0]   by os
+        [any where port > 100]   by op_sys
+        [any where bool == true] by os
+    """
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": {
+        "value": 2,
+        "relation": "eq"
+      },
+      "sequences": [
+        {
+          "join_keys": [
+            "doom",                                      
+            "redhat"
+          ],
+          "events": [
+            {
+              "_index": "my-index-000001",
+              "_id": "7",
+              "_source": {
+                "@timestamp": "1234567897",
+                "@timestamp_pretty": "17-12-2022",
+                "missing_keyword": "yyy",
+                "event_type": "failure",
+                "host": "doom",
+                "uptime": 15,
+                "port": 1234,
+                "bool": true,
+                "os": "redhat",
+                "version": "20.2.0",
+                "id": 17
+              }
+            },
+            {
+              "_index": "my-index-000002",
+              "_id": "6",
+              "_source": {
+                "@timestamp": "1234568996",
+                "@timestamp_pretty": "2022-12-17",
+                "ip": "10.0.0.5",
+                "event_type": "alert",
+                "host": "doom",
+                "port": 65123,
+                "bool": true,
+                "op_sys": "redhat",
+                "id": 26
+              }
+            },
+            {
+              "_index": "my-index-000001",
+              "_id": "6",
+              "_source": {
+                "@timestamp": "1234568896",
+                "@timestamp_pretty": "17-12-2022",
+                "event_type": "alert",
+                "host": "doom",
+                "port": 65123,
+                "bool": true,
+                "os": "redhat",
+                "version": "20.10.0",
+                "id": 16
+              }
+            }
+          ]
+        },
+        {
+          "join_keys": [
+            "farcry",
+            "win10"
+          ],
+          "events": [
+            {
+              "_index": "my-index-000001",
+              "_id": "3",
+              "_source": {
+                "@timestamp": "1234567893",
+                "@timestamp_pretty": "12-12-2022",
+                "event_type": "alert",
+                "type_test": "abc",
+                "host": "farcry",
+                "uptime": 1,
+                "port": 1234,
+                "bool": false,
+                "os": "win10",
+                "version": "2.0.0",
+                "id": 13
+              }
+            },
+            {
+              "_index": "my-index-000002",
+              "_id": "3",
+              "_source": {
+                "@timestamp": "1234567993",
+                "type_test": "abc",
+                "@timestamp_pretty": "2022-12-17",
+                "event_type": "alert",
+                "host": "farcry",
+                "uptime": 1,
+                "port": 1234,
+                "bool": false,
+                "op_sys": "win10",
+                "id": 23
+              }
+            },
+            {
+              "_index": "my-index-000001",
+              "_id": "10",
+              "_source": {
+                "@timestamp": "1234567893",
+                "missing_keyword": null,
+                "ip": "10.0.0.5",
+                "event_type": "alert",
+                "host": "farcry",
+                "uptime": 1,
+                "port": 1234,
+                "bool": true,
+                "os": "win10",
+                "version": "1.2.3",
+                "id": 110
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

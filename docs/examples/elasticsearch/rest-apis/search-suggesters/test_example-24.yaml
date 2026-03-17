@@ -1,0 +1,51 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-24
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 24
+--- !code
+|
+  POST place/_search?pretty
+  {
+    "suggest": {
+      "place_suggestion": {
+        "prefix": "tim",
+        "completion": {
+          "field": "suggest",
+          "size": 10,
+          "contexts": {
+            "location": [             
+                        {
+                "lat": 43.6624803,
+                "lon": -79.3863353,
+                "precision": 2
+              },
+              {
+                "context": {
+                  "lat": 43.6624803,
+                  "lon": -79.3863353
+                },
+                "boost": 2
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

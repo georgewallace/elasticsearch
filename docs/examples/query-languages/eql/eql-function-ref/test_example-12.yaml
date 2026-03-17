@@ -1,0 +1,40 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-12
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 12
+--- !code
+|
+  multiply(2, 2)                                           // returns 4
+  multiply(0.5, 2)                                         // returns 1
+  multiply(0.25, 2)                                        // returns 0.5
+  multiply(-2, 2)                                          // returns -4
+  multiply(-2, -2)                                         // returns 4
+
+  // process.args_count = 2
+  multiply(process.args_count, 2)                          // returns 4
+  multiply(0.5, process.args_count)                        // returns 1
+  multiply(0.25, process.args_count)                       // returns 0.5
+
+  // process.parent.args_count = 3
+  multiply(process.args_count, process.parent.args_count)  // returns 6
+
+  // null handling
+  multiply(null, 2)                                        // returns null
+  multiply(2, null)                                        // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

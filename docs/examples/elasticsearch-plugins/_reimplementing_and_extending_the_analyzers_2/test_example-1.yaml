@@ -1,0 +1,40 @@
+# Source: elasticsearch-plugins/_reimplementing_and_extending_the_analyzers_2.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: _reimplementing_and_extending_the_analyzers_2
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /stempel_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "rebuilt_stempel": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "polish_stop",
+              "polish_stem"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

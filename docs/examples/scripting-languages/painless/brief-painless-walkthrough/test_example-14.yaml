@@ -1,0 +1,33 @@
+# Source: scripting-languages/painless/brief-painless-walkthrough.md
+--- !metadata
+id: example-14
+language: elastic_console
+topic: brief-painless-walkthrough
+subtopic: default
+example_order: 14
+--- !code
+|
+  POST hockey/_update_by_query
+  {
+    "script": {
+      "lang": "painless",
+      "source": """
+        ctx._source.last = ctx._source.last.replaceFirst(/[aeiou]/, m ->
+          m.group().toUpperCase(Locale.ROOT))
+      """
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

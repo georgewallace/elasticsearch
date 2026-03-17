@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-11
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 11
+--- !code
+|
+  SELECT SCORE() AS score, name, release_date FROM library WHERE QUERY('dune') ORDER BY YEAR(release_date) DESC;
+
+       score     |       name        |    release_date
+  ---------------+-------------------+--------------------
+  1.4005898      |God Emperor of Dune|1981-05-28T00:00:00Z
+  1.6086556      |Children of Dune   |1976-04-21T00:00:00Z
+  1.8893257      |Dune Messiah       |1969-10-15T00:00:00Z
+  2.2886353      |Dune               |1965-06-01T00:00:00Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

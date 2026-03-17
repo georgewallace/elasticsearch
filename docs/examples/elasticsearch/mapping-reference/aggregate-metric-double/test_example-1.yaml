@@ -1,0 +1,35 @@
+# Source: elasticsearch/mapping-reference/aggregate-metric-double.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: aggregate-metric-double
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index
+  {
+    "mappings": {
+      "properties": {
+        "my-agg-metric-field": {
+          "type": "aggregate_metric_double",
+          "metrics": [ "min", "max", "sum", "value_count" ],
+          "default_metric": "max"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

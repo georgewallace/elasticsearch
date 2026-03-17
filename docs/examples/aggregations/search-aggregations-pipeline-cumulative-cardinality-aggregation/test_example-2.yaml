@@ -1,0 +1,104 @@
+# Source: search-aggregations-pipeline-cumulative-cardinality-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-pipeline-cumulative-cardinality-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /user_hits/_search
+  {
+    "size": 0,
+    "aggs": {
+      "users_per_day": {
+        "date_histogram": {
+          "field": "timestamp",
+          "calendar_interval": "day"
+        },
+        "aggs": {
+          "distinct_users": {
+            "cardinality": {
+              "field": "user_id"
+            }
+          },
+          "total_new_users": {
+            "cumulative_cardinality": {
+              "buckets_path": "distinct_users"
+            }
+          },
+          "incremental_new_users": {
+            "derivative": {
+              "buckets_path": "total_new_users"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+     "took": 11,
+     "timed_out": false,
+     "_shards": ...,
+     "hits": ...,
+     "aggregations": {
+        "users_per_day": {
+           "buckets": [
+              {
+                 "key_as_string": "2019-01-01T00:00:00.000Z",
+                 "key": 1546300800000,
+                 "doc_count": 2,
+                 "distinct_users": {
+                    "value": 2
+                 },
+                 "total_new_users": {
+                    "value": 2
+                 }
+              },
+              {
+                 "key_as_string": "2019-01-02T00:00:00.000Z",
+                 "key": 1546387200000,
+                 "doc_count": 2,
+                 "distinct_users": {
+                    "value": 2
+                 },
+                 "total_new_users": {
+                    "value": 3
+                 },
+                 "incremental_new_users": {
+                    "value": 1.0
+                 }
+              },
+              {
+                 "key_as_string": "2019-01-03T00:00:00.000Z",
+                 "key": 1546473600000,
+                 "doc_count": 3,
+                 "distinct_users": {
+                    "value": 3
+                 },
+                 "total_new_users": {
+                    "value": 4
+                 },
+                 "incremental_new_users": {
+                    "value": 1.0
+                 }
+              }
+           ]
+        }
+     }
+  }
+--- !test
+stage: user_hits
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

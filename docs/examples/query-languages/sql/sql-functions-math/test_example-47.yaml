@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-47
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 47
+--- !code
+|
+  SELECT COSH(5), (POWER(E(), 5) + POWER(E(), -5)) / 2 AS "(e^5 + e^-5)/2";
+
+       COSH(5)     | (e^5 + e^-5)/2
+  -----------------+-----------------
+  74.20994852478785|74.20994852478783
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

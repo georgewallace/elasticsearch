@@ -1,0 +1,42 @@
+# Source: text-analysis/analysis-pattern-analyzer.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-pattern-analyzer
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "camel": {
+            "type": "pattern",
+            "pattern": "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
+          }
+        }
+      }
+    }
+  }
+
+  GET my-index-000001/_analyze
+  {
+    "analyzer": "camel",
+    "text": "MooseX::FTPClass2_beta"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

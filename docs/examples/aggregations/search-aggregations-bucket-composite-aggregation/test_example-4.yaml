@@ -1,0 +1,55 @@
+# Source: search-aggregations-bucket-composite-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-composite-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET /_search
+  {
+    "runtime_mappings": {
+      "price.discounted": {
+        "type": "double",
+        "script": """
+          double price = doc['price'].value;
+          if (doc['product'].value == 'mad max') {
+            price *= 0.8;
+          }
+          emit(price);
+        """
+      }
+    },
+    "size": 0,
+    "aggs": {
+      "my_buckets": {
+        "composite": {
+          "sources": [
+            {
+              "price": {
+                "histogram": {
+                  "interval": 5,
+                  "field": "price.discounted"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

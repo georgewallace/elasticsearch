@@ -1,0 +1,52 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-9
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 9
+--- !code
+|
+  // url.domain = "subdomain.example.com"
+  indexOf(url.domain, "d")        // returns 3
+  indexOf(url.domain, "D")        // returns null
+  indexOf(url.domain, ".")        // returns 9
+  indexOf(url.domain, ".", 9)     // returns 9
+  indexOf(url.domain, ".", 10)    // returns 17
+  indexOf(url.domain, ".", -6)    // returns 9
+
+  // Make matching case-insensitive
+  indexOf~(url.domain, "D")        // returns 4
+
+  // empty strings
+  indexOf("", "")                 // returns 0
+  indexOf(url.domain, "")         // returns 0
+  indexOf(url.domain, "", 9)      // returns 9
+  indexOf(url.domain, "", 10)     // returns 10
+  indexOf(url.domain, "", -6)     // returns 0
+
+  // missing substrings
+  indexOf(url.domain, "z")        // returns null
+  indexOf(url.domain, "z", 9)     // returns null
+
+  // start position is higher than string length
+  indexOf(url.domain, ".", 30)    // returns null
+
+  // null handling
+  indexOf(null, ".", 9)           // returns null
+  indexOf(url.domain, null, 9)    // returns null
+  indexOf(url.domain, ".", null)  // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

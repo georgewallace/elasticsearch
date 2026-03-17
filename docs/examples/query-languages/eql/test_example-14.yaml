@@ -1,0 +1,76 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-14
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 14
+--- !code
+|
+  GET /my-data-stream/_eql/search?filter_path=-hits.events._source
+  {
+    "query": """
+      process where process.name == "regsvr32.exe"
+    """,
+    "fields": [
+      "event.type",
+      "process.*",                
+      {
+        "field": "@timestamp",
+        "format": "epoch_millis"  
+      }
+    ]
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": ...,
+      "events": [
+        {
+          "_index": ".ds-my-data-stream-2099.12.07-000001",
+          "_id": "OQmfCaduce8zoHT93o4H",
+          "fields": {
+            "process.name": [
+              "regsvr32.exe"
+            ],
+            "process.name.keyword": [
+              "regsvr32.exe"
+            ],
+            "@timestamp": [
+              "4100324829000"
+            ],
+            "process.command_line": [
+              "regsvr32.exe  /s /u /i:https://...RegSvr32.sct scrobj.dll"
+            ],
+            "process.command_line.keyword": [
+              "regsvr32.exe  /s /u /i:https://...RegSvr32.sct scrobj.dll"
+            ],
+            "process.executable.keyword": [
+              "C:\\Windows\\System32\\regsvr32.exe"
+            ],
+            "process.pid": [
+              2012
+            ],
+            "process.executable": [
+              "C:\\Windows\\System32\\regsvr32.exe"
+            ]
+          }
+        },
+        ....
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

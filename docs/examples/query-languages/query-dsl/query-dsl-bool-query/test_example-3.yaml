@@ -1,0 +1,35 @@
+# Source: query-languages/query-dsl/query-dsl-bool-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-bool-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET _search
+  {
+    "query": {
+      "bool": {
+        "filter": {
+          "term": {
+            "status": "active"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

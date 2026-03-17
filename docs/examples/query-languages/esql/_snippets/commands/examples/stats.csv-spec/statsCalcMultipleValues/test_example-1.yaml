@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/commands/examples/stats.csv-spec/statsCalcMultipleValues.md
+--- !metadata
+id: example-1
+language: esql
+topic: statsCalcMultipleValues
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | STATS avg_lang = AVG(languages), max_lang = MAX(languages)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

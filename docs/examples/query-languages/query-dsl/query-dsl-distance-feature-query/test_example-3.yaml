@@ -1,0 +1,42 @@
+# Source: query-languages/query-dsl/query-dsl-distance-feature-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-distance-feature-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /items/_search
+  {
+    "query": {
+      "bool": {
+        "must": {
+          "match": {
+            "name": "chocolate"
+          }
+        },
+        "should": {
+          "distance_feature": {
+            "field": "production_date",
+            "pivot": "7d",
+            "origin": "now"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

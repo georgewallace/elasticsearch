@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-37
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 37
+--- !code
+|
+  SELECT DATEDIFF('minute', '2019-11-10T12:10:00.000Z'::datetime, '2019-11-10T12:15:59.999Z'::datetime) AS "diffInMinutes";
+
+        diffInMinutes
+  ------------------------
+  5
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

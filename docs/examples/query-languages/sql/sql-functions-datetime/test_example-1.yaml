@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-1
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 1
+--- !code
+|
+  SELECT hire_date FROM emp WHERE hire_date = '1987-03-01||+4y/y';
+
+         hire_date
+  ------------------------
+  1991-01-26T00:00:00.000Z
+  1991-10-22T00:00:00.000Z
+  1991-09-01T00:00:00.000Z
+  1991-06-26T00:00:00.000Z
+  1991-08-30T00:00:00.000Z
+  1991-12-01T00:00:00.000Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

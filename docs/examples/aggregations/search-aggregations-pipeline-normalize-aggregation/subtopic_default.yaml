@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-pipeline-normalize-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

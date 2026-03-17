@@ -1,0 +1,140 @@
+# Source: search-aggregations-metrics-rate-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-metrics-rate-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET sales/_search?filter_path=aggregations&size=0
+  {
+    "aggs": {
+      "buckets": {
+        "composite": { 
+          "sources": [
+            {
+              "month": {
+                "date_histogram": { 
+                  "field": "date",
+                  "calendar_interval": "month"
+                }
+              }
+            },
+            {
+              "type": { 
+                "terms": {
+                  "field": "type"
+                }
+              }
+            }
+          ]
+        },
+        "aggs": {
+          "avg_price": {
+            "rate": {
+              "field": "price", 
+              "unit": "day" 
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations" : {
+      "buckets" : {
+        "after_key" : {
+          "month" : 1425168000000,
+          "type" : "t-shirt"
+        },
+        "buckets" : [
+          {
+            "key" : {
+              "month" : 1420070400000,
+              "type" : "bag"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 4.838709677419355
+            }
+          },
+          {
+            "key" : {
+              "month" : 1420070400000,
+              "type" : "hat"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 6.451612903225806
+            }
+          },
+          {
+            "key" : {
+              "month" : 1420070400000,
+              "type" : "t-shirt"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 6.451612903225806
+            }
+          },
+          {
+            "key" : {
+              "month" : 1422748800000,
+              "type" : "hat"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 1.7857142857142858
+            }
+          },
+          {
+            "key" : {
+              "month" : 1422748800000,
+              "type" : "t-shirt"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 0.35714285714285715
+            }
+          },
+          {
+            "key" : {
+              "month" : 1425168000000,
+              "type" : "hat"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 6.451612903225806
+            }
+          },
+          {
+            "key" : {
+              "month" : 1425168000000,
+              "type" : "t-shirt"
+            },
+            "doc_count" : 1,
+            "avg_price" : {
+              "value" : 5.645161290322581
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

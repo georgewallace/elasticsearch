@@ -1,0 +1,60 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-15
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 15
+--- !code
+|
+  GET /my-data-stream/_eql/search?filter_path=-hits.events._source
+  {
+    "runtime_mappings": {
+      "day_of_week": {
+        "type": "keyword",
+        "script": "emit(doc['@timestamp'].value.dayOfWeekEnum.toString())"
+      }
+    },
+    "query": """
+      process where process.name == "regsvr32.exe"
+    """,
+    "fields": [
+      "@timestamp",
+      "day_of_week"
+    ]
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": ...,
+      "events": [
+        {
+          "_index": ".ds-my-data-stream-2099.12.07-000001",
+          "_id": "OQmfCaduce8zoHT93o4H",
+          "fields": {
+            "@timestamp": [
+              "2099-12-07T11:07:09.000Z"
+            ],
+            "day_of_week": [
+              "MONDAY"
+            ]
+          }
+        },
+        ....
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

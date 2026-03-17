@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-32
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 32
+--- !code
+|
+  SELECT MAX(ABS(salary / -12.0)) AS max FROM emp;
+
+         max
+  -----------------
+  6249.916666666667
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

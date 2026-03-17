@@ -1,0 +1,50 @@
+# Source: search-connectors/es-connectors-mysql.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: es-connectors-mysql
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST /.elastic-connectors/_update/connector_id
+  {
+    "doc" : {
+      "configuration": {
+        "tables": {
+          "type": "list",
+          "value": "*"
+        },
+        "ssl_enabled": {
+          "type": "bool",
+          "value": false
+        },
+        "ssl_ca": {
+          "type": "str",
+          "value": ""
+        },
+        "fetch_size": {
+          "type": "int",
+          "value": 50
+        },
+        "retry_count": {
+          "type": "int",
+          "value": 3
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

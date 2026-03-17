@@ -1,0 +1,26 @@
+# Source: scripting-languages/painless/using-datetime-in-painless.md
+--- !metadata
+id: example-5
+language: painless
+topic: using-datetime-in-painless
+subtopic: default
+example_order: 5
+--- !code
+|
+  ZonedDateTime zdt =
+          ZonedDateTime.of(1983, 10, 13, 22, 15, 30, 0, ZoneId.of('Z'));
+  String datetime = zdt.format(DateTimeFormatter.ISO_INSTANT);
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

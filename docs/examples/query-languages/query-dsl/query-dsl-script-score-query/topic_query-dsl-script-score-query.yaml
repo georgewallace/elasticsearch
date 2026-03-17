@@ -1,0 +1,10 @@
+id: query-dsl-script-score-query
+title: Query Dsl Script Score Query
+description: 
+
+setup:
+
+
+teardown: |
+  DELETE my-index-000001
+  DELETE my-index-bit-vectors

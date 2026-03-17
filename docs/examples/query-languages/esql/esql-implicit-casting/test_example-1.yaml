@@ -1,0 +1,28 @@
+# Source: query-languages/esql/esql-implicit-casting.md
+--- !metadata
+id: example-1
+language: esql
+topic: esql-implicit-casting
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | EVAL dd_ns1=date_diff("day", to_datetime("2023-12-02T11:00:00.00Z"), birth_date)
+  | SORT emp_no
+  | KEEP dd_ns1
+  | LIMIT 1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,30 @@
+# Source: query-languages/esql/esql-query-tips.md
+--- !metadata
+id: example-19
+language: esql
+topic: esql-query-tips
+subtopic: default
+example_order: 19
+--- !code
+|
+  FROM web-logs
+  | WHERE @timestamp > NOW() - 24 hours
+  | STATS
+      requests = COUNT(*),
+      unique_ips = COUNT_DISTINCT(client.ip)
+    BY bucket = DATE_TRUNC(1 hour, @timestamp)
+  | SORT bucket DESC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

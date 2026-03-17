@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/date_diff.md
+--- !metadata
+id: example-1
+language: esql
+topic: date_diff
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW date1 = TO_DATETIME("2023-12-02T11:00:00.000Z"),
+      date2 = TO_DATETIME("2023-12-02T11:00:00.001Z")
+  | EVAL dd_ms = DATE_DIFF("microseconds", date1, date2)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

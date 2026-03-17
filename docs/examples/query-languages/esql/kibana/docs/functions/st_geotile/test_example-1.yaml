@@ -1,0 +1,32 @@
+# Source: query-languages/esql/kibana/docs/functions/st_geotile.md
+--- !metadata
+id: example-1
+language: esql
+topic: st_geotile
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM airports
+  | EVAL geotile = ST_GEOTILE(location, 2)
+  | STATS
+      count = COUNT(geotile),
+      centroid = ST_CENTROID_AGG(location)
+        BY geotile
+  | EVAL geotileString = TO_STRING(geotile)
+  | SORT count DESC, geotileString ASC
+  | KEEP count, centroid, geotileString
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

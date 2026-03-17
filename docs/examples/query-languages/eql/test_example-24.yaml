@@ -1,0 +1,24 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-24
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 24
+--- !code
+|
+  DELETE /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

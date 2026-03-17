@@ -1,0 +1,218 @@
+# Source: elasticsearch/rest-apis/search-profile.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-profile
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "profile": true, 
+    "query" : {
+      "match" : { "message" : "GET /search" }
+    }
+  }
+--- !result
+|
+  {
+    "took": 25,
+    "timed_out": false,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped": 0,
+      "failed": 0
+    },
+    "hits": {
+      "total": {
+        "value": 5,
+        "relation": "eq"
+      },
+      "max_score": 0.17402273,
+      "hits": [...] 
+    },
+    "profile": {
+      "shards": [
+        {
+          "id": "[q2aE02wS1R8qQFnYu6vDVQ][my-index-000001][0]",
+          "node_id": "q2aE02wS1R8qQFnYu6vDVQ",
+          "shard_id": 0,
+          "index": "my-index-000001",
+          "cluster": "(local)",
+          "searches": [
+            {
+              "query": [
+                {
+                  "type": "BooleanQuery",
+                  "description": "message:get message:search",
+                  "time_in_nanos" : 11972972,
+                  "breakdown" : {
+                    "set_min_competitive_score_count": 0,
+                    "match_count": 5,
+                    "shallow_advance_count": 0,
+                    "set_min_competitive_score": 0,
+                    "next_doc": 39022,
+                    "match": 4456,
+                    "next_doc_count": 5,
+                    "score_count": 5,
+                    "compute_max_score_count": 0,
+                    "compute_max_score": 0,
+                    "advance": 84525,
+                    "advance_count": 1,
+                    "score": 37779,
+                    "build_scorer_count": 2,
+                    "create_weight": 4694895,
+                    "shallow_advance": 0,
+                    "create_weight_count": 1,
+                    "build_scorer": 7112295,
+                    "count_weight": 0,
+                    "count_weight_count": 0
+                  },
+                  "children": [
+                    {
+                      "type": "TermQuery",
+                      "description": "message:get",
+                      "time_in_nanos": 3801935,
+                      "breakdown": {
+                        "set_min_competitive_score_count": 0,
+                        "match_count": 0,
+                        "shallow_advance_count": 3,
+                        "set_min_competitive_score": 0,
+                        "next_doc": 0,
+                        "match": 0,
+                        "next_doc_count": 0,
+                        "score_count": 5,
+                        "compute_max_score_count": 3,
+                        "compute_max_score": 32487,
+                        "advance": 5749,
+                        "advance_count": 6,
+                        "score": 16219,
+                        "build_scorer_count": 3,
+                        "create_weight": 2382719,
+                        "shallow_advance": 9754,
+                        "create_weight_count": 1,
+                        "build_scorer": 1355007,
+                        "count_weight": 0,
+                        "count_weight_count": 0
+                      }
+                    },
+                    {
+                      "type": "TermQuery",
+                      "description": "message:search",
+                      "time_in_nanos": 205654,
+                      "breakdown": {
+                        "set_min_competitive_score_count": 0,
+                        "match_count": 0,
+                        "shallow_advance_count": 3,
+                        "set_min_competitive_score": 0,
+                        "next_doc": 0,
+                        "match": 0,
+                        "next_doc_count": 0,
+                        "score_count": 5,
+                        "compute_max_score_count": 3,
+                        "compute_max_score": 6678,
+                        "advance": 12733,
+                        "advance_count": 6,
+                        "score": 6627,
+                        "build_scorer_count": 3,
+                        "create_weight": 130951,
+                        "shallow_advance": 2512,
+                        "create_weight_count": 1,
+                        "build_scorer": 46153,
+                        "count_weight": 0,
+                        "count_weight_count": 0
+                      }
+                    }
+                  ]
+                }
+              ],
+              "rewrite_time": 451233,
+              "collector": [
+                {
+                  "name": "QueryPhaseCollector",
+                  "reason": "search_query_phase",
+                  "time_in_nanos": 775274,
+                  "children" : [
+                    {
+                      "name": "SimpleTopScoreDocCollector",
+                      "reason": "search_top_hits",
+                      "time_in_nanos": 775274
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations": [],
+          "fetch": {
+            "type": "fetch",
+            "description": "",
+            "time_in_nanos": 660555,
+            "breakdown": {
+              "next_reader": 7292,
+              "next_reader_count": 1,
+              "load_stored_fields": 299325,
+              "load_stored_fields_count": 5,
+              "load_source": 3863,
+              "load_source_count": 5
+            },
+            "debug": {
+              "stored_fields": ["_id", "_routing", "_source"]
+            },
+            "children": [
+              {
+                "type" : "FetchFieldsPhase",
+                "description" : "",
+                "time_in_nanos" : 238762,
+                "breakdown" : {
+                  "process_count" : 5,
+                  "process" : 227914,
+                  "next_reader" : 10848,
+                  "next_reader_count" : 1
+                }
+              },
+              {
+                "type": "FetchSourcePhase",
+                "description": "",
+                "time_in_nanos": 20443,
+                "breakdown": {
+                  "next_reader": 745,
+                  "next_reader_count": 1,
+                  "process": 19698,
+                  "process_count": 5
+                },
+                "debug": {
+                  "fast_path": 5
+                }
+              },
+              {
+                "type": "StoredFieldsPhase",
+                "description": "",
+                "time_in_nanos": 5310,
+                "breakdown": {
+                  "next_reader": 745,
+                  "next_reader_count": 1,
+                  "process": 4445,
+                  "process_count": 5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

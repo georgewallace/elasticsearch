@@ -1,0 +1,29 @@
+# Source: elasticsearch/rest-apis/collapse-search-results.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: collapse-search-results
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /my-index-000001/_doc?routing=xyz      
+  {
+    "@timestamp": "2099-11-15T13:12:00",
+    "message": "You know for search!",
+    "user.id": "xyz"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

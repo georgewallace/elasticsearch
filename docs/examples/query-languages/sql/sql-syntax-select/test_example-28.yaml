@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-28
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 28
+--- !code
+|
+  SELECT MIN(salary) AS min, MAX(salary) AS max, MAX(salary) - MIN(salary) AS diff FROM emp GROUP BY languages HAVING diff - max % min > 0 AND AVG(salary) > 30000;
+
+        min      |      max      |     diff
+  ---------------+---------------+---------------
+  28336          |74999          |46663
+  25976          |73717          |47741
+  29175          |73578          |44403
+  26436          |74970          |48534
+  27215          |74572          |47357
+  25324          |66817          |41493
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

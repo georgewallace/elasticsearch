@@ -1,0 +1,94 @@
+# Source: query-languages/esql/esql-cross-clusters.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: esql-cross-clusters
+subtopic: default
+example_order: 7
+--- !code
+|
+  POST /_query/async?format=json
+  {
+    "query": """
+      FROM my-index-000001,cluster_one:my-index-000001,cluster_two:my-index*
+      | STATS COUNT(http.response.status_code) BY user.id
+      | LIMIT 2
+    """,
+    "include_ccs_metadata": true
+  }
+--- !result
+|
+  {
+    "is_running": false,
+    "took": 42,  
+    "is_partial": false, 
+    "columns" : [
+      {
+        "name" : "COUNT(http.response.status_code)",
+        "type" : "long"
+      },
+      {
+        "name" : "user.id",
+        "type" : "keyword"
+      }
+    ],
+    "values" : [
+      [4, "elkbee"],
+      [1, "kimchy"]
+    ],
+    "_clusters": {  
+      "total": 3,
+      "successful": 3,
+      "running": 0,
+      "skipped": 0,
+      "partial": 0,
+      "failed": 0,
+      "details": { 
+        "(local)": { 
+          "status": "successful",
+          "indices": "blogs",
+          "took": 41,  
+          "_shards": { 
+            "total": 13,
+            "successful": 13,
+            "skipped": 0,
+            "failed": 0
+          }
+        },
+        "cluster_one": {
+          "status": "successful",
+          "indices": "cluster_one:my-index-000001",
+          "took": 38,
+          "_shards": {
+            "total": 4,
+            "successful": 4,
+            "skipped": 0,
+            "failed": 0
+          }
+        },
+        "cluster_two": {
+          "status": "successful",
+          "indices": "cluster_two:my-index*",
+          "took": 40,
+          "_shards": {
+            "total": 18,
+            "successful": 18,
+            "skipped": 1,
+            "failed": 0
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

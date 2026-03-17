@@ -1,0 +1,116 @@
+# Source: text-analysis/analysis-keyword-repeat-tokenfilter.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-keyword-repeat-tokenfilter
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_analyze
+  {
+    "tokenizer": "whitespace",
+    "filter": [
+      "keyword_repeat",
+      "stemmer"
+    ],
+    "text": "fox running and jumping",
+    "explain": true,
+    "attributes": "keyword"
+  }
+--- !result
+|
+  {
+    "detail": {
+      "custom_analyzer": true,
+      "charfilters": [],
+      "tokenizer": ...,
+      "tokenfilters": [
+        {
+          "name": "keyword_repeat",
+          "tokens": ...
+        },
+        {
+          "name": "stemmer",
+          "tokens": [
+            {
+              "token": "fox",
+              "start_offset": 0,
+              "end_offset": 3,
+              "type": "word",
+              "position": 0,
+              "keyword": true
+            },
+            {
+              "token": "fox",
+              "start_offset": 0,
+              "end_offset": 3,
+              "type": "word",
+              "position": 0,
+              "keyword": false
+            },
+            {
+              "token": "running",
+              "start_offset": 4,
+              "end_offset": 11,
+              "type": "word",
+              "position": 1,
+              "keyword": true
+            },
+            {
+              "token": "run",
+              "start_offset": 4,
+              "end_offset": 11,
+              "type": "word",
+              "position": 1,
+              "keyword": false
+            },
+            {
+              "token": "and",
+              "start_offset": 12,
+              "end_offset": 15,
+              "type": "word",
+              "position": 2,
+              "keyword": true
+            },
+            {
+              "token": "and",
+              "start_offset": 12,
+              "end_offset": 15,
+              "type": "word",
+              "position": 2,
+              "keyword": false
+            },
+            {
+              "token": "jumping",
+              "start_offset": 16,
+              "end_offset": 23,
+              "type": "word",
+              "position": 3,
+              "keyword": true
+            },
+            {
+              "token": "jump",
+              "start_offset": 16,
+              "end_offset": 23,
+              "type": "word",
+              "position": 3,
+              "keyword": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

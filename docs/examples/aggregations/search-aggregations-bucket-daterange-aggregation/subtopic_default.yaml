@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-bucket-daterange-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

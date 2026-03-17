@@ -1,0 +1,61 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 12
+--- !code
+|
+  POST music/_search?pretty
+  {
+    "suggest": {
+      "song-suggest": {
+        "prefix": "nir",        
+        "completion": {         
+            "field": "suggest"  
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits": ...
+    "took": 2,
+    "timed_out": false,
+    "suggest": {
+      "song-suggest" : [ {
+        "text" : "nir",
+        "offset" : 0,
+        "length" : 3,
+        "options" : [ {
+          "text" : "Nirvana",
+          "_index": "music",
+          "_id": "1",
+          "_score": 1.0,
+          "_source": {
+            "suggest": ["Nevermind", "Nirvana"]
+          }
+        } ]
+      } ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

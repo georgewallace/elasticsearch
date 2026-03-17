@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-metrics-percentile-rank-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

@@ -1,0 +1,64 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-stop.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-kuromoji-stop
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "analyzer_with_ja_stop": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [
+                "ja_stop"
+              ]
+            }
+          },
+          "filter": {
+            "ja_stop": {
+              "type": "ja_stop",
+              "stopwords": [
+                "_japanese_",
+                "ストップ"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "analyzer_with_ja_stop",
+    "text": "ストップは消える"
+  }
+--- !result
+|
+  {
+    "tokens" : [ {
+      "token" : "消える",
+      "start_offset" : 5,
+      "end_offset" : 8,
+      "type" : "word",
+      "position" : 2
+    } ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

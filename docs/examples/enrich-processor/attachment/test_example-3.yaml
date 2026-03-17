@@ -1,0 +1,57 @@
+# Source: enrich-processor/attachment.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: attachment
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT _ingest/pipeline/attachment
+  {
+    "description" : "Extract attachment information including original binary",
+    "processors" : [
+      {
+        "attachment" : {
+          "field" : "data",
+          "remove_binary": false
+        }
+      }
+    ]
+  }
+  PUT my-index-000001/_doc/my_id?pipeline=attachment
+  {
+    "data": "e1xydGYxXGFuc2kNCkxvcmVtIGlwc3VtIGRvbG9yIHNpdCBhbWV0DQpccGFyIH0="
+  }
+  GET my-index-000001/_doc/my_id
+--- !result
+|
+  {
+    "found": true,
+    "_index": "my-index-000001",
+    "_id": "my_id",
+    "_version": 1,
+    "_seq_no": 22,
+    "_primary_term": 1,
+    "_source": {
+      "data": "e1xydGYxXGFuc2kNCkxvcmVtIGlwc3VtIGRvbG9yIHNpdCBhbWV0DQpccGFyIH0=",
+      "attachment": {
+        "content_type": "application/rtf",
+        "language": "ro",
+        "content": "Lorem ipsum dolor sit amet",
+        "content_length": 28
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

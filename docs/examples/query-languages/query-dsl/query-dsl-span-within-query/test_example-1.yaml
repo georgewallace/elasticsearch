@@ -1,0 +1,43 @@
+# Source: query-languages/query-dsl/query-dsl-span-within-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-span-within-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "span_within": {
+        "little": {
+          "span_term": { "field1": "foo" }
+        },
+        "big": {
+          "span_near": {
+            "clauses": [
+              { "span_term": { "field1": "bar" } },
+              { "span_term": { "field1": "baz" } }
+            ],
+            "slop": 5,
+            "in_order": true
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

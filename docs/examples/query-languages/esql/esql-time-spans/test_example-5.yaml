@@ -1,0 +1,33 @@
+# Source: query-languages/esql/esql-time-spans.md
+--- !metadata
+id: example-5
+language: esql
+topic: esql-time-spans
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /_query
+  {
+     "query": """
+     FROM employees
+     | WHERE hire_date >= "1985-01-01T00:00:00Z" AND hire_date < "1986-01-01T00:00:00Z"
+     | STATS hires_per_week = COUNT(*) BY week = BUCKET(hire_date, ?timespan)
+     | SORT week
+     """,
+     "params": [{"timespan" : "1 week"}]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

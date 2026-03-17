@@ -1,0 +1,27 @@
+# Source: scripting-languages/painless/using-datetime-in-painless.md
+--- !metadata
+id: example-1
+language: painless
+topic: using-datetime-in-painless
+subtopic: default
+example_order: 1
+--- !code
+|
+  String milliSinceEpochString = "434931330000";
+  long milliSinceEpoch = Long.parseLong(milliSinceEpochString);
+  Instant instant = Instant.ofEpochMilli(milliSinceEpoch);
+  ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, ZoneId.of('Z'));
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

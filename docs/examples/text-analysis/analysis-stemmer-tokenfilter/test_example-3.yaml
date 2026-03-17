@@ -1,0 +1,45 @@
+# Source: text-analysis/analysis-stemmer-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-stemmer-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "standard",
+            "filter": [
+              "lowercase",
+              "my_stemmer"
+            ]
+          }
+        },
+        "filter": {
+          "my_stemmer": {
+            "type": "stemmer",
+            "language": "light_german"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

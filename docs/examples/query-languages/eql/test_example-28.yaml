@@ -1,0 +1,29 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-28
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 28
+--- !code
+|
+  GET /cluster_one:my-data-stream,cluster_two:my-data-stream/_eql/search
+  {
+    "query": """
+      process where process.name == "regsvr32.exe"
+    """
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

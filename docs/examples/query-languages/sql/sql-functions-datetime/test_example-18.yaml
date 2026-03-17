@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-18
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 18
+--- !code
+|
+  SELECT CURRENT_TIME(1) AS result;
+
+           result
+  ------------------------
+  12:31:27.2Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

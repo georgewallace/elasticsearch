@@ -1,0 +1,35 @@
+# Source: search-aggregations-bucket-datehistogram-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-datehistogram-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST /sales/_search?size=0
+  {
+    "aggs": {
+      "sales_over_time": {
+        "date_histogram": {
+          "field": "date",
+          "fixed_interval": "2w"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

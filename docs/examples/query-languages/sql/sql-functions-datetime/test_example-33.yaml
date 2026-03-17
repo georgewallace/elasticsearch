@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-33
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 33
+--- !code
+|
+  SELECT DATE_DIFF('week', '2019-09-04T11:22:33.000Z'::datetime, '2016-12-08T22:33:11.000Z'::datetime) AS "diffInWeeks";
+
+        diffInWeeks
+  ------------------------
+  -143
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

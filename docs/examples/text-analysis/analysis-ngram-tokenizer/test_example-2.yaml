@@ -1,0 +1,52 @@
+# Source: text-analysis/analysis-ngram-tokenizer.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-ngram-tokenizer
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "my_tokenizer"
+          }
+        },
+        "tokenizer": {
+          "my_tokenizer": {
+            "type": "ngram",
+            "min_gram": 3,
+            "max_gram": 3,
+            "token_chars": [
+              "letter",
+              "digit"
+            ]
+          }
+        }
+      }
+    }
+  }
+
+  POST my-index-000001/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "2 Quick Foxes."
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

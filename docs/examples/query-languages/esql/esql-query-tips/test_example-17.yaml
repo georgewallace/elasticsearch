@@ -1,0 +1,31 @@
+# Source: query-languages/esql/esql-query-tips.md
+--- !metadata
+id: example-17
+language: esql
+topic: esql-query-tips
+subtopic: default
+example_order: 17
+--- !code
+|
+  FROM metrics-*
+  | WHERE @timestamp > NOW() - 15 minutes
+  | STATS
+      avg_cpu = AVG(system.cpu.percent),
+      avg_mem = AVG(system.memory.used.pct),
+      host_count = COUNT_DISTINCT(host.name)
+    BY service.name
+  | SORT avg_cpu DESC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

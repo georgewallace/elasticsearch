@@ -1,0 +1,47 @@
+# Source: elasticsearch-plugins/analysis-icu-folding.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-icu-folding
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT icu_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "swedish_analyzer": {
+              "tokenizer": "icu_tokenizer",
+              "filter": [
+                "swedish_folding",
+                "lowercase"
+              ]
+            }
+          },
+          "filter": {
+            "swedish_folding": {
+              "type": "icu_folding",
+              "unicode_set_filter": "[^åäöÅÄÖ]"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

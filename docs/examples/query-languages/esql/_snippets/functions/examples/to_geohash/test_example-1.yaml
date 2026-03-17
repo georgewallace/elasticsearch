@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/to_geohash.md
+--- !metadata
+id: example-1
+language: esql
+topic: to_geohash
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW string = "u3bu"
+  | EVAL geohash = TO_GEOHASH(string)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

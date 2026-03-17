@@ -1,0 +1,30 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-15
+language: esql
+topic: esql-search-tutorial
+subtopic: default
+example_order: 15
+--- !code
+|
+  FROM cooking_blog METADATA _score
+  | WHERE MATCH(title, "vegetarian curry", {"boost": 2.0})  # Title matches are twice as important
+      OR MATCH(description, "vegetarian curry")
+      OR MATCH(tags, "vegetarian curry")
+  | KEEP title, description, tags, _score
+  | SORT _score DESC
+  | LIMIT 1000
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,25 @@
+# Source: scripting-languages/painless/painless-operators-array.md
+--- !metadata
+id: example-6
+language: painless
+topic: painless-operators-array
+subtopic: default
+example_order: 6
+--- !code
+|
+  int[] x = new int[10]; 
+  int l = x.length;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

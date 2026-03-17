@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/functions/examples/bucket.md
+--- !metadata
+id: example-9
+language: esql
+topic: bucket
+subtopic: default
+example_order: 9
+--- !code
+|
+  FROM employees
+  | STATS s1 = b1 + 1, s2 = BUCKET(salary / 1000 + 999, 50.) + 2 BY b1 = BUCKET(salary / 100 + 99, 50.), b2 = BUCKET(salary / 1000 + 999, 50.)
+  | SORT b1, b2
+  | KEEP s1, b1, s2, b2
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,43 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-2
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 2
+--- !code
+|
+  // file.path = "C:\\Windows\\System32\\cmd.exe"
+  between(file.path, "System32\\\\", ".exe")                // returns "cmd"
+  between(file.path, "system32\\\\", ".exe")                // returns ""
+  between(file.path, "workspace\\\\", ".exe")               // returns ""
+
+  // Make matching case-insensitive
+  between~(file.path, "system32\\\\", ".exe")               // returns "cmd"
+
+  // Greedy matching defaults to false.
+  between(file.path, "\\\\", "\\\\", false)                 // returns "Windows"
+
+  // Sets greedy matching to true
+  between(file.path, "\\\\", "\\\\", true)                  // returns "Windows\\System32"
+
+  // empty source string
+  between("", "System32\\\\", ".exe")                       // returns ""
+  between("", "", "")                                       // returns ""
+
+  // null handling
+  between(null, "System32\\\\", ".exe")                     // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

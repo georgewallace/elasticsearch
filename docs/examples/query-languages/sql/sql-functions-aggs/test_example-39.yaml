@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-39
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 39
+--- !code
+|
+  SELECT MIN(salary) AS min, MAX(salary) AS max, KURTOSIS(salary) AS k FROM emp;
+
+        min      |      max      |        k
+  ---------------+---------------+------------------
+  25324          |74999          |2.0444718929142986
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

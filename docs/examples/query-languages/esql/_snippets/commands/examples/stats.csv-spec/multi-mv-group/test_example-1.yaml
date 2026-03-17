@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/commands/examples/stats.csv-spec/multi-mv-group.md
+--- !metadata
+id: example-1
+language: esql
+topic: multi-mv-group
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW price = 10, color = ["blue", "pink", "yellow"], size = ["s", "m", "l"]
+  | STATS SUM(price) BY color, size
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

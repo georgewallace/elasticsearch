@@ -1,0 +1,35 @@
+# Source: elasticsearch/rest-apis/common-options.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: common-options
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search?q=kimchy&filter_path=took,hits.hits._id,hits.hits._score
+--- !result
+|
+  {
+    "took" : 3,
+    "hits" : {
+      "hits" : [
+        {
+          "_id" : "0",
+          "_score" : 1.6375021
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

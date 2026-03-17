@@ -1,0 +1,30 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-10
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 10
+--- !code
+|
+  length("explorer.exe")         // returns 12
+  length("start explorer.exe")   // returns 18
+  length("")                     // returns 0
+  length(null)                   // returns null
+
+  // process.name = "regsvr32.exe"
+  length(process.name)           // returns 12
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

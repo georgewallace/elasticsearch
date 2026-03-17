@@ -1,0 +1,54 @@
+# Source: elasticsearch/rest-apis/reciprocal-rank-fusion.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: reciprocal-rank-fusion
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET example-index/_search
+  {
+      "retriever": {
+          "rrf": { 
+              "retrievers": [
+                  {
+                      "standard": { 
+                          "query": {
+                              "term": {
+                                  "text": "blue shoes sale"
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "standard": { 
+                          "query": {
+                              "sparse_vector":{
+                                  "field": "ml.tokens",
+                                  "inference_id": "my_elser_model",
+                                  "query": "What blue shoes are on sale?"
+                              }
+                          }
+                      }
+                  }
+              ],
+              "rank_window_size": 50,
+              "rank_constant": 20
+          }
+      }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

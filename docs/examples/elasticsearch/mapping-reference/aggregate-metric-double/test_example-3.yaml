@@ -1,0 +1,42 @@
+# Source: elasticsearch/mapping-reference/aggregate-metric-double.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: aggregate-metric-double
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT stats-index/_doc/1
+  {
+    "agg_metric": {
+      "min": -302.50,
+      "max": 702.30,
+      "sum": 200.0,
+      "value_count": 25
+    }
+  }
+
+  PUT stats-index/_doc/2
+  {
+    "agg_metric": {
+      "min": -93.00,
+      "max": 1702.30,
+      "sum": 300.00,
+      "value_count": 25
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

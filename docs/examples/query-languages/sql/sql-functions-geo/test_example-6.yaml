@@ -1,0 +1,27 @@
+# Source: query-languages/sql/sql-functions-geo.md
+--- !metadata
+id: example-6
+language: sql
+topic: sql-functions-geo
+subtopic: default
+example_order: 6
+--- !code
+|
+  SELECT ST_GeometryType(ST_WKTToSQL('POINT (10 20)')) type;
+
+        type:s
+  POINT
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

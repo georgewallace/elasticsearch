@@ -1,0 +1,40 @@
+# Source: elasticsearch/rest-apis/update-document.md
+--- !metadata
+id: example-13
+language: elastic_console
+topic: update-document
+subtopic: default
+example_order: 13
+--- !code
+|
+  POST test/_update/1
+  {
+    "scripted_upsert": true,
+    "script": {
+      "source": """
+        if ( ctx.op == 'create' ) {
+          ctx._source.counter = params.count
+        } else {
+          ctx._source.counter += params.count
+        }
+      """,
+      "params": {
+        "count": 4
+      }
+    },
+    "upsert": {}
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-116
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 116
+--- !code
+|
+  SELECT WEEK(CAST('1988-01-05T09:22:10Z' AS TIMESTAMP)) AS week, ISOWEEK(CAST('1988-01-05T09:22:10Z' AS TIMESTAMP)) AS isoweek;
+
+        week     |   isoweek
+  ---------------+---------------
+  2              |1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

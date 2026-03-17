@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-81
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 81
+--- !code
+|
+  SELECT TO_CHAR(CAST('2020-04-05T11:22:33.987654' AS DATETIME), 'DD/MM/YYYY HH24:MI:SS.FF2') AS "datetime";
+
+        datetime
+  ------------------
+  05/04/2020 11:22:33.98
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

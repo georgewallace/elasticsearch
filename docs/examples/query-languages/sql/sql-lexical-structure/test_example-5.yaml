@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-lexical-structure.md
+--- !metadata
+id: example-5
+language: sql
+topic: sql-lexical-structure
+subtopic: default
+example_order: 5
+--- !code
+|
+  1969    -- integer notation
+  3.14    -- decimal notation
+  .1234   -- decimal notation starting with decimal point
+  4E5     -- scientific notation (with exponent marker)
+  1.2e-3  -- scientific notation with decimal point
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

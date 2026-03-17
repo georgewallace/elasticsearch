@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-49
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 49
+--- !code
+|
+  SELECT languages, PERCENTILE_RANK(salary, 65000) AS rank FROM emp GROUP BY languages;
+
+     languages   |      rank
+  ---------------+-----------------
+  null           |73.65766569962062
+  1              |73.7291625157734
+  2              |88.88005607010643
+  3              |79.43662623295829
+  4              |85.70446389643493
+  5              |96.79075152940749
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

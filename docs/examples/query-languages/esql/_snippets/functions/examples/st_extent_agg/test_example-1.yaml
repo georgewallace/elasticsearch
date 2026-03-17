@@ -1,0 +1,26 @@
+# Source: query-languages/esql/_snippets/functions/examples/st_extent_agg.md
+--- !metadata
+id: example-1
+language: esql
+topic: st_extent_agg
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM airports
+  | WHERE country == "India"
+  | STATS extent = ST_EXTENT_AGG(location)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

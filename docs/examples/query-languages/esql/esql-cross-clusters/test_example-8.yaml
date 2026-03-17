@@ -1,0 +1,75 @@
+# Source: query-languages/esql/esql-cross-clusters.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: esql-cross-clusters
+subtopic: default
+example_order: 8
+--- !code
+|
+  POST /_query/async?format=json
+  {
+    "query": """
+      FROM cluster_one:my-index*,cluster_two:logs*
+      | STATS COUNT(http.response.status_code) BY user.id
+      | LIMIT 2
+    """,
+    "include_ccs_metadata": true
+  }
+--- !result
+|
+  {
+    "is_running": false,
+    "took": 55,
+    "is_partial": true, 
+    "columns": [
+       ...
+    ],
+    "values": [
+       ...
+    ],
+    "_clusters": {
+      "total": 2,
+      "successful": 1,
+      "running": 0,
+      "skipped": 1, 
+      "partial": 0,
+      "failed": 0,
+      "details": {
+        "cluster_one": {
+          "status": "successful",
+          "indices": "cluster_one:my-index*",
+          "took": 38,
+          "_shards": {
+            "total": 4,
+            "successful": 4,
+            "skipped": 0,
+            "failed": 0
+          }
+        },
+        "cluster_two": {
+          "status": "skipped", 
+          "indices": "cluster_two:logs*",
+          "took": 0,
+          "_shards": {
+            "total": 0, 
+            "successful": 0,
+            "skipped": 0,
+            "failed": 0
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

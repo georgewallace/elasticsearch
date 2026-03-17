@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/date_nanos.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: date_nanos
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "date": { "type": "date_nanos" }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "date": ["2015-01-01T12:10:30.000Z", "2014-01-01T12:10:30.000Z"]
+  }
+--- !result
+|
+  {
+    "date": ["2014-01-01T12:10:30.000Z", "2015-01-01T12:10:30.000Z"]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

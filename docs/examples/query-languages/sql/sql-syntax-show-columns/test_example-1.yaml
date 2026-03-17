@@ -1,0 +1,29 @@
+# Source: query-languages/sql/sql-syntax-show-columns.md
+--- !metadata
+id: example-1
+language: sql
+topic: sql-syntax-show-columns
+subtopic: default
+example_order: 1
+--- !code
+|
+  SHOW COLUMNS
+      [CATALOG identifier]? 
+      [INCLUDE FROZEN]?     
+      [FROM | IN]
+      [table_identifier |   
+       LIKE pattern]
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

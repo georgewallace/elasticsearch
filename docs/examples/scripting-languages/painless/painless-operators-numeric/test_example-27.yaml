@@ -1,0 +1,25 @@
+# Source: scripting-languages/painless/painless-operators-numeric.md
+--- !metadata
+id: example-27
+language: painless
+topic: painless-operators-numeric
+subtopic: default
+example_order: 27
+--- !code
+|
+  int i = 32 >> 1;  
+  long l = i >> 2L;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

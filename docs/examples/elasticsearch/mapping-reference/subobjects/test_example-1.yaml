@@ -1,0 +1,79 @@
+# Source: elasticsearch/mapping-reference/subobjects.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: subobjects
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "metrics": {
+          "type":  "object",
+          "subobjects": false, 
+          "properties": {
+            "time": { "type": "long" },
+            "time.min": { "type": "long" },
+            "time.max": { "type": "long" }
+          }
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/metric_1
+  {
+    "metrics.time" : 100, 
+    "metrics.time.min" : 10,
+    "metrics.time.max" : 900
+  }
+
+  PUT my-index-000001/_doc/metric_2
+  {
+    "metrics" : {
+      "time" : 100, 
+      "time.min" : 10,
+      "time.max" : 900
+    }
+  }
+
+  GET my-index-000001/_mapping
+--- !result
+|
+  {
+    "my-index-000001" : {
+      "mappings" : {
+        "properties" : {
+          "metrics" : {
+            "subobjects" : false,
+            "properties" : {
+              "time" : {
+                "type" : "long"
+              },
+              "time.min" : { 
+                "type" : "long"
+              },
+              "time.max" : {
+                "type" : "long"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

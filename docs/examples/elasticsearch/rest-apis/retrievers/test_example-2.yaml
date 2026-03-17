@@ -1,0 +1,44 @@
+# Source: elasticsearch/rest-apis/retrievers.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: retrievers
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /books
+  {
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text",
+          "copy_to": "title_semantic"
+        },
+        "description": {
+          "type": "text",
+          "copy_to": "description_semantic"
+        },
+        "title_semantic": {
+          "type": "semantic_text"
+        },
+        "description_semantic": {
+          "type": "semantic_text"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

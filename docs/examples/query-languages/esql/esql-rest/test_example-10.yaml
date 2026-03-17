@@ -1,0 +1,35 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 10
+--- !code
+|
+  POST /_query
+  {
+    "query": """
+      FROM library
+      | EVAL year = DATE_EXTRACT("year", release_date)
+      | WHERE page_count > ? AND author == ?
+      | STATS count = COUNT(*) by year
+      | WHERE count > ?
+      | LIMIT 5
+    """,
+    "params": [300, "Frank Herbert", 0]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

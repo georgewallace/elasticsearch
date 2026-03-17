@@ -1,0 +1,61 @@
+# Source: elasticsearch/rest-apis/update-by-query-api.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: update-by-query-api
+subtopic: default
+example_order: 8
+--- !code
+|
+  GET _tasks?detailed=true&actions=*byquery
+--- !result
+|
+  {
+    "nodes" : {
+      "r1A2WoRbTwKZ516z6NEs5A" : {
+        "name" : "r1A2WoR",
+        "transport_address" : "127.0.0.1:9300",
+        "host" : "127.0.0.1",
+        "ip" : "127.0.0.1:9300",
+        "attributes" : {
+          "testattr" : "test",
+          "portsfile" : "true"
+        },
+        "tasks" : {
+          "r1A2WoRbTwKZ516z6NEs5A:36619" : {
+            "node" : "r1A2WoRbTwKZ516z6NEs5A",
+            "id" : 36619,
+            "type" : "transport",
+            "action" : "indices:data/write/update/byquery",
+            "status" : {    
+              "total" : 6154,
+              "updated" : 3500,
+              "created" : 0,
+              "deleted" : 0,
+              "batches" : 4,
+              "version_conflicts" : 0,
+              "noops" : 0,
+              "retries": {
+                "bulk": 0,
+                "search": 0
+              },
+              "throttled_millis": 0
+            },
+            "description" : ""
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

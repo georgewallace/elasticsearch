@@ -1,0 +1,28 @@
+# Source: query-languages/esql/esql-getting-started.md
+--- !metadata
+id: example-21
+language: esql
+topic: esql-getting-started
+subtopic: default
+example_order: 21
+--- !code
+|
+  FROM sample_data
+  | KEEP @timestamp, client_ip, event_duration
+  | EVAL client_ip = TO_STRING(client_ip)
+  | ENRICH clientip_policy ON client_ip WITH env
+  | STATS median_duration = MEDIAN(event_duration) BY env
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

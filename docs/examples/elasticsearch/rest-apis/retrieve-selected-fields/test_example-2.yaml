@@ -1,0 +1,93 @@
+# Source: elasticsearch/rest-apis/retrieve-selected-fields.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: retrieve-selected-fields
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "group" : { "type" : "keyword" },
+        "user": {
+          "type": "nested",
+          "properties": {
+            "first" : { "type" : "keyword" },
+            "last" : { "type" : "keyword" }
+          }
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1?refresh=true
+  {
+    "group" : "fans",
+    "user" : [
+      {
+        "first" : "John",
+        "last" :  "Smith"
+      },
+      {
+        "first" : "Alice",
+        "last" :  "White"
+      }
+    ]
+  }
+
+  POST my-index-000001/_search
+  {
+    "fields": ["*"],
+    "_source": false
+  }
+--- !result
+|
+  {
+    "took": 2,
+    "timed_out": false,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped": 0,
+      "failed": 0
+    },
+    "hits": {
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "max_score": 1.0,
+      "hits": [{
+        "_index": "my-index-000001",
+        "_id": "1",
+        "_score": 1.0,
+        "fields": {
+          "group" : ["fans"],
+          "user": [{
+              "first": ["John"],
+              "last": ["Smith"]
+            },
+            {
+              "first": ["Alice"],
+              "last": ["White"]
+            }
+          ]
+        }
+      }]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,40 @@
+# Source: search-aggregations-bucket-significanttext-aggregation.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: search-aggregations-bucket-significanttext-aggregation
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET news/_search
+  {
+    "query": {
+      "match": {
+        "custom_all": "elasticsearch"
+      }
+    },
+    "aggs": {
+      "tags": {
+        "significant_text": {
+          "field": "custom_all",
+          "source_fields": [ "content", "title" ]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: news
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

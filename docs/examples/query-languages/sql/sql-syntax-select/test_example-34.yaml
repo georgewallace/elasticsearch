@@ -1,0 +1,30 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-34
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 34
+--- !code
+|
+  SELECT gender AS g, MIN(salary) AS salary FROM emp GROUP BY gender ORDER BY salary DESC;
+
+         g       |    salary
+  ---------------+---------------
+  F              |25976
+  M              |25945
+  null           |25324
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

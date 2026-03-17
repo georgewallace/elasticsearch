@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-3
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 3
+--- !code
+|
+  SELECT INTERVAL 1 DAY + INTERVAL 53 MINUTES AS result;
+
+      result
+  ---------------
+  +1 00:53:00
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

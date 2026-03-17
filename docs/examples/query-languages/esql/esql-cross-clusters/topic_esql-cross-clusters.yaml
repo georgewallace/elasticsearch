@@ -1,0 +1,14 @@
+id: esql-cross-clusters
+title: Esql Cross Clusters
+description: 
+
+setup:
+
+
+teardown: |
+  PUT _cluster/settings
+  {
+    "persistent": {
+      "cluster.remote": null
+    }
+  }

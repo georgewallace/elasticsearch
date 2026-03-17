@@ -1,0 +1,37 @@
+# Source: elasticsearch/rest-apis/common-options.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: common-options
+subtopic: default
+example_order: 7
+--- !code
+|
+  GET my-index-000001/_settings?flat_settings=true
+--- !result
+|
+  {
+    "my-index-000001" : {
+      "settings": {
+        "index.number_of_replicas": "1",
+        "index.number_of_shards": "1",
+        "index.creation_date": "1474389951325",
+        "index.uuid": "n6gzFZTgS664GUfx0Xrpjw",
+        "index.version.created": ...,
+        "index.routing.allocation.include._tier_preference" : "data_content",
+        "index.provided_name" : "my-index-000001"
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

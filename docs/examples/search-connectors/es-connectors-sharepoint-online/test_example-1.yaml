@@ -1,0 +1,53 @@
+# Source: search-connectors/es-connectors-sharepoint-online.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-sharepoint-online
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST INDEX_NAME/_update_by_query?conflicts=proceed
+  {
+    "query": {
+      "bool": {
+        "filter": [
+          {
+            "match": {
+              "object_type": "drive_item"
+            }
+          },
+          {
+            "exists": {
+              "field": "file"
+            }
+          },
+          {
+            "range": {
+              "lastModifiedDateTime": {
+                "lte": "now-180d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "script": {
+      "source": "ctx._source.body = ''",
+      "lang": "painless"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

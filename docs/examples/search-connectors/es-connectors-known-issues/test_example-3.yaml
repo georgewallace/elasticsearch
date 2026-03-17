@@ -1,0 +1,46 @@
+# Source: search-connectors/es-connectors-known-issues.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: es-connectors-known-issues
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST /.elastic-connectors/_update/connector_id
+  {
+    "doc" : {
+      "configuration": {
+        "field_a": {
+          "type": "str",
+          "value": ""
+        },
+        "field_b": {
+          "type": "bool",
+          "value": false
+        },
+        "field_c": {
+          "type": "int",
+          "value": 1
+        },
+        "field_d": {
+          "type": "list",
+          "value": "a,b"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

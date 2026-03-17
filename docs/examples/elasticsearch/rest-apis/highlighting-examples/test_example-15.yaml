@@ -1,0 +1,79 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-15
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 15
+--- !code
+|
+  GET index2/_search
+  {
+    "query": {
+      "query_string": {
+        "query": "running with scissors",
+        "fields": ["comment", "comment.english"]
+      }
+    },
+    "highlight": {
+      "order": "score",
+      "fields": {
+        "comment": {
+          "type" : "fvh",
+          "matched_fields": ["comment", "comment.english"]
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "hits" : {
+      "total" : {
+        "value" : 2,
+        "relation" : "eq"
+      },
+      "max_score": 1.0577903,
+      "hits" : [
+        {
+          "_index" : "index2",
+          "_id" : "doc2",
+          "_score" : 1.0577903,
+          "_source" : {
+            "comment" : "running with scissors"
+          },
+          "highlight" : {
+            "comment" : [
+              "<em>running</em> <em>with</em> <em>scissors</em>"
+            ]
+          }
+        },
+        {
+          "_index" : "index2",
+          "_id" : "doc1",
+          "_score" : 0.36464313,
+          "_source" : {
+            "comment" : "run with scissors"
+          },
+          "highlight" : {
+            "comment" : [
+              "<em>run</em> <em>with</em> <em>scissors</em>"
+            ]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

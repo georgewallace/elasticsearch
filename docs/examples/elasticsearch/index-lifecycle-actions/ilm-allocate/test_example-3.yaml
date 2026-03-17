@@ -1,0 +1,40 @@
+# Source: elasticsearch/index-lifecycle-actions/ilm-allocate.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: ilm-allocate
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT _ilm/policy/my_policy
+  {
+    "policy": {
+      "phases": {
+        "cold": {
+          "actions": {
+            "allocate" : {
+              "require" : {
+                "box_type": "cold",
+                "storage": "high"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

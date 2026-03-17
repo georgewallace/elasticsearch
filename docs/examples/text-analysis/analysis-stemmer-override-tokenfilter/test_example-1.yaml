@@ -1,0 +1,42 @@
+# Source: text-analysis/analysis-stemmer-override-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-stemmer-override-tokenfilter
+subtopic: _rules-path
+example_order: 1
+--- !code
+|
+  PUT /my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "standard",
+            "filter": [ "lowercase", "custom_stems", "porter_stem" ]
+          }
+        },
+        "filter": {
+          "custom_stems": {
+            "type": "stemmer_override",
+            "rules_path": "analysis/stemmer_override.txt"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

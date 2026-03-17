@@ -1,0 +1,43 @@
+# Source: query-languages/query-dsl/query-dsl-span-not-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-span-not-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "span_not": {
+        "include": {
+          "span_term": { "field1": "hoya" }
+        },
+        "exclude": {
+          "span_near": {
+            "clauses": [
+              { "span_term": { "field1": "la" } },
+              { "span_term": { "field1": "hoya" } }
+            ],
+            "slop": 0,
+            "in_order": true
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

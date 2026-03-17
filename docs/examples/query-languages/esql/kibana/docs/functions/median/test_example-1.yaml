@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/median.md
+--- !metadata
+id: example-1
+language: esql
+topic: median
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | STATS MEDIAN(salary), PERCENTILE(salary, 50)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

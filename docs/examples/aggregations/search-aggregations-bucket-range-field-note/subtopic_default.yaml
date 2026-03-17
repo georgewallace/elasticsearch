@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-bucket-range-field-note
+title: Default
+description: 
+
+setup:
+
+
+teardown:

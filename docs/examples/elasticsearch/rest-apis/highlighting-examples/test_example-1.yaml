@@ -1,0 +1,39 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query" : {
+      "match": { "user.id": "kimchy" }
+    },
+    "highlight" : {
+      "number_of_fragments" : 3,
+      "fragment_size" : 150,
+      "fields" : {
+        "body" : { "pre_tags" : ["<em>"], "post_tags" : ["</em>"] },
+        "blog.title" : { "number_of_fragments" : 0 },
+        "blog.author" : { "number_of_fragments" : 0 },
+        "blog.comment" : { "number_of_fragments" : 5, "order" : "score" }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

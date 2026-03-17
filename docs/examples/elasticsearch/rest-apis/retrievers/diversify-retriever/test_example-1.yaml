@@ -1,0 +1,44 @@
+# Source: elasticsearch/rest-apis/retrievers/diversify-retriever.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: diversify-retriever
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET my_index/_search
+  {
+    "retriever": {
+      "diversify": {
+        "type": "mmr",
+        "field": "my_dense_vector_field",
+        "lambda": 0.7,
+        "size": 3
+        "query_vector": [0.1, 0.2, 0.3],
+        "retriever": {
+          "standard": {
+            "query": {
+              "match": {
+                "title": "elasticsearch"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

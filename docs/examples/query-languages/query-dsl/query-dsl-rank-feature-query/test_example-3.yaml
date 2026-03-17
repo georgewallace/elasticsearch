@@ -1,0 +1,56 @@
+# Source: query-languages/query-dsl/query-dsl-rank-feature-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-rank-feature-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /test/_search
+  {
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match": {
+              "content": "2016"
+            }
+          }
+        ],
+        "should": [
+          {
+            "rank_feature": {
+              "field": "pagerank"
+            }
+          },
+          {
+            "rank_feature": {
+              "field": "url_length",
+              "boost": 0.1
+            }
+          },
+          {
+            "rank_feature": {
+              "field": "topics.sports",
+              "boost": 0.4
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

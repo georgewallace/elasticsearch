@@ -1,0 +1,33 @@
+# Source: enrich-processor/inference-processor.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: inference-processor
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST _ingest/pipeline/query_helper_pipeline/_simulate
+  {
+    "docs": [
+      {
+        "_source": {
+          "content": "artificial intelligence in medicine articles published in the last 12 months" 
+        }
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

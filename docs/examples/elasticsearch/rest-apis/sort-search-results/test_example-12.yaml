@@ -1,0 +1,62 @@
+# Source: elasticsearch/rest-apis/sort-search-results.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: sort-search-results
+subtopic: default
+example_order: 12
+--- !code
+|
+  POST /_search
+  {
+     "query": {
+        "nested": {
+           "path": "parent",
+           "query": {
+              "bool": {
+                  "must": {"range": {"parent.age": {"gte": 21}}},
+                  "filter": {
+                      "nested": {
+                          "path": "parent.child",
+                          "query": {"match": {"parent.child.name": "matt"}}
+                      }
+                  }
+              }
+           }
+        }
+     },
+     "sort" : [
+        {
+           "parent.child.age" : {
+              "mode" :  "min",
+              "order" : "asc",
+              "nested": {
+                 "path": "parent",
+                 "filter": {
+                    "range": {"parent.age": {"gte": 21}}
+                 },
+                 "nested": {
+                    "path": "parent.child",
+                    "filter": {
+                       "match": {"parent.child.name": "matt"}
+                    }
+                 }
+              }
+           }
+        }
+     ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

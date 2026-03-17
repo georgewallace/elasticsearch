@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-system.md
+--- !metadata
+id: example-4
+language: sql
+topic: sql-functions-system
+subtopic: default
+example_order: 4
+--- !code
+|
+  SELECT USER();
+
+       USER
+  ---------------
+  elastic
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,152 @@
+# Source: elasticsearch/rest-apis/search-profile.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-profile
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "profile": true,
+    "query": {
+      "term": {
+        "user.id": {
+          "value": "elkbee"
+        }
+      }
+    },
+    "aggs": {
+      "my_scoped_agg": {
+        "terms": {
+          "field": "http.response.status_code"
+        }
+      },
+      "my_global_agg": {
+        "global": {},
+        "aggs": {
+          "my_level_agg": {
+            "terms": {
+              "field": "http.response.status_code"
+            }
+          }
+        }
+      }
+    },
+    "post_filter": {
+      "match": {
+        "message": "search"
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "profile": {
+      "shards": [
+        {
+          "id": "[P6xvulHtQRWuD4YnubWb7A][my-index-000001][0]",
+          "node_id": "P6xvulHtQRWuD4YnubWb7A",
+          "shard_id": 0,
+          "index": "my-index-000001",
+          "cluster": "(local)",
+          "searches": [
+            {
+              "query": [
+                {
+                  "type": "TermQuery",
+                  "description": "message:search",
+                  "time_in_nanos": 141618,
+                  "breakdown": {
+                    "set_min_competitive_score_count": 0,
+                    "match_count": 0,
+                    "shallow_advance_count": 0,
+                    "set_min_competitive_score": 0,
+                    "next_doc": 0,
+                    "match": 0,
+                    "next_doc_count": 0,
+                    "score_count": 0,
+                    "compute_max_score_count": 0,
+                    "compute_max_score": 0,
+                    "advance": 3942,
+                    "advance_count": 4,
+                    "count_weight_count": 0,
+                    "score": 0,
+                    "build_scorer_count": 2,
+                    "create_weight": 38380,
+                    "shallow_advance": 0,
+                    "count_weight": 0,
+                    "create_weight_count": 1,
+                    "build_scorer": 99296
+                  }
+                },
+                {
+                  "type": "TermQuery",
+                  "description": "user.id:elkbee",
+                  "time_in_nanos": 163081,
+                  "breakdown": {
+                    "set_min_competitive_score_count": 0,
+                    "match_count": 0,
+                    "shallow_advance_count": 0,
+                    "set_min_competitive_score": 0,
+                    "next_doc": 2447,
+                    "match": 0,
+                    "next_doc_count": 4,
+                    "score_count": 4,
+                    "compute_max_score_count": 0,
+                    "compute_max_score": 0,
+                    "advance": 3552,
+                    "advance_count": 1,
+                    "score": 5027,
+                    "count_weight_count": 0,
+                    "build_scorer_count": 2,
+                    "create_weight": 107840,
+                    "shallow_advance": 0,
+                    "count_weight": 0,
+                    "create_weight_count": 1,
+                    "build_scorer": 44215
+                  }
+                }
+              ],
+              "rewrite_time": 4769,
+              "collector": [
+                {
+                  "name": "QueryPhaseCollector",
+                  "reason": "search_query_phase",
+                  "time_in_nanos": 1945072,
+                  "children": [
+                    {
+                      "name": "SimpleTopScoreDocCollector",
+                      "reason": "search_top_hits",
+                      "time_in_nanos": 22577
+                    },
+                    {
+                      "name": "AggregatorCollector: [my_scoped_agg, my_global_agg]",
+                      "reason": "aggregation",
+                      "time_in_nanos": 867617
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "aggregations": [...], 
+          "fetch": {...}
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

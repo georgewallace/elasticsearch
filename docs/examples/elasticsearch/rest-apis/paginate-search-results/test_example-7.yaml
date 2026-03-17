@@ -1,0 +1,44 @@
+# Source: elasticsearch/rest-apis/paginate-search-results.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: paginate-search-results
+subtopic: default
+example_order: 7
+--- !code
+|
+  GET /_search
+  {
+    "size": 10000,
+    "query": {
+      "match" : {
+        "user.id" : "elkbee"
+      }
+    },
+    "pit": {
+      "id":  "46ToAwMDaWR5BXV1aWQyKwZub2RlXzMAAAAAAAAAACoBYwADaWR4BXV1aWQxAgZub2RlXzEAAAAAAAAAAAEBYQADaWR5BXV1aWQyKgZub2RlXzIAAAAAAAAAAAwBYgACBXV1aWQyAAAFdXVpZDEAAQltYXRjaF9hbGw_gAAAAA==", 
+      "keep_alive": "1m"
+    },
+    "sort": [
+      {"@timestamp": {"order": "asc", "format": "strict_date_optional_time_nanos"}}
+    ],
+    "search_after": [                                
+      "2021-05-20T05:30:04.832Z",
+      4294967298
+    ],
+    "track_total_hits": false                        
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,54 @@
+# Source: query-languages/esql/esql-multivalued-fields.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: esql-multivalued-fields
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT /mv
+  {
+    "mappings": {
+      "properties": {
+        "b": {"type": "long"}
+      }
+    }
+  }
+
+  POST /mv/_bulk?refresh
+  { "index" : {} }
+  { "a": 1, "b": [2, 2, 1] }
+  { "index" : {} }
+  { "a": 2, "b": [1, 1] }
+
+  POST /_query
+  {
+    "query": "FROM mv | EVAL b=TO_STRING(b) | LIMIT 2"
+  }
+--- !result
+|
+  {
+    "took": 28,
+    "is_partial": false,
+    "columns": [
+      { "name": "a", "type": "long"},
+      { "name": "b", "type": "keyword"}
+    ],
+    "values": [
+      [1, ["1", "2", "2"]],
+      [2,      ["1", "1"]]
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

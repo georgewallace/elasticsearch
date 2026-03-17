@@ -1,0 +1,27 @@
+# Source: query-languages/esql/esql-lookup-join.md
+--- !metadata
+id: example-1
+language: esql
+topic: esql-lookup-join
+subtopic: default
+example_order: 1
+--- !code
+|
+  LOOKUP JOIN <lookup_index> ON <field_name>  # Join on a single field
+  LOOKUP JOIN <lookup_index> ON <field_name1>, <field_name2>, <field_name3>  # Join on multiple fields
+  LOOKUP JOIN <lookup_index> ON <left_field1> >= <lookup_field1> AND <left_field2> == <lookup_field2>  # Join on expression
+  LOOKUP JOIN <lookup_index> ON MATCH(lookup_field, "search term") AND <left_field> == <lookup_field>  # Join with Full Text Functions
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

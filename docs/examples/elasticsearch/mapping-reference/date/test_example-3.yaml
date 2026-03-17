@@ -1,0 +1,57 @@
+# Source: elasticsearch/mapping-reference/date.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: date
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "date": {
+          "type":   "date",
+          "format": "strict_date_optional_time||epoch_second"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/example?refresh
+  { "date": 1618321898 }
+
+  POST my-index-000001/_search
+  {
+    "fields": [ {"field": "date"}],
+    "_source": false
+  }
+--- !result
+|
+  {
+    "hits": {
+      "hits": [
+        {
+          "_id": "example",
+          "_index": "my-index-000001",
+          "_score": 1.0,
+          "fields": {
+            "date": ["2021-04-13T13:51:38.000Z"]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

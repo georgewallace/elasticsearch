@@ -1,0 +1,63 @@
+# Source: search-aggregations-metrics-min-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-metrics-min-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT metrics_index
+  {
+    "mappings": {
+      "properties": {
+        "latency_histo": { "type": "histogram" }
+      }
+    }
+  }
+
+  PUT metrics_index/_doc/1?refresh
+  {
+    "network.name" : "net-1",
+    "latency_histo" : {
+        "values" : [0.1, 0.2, 0.3, 0.4, 0.5],
+        "counts" : [3, 7, 23, 12, 6]
+     }
+  }
+
+  PUT metrics_index/_doc/2?refresh
+  {
+    "network.name" : "net-2",
+    "latency_histo" : {
+        "values" :  [0.1, 0.2, 0.3, 0.4, 0.5],
+        "counts" : [8, 17, 8, 7, 6]
+     }
+  }
+
+  POST /metrics_index/_search?size=0&filter_path=aggregations
+  {
+    "aggs" : {
+      "min_latency" : { "min" : { "field" : "latency_histo" } }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations": {
+      "min_latency": {
+        "value": 0.1
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

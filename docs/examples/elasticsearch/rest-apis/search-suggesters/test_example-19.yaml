@@ -1,0 +1,28 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-19
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 19
+--- !code
+|
+  PUT place_path_category/_doc/1
+  {
+    "suggest": ["timmy's", "starbucks", "dunkin donuts"],
+    "cat": ["cafe", "food"] 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,44 @@
+# Source: search-aggregations-bucket-frequent-item-sets-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-frequent-item-sets-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /kibana_sample_data_ecommerce/_async_search
+  {
+     "size":0,
+     "aggs":{
+        "my_agg":{
+           "frequent_item_sets":{
+              "minimum_set_size":3,
+              "fields":[
+                 {
+                    "field":"category.keyword"
+                 },
+                 {
+                    "field":"geoip.city_name",
+                    "exclude":"other"
+                 }
+              ],
+              "size":3
+           }
+        }
+     }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

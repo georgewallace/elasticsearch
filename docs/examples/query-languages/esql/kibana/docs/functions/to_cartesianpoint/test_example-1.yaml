@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/to_cartesianpoint.md
+--- !metadata
+id: example-1
+language: esql
+topic: to_cartesianpoint
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW wkt = ["POINT(4297.11 -1475.53)", "POINT(7580.93 2272.77)"]
+  | MV_EXPAND wkt
+  | EVAL pt = TO_CARTESIANPOINT(wkt)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

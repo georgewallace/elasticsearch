@@ -1,0 +1,63 @@
+# Source: search-aggregations-bucket-filters-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-filters-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /logs/_bulk?refresh
+  { "index" : { "_id" : 1 } }
+  { "body" : "warning: page could not be rendered" }
+  { "index" : { "_id" : 2 } }
+  { "body" : "authentication error" }
+  { "index" : { "_id" : 3 } }
+  { "body" : "warning: connection timed out" }
+
+  GET logs/_search
+  {
+    "size": 0,
+    "aggs" : {
+      "messages" : {
+        "filters" : {
+          "filters" : {
+            "errors" :   { "match" : { "body" : "error"   }},
+            "warnings" : { "match" : { "body" : "warning" }}
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": 9,
+    "timed_out": false,
+    "_shards": ...,
+    "hits": ...,
+    "aggregations": {
+      "messages": {
+        "buckets": {
+          "errors": {
+            "doc_count": 1
+          },
+          "warnings": {
+            "doc_count": 2
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

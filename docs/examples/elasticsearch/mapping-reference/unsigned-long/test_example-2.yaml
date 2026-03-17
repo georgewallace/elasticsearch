@@ -1,0 +1,32 @@
+# Source: elasticsearch/mapping-reference/unsigned-long.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: unsigned-long
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /my_index/_bulk?refresh
+  {"index":{"_id":1}}
+  {"my_counter": 0}
+  {"index":{"_id":2}}
+  {"my_counter": 9223372036854775808}
+  {"index":{"_id":3}}
+  {"my_counter": 18446744073709551614}
+  {"index":{"_id":4}}
+  {"my_counter": 18446744073709551615}
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

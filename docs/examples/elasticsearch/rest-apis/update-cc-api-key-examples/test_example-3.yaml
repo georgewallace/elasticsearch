@@ -1,0 +1,39 @@
+# Source: elasticsearch/rest-apis/update-cc-api-key-examples.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: update-cc-api-key-examples
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /_security/cross_cluster/api_key/VuaCfGcBCdbkQm-e5aOx
+  {
+    "access": {
+      "replication": [
+        {
+          "names": ["archive"]
+        }
+      ]
+    },
+    "metadata": {
+      "application": "replication"
+    }
+  }
+--- !result
+|
+  {
+    "updated": true
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

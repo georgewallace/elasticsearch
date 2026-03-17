@@ -1,0 +1,56 @@
+# Source: elasticsearch/rest-apis/retrievers/linear-retriever.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: linear-retriever
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET my_index/_search
+  {
+    "retriever": {
+      "linear": {
+        "retrievers": [
+          {
+            "retriever": {
+              "knn": {
+                "field": "title_vector",
+                "query_vector": [0.1, 0.2, 0.3],
+                "k": 10,
+                "num_candidates": 100
+              }
+            },
+            "weight": 5  
+          },
+          {
+            "retriever": {
+              "standard": {
+                "query": {
+                  "match": {
+                    "title": "elasticsearch"
+                  }
+                }
+              }
+            },
+            "weight": 1.5  
+          }
+        ],
+        "normalizer": "minmax"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

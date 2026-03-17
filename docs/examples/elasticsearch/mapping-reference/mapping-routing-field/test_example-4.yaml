@@ -1,0 +1,36 @@
+# Source: elasticsearch/mapping-reference/mapping-routing-field.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: mapping-routing-field
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT my-index-000002
+  {
+    "mappings": {
+      "_routing": {
+        "required": true 
+      }
+    }
+  }
+
+  PUT my-index-000002/_doc/1 
+  {
+    "text": "No routing value provided"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

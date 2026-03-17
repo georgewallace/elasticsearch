@@ -1,0 +1,41 @@
+# Source: elasticsearch/mapping-reference/exponential-histogram.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: exponential-histogram
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT my-index-000002
+  {
+    "mappings": {
+      "properties": {
+        "my_histo": {
+          "type": "exponential_histogram"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000002/_doc/1
+  {
+    "my_histo": {
+      "values": [0.1, 0.2, 0.3, 0.4, 0.5],
+      "counts": [3, 7, 23, 12, 6]
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

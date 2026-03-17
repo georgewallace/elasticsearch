@@ -1,0 +1,44 @@
+# Source: elasticsearch/rest-apis/search-profile.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: search-profile
+subtopic: default
+example_order: 7
+--- !code
+|
+  PUT my-knn-index
+  {
+    "mappings": {
+      "properties": {
+        "my-vector": {
+          "type": "dense_vector",
+          "dims": 3,
+          "index": true,
+          "similarity": "l2_norm"
+        }
+      }
+    }
+  }
+
+  POST my-knn-index/_bulk?refresh=true
+  { "index": { "_id": "1" } }
+  { "my-vector": [1, 5, -20] }
+  { "index": { "_id": "2" } }
+  { "my-vector": [42, 8, -15] }
+  { "index": { "_id": "3" } }
+  { "my-vector": [15, 11, 23] }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

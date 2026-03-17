@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-45
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 45
+--- !code
+|
+  SELECT COS(RADIANS(180)), POWER(SIN(RADIANS(54)), 2) + POWER(COS(RADIANS(54)), 2) AS pythagorean_identity;
+
+  COS(RADIANS(180))|pythagorean_identity
+  -----------------+--------------------
+  -1.0             |1.0
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

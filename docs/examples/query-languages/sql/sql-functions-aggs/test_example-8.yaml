@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-8
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 8
+--- !code
+|
+  SELECT COUNT(ALL CASE WHEN languages IS NULL THEN -1 ELSE languages END) AS count_all, COUNT(DISTINCT CASE WHEN languages IS NULL THEN -1 ELSE languages END) count_distinct FROM emp;
+
+     count_all   |  count_distinct
+  ---------------+---------------
+  100            |6
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

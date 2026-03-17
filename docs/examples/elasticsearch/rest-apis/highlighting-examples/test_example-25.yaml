@@ -1,0 +1,65 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-25
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 25
+--- !code
+|
+  GET my-index-000001/_search
+  {
+    "query": {
+      "match_phrase": { "message": "number 1" }
+    },
+    "highlight": {
+      "fields": {
+        "message": {
+          "type": "plain",
+          "fragment_size": 15,
+          "number_of_fragments": 3,
+          "fragmenter": "span"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "max_score": 1.6011951,
+      "hits": [
+        {
+          "_index": "my-index-000001",
+          "_id": "1",
+          "_score": 1.6011951,
+          "_source": {
+            "message": "some message with the number 1",
+            "context": "bar"
+          },
+          "highlight": {
+            "message": [
+              " with the <em>number</em> <em>1</em>"
+            ]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

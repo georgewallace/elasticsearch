@@ -1,0 +1,88 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET /my-data-stream/_eql/search
+  {
+    "query": """
+      sequence with maxspan=1d
+        [ process where process.name == "cmd.exe" ]
+        ![ process where stringContains(process.command_line, "ocx") ]
+        [ file where stringContains(file.name, "scrobj.dll") ]
+    """
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": ...,
+      "sequences": [
+        {
+          "events": [
+            {
+              "_index": ".ds-my-data-stream-2023.07.04-000001",
+              "_id": "AnpTIYkBrVQ2QEgsWg94",
+              "_source": {
+                "@timestamp": "2099-12-07T11:06:07.000Z",
+                "event": {
+                  "category": "process",
+                  "id": "cMyt5SZ2",
+                  "sequence": 3
+                },
+                "process": {
+                  "pid": 2012,
+                  "name": "cmd.exe",
+                  "executable": "C:\\Windows\\System32\\cmd.exe"
+                }
+              }
+            },
+            {
+              "_index": "",
+              "_id": "",
+              "_source": {},
+              "missing": true
+            },
+            {
+              "_index": ".ds-my-data-stream-2023.07.04-000001",
+              "_id": "BHpTIYkBrVQ2QEgsWg94",
+              "_source": {
+                "@timestamp": "2099-12-07T11:07:10.000Z",
+                "event": {
+                  "category": "file",
+                  "id": "tZ1NWVOs",
+                  "sequence": 5
+                },
+                "process": {
+                  "pid": 2012,
+                  "name": "regsvr32.exe",
+                  "executable": "C:\\Windows\\System32\\regsvr32.exe"
+                },
+                "file": {
+                  "path": "C:\\Windows\\System32\\scrobj.dll",
+                  "name": "scrobj.dll"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

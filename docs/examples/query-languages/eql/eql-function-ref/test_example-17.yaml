@@ -1,0 +1,28 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-17
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 17
+--- !code
+|
+  substring("start regsvr32.exe", 6)        // returns "regsvr32.exe"
+  substring("start regsvr32.exe", 0, 5)     // returns "start"
+  substring("start regsvr32.exe", 6, 14)    // returns "regsvr32"
+  substring("start regsvr32.exe", -4)       // returns ".exe"
+  substring("start regsvr32.exe", -4, -1)   // returns ".ex"
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

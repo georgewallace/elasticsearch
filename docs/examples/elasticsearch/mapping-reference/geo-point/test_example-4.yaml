@@ -1,0 +1,56 @@
+# Source: elasticsearch/mapping-reference/geo-point.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: geo-point
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "point": {
+          "type": "geo_point",
+          "synthetic_source_keep": "arrays"
+        }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "point": [
+      {"lat":10, "lon":30},
+      {"lat":-90, "lon":-80}
+    ]
+  }
+--- !result
+|
+  {
+    "point": [
+      {"lat":-90.0, "lon":-80.00000000931323},
+      {"lat":9.999999990686774, "lon":29.999999972060323}
+     ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,52 @@
+# Source: search-aggregations-bucket-significantterms-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-significantterms-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "terms": { "force": [ "British Transport Police" ] }
+    },
+    "aggregations": {
+      "significant_crime_types": {
+        "significant_terms": { "field": "crime_type" }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "significant_crime_types": {
+        "doc_count": 47347,
+        "bg_count": 5064554,
+        "buckets": [
+          {
+            "key": "Bicycle theft",
+            "doc_count": 3640,
+            "score": 0.371235374214817,
+            "bg_count": 66799
+          }
+                ...
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

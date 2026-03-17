@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-49
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 49
+--- !code
+|
+  SELECT COT(RADIANS(30)) AS "COT(30)", COS(RADIANS(30)) / SIN(RADIANS(30)) AS "COS(30)/SIN(30)";
+
+       COT(30)      | COS(30)/SIN(30)
+  ------------------+------------------
+  1.7320508075688774|1.7320508075688776
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

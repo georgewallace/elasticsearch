@@ -1,0 +1,40 @@
+# Source: enrich-processor/ingest-circle-processor.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: ingest-circle-processor
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT circles/_doc/1?pipeline=polygonize_circles
+  {
+    "circle": "CIRCLE (30 10 40)"
+  }
+
+  GET circles/_doc/1
+--- !result
+|
+  {
+    "found": true,
+    "_index": "circles",
+    "_id": "1",
+    "_version": 1,
+    "_seq_no": 22,
+    "_primary_term": 1,
+    "_source": {
+      "circle": "POLYGON ((30.000365257263184 10.0, 30.000111397193788 10.00034284530941, 29.999706043744222 10.000213571721195, 29.999706043744222 9.999786428278805, 30.000111397193788 9.99965715469059, 30.000365257263184 10.0))"
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

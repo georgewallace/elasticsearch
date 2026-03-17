@@ -1,0 +1,31 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-16
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 16
+--- !code
+|
+  GET /my-data-stream/_eql/search
+  {
+    "timestamp_field": "file.accessed",
+    "event_category_field": "file.type",
+    "query": """
+      file where (file.size > 1 and file.type == "file")
+    """
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

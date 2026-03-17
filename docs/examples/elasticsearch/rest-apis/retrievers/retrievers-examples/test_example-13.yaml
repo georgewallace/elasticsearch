@@ -1,0 +1,141 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-13
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 13
+--- !code
+|
+  GET retrievers_example/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "standard": {
+                          "query": {
+                              "range": {
+                                  "year": {
+                                      "gt": 2023
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "standard": {
+                          "query": {
+                              "term": {
+                                  "topic": "elastic"
+                              }
+                          }
+                      }
+                  }
+              ],
+              "rank_window_size": 10,
+              "rank_constant": 1
+          }
+      },
+      "_source": false,
+      "aggs": {
+          "topics": {
+              "terms": {
+                  "field": "topic"
+              }
+          }
+      }
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 4,
+              "relation": "eq"
+          },
+          "max_score": 0.5833334,
+          "hits": [
+              {
+                  "_index": "retrievers_example",
+                  "_id": "5",
+                  "_score": 0.5833334
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "1",
+                  "_score": 0.5
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "4",
+                  "_score": 0.5
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "3",
+                  "_score": 0.33333334
+              }
+          ]
+      },
+      "aggregations": {
+          "topics": {
+              "doc_count_error_upper_bound": 0,
+              "sum_other_doc_count": 0,
+              "buckets": [
+                  {
+                      "key": "ai",
+                      "doc_count": 3
+                  },
+                  {
+                      "key": "elastic",
+                      "doc_count": 2
+                  },
+                  {
+                      "key": "assistant",
+                      "doc_count": 1
+                  },
+                  {
+                      "key": "documentation",
+                      "doc_count": 1
+                  },
+                  {
+                      "key": "information_retrieval",
+                      "doc_count": 1
+                  },
+                  {
+                      "key": "llm",
+                      "doc_count": 1
+                  },
+                  {
+                      "key": "observability",
+                      "doc_count": 1
+                  },
+                  {
+                      "key": "security",
+                      "doc_count": 1
+                  }
+              ]
+          }
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

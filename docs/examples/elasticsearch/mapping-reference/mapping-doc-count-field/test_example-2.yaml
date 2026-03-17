@@ -1,0 +1,42 @@
+# Source: elasticsearch/mapping-reference/mapping-doc-count-field.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: mapping-doc-count-field
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my_index/_doc/1
+  {
+    "my_text" : "histogram_1",
+    "my_histogram" : {
+        "values" : [0.1, 0.2, 0.3, 0.4, 0.5],
+        "counts" : [3, 7, 23, 12, 6]
+     },
+    "_doc_count": 45 
+  }
+
+  PUT my_index/_doc/2
+  {
+    "my_text" : "histogram_2",
+    "my_histogram" : {
+        "values" : [0.1, 0.25, 0.35, 0.4, 0.45, 0.5],
+        "counts" : [8, 17, 8, 7, 6, 2]
+     },
+    "_doc_count": 62 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

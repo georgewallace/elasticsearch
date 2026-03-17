@@ -1,0 +1,73 @@
+# Source: query-languages/query-dsl/query-dsl-terms-query.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: query-dsl-terms-query
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET my-index-000001/_search?pretty
+  {
+    "query": {
+      "terms": {
+          "color" : {
+              "index" : "my-index-000001",
+              "id" : "2",
+              "path" : "color"
+          }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took" : 17,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 2,
+        "relation" : "eq"
+      },
+      "max_score" : 1.0,
+      "hits" : [
+        {
+          "_index" : "my-index-000001",
+          "_id" : "1",
+          "_score" : 1.0,
+          "_source" : {
+            "color" : [
+              "blue",
+              "green"
+            ]
+          }
+        },
+        {
+          "_index" : "my-index-000001",
+          "_id" : "2",
+          "_score" : 1.0,
+          "_source" : {
+            "color" : "blue"
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-string.md
+--- !metadata
+id: example-25
+language: sql
+topic: sql-functions-string
+subtopic: default
+example_order: 25
+--- !code
+|
+  SELECT OCTET_LENGTH('Elastic');
+
+  OCTET_LENGTH('Elastic')
+  -----------------------
+  7
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,115 @@
+# Source: elasticsearch/mapping-reference/normalizer.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: normalizer
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT index
+  {
+    "settings": {
+      "analysis": {
+        "normalizer": {
+          "my_normalizer": {
+            "type": "custom",
+            "char_filter": [],
+            "filter": ["lowercase", "asciifolding"]
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "foo": {
+          "type": "keyword",
+          "normalizer": "my_normalizer"
+        }
+      }
+    }
+  }
+
+  PUT index/_doc/1
+  {
+    "foo": "BÀR"
+  }
+
+  PUT index/_doc/2
+  {
+    "foo": "bar"
+  }
+
+  PUT index/_doc/3
+  {
+    "foo": "baz"
+  }
+
+  POST index/_refresh
+
+  GET index/_search
+  {
+    "query": {
+      "term": {
+        "foo": "BAR"
+      }
+    }
+  }
+
+  GET index/_search
+  {
+    "query": {
+      "match": {
+        "foo": "BAR"
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": $body.took,
+    "timed_out": false,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped" : 0,
+      "failed": 0
+    },
+    "hits": {
+      "total" : {
+          "value": 2,
+          "relation": "eq"
+      },
+      "max_score": 0.4700036,
+      "hits": [
+        {
+          "_index": "index",
+          "_id": "1",
+          "_score": 0.4700036,
+          "_source": {
+            "foo": "BÀR"
+          }
+        },
+        {
+          "_index": "index",
+          "_id": "2",
+          "_score": 0.4700036,
+          "_source": {
+            "foo": "bar"
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

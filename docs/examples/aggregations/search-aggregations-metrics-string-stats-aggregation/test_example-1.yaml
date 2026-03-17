@@ -1,0 +1,43 @@
+# Source: search-aggregations-metrics-string-stats-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-metrics-string-stats-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /my-index-000001/_search?size=0
+  {
+    "aggs": {
+      "message_stats": { "string_stats": { "field": "message.keyword" } }
+    }
+  }
+--- !result
+|
+  {
+    ...
+
+    "aggregations": {
+      "message_stats": {
+        "count": 5,
+        "min_length": 24,
+        "max_length": 30,
+        "avg_length": 28.8,
+        "entropy": 3.94617750050791
+      }
+    }
+  }
+--- !test
+stage: messages
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,60 @@
+# Source: enrich-processor/attachment.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: attachment
+subtopic: default
+example_order: 6
+--- !code
+|
+  PUT _ingest/pipeline/attachment
+  {
+    "description" : "Extract attachment information",
+    "processors" : [
+      {
+        "attachment" : {
+          "field" : "data",
+          "indexed_chars" : 11,
+          "indexed_chars_field" : "max_size",
+          "remove_binary": true
+        }
+      }
+    ]
+  }
+  PUT my-index-000001/_doc/my_id_2?pipeline=attachment
+  {
+    "data": "e1xydGYxXGFuc2kNCkxvcmVtIGlwc3VtIGRvbG9yIHNpdCBhbWV0DQpccGFyIH0=",
+    "max_size": 5
+  }
+  GET my-index-000001/_doc/my_id_2
+--- !result
+|
+  {
+    "found": true,
+    "_index": "my-index-000001",
+    "_id": "my_id_2",
+    "_version": 1,
+    "_seq_no": 40,
+    "_primary_term": 1,
+    "_source": {
+      "max_size": 5,
+      "attachment": {
+        "content_type": "application/rtf",
+        "language": "sl",
+        "content": "Lorem",
+        "content_length": 5
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

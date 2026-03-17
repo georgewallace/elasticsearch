@@ -1,0 +1,50 @@
+# Source: search-aggregations-metrics-boxplot-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-metrics-boxplot-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET latency/_search
+  {
+    "size": 0,
+    "aggs": {
+      "load_time_boxplot": {
+        "boxplot": {
+          "field": "load_time" 
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+
+   "aggregations": {
+      "load_time_boxplot": {
+        "min": 0.0,
+        "max": 990.0,
+        "q1": 167.5,
+        "q2": 445.0,
+        "q3": 722.5,
+        "lower": 0.0,
+        "upper": 990.0
+      }
+    }
+  }
+--- !test
+stage: latency
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,88 @@
+# Source: search-aggregations-bucket-significantterms-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-significantterms-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "bool": {
+        "filter": [
+          {
+            "term": {
+              "event.outcome": "failure"
+            }
+          },
+          {
+            "range": {
+              "@timestamp": {
+                "gte": "2021-02-01",
+                "lt": "2021-02-04"
+              }
+            }
+          },
+          {
+            "term": {
+              "service.name": {
+                "value": "frontend-node"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "aggs": {
+      "failure_p_value": {
+        "significant_terms": {
+          "field": "user_agent.version",
+          "background_filter": {
+            "bool": {
+              "must_not": [
+                {
+                  "term": {
+                    "event.outcome": "failure"
+                  }
+                }
+              ],
+              "filter": [
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "2021-02-01",
+                      "lt": "2021-02-04"
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "service.name": {
+                      "value": "frontend-node"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "p_value": {"background_is_superset": false, "normalize_above": 1000}
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

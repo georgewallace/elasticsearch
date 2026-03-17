@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/binary.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: binary
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "binary": { "type": "binary", "doc_values": true }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "binary": ["IAA=", "EAA="]
+  }
+--- !result
+|
+  {
+    "binary": ["EAA=", "IAA="]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

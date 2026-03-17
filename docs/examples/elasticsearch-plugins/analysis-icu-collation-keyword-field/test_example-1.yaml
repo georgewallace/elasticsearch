@@ -1,0 +1,52 @@
+# Source: elasticsearch-plugins/analysis-icu-collation-keyword-field.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-icu-collation-keyword-field
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "name": {   
+          "type": "text",
+          "fields": {
+            "sort": {  
+              "type": "icu_collation_keyword",
+              "index": false,
+              "language": "de",
+              "country": "DE",
+              "variant": "@collation=phonebook"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET /my-index-000001/_search 
+  {
+    "query": {
+      "match": {
+        "name": "Fritz"
+      }
+    },
+    "sort": "name.sort"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

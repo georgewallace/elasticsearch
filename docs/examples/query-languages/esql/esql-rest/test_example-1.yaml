@@ -1,0 +1,27 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /_query?format=txt
+  {
+    "query": "FROM library | KEEP author, name, page_count, release_date | SORT page_count DESC | LIMIT 5"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,47 @@
+# Source: query-languages/query-dsl/query-dsl-bool-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-bool-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _search
+  {
+    "query": {
+      "bool" : {
+        "must" : {
+          "term" : { "user.id" : "kimchy" }
+        },
+        "filter": {
+          "term" : { "tags" : "production" }
+        },
+        "must_not" : {
+          "range" : {
+            "age" : { "gte" : 10, "lte" : 20 }
+          }
+        },
+        "should" : [
+          { "term" : { "tags" : "env1" } },
+          { "term" : { "tags" : "deployed" } }
+        ],
+        "minimum_should_match" : 1,
+        "boost" : 1.0
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

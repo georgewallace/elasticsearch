@@ -1,0 +1,37 @@
+# Source: query-languages/esql/esql-lookup-join.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: esql-lookup-join
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT threat_list
+  {
+    "settings": {
+      "index.mode": "lookup" 
+    },
+    "mappings": {
+      "properties": {
+        "source.ip": { "type": "ip" },
+        "threat_level": { "type": "keyword" },
+        "threat_type": { "type": "keyword" },
+        "last_updated": { "type": "date" }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

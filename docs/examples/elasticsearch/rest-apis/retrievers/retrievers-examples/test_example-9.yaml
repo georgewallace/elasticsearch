@@ -1,0 +1,155 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-9
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 9
+--- !code
+|
+  GET /retrievers_example/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "standard": {
+                          "query": {
+                              "query_string": {
+                                  "query": "(information retrieval) OR (artificial intelligence)",
+                                  "default_field": "text"
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "knn": {
+                          "field": "vector",
+                          "query_vector": [
+                              0.23,
+                              0.67,
+                              0.89
+                          ],
+                          "k": 3,
+                          "num_candidates": 5
+                      }
+                  }
+              ],
+              "rank_window_size": 10,
+              "rank_constant": 1
+          }
+      },
+      "collapse": {
+          "field": "year",
+          "inner_hits": {
+              "name": "topic related documents",
+              "_source": [
+                  "year"
+              ]
+          }
+      },
+      "_source": false
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 3,
+              "relation": "eq"
+          },
+          "max_score": 0.8333334,
+          "hits": [
+              {
+                  "_index": "retrievers_example",
+                  "_id": "1",
+                  "_score": 0.8333334,
+                  "fields": {
+                      "year": [
+                          2024
+                      ]
+                  },
+                  "inner_hits": {
+                      "topic related documents": {
+                          "hits": {
+                              "total": {
+                                  "value": 2,
+                                  "relation": "eq"
+                              },
+                              "max_score": 0.8333334,
+                              "hits": [
+                                  {
+                                      "_index": "retrievers_example",
+                                      "_id": "1",
+                                      "_score": 0.8333334,
+                                      "_source": {
+                                          "year": 2024
+                                      }
+                                  },
+                                  {
+                                      "_index": "retrievers_example",
+                                      "_id": "3",
+                                      "_score": 0.25,
+                                      "_source": {
+                                          "year": 2024
+                                      }
+                                  }
+                              ]
+                          }
+                      }
+                  }
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "2",
+                  "_score": 0.8333334,
+                  "fields": {
+                      "year": [
+                          2023
+                      ]
+                  },
+                  "inner_hits": {
+                      "topic related documents": {
+                          "hits": {
+                              "total": {
+                                  "value": 1,
+                                  "relation": "eq"
+                              },
+                              "max_score": 0.8333334,
+                              "hits": [
+                                  {
+                                      "_index": "retrievers_example",
+                                      "_id": "2",
+                                      "_score": 0.8333334,
+                                      "_source": {
+                                          "year": 2023
+                                      }
+                                  }
+                              ]
+                          }
+                      }
+                  }
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

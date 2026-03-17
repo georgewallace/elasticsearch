@@ -1,0 +1,56 @@
+# Source: search-aggregations-bucket-categorize-text-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-bucket-categorize-text-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST log-messages/_search?filter_path=aggregations
+  {
+    "aggs": {
+      "categories": {
+        "categorize_text": {
+          "field": "message",
+          "categorization_filters": ["\\w+\\_\\d{3}"], 
+          "similarity_threshold": 11 
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations" : {
+      "categories" : {
+        "buckets" : [
+          {
+            "doc_count" : 4,
+            "key" : "Node",
+            "regex" : ".*?Node.*?",
+            "max_matching_length" : 49
+          },
+          {
+            "doc_count" : 2,
+            "key" : "User",
+            "regex" : ".*?User.*?",
+            "max_matching_length" : 52
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: categorize_text
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

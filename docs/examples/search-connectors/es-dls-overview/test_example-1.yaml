@@ -1,0 +1,65 @@
+# Source: search-connectors/es-dls-overview.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-dls-overview
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /_security/api_key
+  {
+    "name": "my-api-key",
+    "role_descriptors": {
+      "role-source1": {
+        "indices": [
+          {
+            "names": ["source1"],
+            "privileges": ["read"],
+            "query": {
+              "template": {
+                  "params": {
+                      "access_control": [
+                          "example.user@example.com",
+                          "source1-user-group"]
+                  }
+              },
+              "source": "..."
+            }
+          }
+        ]
+      },
+      "role-source2": {
+        "indices": [
+          {
+            "names": ["source2"],
+            "privileges": ["read"],
+            "query": {
+              "template": {
+                  "params": {
+                      "access_control": [
+                          "example.user@example.com",
+                          "source2-user-group"]
+                  }
+              },
+              "source": "..."
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

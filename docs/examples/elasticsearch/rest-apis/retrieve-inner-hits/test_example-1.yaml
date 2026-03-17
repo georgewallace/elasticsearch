@@ -1,0 +1,105 @@
+# Source: elasticsearch/rest-apis/retrieve-inner-hits.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: retrieve-inner-hits
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT test
+  {
+    "mappings": {
+      "properties": {
+        "comments": {
+          "type": "nested"
+        }
+      }
+    }
+  }
+
+  PUT test/_doc/1?refresh
+  {
+    "title": "Test title",
+    "comments": [
+      {
+        "author": "kimchy",
+        "number": 1
+      },
+      {
+        "author": "nik9000",
+        "number": 2
+      }
+    ]
+  }
+
+  POST test/_search
+  {
+    "query": {
+      "nested": {
+        "path": "comments",
+        "query": {
+          "match": {"comments.number" : 2}
+        },
+        "inner_hits": {} 
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...,
+    "hits": {
+      "total" : {
+          "value": 1,
+          "relation": "eq"
+      },
+      "max_score": 1.0,
+      "hits": [
+        {
+          "_index": "test",
+          "_id": "1",
+          "_score": 1.0,
+          "_source": ...,
+          "inner_hits": {
+            "comments": { 
+              "hits": {
+                "total" : {
+                    "value": 1,
+                    "relation": "eq"
+                },
+                "max_score": 1.0,
+                "hits": [
+                  {
+                    "_index": "test",
+                    "_id": "1",
+                    "_nested": {
+                      "field": "comments",
+                      "offset": 1
+                    },
+                    "_score": 1.0,
+                    "_source": {
+                      "author": "nik9000",
+                      "number": 2
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

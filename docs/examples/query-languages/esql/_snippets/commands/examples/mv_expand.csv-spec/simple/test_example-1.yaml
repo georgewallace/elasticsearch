@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/commands/examples/mv_expand.csv-spec/simple.md
+--- !metadata
+id: example-1
+language: esql
+topic: simple
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a=[1,2,3], b="b", j=["a","b"]
+  | MV_EXPAND a
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

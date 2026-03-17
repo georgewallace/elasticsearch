@@ -1,0 +1,218 @@
+# Source: search-aggregations-bucket-categorize-text-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-categorize-text-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST log-messages/_search?filter_path=aggregations
+  {
+    "aggs": {
+      "daily": {
+        "date_histogram": {
+          "field": "time",
+          "fixed_interval": "1d"
+        },
+        "aggs": {
+          "categories": {
+            "categorize_text": {
+              "field": "message",
+              "categorization_filters": ["\\w+\\_\\d{3}"]
+            },
+            "aggs": {
+              "hit": {
+                "top_hits": {
+                  "size": 1,
+                  "sort": ["time"],
+                  "_source": "message"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations" : {
+      "daily" : {
+        "buckets" : [
+          {
+            "key_as_string" : "2016-02-07T00:00:00.000Z",
+            "key" : 1454803200000,
+            "doc_count" : 3,
+            "categories" : {
+              "buckets" : [
+                {
+                  "doc_count" : 2,
+                  "key" : "Node shutting down",
+                  "regex" : ".*?Node.+?shutting.+?down.*?",
+                  "max_matching_length" : 49,
+                  "hit" : {
+                    "hits" : {
+                      "total" : {
+                        "value" : 2,
+                        "relation" : "eq"
+                      },
+                      "max_score" : null,
+                      "hits" : [
+                        {
+                          "_index" : "log-messages",
+                          "_id" : "1",
+                          "_score" : null,
+                          "_source" : {
+                            "message" : "2016-02-07T00:00:00+0000 Node 3 shutting down"
+                          },
+                          "sort" : [
+                            1454803260000
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "doc_count" : 1,
+                  "key" : "Node starting up",
+                  "regex" : ".*?Node.+?starting.+?up.*?",
+                  "max_matching_length" : 47,
+                  "hit" : {
+                    "hits" : {
+                      "total" : {
+                        "value" : 1,
+                        "relation" : "eq"
+                      },
+                      "max_score" : null,
+                      "hits" : [
+                        {
+                          "_index" : "log-messages",
+                          "_id" : "2",
+                          "_score" : null,
+                          "_source" : {
+                            "message" : "2016-02-07T00:00:00+0000 Node 5 starting up"
+                          },
+                          "sort" : [
+                            1454803320000
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "key_as_string" : "2016-02-08T00:00:00.000Z",
+            "key" : 1454889600000,
+            "doc_count" : 3,
+            "categories" : {
+              "buckets" : [
+                {
+                  "doc_count" : 1,
+                  "key" : "Node shutting down",
+                  "regex" : ".*?Node.+?shutting.+?down.*?",
+                  "max_matching_length" : 49,
+                  "hit" : {
+                    "hits" : {
+                      "total" : {
+                        "value" : 1,
+                        "relation" : "eq"
+                      },
+                      "max_score" : null,
+                      "hits" : [
+                        {
+                          "_index" : "log-messages",
+                          "_id" : "4",
+                          "_score" : null,
+                          "_source" : {
+                            "message" : "2016-02-08T00:00:00+0000 Node 5 shutting down"
+                          },
+                          "sort" : [
+                            1454889660000
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "doc_count" : 1,
+                  "key" : "User logged off",
+                  "regex" : ".*?User.+?logged.+?off.*?",
+                  "max_matching_length" : 52,
+                  "hit" : {
+                    "hits" : {
+                      "total" : {
+                        "value" : 1,
+                        "relation" : "eq"
+                      },
+                      "max_score" : null,
+                      "hits" : [
+                        {
+                          "_index" : "log-messages",
+                          "_id" : "6",
+                          "_score" : null,
+                          "_source" : {
+                            "message" : "2016-02-08T00:00:00+0000 User foo_864 logged off"
+                          },
+                          "sort" : [
+                            1454889840000
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "doc_count" : 1,
+                  "key" : "User logging on",
+                  "regex" : ".*?User.+?logging.+?on.*?",
+                  "max_matching_length" : 52,
+                  "hit" : {
+                    "hits" : {
+                      "total" : {
+                        "value" : 1,
+                        "relation" : "eq"
+                      },
+                      "max_score" : null,
+                      "hits" : [
+                        {
+                          "_index" : "log-messages",
+                          "_id" : "5",
+                          "_score" : null,
+                          "_source" : {
+                            "message" : "2016-02-08T00:00:00+0000 User foo_325 logging on"
+                          },
+                          "sort" : [
+                            1454889720000
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: categorize_text
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

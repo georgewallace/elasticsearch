@@ -1,0 +1,82 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /my-data-stream/_eql/search
+  {
+    "query": """
+      sequence
+        [ process where process.name == "regsvr32.exe" ]
+        [ file where stringContains(file.name, "scrobj.dll") ]
+    """
+  }
+--- !result
+|
+  {
+    ...
+    "hits": {
+      "total": ...,
+      "sequences": [
+        {
+          "events": [
+            {
+              "_index": ".ds-my-data-stream-2099.12.07-000001",
+              "_id": "OQmfCaduce8zoHT93o4H",
+              "_source": {
+                "@timestamp": "2099-12-07T11:07:09.000Z",
+                "event": {
+                  "category": "process",
+                  "id": "aR3NWVOs",
+                  "sequence": 4
+                },
+                "process": {
+                  "pid": 2012,
+                  "name": "regsvr32.exe",
+                  "command_line": "regsvr32.exe  /s /u /i:https://...RegSvr32.sct scrobj.dll",
+                  "executable": "C:\\Windows\\System32\\regsvr32.exe"
+                }
+              }
+            },
+            {
+              "_index": ".ds-my-data-stream-2099.12.07-000001",
+              "_id": "yDwnGIJouOYGBzP0ZE9n",
+              "_source": {
+                "@timestamp": "2099-12-07T11:07:10.000Z",
+                "event": {
+                  "category": "file",
+                  "id": "tZ1NWVOs",
+                  "sequence": 5
+                },
+                "process": {
+                  "pid": 2012,
+                  "name": "regsvr32.exe",
+                  "executable": "C:\\Windows\\System32\\regsvr32.exe"
+                },
+                "file": {
+                  "path": "C:\\Windows\\System32\\scrobj.dll",
+                  "name": "scrobj.dll"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,66 @@
+# Source: elasticsearch/rest-apis/rescore-search-results.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: rescore-search-results
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST /_search
+  {
+    "query": {
+      "match": {
+        "message": {
+          "operator": "or",
+          "query": "the quick brown"
+        }
+      }
+    },
+    "rescore": [
+      {
+        "window_size": 10,
+        "query": {
+          "rescore_query": {
+            "match_phrase": {
+              "message": {
+                "query": "the quick brown",
+                "slop": 2
+              }
+            }
+          },
+          "query_weight": 0.7,
+          "rescore_query_weight": 1.2
+        }
+      },
+      {
+        "window_size": 5,
+        "query": {
+          "score_mode": "multiply",
+          "rescore_query": {
+            "function_score": {
+              "script_score": {
+                "script": {
+                  "source": "Math.log10(doc.count.value + 2)"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

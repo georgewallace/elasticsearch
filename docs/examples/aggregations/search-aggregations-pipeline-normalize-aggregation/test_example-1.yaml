@@ -1,0 +1,98 @@
+# Source: search-aggregations-pipeline-normalize-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-pipeline-normalize-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /sales/_search
+  {
+    "size": 0,
+    "aggs": {
+      "sales_per_month": {
+        "date_histogram": {
+          "field": "date",
+          "calendar_interval": "month"
+        },
+        "aggs": {
+          "sales": {
+            "sum": {
+              "field": "price"
+            }
+          },
+          "percent_of_total_sales": {
+            "normalize": {
+              "buckets_path": "sales",          
+              "method": "percent_of_sum",       
+              "format": "00.00%"                
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+     "took": 11,
+     "timed_out": false,
+     "_shards": ...,
+     "hits": ...,
+     "aggregations": {
+        "sales_per_month": {
+           "buckets": [
+              {
+                 "key_as_string": "2015/01/01 00:00:00",
+                 "key": 1420070400000,
+                 "doc_count": 3,
+                 "sales": {
+                    "value": 550.0
+                 },
+                 "percent_of_total_sales": {
+                    "value": 0.5583756345177665,
+                    "value_as_string": "55.84%"
+                 }
+              },
+              {
+                 "key_as_string": "2015/02/01 00:00:00",
+                 "key": 1422748800000,
+                 "doc_count": 2,
+                 "sales": {
+                    "value": 60.0
+                 },
+                 "percent_of_total_sales": {
+                    "value": 0.06091370558375635,
+                    "value_as_string": "06.09%"
+                 }
+              },
+              {
+                 "key_as_string": "2015/03/01 00:00:00",
+                 "key": 1425168000000,
+                 "doc_count": 2,
+                 "sales": {
+                    "value": 375.0
+                 },
+                 "percent_of_total_sales": {
+                    "value": 0.38071065989847713,
+                    "value_as_string": "38.07%"
+                 }
+              }
+           ]
+        }
+     }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

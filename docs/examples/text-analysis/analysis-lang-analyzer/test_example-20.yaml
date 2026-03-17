@@ -1,0 +1,55 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-20
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 20
+--- !code
+|
+  PUT /hungarian_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "hungarian_stop": {
+            "type":       "stop",
+            "stopwords":  "_hungarian_" 
+          },
+          "hungarian_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["példa"] 
+          },
+          "hungarian_stemmer": {
+            "type":       "stemmer",
+            "language":   "hungarian"
+          }
+        },
+        "analyzer": {
+          "rebuilt_hungarian": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "hungarian_stop",
+              "hungarian_keywords",
+              "hungarian_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

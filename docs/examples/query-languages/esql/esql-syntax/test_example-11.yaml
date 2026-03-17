@@ -1,0 +1,31 @@
+# Source: query-languages/esql/esql-syntax.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: esql-syntax
+subtopic: default
+example_order: 11
+--- !code
+|
+  POST /_query
+  {
+  "query": """
+  FROM library
+  | WHERE match(author, "Frank Herbert", {"minimum_should_match": 2, "operator": "AND"})
+  | LIMIT 5
+  """
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

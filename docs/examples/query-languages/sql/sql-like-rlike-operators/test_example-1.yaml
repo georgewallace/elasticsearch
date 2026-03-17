@@ -1,0 +1,25 @@
+# Source: query-languages/sql/sql-like-rlike-operators.md
+--- !metadata
+id: example-1
+language: sql
+topic: sql-like-rlike-operators
+subtopic: default
+example_order: 1
+--- !code
+|
+  expression        
+  LIKE constant_exp
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

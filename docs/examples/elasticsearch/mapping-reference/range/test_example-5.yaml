@@ -1,0 +1,78 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 5
+--- !code
+|
+  PUT idx
+  {
+    "mappings": {
+      "properties": {
+        "my_range": {
+          "type": "integer_range"
+        }
+      }
+    }
+  }
+
+  POST idx/_search
+  {
+    "sort": [
+      {
+        "my_range": {
+          "order": "asc"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+      "error": {
+          "root_cause": [
+              {
+                  "type": "illegal_argument_exception",
+                  "reason": "Sorting by range field [my_range] is not supported"
+              }
+          ],
+          "type": "search_phase_execution_exception",
+          "reason": "all shards failed",
+          "phase": "query",
+          "grouped": true,
+          "failed_shards": [
+              {
+                  "shard": 0,
+                  "index": "idx",
+                  "node": "7pzVSCf5TuSNZYj-N7u3tw",
+                  "reason": {
+                      "type": "illegal_argument_exception",
+                      "reason": "Sorting by range field [my_range] is not supported"
+                  }
+              }
+          ],
+          "caused_by": {
+              "type": "illegal_argument_exception",
+              "reason": "Sorting by range field [my_range] is not supported",
+              "caused_by": {
+                  "type": "illegal_argument_exception",
+                  "reason": "Sorting by range field [my_range] is not supported"
+              }
+          }
+      },
+      "status": 400
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,33 @@
+# Source: elasticsearch/index-settings/slow-log.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: slow-log
+subtopic: default
+example_order: 7
+--- !code
+|
+  PUT /my-index-000001/_settings
+  {
+    "index.indexing.slowlog.threshold.index.warn": "10s",
+    "index.indexing.slowlog.threshold.index.info": "5s",
+    "index.indexing.slowlog.threshold.index.debug": "2s",
+    "index.indexing.slowlog.threshold.index.trace": "500ms",
+    "index.indexing.slowlog.include.user": true,
+    "index.indexing.slowlog.source": "3000",
+    "index.indexing.slowlog.reformat": true
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

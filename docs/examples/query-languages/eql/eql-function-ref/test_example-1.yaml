@@ -1,0 +1,41 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-1
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 1
+--- !code
+|
+  add(4, 5)                                           // returns 9
+  add(4, 0.5)                                         // returns 4.5
+  add(0.5, 0.25)                                      // returns 0.75
+  add(4, -2)                                          // returns 2
+  add(-2, -2)                                         // returns -4
+
+  // process.args_count = 4
+  add(process.args_count, 5)                          // returns 9
+  add(process.args_count, 0.5)                        // returns 4.5
+
+  // process.parent.args_count = 2
+  add(process.args_count, process.parent.args_count)  // returns 6
+
+  // null handling
+  add(null, 4)                                        // returns null
+  add(4. null)                                        // returns null
+  add(null, process.args_count)                       // returns null
+  add(process.args_count null)                        // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,24 @@
+# Source: scripting-languages/painless/painless-filter-context.md
+--- !metadata
+id: example-1
+language: painless
+topic: painless-filter-context
+subtopic: default
+example_order: 1
+--- !code
+|
+  doc['sold'].value == false && doc['cost'].value < 25
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

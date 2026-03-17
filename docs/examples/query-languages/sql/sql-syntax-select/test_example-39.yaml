@@ -1,0 +1,32 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-39
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 39
+--- !code
+|
+  SELECT * FROM test_emp PIVOT (SUM(salary) FOR languages IN (1, 2)) LIMIT 5;
+
+         birth_date    |    emp_no     |  first_name   |    gender     |     hire_date       |   last_name   |       name       |       1       |       2
+  ---------------------+---------------+---------------+---------------+---------------------+---------------+------------------+---------------+---------------
+  null                 |10041          |Uri            |F              |1989-11-12 00:00:00.0|Lenart         |Uri Lenart        |56415          |null
+  null                 |10043          |Yishay         |M              |1990-10-20 00:00:00.0|Tzvieli        |Yishay Tzvieli    |34341          |null
+  null                 |10044          |Mingsen        |F              |1994-05-21 00:00:00.0|Casley         |Mingsen Casley    |39728          |null
+  1952-04-19 00:00:00.0|10009          |Sumant         |F              |1985-02-18 00:00:00.0|Peac           |Sumant Peac       |66174          |null
+  1953-01-07 00:00:00.0|10067          |Claudi         |M              |1987-03-04 00:00:00.0|Stavenow       |Claudi Stavenow   |null           |52044
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

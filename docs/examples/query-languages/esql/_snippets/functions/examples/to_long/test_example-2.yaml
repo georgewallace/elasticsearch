@@ -1,0 +1,26 @@
+# Source: query-languages/esql/_snippets/functions/examples/to_long.md
+--- !metadata
+id: example-2
+language: esql
+topic: to_long
+subtopic: default
+example_order: 2
+--- !code
+|
+  ROW str1 = "0x32", str2 = "31"
+  | EVAL long1 = TO_LONG(str1, 16), long2 = TO_LONG(str2, 13)
+  | KEEP str1, long1, str2, long2
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

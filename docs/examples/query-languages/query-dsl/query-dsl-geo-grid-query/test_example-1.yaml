@@ -1,0 +1,54 @@
+# Source: query-languages/query-dsl/query-dsl-geo-grid-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-geo-grid-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /my_locations
+  {
+    "mappings": {
+      "properties": {
+        "location": {
+          "type": "geo_point"
+        }
+      }
+    }
+  }
+
+  PUT /my_locations/_doc/1?refresh
+  {
+    "location" : "POINT(4.912350 52.374081)",
+    "city": "Amsterdam",
+    "name": "NEMO Science Museum"
+  }
+
+  PUT /my_locations/_doc/2?refresh
+  {
+    "location" : "POINT(4.405200 51.222900)",
+    "city": "Antwerp",
+    "name": "Letterenhuis"
+  }
+
+  PUT /my_locations/_doc/3?refresh
+  {
+    "location" : "POINT(2.336389 48.861111)",
+    "city": "Paris",
+    "name": "Musée du Louvre"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

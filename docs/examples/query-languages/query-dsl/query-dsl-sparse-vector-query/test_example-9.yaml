@@ -1,0 +1,57 @@
+# Source: query-languages/query-dsl/query-dsl-sparse-vector-query.md
+--- !metadata
+id: example-9
+language: elastic_console
+topic: query-dsl-sparse-vector-query
+subtopic: default
+example_order: 9
+--- !code
+|
+  GET my-index/_search
+  {
+     "query":{
+        "sparse_vector":{
+           "field": "ml.tokens",
+           "inference_id": "my-elser-model",
+           "query":"How is the weather in Jamaica?",
+           "prune": true,
+           "pruning_config": {
+             "tokens_freq_ratio_threshold": 5,
+             "tokens_weight_threshold": 0.4,
+             "only_score_pruned_tokens": false
+           }
+        }
+     },
+     "rescore": {
+        "window_size": 100,
+        "query": {
+           "rescore_query": {
+              "sparse_vector": {
+                 "field": "ml.tokens",
+                 "inference_id": "my-elser-model",
+                 "query": "How is the weather in Jamaica?",
+                 "prune": true,
+                 "pruning_config": {
+                     "tokens_freq_ratio_threshold": 5,
+                     "tokens_weight_threshold": 0.4,
+                     "only_score_pruned_tokens": true
+                 }
+              }
+           }
+        }
+     }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,66 @@
+# Source: elasticsearch/rest-apis/vector-tile-search.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: vector-tile-search
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET my-index/_search
+  {
+    "size": 10000,
+    "query": {
+      "geo_bounding_box": {
+        "my-geo-field": {
+          "top_left": {
+            "lat": -40.979898069620134,
+            "lon": -45
+          },
+          "bottom_right": {
+            "lat": -66.51326044311186,
+            "lon": 0
+          }
+        }
+      }
+    },
+    "aggregations": {
+      "grid": {
+        "geotile_grid": {
+          "field": "my-geo-field",
+          "precision": 11,
+          "size": 65536,
+          "bounds": {
+            "top_left": {
+              "lat": -40.979898069620134,
+              "lon": -45
+            },
+            "bottom_right": {
+              "lat": -66.51326044311186,
+              "lon": 0
+            }
+          }
+        }
+      },
+      "bounds": {
+        "geo_bounds": {
+          "field": "my-geo-field",
+          "wrap_longitude": false
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

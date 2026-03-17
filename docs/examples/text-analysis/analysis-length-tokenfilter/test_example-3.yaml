@@ -1,0 +1,43 @@
+# Source: text-analysis/analysis-length-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-length-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT length_custom_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "whitespace_length_2_to_10_char": {
+            "tokenizer": "whitespace",
+            "filter": [ "length_2_to_10_char" ]
+          }
+        },
+        "filter": {
+          "length_2_to_10_char": {
+            "type": "length",
+            "min": 2,
+            "max": 10
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,42 @@
+# Source: scripting-languages/painless/painless-api-examples.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: painless-api-examples
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /_scripts/painless/_execute
+  {
+    "script": {
+      "source": "doc['rank'].value / params.max_rank",
+      "params": {
+        "max_rank": 5.0
+      }
+    },
+    "context": "score",
+    "context_setup": {
+      "index": "my-index-000001",
+      "document": {
+        "rank": 4
+      }
+    }
+  }
+--- !result
+|
+  {
+    "result": 0.8
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

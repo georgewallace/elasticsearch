@@ -1,0 +1,58 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-19
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 19
+--- !code
+|
+  PUT /hindi_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "hindi_stop": {
+            "type":       "stop",
+            "stopwords":  "_hindi_" 
+          },
+          "hindi_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["उदाहरण"] 
+          },
+          "hindi_stemmer": {
+            "type":       "stemmer",
+            "language":   "hindi"
+          }
+        },
+        "analyzer": {
+          "rebuilt_hindi": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "decimal_digit",
+              "hindi_keywords",
+              "indic_normalization",
+              "hindi_normalization",
+              "hindi_stop",
+              "hindi_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

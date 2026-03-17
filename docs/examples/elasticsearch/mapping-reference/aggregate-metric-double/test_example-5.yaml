@@ -1,0 +1,58 @@
+# Source: elasticsearch/mapping-reference/aggregate-metric-double.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: aggregate-metric-double
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET stats-index/_search
+  {
+    "query": {
+      "term": {
+        "agg_metric": {
+          "value": 702.30
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+      "hits": {
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "max_score": 1.0,
+      "hits": [
+        {
+          "_index": "stats-index",
+          "_id": "1",
+          "_score": 1.0,
+          "_source": {
+            "agg_metric": {
+              "min": -302.5,
+              "max": 702.3,
+              "sum": 200.0,
+              "value_count": 25
+            }
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

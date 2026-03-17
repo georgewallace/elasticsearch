@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-34
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 34
+--- !code
+|
+  SELECT TRUNC(-345.153, 1) AS trimmed;
+
+      trimmed
+  ---------------
+  -345.1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

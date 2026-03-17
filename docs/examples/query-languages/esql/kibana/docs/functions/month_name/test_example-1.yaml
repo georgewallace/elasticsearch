@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/month_name.md
+--- !metadata
+id: example-1
+language: esql
+topic: month_name
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW dt = to_datetime("1996-03-21T00:00:00.000Z")
+  | EVAL monthName = MONTH_NAME(dt);
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

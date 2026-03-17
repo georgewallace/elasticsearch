@@ -1,0 +1,71 @@
+# Source: elasticsearch/mapping-reference/passthrough.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: passthrough
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "attributes": {
+          "type": "passthrough", 
+          "priority": 10,
+          "properties": {
+            "id": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "attributes" : {  
+      "id": "foo",
+      "zone": 10
+    }
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "bool": {
+        "must": [
+          { "match": { "id": "foo" }},  
+          { "match": { "zone": 10 }}
+        ]
+      }
+    }
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "bool": {
+        "must": [
+          { "match": { "attributes.id": "foo" }}, 
+          { "match": { "attributes.zone": 10 }}
+        ]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

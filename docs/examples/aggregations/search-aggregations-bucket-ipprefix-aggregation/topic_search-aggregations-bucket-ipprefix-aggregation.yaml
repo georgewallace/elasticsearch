@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-ipprefix-aggregation
+title: Search Aggregations Bucket Ipprefix Aggregation
+description: 
+
+setup:
+
+
+teardown:

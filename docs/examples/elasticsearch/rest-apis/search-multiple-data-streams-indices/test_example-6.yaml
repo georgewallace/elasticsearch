@@ -1,0 +1,30 @@
+# Source: elasticsearch/rest-apis/search-multiple-data-streams-indices.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: search-multiple-data-streams-indices
+subtopic: default
+example_order: 6
+--- !code
+|
+  GET /_search
+  {
+    "indices_boost": [
+      { "my-alias":  1.4 },
+      { "my-index*": 1.3 }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

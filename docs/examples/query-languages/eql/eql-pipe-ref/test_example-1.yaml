@@ -1,0 +1,25 @@
+# Source: query-languages/eql/eql-pipe-ref.md
+--- !metadata
+id: example-1
+language: eql
+topic: eql-pipe-ref
+subtopic: default
+example_order: 1
+--- !code
+|
+  process where process.name == "powershell.exe"
+  | head 3
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

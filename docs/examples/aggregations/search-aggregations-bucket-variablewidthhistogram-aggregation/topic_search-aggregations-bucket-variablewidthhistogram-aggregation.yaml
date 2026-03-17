@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-variablewidthhistogram-aggregation
+title: Search Aggregations Bucket Variablewidthhistogram Aggregation
+description: 
+
+setup:
+
+
+teardown:

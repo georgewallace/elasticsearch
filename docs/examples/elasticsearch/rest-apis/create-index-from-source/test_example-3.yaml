@@ -1,0 +1,36 @@
+# Source: elasticsearch/rest-apis/create-index-from-source.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: create-index-from-source
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST _create_from/my-index/my-new-index
+  {
+    "settings_override": {
+      "index": {
+        "number_of_shards": 5
+      }
+    },
+    "mappings_override": {
+      "properties": {
+          "field2": { "type": "boolean" }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

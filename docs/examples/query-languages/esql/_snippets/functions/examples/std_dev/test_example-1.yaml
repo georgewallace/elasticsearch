@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/std_dev.md
+--- !metadata
+id: example-1
+language: esql
+topic: std_dev
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | STATS std_dev_height = STD_DEV(height)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

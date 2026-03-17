@@ -1,0 +1,48 @@
+# Source: elasticsearch/mapping-reference/position-increment-gap.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: position-increment-gap
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "names": {
+          "type": "text",
+          "position_increment_gap": 0 
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "names": [ "John Abraham", "Lincoln Smith"]
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "match_phrase": {
+        "names": "Abraham Lincoln" 
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

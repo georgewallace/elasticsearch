@@ -1,0 +1,64 @@
+# Source: elasticsearch/mapping-reference/percolator.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: percolator
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT new_index
+  {
+    "mappings": {
+      "properties": {
+        "query" : {
+          "type" : "percolator"
+        },
+        "body" : {
+          "type": "text"
+        }
+      }
+    }
+  }
+
+  POST /_reindex?refresh
+  {
+    "source": {
+      "index": "index"
+    },
+    "dest": {
+      "index": "new_index"
+    }
+  }
+
+  POST _aliases
+  {
+    "actions": [ 
+      {
+        "remove": {
+          "index" : "index",
+          "alias": "queries"
+        }
+      },
+      {
+        "add": {
+          "index": "new_index",
+          "alias": "queries"
+        }
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

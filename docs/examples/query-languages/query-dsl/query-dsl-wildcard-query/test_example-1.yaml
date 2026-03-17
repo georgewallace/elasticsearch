@@ -1,0 +1,35 @@
+# Source: query-languages/query-dsl/query-dsl-wildcard-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-wildcard-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "wildcard": {
+        "user.id": {
+          "value": "ki*y",
+          "boost": 1.0,
+          "rewrite": "constant_score_blended"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

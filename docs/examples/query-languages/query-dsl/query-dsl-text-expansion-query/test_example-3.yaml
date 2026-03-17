@@ -1,0 +1,60 @@
+# Source: query-languages/query-dsl/query-dsl-text-expansion-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-text-expansion-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET my-index/_search
+  {
+    "query": {
+      "bool": {
+        "should": [
+          {
+            "text_expansion": {
+              "ml.inference.title_expanded.predicted_value": {
+                "model_id": ".elser_model_2",
+                "model_text": "How is the weather in Jamaica?",
+                "boost": 1
+              }
+            }
+          },
+          {
+            "text_expansion": {
+              "ml.inference.description_expanded.predicted_value": {
+                "model_id": ".elser_model_2",
+                "model_text": "How is the weather in Jamaica?",
+                "boost": 1
+              }
+            }
+          },
+          {
+            "multi_match": {
+              "query": "How is the weather in Jamaica?",
+              "fields": [
+                "title",
+                "description"
+              ],
+              "boost": 4
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,91 @@
+# Source: text-analysis/analysis-delimited-payload-tokenfilter.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: analysis-delimited-payload-tokenfilter
+subtopic: default
+example_order: 6
+--- !code
+|
+  GET text_payloads/_termvectors/1
+  {
+    "fields": [ "text" ],
+    "payloads": true
+  }
+--- !result
+|
+  {
+    "_index": "text_payloads",
+    "_id": "1",
+    "_version": 1,
+    "found": true,
+    "took": 8,
+    "term_vectors": {
+      "text": {
+        "field_statistics": {
+          "sum_doc_freq": 5,
+          "doc_count": 1,
+          "sum_ttf": 5
+        },
+        "terms": {
+          "brown": {
+            "term_freq": 1,
+            "tokens": [
+              {
+                "position": 1,
+                "payload": "QEAAAA=="
+              }
+            ]
+          },
+          "fox": {
+            "term_freq": 1,
+            "tokens": [
+              {
+                "position": 2,
+                "payload": "QIAAAA=="
+              }
+            ]
+          },
+          "is": {
+            "term_freq": 1,
+            "tokens": [
+              {
+                "position": 3,
+                "payload": "AAAAAA=="
+              }
+            ]
+          },
+          "quick": {
+            "term_freq": 1,
+            "tokens": [
+              {
+                "position": 4,
+                "payload": "QSAAAA=="
+              }
+            ]
+          },
+          "the": {
+            "term_freq": 1,
+            "tokens": [
+              {
+                "position": 0,
+                "payload": "AAAAAA=="
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,28 @@
+# Source: scripting-languages/painless/using-datetime-in-painless.md
+--- !metadata
+id: example-16
+language: painless
+topic: using-datetime-in-painless
+subtopic: default
+example_order: 16
+--- !code
+|
+  ZonedDateTime zdt1 =
+          ZonedDateTime.of(1983, 10, 13, 22, 15, 30, 11000000, ZoneId.of('Z'));
+  ZonedDateTime zdt2 =
+          ZonedDateTime.of(1983, 10, 13, 22, 15, 35, 0, ZoneId.of('Z'));
+  long differenceInMillis = ChronoUnit.MILLIS.between(zdt1, zdt2);
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

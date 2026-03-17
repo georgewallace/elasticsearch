@@ -1,0 +1,67 @@
+# Source: text-analysis/analysis-chargroup-tokenizer.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-chargroup-tokenizer
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _analyze
+  {
+    "tokenizer": {
+      "type": "char_group",
+      "tokenize_on_chars": [
+        "whitespace",
+        "-",
+        "\n"
+      ]
+    },
+    "text": "The QUICK brown-fox"
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": "The",
+        "start_offset": 0,
+        "end_offset": 3,
+        "type": "word",
+        "position": 0
+      },
+      {
+        "token": "QUICK",
+        "start_offset": 4,
+        "end_offset": 9,
+        "type": "word",
+        "position": 1
+      },
+      {
+        "token": "brown",
+        "start_offset": 10,
+        "end_offset": 15,
+        "type": "word",
+        "position": 2
+      },
+      {
+        "token": "fox",
+        "start_offset": 16,
+        "end_offset": 19,
+        "type": "word",
+        "position": 3
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

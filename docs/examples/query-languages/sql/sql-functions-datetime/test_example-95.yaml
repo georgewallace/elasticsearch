@@ -1,0 +1,24 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-95
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 95
+--- !code
+|
+  ISO_WEEK_OF_YEAR(datetime_exp)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

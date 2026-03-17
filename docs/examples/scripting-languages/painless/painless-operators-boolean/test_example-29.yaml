@@ -1,0 +1,26 @@
+# Source: scripting-languages/painless/painless-operators-boolean.md
+--- !metadata
+id: example-29
+language: painless
+topic: painless-operators-boolean
+subtopic: default
+example_order: 29
+--- !code
+|
+  boolean x = false;    
+  boolean y = x ^ true; 
+  y = y ^ x;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

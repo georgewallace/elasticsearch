@@ -1,0 +1,55 @@
+# Source: elasticsearch-plugins/mapper-annotated-text-usage.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: mapper-annotated-text-usage
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "text": { "type": "annotated_text", "store": true }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "text": [
+      "the quick brown fox",
+      "the quick brown fox",
+      "jumped over the lazy dog"
+    ]
+  }
+--- !result
+|
+  {
+    "text": [
+      "the quick brown fox",
+      "the quick brown fox",
+      "jumped over the lazy dog"
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

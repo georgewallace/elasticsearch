@@ -1,0 +1,32 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-20
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 20
+--- !code
+|
+  GET /_eql/search/FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=?wait_for_completion_timeout=2s
+--- !result
+|
+  {
+    "id": "FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=",
+    "is_partial": false,
+    "is_running": false,
+    "took": 2000,
+    "timed_out": false,
+    "hits": ...
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

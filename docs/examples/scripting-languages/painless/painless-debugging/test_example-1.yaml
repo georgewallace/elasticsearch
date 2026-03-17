@@ -1,0 +1,44 @@
+# Source: scripting-languages/painless/painless-debugging.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: painless-debugging
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /hockey/_doc/1?refresh
+  {"first":"johnny","last":"gaudreau","goals":[9,27,1],"assists":[17,46,0],"gp":[26,82,1]}
+
+  POST /hockey/_explain/1
+  {
+    "query": {
+      "script": {
+        "script": "Debug.explain(doc.goals)"
+      }
+    }
+  }
+--- !result
+|
+  {
+     "error": {
+        "type": "script_exception",
+        "to_string": "[1, 9, 27]",
+        "painless_class": "org.elasticsearch.index.fielddata.ScriptDocValues.Longs",
+        "java_class": "org.elasticsearch.index.fielddata.ScriptDocValues$Longs",
+        ...
+     },
+     "status": 400
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

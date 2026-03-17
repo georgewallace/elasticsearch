@@ -1,0 +1,38 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-51
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 51
+--- !code
+|
+  SELECT
+      languages,
+      ROUND(PERCENTILE_RANK(salary, 65000, 'tdigest', 100.0), 2) AS "rank_TDigest",
+      ROUND(PERCENTILE_RANK(salary, 65000, 'hdr', 3), 2) AS "rank_HDR"
+  FROM emp
+  GROUP BY languages;
+
+     languages   | rank_TDigest  |   rank_HDR
+  ---------------+---------------+---------------
+  null           |73.66          |80.0
+  1              |73.73          |73.33
+  2              |88.88          |89.47
+  3              |79.44          |76.47
+  4              |85.7           |83.33
+  5              |96.79          |95.24
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

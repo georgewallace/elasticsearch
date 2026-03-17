@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-geodistance-aggregation
+title: Search Aggregations Bucket Geodistance Aggregation
+description: 
+
+setup:
+
+
+teardown:

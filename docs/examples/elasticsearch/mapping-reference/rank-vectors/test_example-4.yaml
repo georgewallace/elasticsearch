@@ -1,0 +1,40 @@
+# Source: elasticsearch/mapping-reference/rank-vectors.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: rank-vectors
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT my-rank-vectors-bit
+  {
+    "mappings": {
+      "properties": {
+        "my_vector": {
+          "type": "rank_vectors",
+          "element_type": "bit"
+        }
+      }
+    }
+  }
+
+  POST /my-rank-vectors-bit/_bulk?refresh
+  {"index": {"_id" : "1"}}
+  {"my_vector": [127, -127, 0, 1, 42]}
+  {"index": {"_id" : "2"}}
+  {"my_vector": "8100012a7f"}
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

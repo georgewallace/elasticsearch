@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-metrics-min-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

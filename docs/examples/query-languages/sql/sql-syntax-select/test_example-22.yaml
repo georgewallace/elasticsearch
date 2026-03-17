@@ -1,0 +1,30 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-22
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 22
+--- !code
+|
+  SELECT gender AS g, ROUND((MIN(salary) / 100)) AS salary FROM emp GROUP BY gender;
+
+         g       |    salary
+  ---------------+---------------
+  null           |253
+  F              |259
+  M              |259
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

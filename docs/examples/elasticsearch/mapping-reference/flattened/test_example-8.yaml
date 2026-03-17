@@ -1,0 +1,51 @@
+# Source: elasticsearch/mapping-reference/flattened.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: flattened
+subtopic: default
+example_order: 8
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "flattened": { "type": "flattened" }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "flattened": {
+      "field": [ "apple", "apple", "banana", "avocado", "10", "200", "AVOCADO", "Banana", "Tangerine" ]
+    }
+  }
+--- !result
+|
+  {
+    "flattened": {
+      "field": [ "10", "200", "AVOCADO", "Banana", "Tangerine", "apple", "avocado", "banana" ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-pipeline-max-bucket-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

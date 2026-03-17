@@ -1,0 +1,59 @@
+# Source: elasticsearch/mapping-reference/copy-to.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: copy-to
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "first_name": {
+          "type": "text",
+          "copy_to": "full_name" 
+        },
+        "last_name": {
+          "type": "text",
+          "copy_to": "full_name" 
+        },
+        "full_name": {
+          "type": "text"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "first_name": "John",
+    "last_name": "Smith"
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "match": {
+        "full_name": { 
+          "query": "John Smith",
+          "operator": "and"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

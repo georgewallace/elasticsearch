@@ -1,0 +1,36 @@
+# Source: elasticsearch/mapping-reference/mapping-doc-count-field.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapping-doc-count-field
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my_index
+  {
+    "mappings" : {
+      "properties" : {
+        "my_histogram" : {
+          "type" : "histogram"
+        },
+        "my_text" : {
+          "type" : "keyword"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

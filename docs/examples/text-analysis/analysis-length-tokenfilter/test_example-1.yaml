@@ -1,0 +1,35 @@
+# Source: text-analysis/analysis-length-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-length-tokenfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET _analyze
+  {
+    "tokenizer": "whitespace",
+    "filter": [
+      {
+        "type": "length",
+        "min": 0,
+        "max": 4
+      }
+    ],
+    "text": "the quick brown fox jumps over the lazy dog"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

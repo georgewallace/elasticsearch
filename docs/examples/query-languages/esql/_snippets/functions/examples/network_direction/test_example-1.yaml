@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/network_direction.md
+--- !metadata
+id: example-1
+language: esql
+topic: network_direction
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW ip0 = "127.0.0.1"::ip, ip1 = "5.6.7.8"::ip
+  | EVAL direction = NETWORK_DIRECTION(ip0, ip1, ["loopback", "private"])
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

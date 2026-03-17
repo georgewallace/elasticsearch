@@ -1,0 +1,33 @@
+# Source: elasticsearch/rest-apis/paginate-search-results.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: paginate-search-results
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "from": 5,
+    "size": 20,
+    "query": {
+      "match": {
+        "user.id": "kimchy"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

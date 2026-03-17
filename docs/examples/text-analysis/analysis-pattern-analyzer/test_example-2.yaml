@@ -1,0 +1,43 @@
+# Source: text-analysis/analysis-pattern-analyzer.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-pattern-analyzer
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_email_analyzer": {
+            "type":      "pattern",
+            "pattern":   "\\W|_", 
+            "lowercase": true
+          }
+        }
+      }
+    }
+  }
+
+  POST my-index-000001/_analyze
+  {
+    "analyzer": "my_email_analyzer",
+    "text": "John_Smith@foo-bar.com"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

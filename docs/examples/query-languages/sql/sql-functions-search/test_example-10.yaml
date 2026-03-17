@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-10
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 10
+--- !code
+|
+  SELECT SCORE(), * FROM library WHERE MATCH(name, 'dune') ORDER BY SCORE() DESC;
+
+      SCORE()    |    author     |       name        |  page_count   |    release_date
+  ---------------+---------------+-------------------+---------------+--------------------
+  2.2886353      |Frank Herbert  |Dune               |604            |1965-06-01T00:00:00Z
+  1.8893257      |Frank Herbert  |Dune Messiah       |331            |1969-10-15T00:00:00Z
+  1.6086556      |Frank Herbert  |Children of Dune   |408            |1976-04-21T00:00:00Z
+  1.4005898      |Frank Herbert  |God Emperor of Dune|454            |1981-05-28T00:00:00Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

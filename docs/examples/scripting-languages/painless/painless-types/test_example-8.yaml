@@ -1,0 +1,27 @@
+# Source: scripting-languages/painless/painless-types.md
+--- !metadata
+id: example-8
+language: painless
+topic: painless-types
+subtopic: default
+example_order: 8
+--- !code
+|
+  String r = "some text";             
+  String s = 'some text';             
+  String t = new String("some text"); 
+  String u;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,66 @@
+# Source: elasticsearch/rest-apis/retrieve-inner-hits.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: retrieve-inner-hits
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT test
+  {
+    "mappings": {
+      "properties": {
+        "comments": {
+          "type": "nested"
+        }
+      }
+    }
+  }
+
+  PUT test/_doc/1?refresh
+  {
+    "title": "Test title",
+    "comments": [
+      {
+        "author": "kimchy",
+        "text": "comment text"
+      },
+      {
+        "author": "nik9000",
+        "text": "words words words"
+      }
+    ]
+  }
+
+  POST test/_search
+  {
+    "query": {
+      "nested": {
+        "path": "comments",
+        "query": {
+          "match": {"comments.text" : "words"}
+        },
+        "inner_hits": {
+          "_source" : false,
+          "docvalue_fields" : [
+            "comments.text.keyword"
+          ]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

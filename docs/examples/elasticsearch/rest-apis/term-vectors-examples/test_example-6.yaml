@@ -1,0 +1,61 @@
+# Source: elasticsearch/rest-apis/term-vectors-examples.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: term-vectors-examples
+subtopic: default
+example_order: 6
+--- !code
+|
+  GET /my-index-000001/_termvectors
+  {
+    "doc" : {
+      "fullname" : "John Doe",
+      "text" : "test test test"
+    },
+    "fields": ["fullname"],
+    "per_field_analyzer" : {
+      "fullname": "keyword"
+    }
+  }
+--- !result
+|
+  {
+    "_index": "my-index-000001",
+    "_version": 0,
+    "found": true,
+    "took": 6,
+    "term_vectors": {
+      "fullname": {
+         "field_statistics": {
+            "sum_doc_freq": 2,
+            "doc_count": 4,
+            "sum_ttf": 4
+         },
+         "terms": {
+            "John Doe": {
+               "term_freq": 1,
+               "tokens": [
+                  {
+                     "position": 0,
+                     "start_offset": 0,
+                     "end_offset": 8
+                  }
+               ]
+            }
+         }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

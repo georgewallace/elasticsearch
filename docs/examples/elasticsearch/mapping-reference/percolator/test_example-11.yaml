@@ -1,0 +1,31 @@
+# Source: elasticsearch/mapping-reference/percolator.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: percolator
+subtopic: default
+example_order: 11
+--- !code
+|
+  PUT /my_queries1/_doc/1?refresh
+  {
+    "query": {
+      "term": {
+        "my_field.prefix": "abc"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

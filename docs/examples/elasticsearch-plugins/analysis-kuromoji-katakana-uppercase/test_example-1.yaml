@@ -1,0 +1,57 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-katakana-uppercase.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-kuromoji-katakana-uppercase
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [
+                "katakana_uppercase"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "ストップウォッチ"
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": "ストツプウオツチ",
+        "start_offset": 0,
+        "end_offset": 8,
+        "type": "word",
+        "position": 0
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,26 @@
+# Source: query-languages/esql/limitations.md
+--- !metadata
+id: example-4
+language: esql
+topic: limitations
+subtopic: default
+example_order: 4
+--- !code
+|
+  FROM books
+  | STATS AVG(price) BY author
+  | WHERE MATCH(author, "Faulkner")
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

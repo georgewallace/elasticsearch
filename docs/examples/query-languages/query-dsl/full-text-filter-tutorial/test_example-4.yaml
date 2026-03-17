@@ -1,0 +1,70 @@
+# Source: query-languages/query-dsl/full-text-filter-tutorial.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: full-text-filter-tutorial
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET /cooking_blog/_search
+  {
+    "query": {
+      "match": {
+        "description": {
+          "query": "fluffy pancakes" 
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": 0,
+    "timed_out": false,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped": 0,
+      "failed": 0
+    },
+    "hits": { 
+      "total": {
+        "value": 1,
+        "relation": "eq"
+      },
+      "max_score": 1.8378843, 
+      "hits": [
+        {
+          "_index": "cooking_blog",
+          "_id": "1",
+          "_score": 1.8378843, 
+          "_source": {
+            "title": "Perfect Pancakes: A Fluffy Breakfast Delight", 
+            "description": "Learn the secrets to making the fluffiest pancakes, so amazing you won't believe your tastebuds. This recipe uses buttermilk and a special folding technique to create light, airy pancakes that are perfect for lazy Sunday mornings.", 
+            "author": "Maria Rodriguez",
+            "date": "2023-05-01",
+            "category": "Breakfast",
+            "tags": [
+              "pancakes",
+              "breakfast",
+              "easy recipes"
+            ],
+            "rating": 4.8
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

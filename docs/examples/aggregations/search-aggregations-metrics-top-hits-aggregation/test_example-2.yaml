@@ -1,0 +1,54 @@
+# Source: search-aggregations-metrics-top-hits-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-metrics-top-hits-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /sales/_search
+  {
+    "query": {
+      "match": {
+        "body": "elections"
+      }
+    },
+    "aggs": {
+      "top_sites": {
+        "terms": {
+          "field": "domain",
+          "order": {
+            "top_hit": "desc"
+          }
+        },
+        "aggs": {
+          "top_tags_hits": {
+            "top_hits": {}
+          },
+          "top_hit" : {
+            "max": {
+              "script": {
+                "source": "_score"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

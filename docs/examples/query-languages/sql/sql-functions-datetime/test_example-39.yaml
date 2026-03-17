@@ -1,0 +1,26 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-39
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 39
+--- !code
+|
+  DATE_FORMAT(
+      date_exp/datetime_exp/time_exp, 
+      string_exp)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

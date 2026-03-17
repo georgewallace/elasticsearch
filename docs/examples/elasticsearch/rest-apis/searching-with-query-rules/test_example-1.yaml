@@ -1,0 +1,76 @@
+# Source: elasticsearch/rest-apis/searching-with-query-rules.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: searching-with-query-rules
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /_query_rules/my-ruleset
+  {
+    "rules": [
+      {
+        "rule_id": "rule1",
+        "type": "pinned",
+        "criteria": [
+          {
+            "type": "fuzzy",
+            "metadata": "query_string",
+            "values": [ "puggles", "pugs" ]
+          },
+          {
+            "type": "exact",
+            "metadata": "user_country",
+            "values": [ "us" ]
+          }
+        ],
+        "actions": {
+          "ids": [
+            "id1",
+            "id2"
+          ]
+        }
+      },
+      {
+        "rule_id": "rule2",
+        "type": "exclude",
+        "criteria": [
+          {
+            "type": "contains",
+            "metadata": "query_string",
+            "values": [ "beagles" ]
+          }
+        ],
+        "actions": {
+          "docs": [
+            {
+              "_index": "my-index-000001",
+              "_id": "id3"
+            },
+            {
+              "_index": "my-index-000002",
+              "_id": "id4"
+            }
+          ]
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "result": "created"
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

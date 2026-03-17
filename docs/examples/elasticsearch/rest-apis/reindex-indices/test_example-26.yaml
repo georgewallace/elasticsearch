@@ -1,0 +1,43 @@
+# Source: elasticsearch/rest-apis/reindex-indices.md
+--- !metadata
+id: example-26
+language: elastic_console
+topic: reindex-indices
+subtopic: default
+example_order: 26
+--- !code
+|
+  POST _reindex
+  {
+    "source": {
+      "remote": {
+        "host": "<OTHER_HOST_URL>",
+        ...,
+        "socket_timeout": "1m",
+        "connect_timeout": "10s"
+      },
+      "index": "source",
+      "query": {
+        "match": {
+          "test": "data"
+        }
+      }
+    },
+    "dest": {
+      "index": "dest"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

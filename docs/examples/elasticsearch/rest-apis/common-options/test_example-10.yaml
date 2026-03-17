@@ -1,0 +1,44 @@
+# Source: elasticsearch/rest-apis/common-options.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: common-options
+subtopic: default
+example_order: 10
+--- !code
+|
+  POST /my-index-000001/_search?size=surprise_me&error_trace=true
+--- !result
+|
+  {
+    "error": {
+      "root_cause": [
+        {
+          "type": "illegal_argument_exception",
+          "reason": "Failed to parse int parameter [size] with value [surprise_me]",
+          "stack_trace": "Failed to parse int parameter [size] with value [surprise_me]]; nested: IllegalArgumentException..."
+        }
+      ],
+      "type": "illegal_argument_exception",
+      "reason": "Failed to parse int parameter [size] with value [surprise_me]",
+      "stack_trace": "java.lang.IllegalArgumentException: Failed to parse int parameter [size] with value [surprise_me]\n    at org.elasticsearch.rest.RestRequest.paramAsInt(RestRequest.java:175)...",
+      "caused_by": {
+        "type": "number_format_exception",
+        "reason": "For input string: \"surprise_me\"",
+        "stack_trace": "java.lang.NumberFormatException: For input string: \"surprise_me\"\n    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)..."
+      }
+    },
+    "status": 400
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

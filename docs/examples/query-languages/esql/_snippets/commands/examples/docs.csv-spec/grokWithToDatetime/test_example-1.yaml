@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/commands/examples/docs.csv-spec/grokWithToDatetime.md
+--- !metadata
+id: example-1
+language: esql
+topic: grokWithToDatetime
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a = "2023-01-23T12:15:00.000Z 127.0.0.1 some.email@foo.com 42"
+  | GROK a """%{TIMESTAMP_ISO8601:date} %{IP:ip} %{EMAILADDRESS:email} %{NUMBER:num:int}"""
+  | KEEP date, ip, email, num
+  | EVAL date = TO_DATETIME(date)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,60 @@
+# Source: elasticsearch/mapping-reference/dense-vector.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: dense-vector
+subtopic: default
+example_order: 12
+--- !code
+|
+  POST /my-bit-vectors/_search?filter_path=hits.hits
+  {
+    "query": {
+      "knn": {
+        "query_vector": [127, -127, 0, 1, 42],
+        "field": "my_vector"
+      }
+    }
+  }
+--- !result
+|
+  {
+    "hits": {
+      "hits": [
+        {
+          "_index": "my-bit-vectors",
+          "_id": "1",
+          "_score": 1,
+          "_source": {
+            "my_vector": [
+              127,
+              -127,
+              0,
+              1,
+              42
+            ]
+          }
+        },
+        {
+          "_index": "my-bit-vectors",
+          "_id": "2",
+          "_score": 0.55,
+          "_source": {
+            "my_vector": "8100012a7f"
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

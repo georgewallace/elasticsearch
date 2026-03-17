@@ -1,0 +1,98 @@
+# Source: query-languages/query-dsl/query-dsl-percolate-query.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: query-dsl-percolate-query
+subtopic: default
+example_order: 10
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "query": {
+      "percolate": {
+        "field": "query",
+        "document": {
+          "message": "The quick brown fox jumps over the lazy dog"
+        }
+      }
+    },
+    "highlight": {
+      "fields": {
+        "message": {}
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": 7,
+    "timed_out": false,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped" : 0,
+      "failed": 0
+    },
+    "hits": {
+      "total" : {
+          "value": 2,
+          "relation": "eq"
+      },
+      "max_score": 0.26152915,
+      "hits": [
+        {
+          "_index": "my-index-000001",
+          "_id": "3",
+          "_score": 0.26152915,
+          "_source": {
+            "query": {
+              "match": {
+                "message": "brown fox"
+              }
+            }
+          },
+          "highlight": {
+            "message": [
+              "The quick <em>brown</em> <em>fox</em> jumps over the lazy dog" 
+            ]
+          },
+          "fields" : {
+            "_percolator_document_slot" : [0]
+          }
+        },
+        {
+          "_index": "my-index-000001",
+          "_id": "4",
+          "_score": 0.26152915,
+          "_source": {
+            "query": {
+              "match": {
+                "message": "lazy dog"
+              }
+            }
+          },
+          "highlight": {
+            "message": [
+              "The quick brown fox jumps over the <em>lazy</em> <em>dog</em>" 
+            ]
+          },
+          "fields" : {
+            "_percolator_document_slot" : [0]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

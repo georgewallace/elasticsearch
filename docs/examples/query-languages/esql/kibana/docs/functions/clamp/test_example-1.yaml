@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/clamp.md
+--- !metadata
+id: example-1
+language: esql
+topic: clamp
+subtopic: default
+example_order: 1
+--- !code
+|
+  TS k8s
+  | EVAL full_clamped_cost = clamp(network.cost, clamp_max(network.bytes_in, 5), network.bytes_in / 100)
+  | KEEP full_clamped_cost, @timestamp
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

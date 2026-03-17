@@ -1,0 +1,10 @@
+id: default
+topic: search-aggregations-bucket-global-aggregation
+title: Default
+description:
+stage: sales
+
+setup:
+
+
+teardown:

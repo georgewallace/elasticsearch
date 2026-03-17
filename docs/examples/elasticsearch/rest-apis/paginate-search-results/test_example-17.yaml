@@ -1,0 +1,47 @@
+# Source: elasticsearch/rest-apis/paginate-search-results.md
+--- !metadata
+id: example-17
+language: elastic_console
+topic: paginate-search-results
+subtopic: default
+example_order: 17
+--- !code
+|
+  GET /my-index-000001/_search?scroll=1m
+  {
+    "slice": {
+      "id": 0,                      
+      "max": 2                      
+    },
+    "query": {
+      "match": {
+        "message": "foo"
+      }
+    }
+  }
+  GET /my-index-000001/_search?scroll=1m
+  {
+    "slice": {
+      "id": 1,
+      "max": 2
+    },
+    "query": {
+      "match": {
+        "message": "foo"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

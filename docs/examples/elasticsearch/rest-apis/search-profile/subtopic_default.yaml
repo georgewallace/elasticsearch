@@ -1,0 +1,10 @@
+id: default
+topic: search-profile
+title: Default
+description: 
+stage: my_index
+
+setup:
+
+
+teardown:

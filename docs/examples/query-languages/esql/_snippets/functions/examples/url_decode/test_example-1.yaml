@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/url_decode.md
+--- !metadata
+id: example-1
+language: esql
+topic: url_decode
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW u = "https%3A%2F%2Fexample.com%2F%3Fx%3Dfoo%20bar%26y%3Dbaz"
+  | EVAL u = URL_DECODE(u)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

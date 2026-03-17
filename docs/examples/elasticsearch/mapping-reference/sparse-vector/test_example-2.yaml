@@ -1,0 +1,40 @@
+# Source: elasticsearch/mapping-reference/sparse-vector.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: sparse-vector
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index
+  {
+    "mappings": {
+      "properties": {
+        "text.tokens": {
+          "type": "sparse_vector",
+          "index_options": {
+            "prune": true,
+            "pruning_config": {
+              "tokens_freq_ratio_threshold": 5,
+              "tokens_weight_threshold": 0.4
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

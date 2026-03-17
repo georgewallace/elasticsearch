@@ -1,0 +1,29 @@
+# Source: search-connectors/es-connectors-confluence.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-confluence
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _connector/my-confluence-connector
+  {
+    "index_name": "my-elasticsearch-index",
+    "name": "Content synced from Confluence",
+    "service_type": "confluence"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

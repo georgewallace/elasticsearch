@@ -1,0 +1,52 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT range_index
+  {
+    "settings": {
+      "number_of_shards": 2
+    },
+    "mappings": {
+      "properties": {
+        "expected_attendees": {
+          "type": "integer_range"
+        },
+        "time_frame": {
+          "type": "date_range", 
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+
+  PUT range_index/_doc/1?refresh
+  {
+    "expected_attendees" : { 
+      "gte" : 10,
+      "lt" : 20
+    },
+    "time_frame" : {
+      "gte" : "2015-10-31 12:00:00", 
+      "lte" : "2015-11-01"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

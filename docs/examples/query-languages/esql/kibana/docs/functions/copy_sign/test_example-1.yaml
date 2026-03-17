@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/copy_sign.md
+--- !metadata
+id: example-1
+language: esql
+topic: copy_sign
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | EVAL cs1 = COPY_SIGN(salary, LEAST(salary_change))
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

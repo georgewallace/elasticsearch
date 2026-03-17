@@ -1,0 +1,47 @@
+# Source: text-analysis/analysis-cjk-bigram-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-cjk-bigram-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /cjk_bigram_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "han_bigrams": {
+            "tokenizer": "standard",
+            "filter": [ "han_bigrams_filter" ]
+          }
+        },
+        "filter": {
+          "han_bigrams_filter": {
+            "type": "cjk_bigram",
+            "ignored_scripts": [
+              "hangul",
+              "hiragana",
+              "katakana"
+            ],
+            "output_unigrams": true
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

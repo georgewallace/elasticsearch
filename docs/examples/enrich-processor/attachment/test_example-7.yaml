@@ -1,0 +1,85 @@
+# Source: enrich-processor/attachment.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: attachment
+subtopic: default
+example_order: 7
+--- !code
+|
+  PUT _ingest/pipeline/attachment
+  {
+    "description" : "Extract attachment information from arrays",
+    "processors" : [
+      {
+        "foreach": {
+          "field": "attachments",
+          "processor": {
+            "attachment": {
+              "target_field": "_ingest._value.attachment",
+              "field": "_ingest._value.data",
+              "remove_binary": true
+            }
+          }
+        }
+      }
+    ]
+  }
+  PUT my-index-000001/_doc/my_id?pipeline=attachment
+  {
+    "attachments" : [
+      {
+        "filename" : "ipsum.txt",
+        "data" : "dGhpcyBpcwpqdXN0IHNvbWUgdGV4dAo="
+      },
+      {
+        "filename" : "test.txt",
+        "data" : "VGhpcyBpcyBhIHRlc3QK"
+      }
+    ]
+  }
+  GET my-index-000001/_doc/my_id
+--- !result
+|
+  {
+    "_index" : "my-index-000001",
+    "_id" : "my_id",
+    "_version" : 1,
+    "_seq_no" : 50,
+    "_primary_term" : 1,
+    "found" : true,
+    "_source" : {
+      "attachments" : [
+        {
+          "filename" : "ipsum.txt",
+          "attachment" : {
+            "content_type" : "text/plain; charset=ISO-8859-1",
+            "language" : "en",
+            "content" : "this is\njust some text",
+            "content_length" : 24
+          }
+        },
+        {
+          "filename" : "test.txt",
+          "attachment" : {
+            "content_type" : "text/plain; charset=ISO-8859-1",
+            "language" : "en",
+            "content" : "This is a test",
+            "content_length" : 16
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

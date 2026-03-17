@@ -1,0 +1,40 @@
+# Source: elasticsearch/rest-apis/filter-search-results.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: filter-search-results
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /shirts
+  {
+    "mappings": {
+      "properties": {
+        "brand": { "type": "keyword"},
+        "color": { "type": "keyword"},
+        "model": { "type": "keyword"}
+      }
+    }
+  }
+
+  PUT /shirts/_doc/1?refresh
+  {
+    "brand": "gucci",
+    "color": "red",
+    "model": "slim"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

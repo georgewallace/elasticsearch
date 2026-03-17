@@ -1,0 +1,24 @@
+# Source: query-languages/esql/_snippets/commands/layout/completion.md
+--- !metadata
+id: example-1
+language: esql
+topic: completion
+subtopic: default
+example_order: 1
+--- !code
+|
+  COMPLETION [column =] prompt WITH { "inference_id" : "my_inference_endpoint" }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

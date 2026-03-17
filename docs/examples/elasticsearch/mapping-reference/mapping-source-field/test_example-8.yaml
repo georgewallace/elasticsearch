@@ -1,0 +1,63 @@
+# Source: elasticsearch/mapping-reference/mapping-source-field.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: mapping-source-field
+subtopic: default
+example_order: 8
+--- !code
+|
+  PUT logs
+  {
+    "mappings": {
+      "_source": {
+        "includes": [
+          "*.count",
+          "meta.*"
+        ],
+        "excludes": [
+          "meta.description",
+          "meta.other.*"
+        ]
+      }
+    }
+  }
+
+  PUT logs/_doc/1
+  {
+    "requests": {
+      "count": 10,
+      "foo": "bar" 
+    },
+    "meta": {
+      "name": "Some metric",
+      "description": "Some metric description", 
+      "other": {
+        "foo": "one", 
+        "baz": "two" 
+      }
+    }
+  }
+
+  GET logs/_search
+  {
+    "query": {
+      "match": {
+        "meta.other.foo": "one" 
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

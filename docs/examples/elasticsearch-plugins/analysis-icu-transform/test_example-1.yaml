@@ -1,0 +1,64 @@
+# Source: elasticsearch-plugins/analysis-icu-transform.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-icu-transform
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT icu_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "latin": {
+              "tokenizer": "keyword",
+              "filter": [
+                "myLatinTransform"
+              ]
+            }
+          },
+          "filter": {
+            "myLatinTransform": {
+              "type": "icu_transform",
+              "id": "Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC" 
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET icu_sample/_analyze
+  {
+    "analyzer": "latin",
+    "text": "你好" 
+  }
+
+  GET icu_sample/_analyze
+  {
+    "analyzer": "latin",
+    "text": "здравствуйте" 
+  }
+
+  GET icu_sample/_analyze
+  {
+    "analyzer": "latin",
+    "text": "こんにちは" 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

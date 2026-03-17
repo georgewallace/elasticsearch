@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/trim.md
+--- !metadata
+id: example-1
+language: esql
+topic: trim
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW message = "   some text  ",  color = " red "
+  | EVAL message = TRIM(message)
+  | EVAL color = TRIM(color)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

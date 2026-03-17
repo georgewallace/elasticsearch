@@ -1,0 +1,48 @@
+# Source: search-aggregations-metrics-scripted-metric-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-metrics-scripted-metric-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST ledger/_search?size=0
+  {
+    "aggs": {
+      "profit": {
+        "scripted_metric": {
+          "init_script": {
+            "id": "my_init_script"
+          },
+          "map_script": {
+            "id": "my_map_script"
+          },
+          "combine_script": {
+            "id": "my_combine_script"
+          },
+          "params": {
+            "field": "amount"           
+          },
+          "reduce_script": {
+            "id": "my_reduce_script"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: ledger,stored_scripted_metric_script
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

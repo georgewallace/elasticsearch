@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/operators/examples/match_operator.md
+--- !metadata
+id: example-1
+language: esql
+topic: match_operator
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM books
+  | WHERE author:"Faulkner"
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

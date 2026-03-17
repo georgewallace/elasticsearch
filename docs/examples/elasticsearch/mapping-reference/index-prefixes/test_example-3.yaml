@@ -1,0 +1,40 @@
+# Source: elasticsearch/mapping-reference/index-prefixes.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: index-prefixes
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET my-index-000001/_search
+  {
+    "query": {
+      "prefix": {
+        "full_name": {
+          "value": "ki"
+        }
+      }
+    },
+    "highlight": {
+      "fields": {
+        "full_name": {
+          "matched_fields": ["full_name._index_prefix"]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,92 @@
+# Source: search-aggregations-bucket-multi-terms-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-bucket-multi-terms-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /products/_search
+  {
+    "aggs": {
+      "genres_and_products": {
+        "multi_terms": {
+          "terms": [
+            {
+              "field": "genre"
+            },
+            {
+              "field": "product",
+              "missing": "Product Z"
+            }
+          ]
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+     ...
+     "aggregations" : {
+      "genres_and_products" : {
+        "doc_count_error_upper_bound" : 0,
+        "sum_other_doc_count" : 0,
+        "buckets" : [
+          {
+            "key" : [
+              "rock",
+              "Product A"
+            ],
+            "key_as_string" : "rock|Product A",
+            "doc_count" : 2
+          },
+          {
+            "key" : [
+              "electronic",
+              "Product B"
+            ],
+            "key_as_string" : "electronic|Product B",
+            "doc_count" : 1
+          },
+          {
+            "key" : [
+              "electronic",
+              "Product Z"
+            ],
+            "key_as_string" : "electronic|Product Z",  
+            "doc_count" : 1
+          },
+          {
+            "key" : [
+              "jazz",
+              "Product B"
+            ],
+            "key_as_string" : "jazz|Product B",
+            "doc_count" : 1
+          },
+          {
+            "key" : [
+              "rock",
+              "Product B"
+            ],
+            "key_as_string" : "rock|Product B",
+            "doc_count" : 1
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

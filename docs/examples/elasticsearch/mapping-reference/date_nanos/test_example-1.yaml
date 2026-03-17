@@ -1,0 +1,61 @@
+# Source: elasticsearch/mapping-reference/date_nanos.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: date_nanos
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "date": {
+          "type": "date_nanos" 
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_bulk?refresh
+  { "index" : { "_id" : "1" } }
+  { "date": "2015-01-01" } 
+  { "index" : { "_id" : "2" } }
+  { "date": "2015-01-01T12:10:30.123456789Z" } 
+  { "index" : { "_id" : "3" } }
+  { "date": 1420070400000 } 
+
+  GET my-index-000001/_search
+  {
+    "sort": { "date": "asc"}, 
+    "runtime_mappings": {
+      "date_has_nanos": {
+        "type": "boolean",
+        "script": "emit(doc['date'].value.nano != 0)" 
+      }
+    },
+    "fields": [
+      {
+        "field": "date",
+        "format": "strict_date_optional_time_nanos" 
+      },
+      {
+        "field": "date_has_nanos"
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

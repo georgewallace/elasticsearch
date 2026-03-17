@@ -1,0 +1,40 @@
+# Source: scripting-languages/painless/painless-context-examples.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: painless-context-examples
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /seats
+  {
+    "mappings": {
+      "properties": {
+        "theatre":  { "type": "keyword" },
+        "play":     { "type": "keyword" },
+        "actors":   { "type": "keyword" },
+        "date":     { "type": "keyword" },
+        "time":     { "type": "keyword" },
+        "cost":     { "type": "double"  },
+        "row":      { "type": "integer" },
+        "number":   { "type": "integer" },
+        "sold":     { "type": "boolean" },
+        "datetime": { "type": "date"    }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

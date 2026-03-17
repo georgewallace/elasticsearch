@@ -1,0 +1,36 @@
+# Source: scripting-languages/painless/painless-api-examples.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: painless-api-examples
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /_scripts/painless/_execute
+  {
+    "script": {
+      "source": "params.count / params.total",
+      "params": {
+        "count": 100.0,
+        "total": 1000.0
+      }
+    }
+  }
+--- !result
+|
+  {
+    "result": "0.1"
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

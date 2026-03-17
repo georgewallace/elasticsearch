@@ -1,0 +1,36 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT range_index/_mapping
+  {
+    "properties": {
+      "ip_allowlist": {
+        "type": "ip_range"
+      }
+    }
+  }
+
+  PUT range_index/_doc/2
+  {
+    "ip_allowlist" : "192.168.0.0/16"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

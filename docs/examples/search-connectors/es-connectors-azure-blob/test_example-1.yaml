@@ -1,0 +1,29 @@
+# Source: search-connectors/es-connectors-azure-blob.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-azure-blob
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _connector/my-azure_blob_storage-connector
+  {
+    "index_name": "my-elasticsearch-index",
+    "name": "Content synced from Azure Blob Storage",
+    "service_type": "azure_blob_storage"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

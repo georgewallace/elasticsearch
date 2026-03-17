@@ -1,0 +1,36 @@
+# Source: query-languages/eql/eql-syntax.md
+--- !metadata
+id: example-12
+language: eql
+topic: eql-syntax
+subtopic: default
+example_order: 12
+--- !code
+|
+  my_field in ("Value-1", "VALUE2", "VAL3")                 // case-sensitive
+  my_field in~ ("value-1", "value2", "val3")                // case-insensitive
+
+  my_field not in ("Value-1", "VALUE2", "VAL3")             // case-sensitive
+  my_field not in~ ("value-1", "value2", "val3")            // case-insensitive
+
+  my_field : ("value-1", "value2", "val3")                  // case-insensitive
+
+  my_field like  ("Value-*", "VALUE2", "VAL?")              // case-sensitive
+  my_field like~ ("value-*", "value2", "val?")              // case-insensitive
+
+  my_field regex  ("[vV]alue-[0-9]", "VALUE[^2].?", "VAL3") // case-sensitive
+  my_field regex~  ("value-[0-9]", "value[^2].?", "val3")   // case-insensitive
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

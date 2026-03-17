@@ -1,0 +1,42 @@
+# Source: search-aggregations-metrics-cardinality-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-metrics-cardinality-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /sales/_search?size=0
+  {
+    "aggs": {
+      "type_count": {
+        "cardinality": {
+          "field": "type"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "type_count": {
+        "value": 3
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,39 @@
+# Source: elasticsearch/mapping-reference/rank-vectors.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: rank-vectors
+subtopic: default
+example_order: 8
+--- !code
+|
+  GET my-rank-vectors-float/_search
+  {
+    "query": {
+      "script_score": {
+        "query": {
+          "match_all": {}
+        },
+        "script": {
+          "source": "maxSimDotProduct(params.query_vector, 'my_vector')",
+          "params": {
+            "query_vector": [[0.5, 10, 6], [-0.5, 10, 10]]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

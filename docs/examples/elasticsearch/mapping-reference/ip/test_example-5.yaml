@@ -1,0 +1,48 @@
+# Source: elasticsearch/mapping-reference/ip.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: ip
+subtopic: default
+example_order: 5
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "ip": { "type": "ip" }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "ip": ["192.168.0.1", "192.168.0.1", "10.10.12.123",
+           "2001:db8::1:0:0:1", "::afff:4567:890a"]
+  }
+--- !result
+|
+  {
+    "ip": ["::afff:4567:890a", "10.10.12.123", "192.168.0.1", "2001:db8::1:0:0:1"]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

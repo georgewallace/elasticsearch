@@ -1,0 +1,42 @@
+# Source: elasticsearch/rest-apis/sort-search-results.md
+--- !metadata
+id: example-21
+language: elastic_console
+topic: sort-search-results
+subtopic: default
+example_order: 21
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "term": { "user": "kimchy" }
+    },
+    "sort": {
+      "_script": {
+        "type": "number",
+        "script": {
+          "lang": "painless",
+          "source": "doc['field_name'].value * params.factor",
+          "params": {
+            "factor": 1.1
+          }
+        },
+        "order": "asc"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,33 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 8
+--- !code
+|
+  POST /_query
+  {
+    "locale": "fr-FR",
+    "query": """
+            ROW birth_date_string = "2023-01-15T00:00:00.000Z"
+            | EVAL birth_date = date_parse(birth_date_string)
+            | EVAL month_of_birth = DATE_FORMAT("MMMM",birth_date)
+            | LIMIT 5
+     """
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

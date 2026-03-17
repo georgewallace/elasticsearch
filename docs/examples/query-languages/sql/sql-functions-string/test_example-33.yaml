@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-string.md
+--- !metadata
+id: example-33
+language: sql
+topic: sql-functions-string
+subtopic: default
+example_order: 33
+--- !code
+|
+  SELECT RIGHT('Elastic',3);
+
+  RIGHT('Elastic',3)
+  ------------------
+  tic
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

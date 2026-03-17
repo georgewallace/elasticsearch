@@ -1,0 +1,48 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-7
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 7
+--- !code
+|
+  divide(4, 2)                                            // returns 2
+  divide(4, 3)                                            // returns 1
+  divide(4, 3.0)                                          // returns 1.333...
+  divide(4, 0.5)                                          // returns 8
+  divide(0.5, 4)                                          // returns 0.125
+  divide(0.5, 0.25)                                       // returns 2.0
+  divide(4, -2)                                           // returns -2
+  divide(-4, -2)                                          // returns 2
+
+  // process.args_count = 4
+  divide(process.args_count, 2)                           // returns 2
+  divide(process.args_count, 3)                           // returns 1
+  divide(process.args_count, 3.0)                         // returns 1.333...
+  divide(12, process.args_count)                          // returns 3
+  divide(process.args_count, 0.5)                         // returns 8
+  divide(0.5, process.args_count)                         // returns 0.125
+
+  // process.parent.args_count = 2
+  divide(process.args_count, process.parent.args_count)   // returns 2
+
+  // null handling
+  divide(null, 4)                                         // returns null
+  divide(4, null)                                         // returns null
+  divide(null, process.args_count)                        // returns null
+  divide(process.args_count, null)                        // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

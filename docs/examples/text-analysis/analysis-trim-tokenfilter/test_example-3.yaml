@@ -1,0 +1,36 @@
+# Source: text-analysis/analysis-trim-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-trim-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT trim_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "keyword_trim": {
+            "tokenizer": "keyword",
+            "filter": [ "trim" ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

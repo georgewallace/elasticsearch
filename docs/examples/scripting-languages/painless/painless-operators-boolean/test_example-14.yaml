@@ -1,0 +1,27 @@
+# Source: scripting-languages/painless/painless-operators-boolean.md
+--- !metadata
+id: example-14
+language: painless
+topic: painless-operators-boolean
+subtopic: default
+example_order: 14
+--- !code
+|
+  int a = 1;          
+  double b = 2.0;     
+  boolean c = a == b; 
+  c = 1 == a;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

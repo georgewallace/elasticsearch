@@ -1,0 +1,24 @@
+# Source: query-languages/sql/sql-operators.md
+--- !metadata
+id: example-5
+language: sql
+topic: sql-operators
+subtopic: default
+example_order: 5
+--- !code
+|
+  SELECT last_name l FROM "test_emp" WHERE emp_no < 10003 ORDER BY emp_no LIMIT 5;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

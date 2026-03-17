@@ -1,0 +1,10 @@
+id: default
+topic: painless-runtime-fields-context
+title: Default
+description: 
+stage: seats
+
+setup:
+
+
+teardown:

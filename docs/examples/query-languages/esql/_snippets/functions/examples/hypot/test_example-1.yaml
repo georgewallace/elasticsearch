@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/hypot.md
+--- !metadata
+id: example-1
+language: esql
+topic: hypot
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a = 3.0, b = 4.0
+  | EVAL c = HYPOT(a, b)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,26 @@
+# Source: query-languages/esql/_snippets/functions/examples/st_within.md
+--- !metadata
+id: example-1
+language: esql
+topic: st_within
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM airport_city_boundaries
+  | WHERE ST_WITHIN(city_boundary, TO_GEOSHAPE("POLYGON((109.1 18.15, 109.6 18.15, 109.6 18.65, 109.1 18.65, 109.1 18.15))"))
+  | KEEP abbrev, airport, region, city, city_location
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

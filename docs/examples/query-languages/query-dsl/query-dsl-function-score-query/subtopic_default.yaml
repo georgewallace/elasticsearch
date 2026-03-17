@@ -1,0 +1,10 @@
+id: default
+topic: query-dsl-function-score-query
+title: Default
+description: 
+stage: my_index
+
+setup:
+
+
+teardown:

@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-bucket-autodatehistogram-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

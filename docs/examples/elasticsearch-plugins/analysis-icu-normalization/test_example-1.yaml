@@ -1,0 +1,52 @@
+# Source: elasticsearch-plugins/analysis-icu-normalization.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-icu-normalization
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT icu_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "nfkc_cf_normalized": { 
+              "tokenizer": "icu_tokenizer",
+              "filter": [
+                "icu_normalizer"
+              ]
+            },
+            "nfc_normalized": { 
+              "tokenizer": "icu_tokenizer",
+              "filter": [
+                "nfc_normalizer"
+              ]
+            }
+          },
+          "filter": {
+            "nfc_normalizer": {
+              "type": "icu_normalizer",
+              "name": "nfc"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

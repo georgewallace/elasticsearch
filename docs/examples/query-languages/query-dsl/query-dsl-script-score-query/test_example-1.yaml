@@ -1,0 +1,36 @@
+# Source: query-languages/query-dsl/query-dsl-script-score-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-script-score-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "script_score": {
+        "query": {
+          "match": { "message": "elasticsearch" }
+        },
+        "script": {
+          "source": "doc['my-int'].value / 10 "
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

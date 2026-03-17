@@ -1,0 +1,26 @@
+# Source: query-languages/eql/eql-syntax.md
+--- !metadata
+id: example-34
+language: eql
+topic: eql-syntax
+subtopic: default
+example_order: 34
+--- !code
+|
+  sequence by host.name, user.name with maxspan=5s
+    [ authentication where event.code : "4624" ]
+    ![ authentication where event.code : "4647" ]
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

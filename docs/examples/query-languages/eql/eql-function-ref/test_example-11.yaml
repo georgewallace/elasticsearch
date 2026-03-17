@@ -1,0 +1,44 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-11
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 11
+--- !code
+|
+  modulo(10, 6)                                       // returns 4
+  modulo(10, 5)                                       // returns 0
+  modulo(10, 0.5)                                     // returns 0
+  modulo(10, -6)                                      // returns 4
+  modulo(-10, -6)                                     // returns -4
+
+  // process.args_count = 10
+  modulo(process.args_count, 6)                       // returns 4
+  modulo(process.args_count, 5)                       // returns 0
+  modulo(106, process.args_count)                     // returns 6
+  modulo(process.args_count, -6)                      // returns 4
+  modulo(process.args_count, 0.5)                     // returns 0
+
+  // process.parent.args_count = 6
+  modulo(process.args_count, process.parent.args_count)  // returns 4
+
+  // null handling
+  modulo(null, 5)                                     // returns null
+  modulo(7, null)                                     // returns null
+  modulo(null, process.args_count)                    // returns null
+  modulo(process.args_count, null)                    // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

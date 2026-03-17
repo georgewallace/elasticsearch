@@ -1,0 +1,44 @@
+# Source: scripting-languages/painless/painless-api-examples.md
+--- !metadata
+id: example-16
+language: elastic_console
+topic: painless-api-examples
+subtopic: default
+example_order: 16
+--- !code
+|
+  POST /_scripts/painless/_execute
+  {
+    "script": {
+      "source": """
+        String clientip=grok('%{COMMONAPACHELOG}').extract(doc["message"].value)?.clientip;
+        if (clientip != null) emit(clientip);
+      """
+    },
+    "context": "ip_field",
+    "context_setup": {
+      "index": "my-index-000001",
+      "document": {
+        "message": "40.135.0.0 - - [30/Apr/2020:14:30:17 -0500] \"GET /images/hm_bg.jpg HTTP/1.0\" 200 24736"
+      }
+    }
+  }
+--- !result
+|
+  {
+    "result" : [
+      "40.135.0.0"
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

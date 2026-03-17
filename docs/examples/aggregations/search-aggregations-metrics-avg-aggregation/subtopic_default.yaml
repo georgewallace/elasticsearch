@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-metrics-avg-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

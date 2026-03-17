@@ -1,0 +1,43 @@
+# Source: query-languages/query-dsl/query-dsl-script-score-query.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: query-dsl-script-score-query
+subtopic: default
+example_order: 12
+--- !code
+|
+  GET /my-index-000001/_explain/0
+  {
+    "query": {
+      "script_score": {
+        "query": {
+          "match": { "message": "elasticsearch" }
+        },
+        "script": {
+          "source": """
+            long count = doc['count'].value;
+            double normalizedCount = count / 10;
+            if (explanation != null) {
+              explanation.set('normalized count = count / 10 = ' + count + ' / 10 = ' + normalizedCount);
+            }
+            return normalizedCount;
+          """
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

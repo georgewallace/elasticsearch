@@ -1,0 +1,39 @@
+# Source: elasticsearch/rest-apis/reindex-indices.md
+--- !metadata
+id: example-20
+language: elastic_console
+topic: reindex-indices
+subtopic: default
+example_order: 20
+--- !code
+|
+  POST _reindex
+  {
+    "max_docs": 10,
+    "source": {
+      "index": "my-index-000001",
+      "query": {
+        "function_score" : {
+          "random_score" : {},
+          "min_score" : 0.9    
+        }
+      }
+    },
+    "dest": {
+      "index": "my-new-index-000001"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

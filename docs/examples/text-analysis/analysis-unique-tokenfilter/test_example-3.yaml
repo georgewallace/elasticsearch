@@ -1,0 +1,42 @@
+# Source: text-analysis/analysis-unique-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-unique-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT letter_unique_pos_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "letter_unique_pos": {
+            "tokenizer": "letter",
+            "filter": [ "unique_pos" ]
+          }
+        },
+        "filter": {
+          "unique_pos": {
+            "type": "unique",
+            "only_on_same_position": true
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

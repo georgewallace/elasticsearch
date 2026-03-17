@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-index-frozen.md
+--- !metadata
+id: example-2
+language: sql
+topic: sql-index-frozen
+subtopic: default
+example_order: 2
+--- !code
+|
+  SELECT * FROM FROZEN archive LIMIT 1;
+
+       author      |        name        |  page_count   |    release_date
+  -----------------+--------------------+---------------+--------------------
+  James S.A. Corey |Leviathan Wakes     |561            |2011-06-02T00:00:00Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,67 @@
+# Source: enrich-processor/network-direction-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: network-direction-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "processors": [
+        {
+          "network_direction": {
+            "internal_networks": ["private"]
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "source": {
+            "ip": "128.232.110.120"
+          },
+          "destination": {
+            "ip": "192.168.1.1"
+          }
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          ...
+          "_source": {
+            "destination": {
+              "ip": "192.168.1.1"
+            },
+            "source": {
+              "ip": "128.232.110.120"
+            },
+            "network": {
+              "direction": "inbound"
+            }
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

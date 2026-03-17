@@ -1,0 +1,72 @@
+# Source: elasticsearch/rest-apis/term-vectors-examples.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: term-vectors-examples
+subtopic: default
+example_order: 7
+--- !code
+|
+  GET /imdb/_termvectors
+  {
+    "doc": {
+      "plot": "When wealthy industrialist Tony Stark is forced to build an armored suit after a life-threatening incident, he ultimately decides to use its technology to fight against evil."
+    },
+    "term_statistics": true,
+    "field_statistics": true,
+    "positions": false,
+    "offsets": false,
+    "filter": {
+      "max_num_terms": 3,
+      "min_term_freq": 1,
+      "min_doc_freq": 1
+    }
+  }
+--- !result
+|
+  {
+     "_index": "imdb",
+     "_version": 0,
+     "found": true,
+     "term_vectors": {
+        "plot": {
+           "field_statistics": {
+              "sum_doc_freq": 3384269,
+              "doc_count": 176214,
+              "sum_ttf": 3753460
+           },
+           "terms": {
+              "armored": {
+                 "doc_freq": 27,
+                 "ttf": 27,
+                 "term_freq": 1,
+                 "score": 9.74725
+              },
+              "industrialist": {
+                 "doc_freq": 88,
+                 "ttf": 88,
+                 "term_freq": 1,
+                 "score": 8.590818
+              },
+              "stark": {
+                 "doc_freq": 44,
+                 "ttf": 47,
+                 "term_freq": 1,
+                 "score": 9.272792
+              }
+           }
+        }
+     }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,40 @@
+# Source: enrich-processor/ingest-geo-grid-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: ingest-geo-grid-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT geocells/_doc/1?pipeline=geohex2shape
+  {
+    "geocell": "811fbffffffffff"
+  }
+
+  GET geocells/_doc/1
+--- !result
+|
+  {
+   "_index": "geocells",
+    "_id": "1",
+    "_version": 1,
+    "_seq_no": 0,
+    "_primary_term": 1,
+    "found": true,
+    "_source": {
+      "geocell": "POLYGON ((1.1885095294564962 49.470279179513454, 2.0265689212828875 45.18424864858389, 7.509948452934623 43.786609335802495, 12.6773177459836 46.40695743262768, 12.345747342333198 50.55427505169064, 6.259687012061477 51.964770150370896, 3.6300085578113794 50.610463307239115, 1.1885095294564962 49.470279179513454))"
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

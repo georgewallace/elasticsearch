@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-63
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 63
+--- !code
+|
+  SELECT DATE_PART('week', '2019-09-22T11:22:33.123Z'::datetime) AS week;
+
+     week
+  ----------
+  39
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

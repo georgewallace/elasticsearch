@@ -1,0 +1,29 @@
+# Source: query-languages/query-dsl/query-dsl-terms-set-query.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: query-dsl-terms-set-query
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /job-candidates/_doc/1?refresh
+  {
+    "name": "Jane Smith",
+    "programming_languages": [ "c++", "java" ],
+    "required_matches": 2
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

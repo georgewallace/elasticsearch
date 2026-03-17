@@ -1,0 +1,51 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-13
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 13
+--- !code
+|
+  GET /my-data-stream/_eql/search?filter_path=hits.events._source.@timestamp,hits.events._source.process.pid
+  {
+    "query": """
+      process where process.name == "regsvr32.exe"
+    """
+  }
+--- !result
+|
+  {
+    "hits": {
+      "events": [
+        {
+          "_source": {
+            "@timestamp": "2099-12-07T11:07:09.000Z",
+            "process": {
+              "pid": 2012
+            }
+          }
+        },
+        {
+          "_source": {
+            "@timestamp": "2099-12-07T11:07:10.000Z",
+            "process": {
+              "pid": 2012
+            }
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

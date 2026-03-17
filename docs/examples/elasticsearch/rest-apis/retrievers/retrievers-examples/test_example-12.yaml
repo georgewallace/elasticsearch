@@ -1,0 +1,232 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 12
+--- !code
+|
+  GET /retrievers_example_nested/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "standard": {
+                          "query": {
+                              "nested": {
+                                  "path": "nested_field",
+                                  "inner_hits": {
+                                      "name": "nested_vector",
+                                      "_source": false,
+                                      "fields": [
+                                          "nested_field.paragraph_id"
+                                      ]
+                                  },
+                                  "query": {
+                                      "knn": {
+                                          "field": "nested_field.nested_vector",
+                                          "query_vector": [
+                                              1,
+                                              0,
+                                              0.5
+                                          ],
+                                          "k": 10
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "standard": {
+                          "query": {
+                              "term": {
+                                  "topic": "ai"
+                              }
+                          }
+                      }
+                  }
+              ],
+              "rank_window_size": 10,
+              "rank_constant": 1
+          }
+      },
+      "_source": [
+          "topic"
+      ]
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 3,
+              "relation": "eq"
+          },
+          "max_score": 1.0,
+          "hits": [
+              {
+                  "_index": "retrievers_example_nested",
+                  "_id": "1",
+                  "_score": 1.0,
+                  "_source": {
+                      "topic": [
+                          "ai"
+                      ]
+                  },
+                  "inner_hits": {
+                      "nested_vector": {
+                          "hits": {
+                              "total": {
+                                  "value": 3,
+                                  "relation": "eq"
+                              },
+                              "max_score": 0.44444445,
+                              "hits": [
+                                  {
+                                      "_index": "retrievers_example_nested",
+                                      "_id": "1",
+                                      "_nested": {
+                                          "field": "nested_field",
+                                          "offset": 2
+                                      },
+                                      "_score": 0.44444445,
+                                      "fields": {
+                                          "nested_field": [
+                                              {
+                                                  "paragraph_id": [
+                                                      "1c"
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                  },
+                                  {
+                                      "_index": "retrievers_example_nested",
+                                      "_id": "1",
+                                      "_nested": {
+                                          "field": "nested_field",
+                                          "offset": 1
+                                      },
+                                      "_score": 0.21301977,
+                                      "fields": {
+                                          "nested_field": [
+                                              {
+                                                  "paragraph_id": [
+                                                      "1b"
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                  },
+                                  {
+                                      "_index": "retrievers_example_nested",
+                                      "_id": "1",
+                                      "_nested": {
+                                          "field": "nested_field",
+                                          "offset": 0
+                                      },
+                                      "_score": 0.16889325,
+                                      "fields": {
+                                          "nested_field": [
+                                              {
+                                                  "paragraph_id": [
+                                                      "1a"
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                  }
+                              ]
+                          }
+                      }
+                  }
+              },
+              {
+                  "_index": "retrievers_example_nested",
+                  "_id": "2",
+                  "_score": 0.33333334,
+                  "_source": {
+                      "topic": [
+                          "information_retrieval"
+                      ]
+                  },
+                  "inner_hits": {
+                      "nested_vector": {
+                          "hits": {
+                              "total": {
+                                  "value": 1,
+                                  "relation": "eq"
+                              },
+                              "max_score": 0.31715825,
+                              "hits": [
+                                  {
+                                      "_index": "retrievers_example_nested",
+                                      "_id": "2",
+                                      "_nested": {
+                                          "field": "nested_field",
+                                          "offset": 0
+                                      },
+                                      "_score": 0.31715825,
+                                      "fields": {
+                                          "nested_field": [
+                                              {
+                                                  "paragraph_id": [
+                                                      "2a"
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                  }
+                              ]
+                          }
+                      }
+                  }
+              },
+              {
+                  "_index": "retrievers_example_nested",
+                  "_id": "3",
+                  "_score": 0.33333334,
+                  "_source": {
+                      "topic": [
+                          "ai"
+                      ]
+                  },
+                  "inner_hits": {
+                      "nested_vector": {
+                          "hits": {
+                              "total": {
+                                  "value": 0,
+                                  "relation": "eq"
+                              },
+                              "max_score": null,
+                              "hits": []
+                          }
+                      }
+                  }
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

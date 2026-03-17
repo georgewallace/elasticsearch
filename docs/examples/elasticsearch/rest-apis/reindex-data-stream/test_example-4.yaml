@@ -1,0 +1,39 @@
+# Source: elasticsearch/rest-apis/reindex-data-stream.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: reindex-data-stream
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT /_cluster/settings
+  {
+    "persistent" : {
+      "migrate.data_stream_reindex_max_request_per_second" : 10000
+    }
+  }
+--- !result
+|
+  {
+    "start_time_millis": 1737676174349,
+    "complete": true,
+    "total_indices_in_data_stream": 4,
+    "total_indices_requiring_upgrade": 2,
+    "successes": 2,
+    "in_progress": [],
+    "pending": 0,
+    "errors": []
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

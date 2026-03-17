@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-string.md
+--- !metadata
+id: example-27
+language: sql
+topic: sql-functions-string
+subtopic: default
+example_order: 27
+--- !code
+|
+  SELECT POSITION('Elastic', 'Elasticsearch');
+
+  POSITION('Elastic', 'Elasticsearch')
+  ------------------------------------
+  1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

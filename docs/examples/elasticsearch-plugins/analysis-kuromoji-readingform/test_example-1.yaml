@@ -1,0 +1,64 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-readingform.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-kuromoji-readingform
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "romaji_analyzer": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [ "romaji_readingform" ]
+            },
+            "katakana_analyzer": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [ "katakana_readingform" ]
+            }
+          },
+          "filter": {
+            "romaji_readingform": {
+              "type": "kuromoji_readingform",
+              "use_romaji": true
+            },
+            "katakana_readingform": {
+              "type": "kuromoji_readingform",
+              "use_romaji": false
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "katakana_analyzer",
+    "text": "寿司" 
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "romaji_analyzer",
+    "text": "寿司" 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

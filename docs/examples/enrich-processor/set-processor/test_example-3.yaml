@@ -1,0 +1,64 @@
+# Source: enrich-processor/set-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: set-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT _ingest/pipeline/set_bar
+  {
+    "description": "sets the value of bar from the field foo",
+    "processors": [
+      {
+        "set": {
+          "field": "bar",
+          "copy_from": "foo"
+        }
+      }
+    ]
+  }
+
+  POST _ingest/pipeline/set_bar/_simulate
+  {
+    "docs": [
+      {
+        "_source": {
+          "foo": ["foo1", "foo2"]
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs" : [
+      {
+        "doc" : {
+          "_index" : "_index",
+          "_id" : "_id",
+          "_version" : "-3",
+          "_source" : {
+            "bar": ["foo1", "foo2"],
+            "foo": ["foo1", "foo2"]
+          },
+          "_ingest" : {
+            "timestamp" : "2020-09-30T12:55:17.742795Z"
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

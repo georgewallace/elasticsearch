@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-multi-terms-aggregation
+title: Search Aggregations Bucket Multi Terms Aggregation
+description: 
+
+setup:
+
+
+teardown:

@@ -1,0 +1,44 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-8
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 8
+--- !code
+|
+  endsWith("regsvr32.exe", ".exe")          // returns true
+  endsWith("regsvr32.exe", ".EXE")          // returns false
+  endsWith("regsvr32.exe", ".dll")          // returns false
+  endsWith("", "")                          // returns true
+
+  // Make matching case-insensitive
+  endsWith~("regsvr32.exe", ".EXE")         // returns true
+
+  // file.name = "regsvr32.exe"
+  endsWith(file.name, ".exe")               // returns true
+  endsWith(file.name, ".dll")               // returns false
+
+  // file.extension = ".exe"
+  endsWith("regsvr32.exe", file.extension)  // returns true
+  endsWith("ntdll.dll", file.name)          // returns false
+
+  // null handling
+  endsWith("regsvr32.exe", null)            // returns null
+  endsWith("", null)                        // returns null
+  endsWith(null, ".exe")                    // returns null
+  endsWith(null, null)                      // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

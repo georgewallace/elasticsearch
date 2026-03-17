@@ -1,0 +1,36 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 10
+--- !code
+|
+  PUT music/_doc/1?refresh
+  {
+    "suggest": [
+      {
+        "input": "Nevermind",
+        "weight": 10
+      },
+      {
+        "input": "Nirvana",
+        "weight": 3
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

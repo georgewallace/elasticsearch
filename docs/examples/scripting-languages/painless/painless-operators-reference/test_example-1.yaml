@@ -1,0 +1,29 @@
+# Source: scripting-languages/painless/painless-operators-reference.md
+--- !metadata
+id: example-1
+language: painless
+topic: painless-operators-reference
+subtopic: default
+example_order: 1
+--- !code
+|
+  Map m = new HashMap();                         
+  m.put(1, 2);                                   
+  int z = m.get(1);                              
+  def d = new ArrayList();                       
+  d.add(1);                                      
+  int i = Integer.parseInt(d.get(0).toString());
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

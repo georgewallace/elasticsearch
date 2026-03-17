@@ -1,0 +1,42 @@
+# Source: elasticsearch/mapping-reference/pattern-text.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: pattern-text
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT logs
+  {
+    "settings": {
+      "index": {
+        "sort.field": [ "notice.template_id", "@timestamp" ],
+        "sort.order": [ "asc", "desc" ]
+      }
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "notice": {
+          "type": "pattern_text"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

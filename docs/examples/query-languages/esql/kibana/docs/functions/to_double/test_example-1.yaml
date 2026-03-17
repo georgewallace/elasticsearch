@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/to_double.md
+--- !metadata
+id: example-1
+language: esql
+topic: to_double
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW str1 = "5.20128E11", str2 = "foo"
+  | EVAL dbl = TO_DOUBLE("520128000000"), dbl1 = TO_DOUBLE(str1), dbl2 = TO_DOUBLE(str2)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

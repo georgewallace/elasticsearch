@@ -1,0 +1,29 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-28
+language: esql
+topic: esql-search-tutorial
+subtopic: default
+example_order: 28
+--- !code
+|
+  FROM cooking_blog
+  | WHERE category.keyword == "Dessert"
+  | LIMIT 3
+  | EVAL prompt = CONCAT("Summarize this recipe: ", title, " - ", description)
+  | COMPLETION summary = prompt WITH { "inference_id": "my_llm_endpoint" }
+  | KEEP title, summary
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

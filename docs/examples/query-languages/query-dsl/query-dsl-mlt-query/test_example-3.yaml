@@ -1,0 +1,49 @@
+# Source: query-languages/query-dsl/query-dsl-mlt-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-mlt-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "more_like_this": {
+        "fields": [ "name.first", "name.last" ],
+        "like": [
+          {
+            "_index": "marvel",
+            "doc": {
+              "name": {
+                "first": "Ben",
+                "last": "Grimm"
+              },
+              "_doc": "You got no idea what I'd... what I'd give to be invisible."
+            }
+          },
+          {
+            "_index": "marvel",
+            "_id": "2"
+          }
+        ],
+        "min_term_freq": 1,
+        "max_query_terms": 12
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

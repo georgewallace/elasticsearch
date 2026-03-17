@@ -1,0 +1,79 @@
+# Source: search-connectors/es-dls-e2e-guide.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-dls-e2e-guide
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /_security/api_key
+  {
+    "name": "john-api-key",
+    "expiration": "1d",
+    "role_descriptors": {
+      "sharepoint-online-role": {
+        "index": [
+          {
+            "names": [
+              "sharepoint-search-application"
+            ],
+            "privileges": [
+              "read"
+            ],
+            "query": {
+              "template": {
+                "params": {
+                  "access_control": [
+                    "john@example.co",
+                    "Engineering Members"
+                    ]
+                },
+                "source": """
+                {
+                  "bool": {
+                    "should": [
+                      {
+                        "bool": {
+                          "must_not": {
+                            "exists": {
+                              "field": "_allow_access_control"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "terms": {
+                          "_allow_access_control.enum": {{#toJson}}access_control{{/toJson}}
+                        }
+                      }
+                    ]
+                  }
+                }
+                """
+              }
+            }
+          }
+        ],
+        "restriction": {
+          "workflows": [
+            "search_application_query"
+          ]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

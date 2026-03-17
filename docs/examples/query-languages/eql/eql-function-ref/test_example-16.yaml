@@ -1,0 +1,42 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-16
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 16
+--- !code
+|
+  // process.command_line = "start regsvr32.exe"
+  stringContains(process.command_line, "regsvr32")  // returns true
+  stringContains(process.command_line, "Regsvr32")  // returns false
+  stringContains(process.command_line, "start ")    // returns true
+  stringContains(process.command_line, "explorer")  // returns false
+
+  // Make matching case-insensitive
+  stringContains~(process.command_line, "Regsvr32")  // returns false
+
+  // process.name = "regsvr32.exe"
+  stringContains(command_line, process.name)        // returns true
+
+  // empty strings
+  stringContains("", "")                            // returns false
+  stringContains(process.command_line, "")          // returns false
+
+  // null handling
+  stringContains(null, "regsvr32")                  // returns null
+  stringContains(process.command_line, null)        // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

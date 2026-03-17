@@ -1,0 +1,79 @@
+# Source: elasticsearch-plugins/analysis-nori-number.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-nori-number
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT nori_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "tokenizer": "tokenizer_discard_puncuation_false",
+              "filter": [
+                "part_of_speech_stop_sp", "nori_number"
+              ]
+            }
+          },
+          "tokenizer": {
+            "tokenizer_discard_puncuation_false": {
+              "type": "nori_tokenizer",
+              "discard_punctuation": "false"
+            }
+          },
+          "filter": {
+              "part_of_speech_stop_sp": {
+                  "type": "nori_part_of_speech",
+                  "stoptags": ["SP"]
+              }
+          }
+        }
+      }
+    }
+  }
+
+  GET nori_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "십만이천오백과 ３.２천"
+  }
+--- !result
+|
+  {
+    "tokens" : [{
+      "token" : "102500",
+      "start_offset" : 0,
+      "end_offset" : 6,
+      "type" : "word",
+      "position" : 0
+    }, {
+      "token" : "과",
+      "start_offset" : 6,
+      "end_offset" : 7,
+      "type" : "word",
+      "position" : 1
+    }, {
+      "token" : "3200",
+      "start_offset" : 8,
+      "end_offset" : 12,
+      "type" : "word",
+      "position" : 2
+    }]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

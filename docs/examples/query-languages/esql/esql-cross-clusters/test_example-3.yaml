@@ -1,0 +1,49 @@
+# Source: query-languages/esql/esql-cross-clusters.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: esql-cross-clusters
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT _cluster/settings
+  {
+    "persistent": {
+      "cluster": {
+        "remote": {
+          "cluster_one": {
+            "seeds": [
+              "35.238.149.1:9300"
+            ],
+            "skip_unavailable": true
+          },
+          "cluster_two": {
+            "seeds": [
+              "35.238.149.2:9300"
+            ],
+            "skip_unavailable": false
+          },
+          "cluster_three": {  
+            "seeds": [
+              "35.238.149.3:9300"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,40 @@
+# Source: enrich-processor/pipeline-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: pipeline-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /my-index-000001/_doc/1?pipeline=pipelineB
+  {
+    "field": "value"
+  }
+--- !result
+|
+  {
+    "_index": "my-index-000001",
+    "_id": "1",
+    "_version": 1,
+    "result": "created",
+    "_shards": {
+      "total": 2,
+      "successful": 1,
+      "failed": 0
+    },
+    "_seq_no": 66,
+    "_primary_term": 1
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

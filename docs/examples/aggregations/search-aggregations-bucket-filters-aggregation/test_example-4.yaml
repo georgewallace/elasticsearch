@@ -1,0 +1,62 @@
+# Source: search-aggregations-bucket-filters-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-filters-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST /sales/_search?size=0&filter_path=aggregations
+  {
+    "aggs": {
+      "the_filter": {
+        "filters": {
+          "keyed": false,
+          "filters": {
+            "t-shirt": { "term": { "type": "t-shirt" } },
+            "hat": { "term": { "type": "hat" } }
+          }
+        },
+        "aggs": {
+          "avg_price": { "avg": { "field": "price" } },
+          "sort_by_avg_price": {
+            "bucket_sort": { "sort": { "avg_price": "asc" } }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations": {
+      "the_filter": {
+        "buckets": [
+          {
+            "key": "t-shirt",
+            "doc_count": 3,
+            "avg_price": { "value": 128.33333333333334 }
+          },
+          {
+            "key": "hat",
+            "doc_count": 3,
+            "avg_price": { "value": 150.0 }
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

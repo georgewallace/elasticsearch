@@ -1,0 +1,47 @@
+# Source: scripting-languages/painless/painless-api-examples.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: painless-api-examples
+subtopic: default
+example_order: 8
+--- !code
+|
+  POST /_scripts/painless/_execute
+  {
+    "script": {
+      "source": """
+        int space = doc['author'].value.indexOf(' ');
+        emit(space > 0 && space < 5);
+      """
+    },
+    "context": "boolean_field",
+    "context_setup": {
+      "index": "my-index-000001",
+      "document": {
+        "name": "Dune",
+        "author": "Frank Herbert",
+        "release_date": "1965-06-01",
+        "page_count": 604
+      }
+    }
+  }
+--- !result
+|
+  {
+    "result" : [
+      false
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,32 @@
+# Source: query-languages/query-dsl/full-text-filter-tutorial.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: full-text-filter-tutorial
+subtopic: default
+example_order: 7
+--- !code
+|
+  GET /cooking_blog/_search
+  {
+    "query": {
+      "multi_match": {
+        "query": "vegetarian curry",
+        "fields": ["title", "description", "tags"]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

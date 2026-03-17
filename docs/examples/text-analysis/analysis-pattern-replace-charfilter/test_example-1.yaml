@@ -1,0 +1,83 @@
+# Source: text-analysis/analysis-pattern-replace-charfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-pattern-replace-charfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "standard",
+            "char_filter": [
+              "my_char_filter"
+            ]
+          }
+        },
+        "char_filter": {
+          "my_char_filter": {
+            "type": "pattern_replace",
+            "pattern": "(\\d+)-(?=\\d)",
+            "replacement": "$1_"
+          }
+        }
+      }
+    }
+  }
+
+  POST my-index-000001/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "My credit card is 123-456-789"
+  }
+--- !result
+|
+  {
+    "timed_out": false,
+    "took": 11.2,
+    "_shards": {
+      "total": 1,
+      "successful": 1,
+      "skipped" : 0,
+      "failed": 0
+    },
+    "hits": {
+      "total" : {
+          "value": 1,
+          "relation": "eq"
+      },
+      "max_score": 0.2876821,
+      "hits": [
+        {
+          "_index": "my-index-000001",
+          "_id": "1",
+          "_score": 0.2876821,
+          "_source": {
+            "text": "The fooBarBaz method"
+          },
+          "highlight": {
+            "text": [
+              "The foo<em>Ba</em>rBaz method" 
+            ]
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

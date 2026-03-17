@@ -1,0 +1,38 @@
+# Source: search-aggregations-bucket-reverse-nested-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-reverse-nested-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /issues
+  {
+    "mappings": {
+      "properties": {
+        "tags": { "type": "keyword" },
+        "comments": {                            
+          "type": "nested",
+          "properties": {
+            "username": { "type": "keyword" },
+            "comment": { "type": "text" }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

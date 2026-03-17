@@ -1,0 +1,50 @@
+# Source: search-aggregations-metrics-top-metrics.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: search-aggregations-metrics-top-metrics
+subtopic: default
+example_order: 10
+--- !code
+|
+  POST /test*/_search?filter_path=aggregations
+  {
+    "aggs": {
+      "ip": {
+        "terms": {
+          "field": "ip"
+        },
+        "aggs": {
+          "tm": {
+            "top_metrics": {
+              "metrics": {"field": "m"},
+              "sort": {"s": "desc"},
+              "size": 1
+            }
+          },
+          "having_tm": {
+            "bucket_selector": {
+              "buckets_path": {
+                "top_m": "tm[m]"
+              },
+              "script": "params.top_m < 1000"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

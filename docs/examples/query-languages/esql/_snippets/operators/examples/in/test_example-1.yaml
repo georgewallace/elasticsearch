@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/operators/examples/in.md
+--- !metadata
+id: example-1
+language: esql
+topic: in
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a = 1, b = 4, c = 3
+  | WHERE c-a IN (3, b / 2, a)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

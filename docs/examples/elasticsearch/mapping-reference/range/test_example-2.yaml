@@ -1,0 +1,65 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET range_index/_search
+  {
+    "query" : {
+      "term" : {
+        "expected_attendees" : {
+          "value": 12
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": 13,
+    "timed_out": false,
+    "_shards" : {
+      "total": 2,
+      "successful": 2,
+      "skipped" : 0,
+      "failed": 0
+    },
+    "hits" : {
+      "total" : {
+          "value": 1,
+          "relation": "eq"
+      },
+      "max_score" : 1.0,
+      "hits" : [
+        {
+          "_index" : "range_index",
+          "_id" : "1",
+          "_score" : 1.0,
+          "_source" : {
+            "expected_attendees" : {
+              "gte" : 10, "lt" : 20
+            },
+            "time_frame" : {
+              "gte" : "2015-10-31 12:00:00", "lte" : "2015-11-01"
+            }
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

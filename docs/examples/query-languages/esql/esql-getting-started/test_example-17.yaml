@@ -1,0 +1,25 @@
+# Source: query-languages/esql/esql-getting-started.md
+--- !metadata
+id: example-17
+language: esql
+topic: esql-getting-started
+subtopic: default
+example_order: 17
+--- !code
+|
+  FROM sample_data
+  | STATS c = COUNT(*) BY bucket = BUCKET(@timestamp, 24, "2023-10-23T00:00:00Z", "2023-10-23T23:59:59Z")
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,35 @@
+# Source: elasticsearch/rest-apis/retrieve-selected-fields.md
+--- !metadata
+id: example-9
+language: elastic_console
+topic: retrieve-selected-fields
+subtopic: default
+example_order: 9
+--- !code
+|
+  GET /_search
+  {
+    "_source": {
+      "includes": [ "obj1.*", "obj2.*" ],
+      "excludes": [ "*.description" ]
+    },
+    "query": {
+      "term": {
+        "user.id": "kimchy"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

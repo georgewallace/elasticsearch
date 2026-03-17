@@ -1,0 +1,55 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-30
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 30
+--- !code
+|
+  PUT /russian_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "russian_stop": {
+            "type":       "stop",
+            "stopwords":  "_russian_" 
+          },
+          "russian_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["пример"] 
+          },
+          "russian_stemmer": {
+            "type":       "stemmer",
+            "language":   "russian"
+          }
+        },
+        "analyzer": {
+          "rebuilt_russian": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "russian_stop",
+              "russian_keywords",
+              "russian_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

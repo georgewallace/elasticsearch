@@ -1,0 +1,46 @@
+# Source: elasticsearch/mapping-reference/properties.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: properties
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET my-index-000001/_search
+  {
+    "query": {
+      "match": {
+        "manager.name": "Alice White"
+      }
+    },
+    "aggs": {
+      "Employees": {
+        "nested": {
+          "path": "employees"
+        },
+        "aggs": {
+          "Employee Ages": {
+            "histogram": {
+              "field": "employees.age",
+              "interval": 5
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

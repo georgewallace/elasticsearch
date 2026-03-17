@@ -1,0 +1,33 @@
+# Source: elasticsearch/rest-apis/sort-search-results.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: sort-search-results
+subtopic: default
+example_order: 7
+--- !code
+|
+  POST /index_long,index_double/_search
+  {
+     "sort" : [
+        {
+          "field" : {
+              "numeric_type" : "double"
+          }
+        }
+     ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

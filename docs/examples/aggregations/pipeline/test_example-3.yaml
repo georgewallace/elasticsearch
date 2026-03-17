@@ -1,0 +1,58 @@
+# Source: pipeline.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: pipeline
+subtopic: subtopic-1
+example_order: 3
+--- !code
+|
+  POST /_search
+  {
+    "aggs": {
+      "sales_per_month": {
+        "date_histogram": {
+          "field": "date",
+          "calendar_interval": "month"
+        },
+        "aggs": {
+          "sale_type": {
+            "terms": {
+              "field": "type"
+            },
+            "aggs": {
+              "sales": {
+                "sum": {
+                  "field": "price"
+                }
+              }
+            }
+          },
+          "hat_vs_bag_ratio": {
+            "bucket_script": {
+              "buckets_path": {
+                "hats": "sale_type['hat']>sales",   
+                "bags": "sale_type['bag']>sales"    
+              },
+              "script": "params.hats / params.bags"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

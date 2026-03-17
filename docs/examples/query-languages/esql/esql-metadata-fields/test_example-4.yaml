@@ -1,0 +1,27 @@
+# Source: query-languages/esql/esql-metadata-fields.md
+--- !metadata
+id: example-4
+language: esql
+topic: esql-metadata-fields
+subtopic: default
+example_order: 4
+--- !code
+|
+  FROM products METADATA _score
+  | WHERE MATCH(description, "wireless headphones")
+  | SORT _score DESC
+  | KEEP name, description, _score
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

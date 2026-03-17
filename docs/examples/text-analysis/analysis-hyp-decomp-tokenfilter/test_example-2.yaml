@@ -1,0 +1,44 @@
+# Source: text-analysis/analysis-hyp-decomp-tokenfilter.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-hyp-decomp-tokenfilter
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT hyphenation_decompound_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "standard_hyphenation_decompound": {
+            "tokenizer": "standard",
+            "filter": [ "22_char_hyphenation_decompound" ]
+          }
+        },
+        "filter": {
+          "22_char_hyphenation_decompound": {
+            "type": "hyphenation_decompounder",
+            "word_list_path": "analysis/example_word_list.txt",
+            "hyphenation_patterns_path": "analysis/hyphenation_patterns.xml",
+            "max_subword_size": 22
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

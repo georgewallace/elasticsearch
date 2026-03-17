@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-cli.md
+--- !metadata
+id: example-1
+language: sql
+topic: sql-cli
+subtopic: default
+example_order: 1
+--- !code
+|
+  sql> SELECT * FROM library WHERE page_count > 500 ORDER BY page_count DESC;
+       author      |        name        |  page_count   | release_date
+  -----------------+--------------------+---------------+---------------
+  Peter F. Hamilton|Pandora's Star      |768            |1078185600000
+  Vernor Vinge     |A Fire Upon the Deep|613            |707356800000
+  Frank Herbert    |Dune                |604            |-144720000000
+  Alastair Reynolds|Revelation Space    |585            |953078400000
+  James S.A. Corey |Leviathan Wakes     |561            |1306972800000
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

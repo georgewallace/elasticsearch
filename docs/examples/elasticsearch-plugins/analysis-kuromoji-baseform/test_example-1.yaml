@@ -1,0 +1,55 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-baseform.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-kuromoji-baseform
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [
+                "kuromoji_baseform"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "飲み"
+  }
+--- !result
+|
+  {
+    "tokens" : [ {
+      "token" : "飲む",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "word",
+      "position" : 0
+    } ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

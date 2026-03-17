@@ -1,0 +1,53 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 8
+--- !code
+|
+  PUT /cjk_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "english_stop": {
+            "type":       "stop",
+            "stopwords":  [ 
+              "a", "and", "are", "as", "at", "be", "but", "by", "for",
+              "if", "in", "into", "is", "it", "no", "not", "of", "on",
+              "or", "s", "such", "t", "that", "the", "their", "then",
+              "there", "these", "they", "this", "to", "was", "will",
+              "with", "www"
+            ]
+          }
+        },
+        "analyzer": {
+          "rebuilt_cjk": {
+            "tokenizer":  "standard",
+            "filter": [
+              "cjk_width",
+              "lowercase",
+              "cjk_bigram",
+              "english_stop"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

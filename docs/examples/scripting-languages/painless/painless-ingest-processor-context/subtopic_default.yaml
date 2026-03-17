@@ -1,0 +1,9 @@
+id: default
+topic: painless-ingest-processor-context
+title: Default
+description: 
+
+setup:
+
+
+teardown:

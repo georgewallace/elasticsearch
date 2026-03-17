@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-async.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: sql-async
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET _sql/async/status/FnR0TDhyWUVmUmVtWXRWZER4MXZiNFEad2F5UDk2ZVdTVHV1S0xDUy00SklUdzozMTU=
+--- !result
+|
+  {
+    "id": "FnR0TDhyWUVmUmVtWXRWZER4MXZiNFEad2F5UDk2ZVdTVHV1S0xDUy00SklUdzozMTU=",
+    "is_running": false,
+    "is_partial": false,
+    "expiration_time_in_millis": 1611690295000,
+    "completion_status": 200
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

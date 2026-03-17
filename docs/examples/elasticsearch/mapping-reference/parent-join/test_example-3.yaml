@@ -1,0 +1,36 @@
+# Source: elasticsearch/mapping-reference/parent-join.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: parent-join
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT my-index-000001/_doc/1?refresh
+  {
+    "my_id": "1",
+    "text": "This is a question",
+    "my_join_field": "question" 
+  }
+
+  PUT my-index-000001/_doc/2?refresh
+  {
+    "my_id": "2",
+    "text": "This is another question",
+    "my_join_field": "question"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

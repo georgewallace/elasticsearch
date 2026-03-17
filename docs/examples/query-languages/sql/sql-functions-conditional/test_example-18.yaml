@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-conditional.md
+--- !metadata
+id: example-18
+language: sql
+topic: sql-functions-conditional
+subtopic: default
+example_order: 18
+--- !code
+|
+  SELECT IFNULL('elastic', null) AS "ifnull";
+
+      ifnull
+  ---------------
+  elastic
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

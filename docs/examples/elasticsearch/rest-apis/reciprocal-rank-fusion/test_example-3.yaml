@@ -1,0 +1,80 @@
+# Source: elasticsearch/rest-apis/reciprocal-rank-fusion.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: reciprocal-rank-fusion
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT example-index
+  {
+      "mappings": {
+          "properties": {
+              "text" : {
+                  "type" : "text"
+              },
+              "vector": {
+                  "type": "dense_vector",
+                  "dims": 1,
+                  "index": true,
+                  "similarity": "l2_norm",
+                   "index_options": {
+                       "type": "hnsw"
+                   }
+              },
+              "integer" : {
+                  "type" : "integer"
+              }
+          }
+      }
+  }
+
+  PUT example-index/_doc/1
+  {
+      "text" : "rrf",
+      "vector" : [5],
+      "integer": 1
+  }
+
+  PUT example-index/_doc/2
+  {
+      "text" : "rrf rrf",
+      "vector" : [4],
+      "integer": 2
+  }
+
+  PUT example-index/_doc/3
+  {
+      "text" : "rrf rrf rrf",
+      "vector" : [3],
+      "integer": 1
+  }
+
+  PUT example-index/_doc/4
+  {
+      "text" : "rrf rrf rrf rrf",
+      "integer": 2
+  }
+
+  PUT example-index/_doc/5
+  {
+      "vector" : [0],
+      "integer": 1
+  }
+
+  POST example-index/_refresh
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

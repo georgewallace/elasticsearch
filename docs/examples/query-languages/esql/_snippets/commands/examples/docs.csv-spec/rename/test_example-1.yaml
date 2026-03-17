@@ -1,0 +1,26 @@
+# Source: query-languages/esql/_snippets/commands/examples/docs.csv-spec/rename.md
+--- !metadata
+id: example-1
+language: esql
+topic: rename
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | KEEP first_name, last_name, still_hired
+  | RENAME  still_hired AS employed
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

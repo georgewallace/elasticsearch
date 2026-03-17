@@ -1,0 +1,41 @@
+# Source: query-languages/esql/esql-multivalued-fields.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: esql-multivalued-fields
+subtopic: default
+example_order: 8
+--- !code
+|
+  POST /_query
+  {
+    "query": "FROM mv | EVAL b=MV_MIN(b) | EVAL b + 2, a + b | LIMIT 4"
+  }
+--- !result
+|
+  {
+    "took": 28,
+    "is_partial": false,
+    "columns": [
+      { "name": "a",   "type": "long"},
+      { "name": "b",   "type": "long"},
+      { "name": "b + 2", "type": "long"},
+      { "name": "a + b", "type": "long"}
+    ],
+    "values": [
+      [1, 1, 3, 2],
+      [2, 3, 5, 5]
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

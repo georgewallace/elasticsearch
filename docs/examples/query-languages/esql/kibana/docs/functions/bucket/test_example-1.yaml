@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/bucket.md
+--- !metadata
+id: example-1
+language: esql
+topic: bucket
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | WHERE hire_date >= "1985-01-01T00:00:00Z" AND hire_date < "1986-01-01T00:00:00Z"
+  | STATS hire_date = MV_SORT(VALUES(hire_date)) BY month = BUCKET(hire_date, 20, "1985-01-01T00:00:00Z", "1986-01-01T00:00:00Z")
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

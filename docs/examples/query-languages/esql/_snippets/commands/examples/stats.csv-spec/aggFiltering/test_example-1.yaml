@@ -1,0 +1,28 @@
+# Source: query-languages/esql/_snippets/commands/examples/stats.csv-spec/aggFiltering.md
+--- !metadata
+id: example-1
+language: esql
+topic: aggFiltering
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | STATS avg50s = AVG(salary)::LONG WHERE birth_date < "1960-01-01",
+          avg60s = AVG(salary)::LONG WHERE birth_date >= "1960-01-01"
+          BY gender
+  | SORT gender
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

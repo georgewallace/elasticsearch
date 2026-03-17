@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-41
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 41
+--- !code
+|
+  SELECT * FROM (SELECT languages, gender, salary FROM test_emp) PIVOT (AVG(salary) FOR gender IN ('M' AS "XY", 'F' "XX"));
+
+     languages   |        XY       |        XX
+  ---------------+-----------------+------------------
+  null           |48396.28571428572|62140.666666666664
+  1              |49767.22222222222|47073.25
+  2              |44103.90909090909|50684.4
+  3              |51741.90909090909|53660.0
+  4              |47058.90909090909|49291.5
+  5              |39052.875        |46705.555555555555
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

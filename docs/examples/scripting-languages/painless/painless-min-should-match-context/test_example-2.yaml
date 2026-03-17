@@ -1,0 +1,43 @@
+# Source: scripting-languages/painless/painless-min-should-match-context.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: painless-min-should-match-context
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET seats/_search
+  {
+    "query": {
+      "terms_set": {
+        "actors": {
+          "terms": [
+            "smith",
+            "earns",
+            "black"
+          ],
+          "minimum_should_match_script": {
+            "source": "Math.min(params['num_terms'], params['min_actors_to_see'])",
+            "params": {
+              "min_actors_to_see": 2
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

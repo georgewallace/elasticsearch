@@ -1,0 +1,39 @@
+# Source: elasticsearch/rest-apis/update-by-query-api.md
+--- !metadata
+id: example-17
+language: elastic_console
+topic: update-by-query-api
+subtopic: default
+example_order: 17
+--- !code
+|
+  POST test/_search?filter_path=hits.total
+  {
+    "query": {
+      "match": {
+        "flag": "foo"
+      }
+    }
+  }
+--- !result
+|
+  {
+    "hits" : {
+      "total": {
+          "value": 0,
+          "relation": "eq"
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

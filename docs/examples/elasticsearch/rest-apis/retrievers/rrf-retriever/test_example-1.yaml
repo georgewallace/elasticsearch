@@ -1,0 +1,55 @@
+# Source: elasticsearch/rest-apis/retrievers/rrf-retriever.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: rrf-retriever
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /restaurants/_search
+  {
+    "retriever": {
+      "rrf": { 
+        "retrievers": [ 
+          {
+            "standard": { 
+              "query": {
+                "multi_match": {
+                  "query": "Austria",
+                  "fields": [
+                    "city",
+                    "region"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "knn": { 
+              "field": "vector",
+              "query_vector": [10, 22, 77],
+              "k": 10,
+              "num_candidates": 10
+            }
+          }
+        ],
+        "rank_constant": 1, 
+        "rank_window_size": 50  
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

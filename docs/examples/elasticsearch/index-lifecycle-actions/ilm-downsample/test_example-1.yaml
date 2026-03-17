@@ -1,0 +1,41 @@
+# Source: elasticsearch/index-lifecycle-actions/ilm-downsample.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: ilm-downsample
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _ilm/policy/datastream_policy
+  {
+    "policy": {
+      "phases": {
+        "hot": {
+          "actions": {
+            "rollover": {
+              "max_docs": 1
+            },
+            "downsample": {
+    	          "fixed_interval": "1h",
+    	          "force_merge_index": false
+    	      }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,52 @@
+# Source: search-aggregations-bucket-range-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-range-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET sales/_search
+  {
+    "runtime_mappings": {
+      "price.euros": {
+        "type": "double",
+        "script": {
+          "source": """
+            emit(doc['price'].value * params.conversion_rate)
+          """,
+          "params": {
+            "conversion_rate": 0.835526591
+          }
+        }
+      }
+    },
+    "aggs": {
+      "price_ranges": {
+        "range": {
+          "field": "price.euros",
+          "ranges": [
+            { "to": 100 },
+            { "from": 100, "to": 200 },
+            { "from": 200 }
+          ]
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

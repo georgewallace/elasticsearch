@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-9
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 9
+--- !code
+|
+  SELECT * FROM "emp" LIMIT 1;
+
+       birth_date     |    emp_no     |  first_name   |    gender     |       hire_date        |   languages   |   last_name   |     name      |    salary
+  --------------------+---------------+---------------+---------------+------------------------+---------------+---------------+---------------+---------------
+  1953-09-02T00:00:00Z|10001          |Georgi         |M              |1986-06-26T00:00:00.000Z|2              |Facello        |Georgi Facello |57305
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,62 @@
+# Source: search-aggregations-bucket-range-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-bucket-range-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET sales/_search
+  {
+    "aggs": {
+      "price_ranges": {
+        "range": {
+          "field": "price",
+          "keyed": true,
+          "ranges": [
+            { "key": "cheap", "to": 100 },
+            { "key": "average", "from": 100, "to": 200 },
+            { "key": "expensive", "from": 200 }
+          ]
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "price_ranges": {
+        "buckets": {
+          "cheap": {
+            "to": 100.0,
+            "doc_count": 2
+          },
+          "average": {
+            "from": 100.0,
+            "to": 200.0,
+            "doc_count": 2
+          },
+          "expensive": {
+            "from": 200.0,
+            "doc_count": 3
+          }
+        }
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

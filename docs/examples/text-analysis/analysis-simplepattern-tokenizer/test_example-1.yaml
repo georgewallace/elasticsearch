@@ -1,0 +1,47 @@
+# Source: text-analysis/analysis-simplepattern-tokenizer.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-simplepattern-tokenizer
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "my_tokenizer"
+          }
+        },
+        "tokenizer": {
+          "my_tokenizer": {
+            "type": "simple_pattern",
+            "pattern": "[0123456789]{3}"
+          }
+        }
+      }
+    }
+  }
+
+  POST my-index-000001/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "fd-786-335-514-x"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

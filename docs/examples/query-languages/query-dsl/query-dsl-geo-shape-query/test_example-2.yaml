@@ -1,0 +1,44 @@
+# Source: query-languages/query-dsl/query-dsl-geo-shape-query.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: query-dsl-geo-shape-query
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /example/_search
+  {
+    "query": {
+      "bool": {
+        "must": {
+          "match_all": {}
+        },
+        "filter": {
+          "geo_shape": {
+            "location": {
+              "shape": {
+                "type": "envelope",
+                "coordinates": [ [ 13.0, 53.0 ], [ 14.0, 52.0 ] ]
+              },
+              "relation": "within"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

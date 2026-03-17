@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/mv_slice.md
+--- !metadata
+id: example-1
+language: esql
+topic: mv_slice
+subtopic: default
+example_order: 1
+--- !code
+|
+  row a = [1, 2, 2, 3]
+  | eval a1 = mv_slice(a, 1), a2 = mv_slice(a, 2, 3)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

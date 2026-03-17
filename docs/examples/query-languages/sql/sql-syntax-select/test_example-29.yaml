@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-29
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 29
+--- !code
+|
+  SELECT MIN(salary) AS min, MAX(salary) AS max FROM emp HAVING min > 25000;
+
+        min      |      max
+  ---------------+---------------
+  25324          |74999
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

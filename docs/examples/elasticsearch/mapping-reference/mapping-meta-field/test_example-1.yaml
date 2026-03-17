@@ -1,0 +1,35 @@
+# Source: elasticsearch/mapping-reference/mapping-meta-field.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapping-meta-field
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "_meta": { 
+        "class": "MyApp::User",
+        "version": {
+          "min": "1.0",
+          "max": "1.3"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

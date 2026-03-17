@@ -1,0 +1,87 @@
+# Source: search-aggregations-bucket-reverse-nested-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-reverse-nested-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /issues/_search
+  {
+    "query": {
+      "match_all": {}
+    },
+    "aggs": {
+      "comments": {
+        "nested": {
+          "path": "comments"
+        },
+        "aggs": {
+          "top_usernames": {
+            "terms": {
+              "field": "comments.username"
+            },
+            "aggs": {
+              "comment_to_issue": {
+                "reverse_nested": {}, 
+                "aggs": {
+                  "top_tags_per_comment": {
+                    "terms": {
+                      "field": "tags"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations": {
+      "comments": {
+        "doc_count": 1,
+        "top_usernames": {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets": [
+            {
+              "key": "username_1",
+              "doc_count": 1,
+              "comment_to_issue": {
+                "doc_count": 1,
+                "top_tags_per_comment": {
+                  "doc_count_error_upper_bound" : 0,
+                  "sum_other_doc_count" : 0,
+                  "buckets": [
+                    {
+                      "key": "tag_1",
+                      "doc_count": 1
+                    }
+                    ...
+                  ]
+                }
+              }
+            }
+            ...
+          ]
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

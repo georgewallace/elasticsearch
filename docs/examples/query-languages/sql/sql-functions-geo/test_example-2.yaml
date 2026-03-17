@@ -1,0 +1,27 @@
+# Source: query-languages/sql/sql-functions-geo.md
+--- !metadata
+id: example-2
+language: sql
+topic: sql-functions-geo
+subtopic: default
+example_order: 2
+--- !code
+|
+  SELECT city, ST_AsWKT(location) location FROM "geo" WHERE city = 'Amsterdam';
+
+       city:s    |     location:s
+  Amsterdam      |POINT (4.850312 52.347557)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

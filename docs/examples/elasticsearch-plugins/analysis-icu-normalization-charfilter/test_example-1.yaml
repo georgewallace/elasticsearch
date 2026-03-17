@@ -1,0 +1,53 @@
+# Source: elasticsearch-plugins/analysis-icu-normalization-charfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-icu-normalization-charfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT icu_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "nfkc_cf_normalized": { 
+              "tokenizer": "icu_tokenizer",
+              "char_filter": [
+                "icu_normalizer"
+              ]
+            },
+            "nfd_normalized": { 
+              "tokenizer": "icu_tokenizer",
+              "char_filter": [
+                "nfd_normalizer"
+              ]
+            }
+          },
+          "char_filter": {
+            "nfd_normalizer": {
+              "type": "icu_normalizer",
+              "name": "nfc",
+              "mode": "decompose"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

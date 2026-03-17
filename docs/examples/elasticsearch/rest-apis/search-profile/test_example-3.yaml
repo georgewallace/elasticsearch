@@ -1,0 +1,138 @@
+# Source: elasticsearch/rest-apis/search-profile.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-profile
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "profile": true,
+    "query": {
+      "term": {
+        "user.id": {
+          "value": "elkbee"
+        }
+      }
+    },
+    "aggs": {
+      "my_scoped_agg": {
+        "terms": {
+          "field": "http.response.status_code"
+        }
+      },
+      "my_global_agg": {
+        "global": {},
+        "aggs": {
+          "my_level_agg": {
+            "terms": {
+              "field": "http.response.status_code"
+            }
+          }
+        }
+      }
+    },
+    "post_filter": {
+      "match": {
+        "message": "search"
+      }
+    }
+  }
+--- !result
+|
+  {
+    "profile": {
+      "shards": [
+        {
+          "aggregations": [
+            {
+              "type": "NumericTermsAggregator",
+              "description": "my_scoped_agg",
+              "time_in_nanos": 79294,
+              "breakdown": {
+                "reduce": 0,
+                "build_aggregation": 30885,
+                "build_aggregation_count": 1,
+                "initialize": 2623,
+                "initialize_count": 1,
+                "reduce_count": 0,
+                "collect": 45786,
+                "collect_count": 4,
+                "build_leaf_collector": 18211,
+                "build_leaf_collector_count": 1,
+                "post_collection": 929,
+                "post_collection_count": 1
+              },
+              "debug": {
+                "total_buckets": 1,
+                "result_strategy": "long_terms",
+                "built_buckets": 1
+              }
+            },
+            {
+              "type": "GlobalAggregator",
+              "description": "my_global_agg",
+              "time_in_nanos": 104325,
+              "breakdown": {
+                "reduce": 0,
+                "build_aggregation": 22470,
+                "build_aggregation_count": 1,
+                "initialize": 12454,
+                "initialize_count": 1,
+                "reduce_count": 0,
+                "collect": 69401,
+                "collect_count": 4,
+                "build_leaf_collector": 8150,
+                "build_leaf_collector_count": 1,
+                "post_collection": 1584,
+                "post_collection_count": 1
+              },
+              "debug": {
+                "built_buckets": 1
+              },
+              "children": [
+                {
+                  "type": "NumericTermsAggregator",
+                  "description": "my_level_agg",
+                  "time_in_nanos": 76876,
+                  "breakdown": {
+                    "reduce": 0,
+                    "build_aggregation": 13824,
+                    "build_aggregation_count": 1,
+                    "initialize": 1441,
+                    "initialize_count": 1,
+                    "reduce_count": 0,
+                    "collect": 61611,
+                    "collect_count": 4,
+                    "build_leaf_collector": 5564,
+                    "build_leaf_collector_count": 1,
+                    "post_collection": 471,
+                    "post_collection_count": 1
+                  },
+                  "debug": {
+                    "total_buckets": 1,
+                    "result_strategy": "long_terms",
+                    "built_buckets": 1
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

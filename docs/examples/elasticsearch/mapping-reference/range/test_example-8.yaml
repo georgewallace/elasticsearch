@@ -1,0 +1,54 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 8
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "my_range": { "type": "long_range" }
+      }
+    }
+  }
+
+  PUT idx/_doc/1
+  {
+    "my_range": {
+      "gt": 200,
+      "lt": 300
+    }
+  }
+--- !result
+|
+  {
+    "my_range": {
+      "gte": 201,
+      "lte": 299
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

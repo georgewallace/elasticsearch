@@ -1,0 +1,29 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-2
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 2
+--- !code
+|
+  SELECT hire_date FROM emp WHERE hire_date IN ('1987-03-01||+2y/M', '1987-03-01||+3y/M');
+
+         hire_date
+  ------------------------
+  1989-03-31T00:00:00.000Z
+  1990-03-02T00:00:00.000Z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

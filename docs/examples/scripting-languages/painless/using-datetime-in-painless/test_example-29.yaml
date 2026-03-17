@@ -1,0 +1,38 @@
+# Source: scripting-languages/painless/using-datetime-in-painless.md
+--- !metadata
+id: example-29
+language: painless
+topic: using-datetime-in-painless
+subtopic: default
+example_order: 29
+--- !code
+|
+  if (doc.containsKey('start') && doc.containsKey('end')) { 
+
+      if (doc['start'].size() > 0 && doc['end'].size() > 0) { 
+
+          ZonedDateTime start = doc['start'].value;
+          ZonedDateTime end = doc['end'].value;
+          long differenceInMillis = ChronoUnit.MILLIS.between(start, end);
+
+          // handle difference in times
+      } else {
+          // handle fields without values
+      }
+  } else {
+      // handle index with missing fields
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

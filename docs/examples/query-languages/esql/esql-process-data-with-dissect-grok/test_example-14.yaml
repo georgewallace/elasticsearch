@@ -1,0 +1,26 @@
+# Source: query-languages/esql/esql-process-data-with-dissect-grok.md
+--- !metadata
+id: example-14
+language: esql
+topic: esql-process-data-with-dissect-grok
+subtopic: default
+example_order: 14
+--- !code
+|
+  FROM addresses
+  | KEEP city.name, zip_code
+  | GROK zip_code """%{WORD:zip_parts} %{WORD:zip_parts}"""
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

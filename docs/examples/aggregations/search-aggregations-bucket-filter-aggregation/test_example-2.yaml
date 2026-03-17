@@ -1,0 +1,31 @@
+# Source: search-aggregations-bucket-filter-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-filter-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /sales/_search?size=0&filter_path=aggregations
+  {
+    "query": { "term": { "type": "t-shirt" } },
+    "aggs": {
+      "avg_price": { "avg": { "field": "price" } }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,30 @@
+# Source: scripting-languages/painless/painless-operators-reference.md
+--- !metadata
+id: example-2
+language: painless
+topic: painless-operators-reference
+subtopic: default
+example_order: 2
+--- !code
+|
+  name:
+    Example
+
+  non-static member fields:
+    * int x
+    * def y
+    * List z
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

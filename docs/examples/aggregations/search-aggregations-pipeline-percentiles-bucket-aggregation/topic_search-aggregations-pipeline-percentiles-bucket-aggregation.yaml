@@ -1,0 +1,8 @@
+id: search-aggregations-pipeline-percentiles-bucket-aggregation
+title: Search Aggregations Pipeline Percentiles Bucket Aggregation
+description: 
+
+setup:
+
+
+teardown:

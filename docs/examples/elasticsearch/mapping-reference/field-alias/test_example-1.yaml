@@ -1,0 +1,51 @@
+# Source: elasticsearch/mapping-reference/field-alias.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: field-alias
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT trips
+  {
+    "mappings": {
+      "properties": {
+        "distance": {
+          "type": "long"
+        },
+        "route_length_miles": {
+          "type": "alias",
+          "path": "distance" 
+        },
+        "transit_mode": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+
+  GET _search
+  {
+    "query": {
+      "range" : {
+        "route_length_miles" : {
+          "gte" : 39
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

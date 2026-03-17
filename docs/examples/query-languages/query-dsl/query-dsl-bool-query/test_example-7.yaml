@@ -1,0 +1,40 @@
+# Source: query-languages/query-dsl/query-dsl-bool-query.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: query-dsl-bool-query
+subtopic: default
+example_order: 7
+--- !code
+|
+  GET /_search?include_named_queries_score
+  {
+    "query": {
+      "bool": {
+        "should": [
+          { "match": { "name.first": { "query": "shay", "_name": "first" } } },
+          { "match": { "name.last": { "query": "banon", "_name": "last" } } }
+        ],
+        "filter": {
+          "terms": {
+            "name.last": [ "banon", "kimchy" ],
+            "_name": "test"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

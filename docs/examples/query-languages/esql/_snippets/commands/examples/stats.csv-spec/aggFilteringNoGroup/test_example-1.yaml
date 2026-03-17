@@ -1,0 +1,29 @@
+# Source: query-languages/esql/_snippets/commands/examples/stats.csv-spec/aggFilteringNoGroup.md
+--- !metadata
+id: example-1
+language: esql
+topic: aggFilteringNoGroup
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | EVAL Ks = salary / 1000 // thousands
+  | STATS under_40K = COUNT(*) WHERE Ks < 40,
+          inbetween = COUNT(*) WHERE 40 <= Ks AND Ks < 60,
+          over_60K  = COUNT(*) WHERE 60 <= Ks,
+          total     = COUNT(*)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

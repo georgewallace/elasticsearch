@@ -1,0 +1,37 @@
+# Source: elasticsearch/mapping-reference/index-prefixes.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: index-prefixes
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "full_name": {
+          "type": "text",
+          "index_prefixes": {
+            "min_chars" : 1,
+            "max_chars" : 10
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

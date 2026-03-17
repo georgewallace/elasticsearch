@@ -1,0 +1,29 @@
+# Source: search-connectors/es-connectors-s3.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-s3
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _connector/my-s3-connector
+  {
+    "index_name": "my-elasticsearch-index",
+    "name": "Content synced from Amazon S3",
+    "service_type": "s3"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

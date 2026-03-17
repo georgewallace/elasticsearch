@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/functions/examples/byte_length.md
+--- !metadata
+id: example-1
+language: esql
+topic: byte_length
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM airports
+  | WHERE country == "India"
+  | KEEP city
+  | EVAL fn_length = LENGTH(city), fn_byte_length = BYTE_LENGTH(city)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

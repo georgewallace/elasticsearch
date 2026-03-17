@@ -1,0 +1,44 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-14
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 14
+--- !code
+|
+  startsWith("regsvr32.exe", "regsvr32")  // returns true
+  startsWith("regsvr32.exe", "Regsvr32")  // returns false
+  startsWith("regsvr32.exe", "explorer")  // returns false
+  startsWith("", "")                      // returns true
+
+  // Make matching case-insensitive
+  startsWith~("regsvr32.exe", "Regsvr32")  // returns true
+
+  // process.name = "regsvr32.exe"
+  startsWith(process.name, "regsvr32")    // returns true
+  startsWith(process.name, "explorer")    // returns false
+
+  // process.name = "regsvr32"
+  startsWith("regsvr32.exe", process.name) // returns true
+  startsWith("explorer.exe", process.name) // returns false
+
+  // null handling
+  startsWith("regsvr32.exe", null)        // returns null
+  startsWith("", null)                    // returns null
+  startsWith(null, "regsvr32")            // returns null
+  startsWith(null, null)                  // returns null
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

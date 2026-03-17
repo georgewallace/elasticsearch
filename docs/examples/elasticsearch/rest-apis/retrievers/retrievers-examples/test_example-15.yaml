@@ -1,0 +1,164 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-15
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 15
+--- !code
+|
+  GET /retrievers_example/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "standard": {
+                          "query": {
+                              "term": {
+                                  "topic": "elastic"
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "rrf": {
+                          "retrievers": [
+                              {
+                                  "standard": {
+                                      "query": {
+                                          "query_string": {
+                                              "query": "(information retrieval) OR (artificial intelligence)",
+                                              "default_field": "text"
+                                          }
+                                      }
+                                  }
+                              },
+                              {
+                                  "knn": {
+                                      "field": "vector",
+                                      "query_vector": [
+                                          0.23,
+                                          0.67,
+                                          0.89
+                                      ],
+                                      "k": 3,
+                                      "num_candidates": 5
+                                  }
+                              }
+                          ],
+                          "rank_window_size": 10,
+                          "rank_constant": 1
+                      }
+                  }
+              ],
+              "rank_window_size": 10,
+              "rank_constant": 1
+          }
+      },
+      "_source": false,
+      "size": 1,
+      "explain": true
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 5,
+              "relation": "eq"
+          },
+          "max_score": 0.5,
+          "hits": [
+              {
+                  "_shard": "[retrievers_example][0]",
+                  "_node": "jnrdZFKS3abUgWVsVdj2Vg",
+                  "_index": "retrievers_example",
+                  "_id": "1",
+                  "_score": 0.5,
+                  "_explanation": {
+                      "value": 0.5,
+                      "description": "rrf score: [0.5] computed for initial ranks [0, 1] with rankConstant: [1] as sum of [1 / (rank + rankConstant)] for each query",
+                      "details": [
+                          {
+                              "value": 0.0,
+                              "description": "rrf score: [0], result not found in query at index [0]",
+                              "details": []
+                          },
+                          {
+                              "value": 1,
+                              "description": "rrf score: [0.5], for rank [1] in query at index [1] computed as [1 / (1 + 1)], for matching query with score",
+                              "details": [
+                                  {
+                                      "value": 0.8333334,
+                                      "description": "rrf score: [0.8333334] computed for initial ranks [2, 1] with rankConstant: [1] as sum of [1 / (rank + rankConstant)] for each query",
+                                      "details": [
+                                          {
+                                              "value": 2,
+                                              "description": "rrf score: [0.33333334], for rank [2] in query at index [0] computed as [1 / (2 + 1)], for matching query with score",
+                                              "details": [
+                                                  {
+                                                      "value": 2.8129659,
+                                                      "description": "sum of:",
+                                                      "details": [
+                                                          {
+                                                              "value": 1.4064829,
+                                                              "description": "weight(text:information in 0) [PerFieldSimilarity], result of:",
+                                                              "details": [...]
+                                                          },
+                                                          {
+                                                              "value": 1.4064829,
+                                                              "description": "weight(text:retrieval in 0) [PerFieldSimilarity], result of:",
+                                                              "details": [...]
+                                                          }
+                                                      ]
+                                                  }
+                                              ]
+                                          },
+                                          {
+                                              "value": 1,
+                                              "description": "rrf score: [0.5], for rank [1] in query at index [1] computed as [1 / (1 + 1)], for matching query with score",
+                                              "details": [
+                                                  {
+                                                      "value": 1,
+                                                      "description": "doc [0] with an original score of [1.0] is at rank [1] from the following source queries.",
+                                                      "details": [
+                                                          {
+                                                              "value": 1.0,
+                                                              "description": "found vector with calculated similarity: 1.0",
+                                                              "details": []
+                                                          }
+                                                      ]
+                                                  }
+                                              ]
+                                          }
+                                      ]
+                                  }
+                              ]
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

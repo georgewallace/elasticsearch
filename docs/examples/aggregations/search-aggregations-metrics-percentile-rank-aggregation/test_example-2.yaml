@@ -1,0 +1,55 @@
+# Source: search-aggregations-metrics-percentile-rank-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-metrics-percentile-rank-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET latency/_search
+  {
+    "size": 0,
+    "aggs": {
+      "load_time_ranks": {
+        "percentile_ranks": {
+          "field": "load_time",
+          "values": [ 500, 600 ],
+          "keyed": false
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+
+    "aggregations": {
+      "load_time_ranks": {
+        "values": [
+          {
+            "key": 500.0,
+            "value": 55.0
+          },
+          {
+            "key": 600.0,
+            "value": 64.0
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: latency
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

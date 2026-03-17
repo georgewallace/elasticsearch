@@ -1,0 +1,53 @@
+# Source: query-languages/query-dsl/query-dsl-semantic-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-semantic-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET my-index/_search
+  {
+    "retriever": {
+      "rrf": {
+        "retrievers": [
+          {
+            "standard": {
+              "query": {
+                "term": {
+                  "text": "shoes"
+                }
+              }
+            }
+          },
+          {
+            "standard": {
+              "query": {
+                "semantic": {
+                  "field": "semantic_field",
+                  "query": "shoes"
+                }
+              }
+            }
+          }
+        ],
+        "rank_window_size": 50,
+        "rank_constant": 20
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

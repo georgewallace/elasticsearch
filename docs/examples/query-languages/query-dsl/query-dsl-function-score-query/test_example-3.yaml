@@ -1,0 +1,38 @@
+# Source: query-languages/query-dsl/query-dsl-function-score-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-function-score-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "function_score": {
+        "query": {
+          "match": { "message": "elasticsearch" }
+        },
+        "script_score": {
+          "script": {
+            "source": "Math.log(2 + doc['my-int'].value)"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

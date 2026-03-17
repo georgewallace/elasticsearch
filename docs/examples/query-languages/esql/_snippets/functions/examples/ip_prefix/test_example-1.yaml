@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/ip_prefix.md
+--- !metadata
+id: example-1
+language: esql
+topic: ip_prefix
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW ip4 = to_ip("1.2.3.4"), ip6 = TO_IP("fe80::cae2:65ff:fece:feb9")
+  | EVAL ip4_prefix = IP_PREFIX(ip4, 24, 0), ip6_prefix = IP_PREFIX(ip6, 0, 112);
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

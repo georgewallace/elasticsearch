@@ -1,0 +1,61 @@
+# Source: enrich-processor/registered-domain-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: registered-domain-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "processors": [
+        {
+          "registered_domain": {
+            "field": "fqdn",
+            "target_field": "url"
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "fqdn": "www.example.ac.uk"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          ...
+          "_source": {
+            "fqdn": "www.example.ac.uk",
+            "url": {
+              "subdomain": "www",
+              "registered_domain": "example.ac.uk",
+              "top_level_domain": "ac.uk",
+              "domain": "www.example.ac.uk"
+            }
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

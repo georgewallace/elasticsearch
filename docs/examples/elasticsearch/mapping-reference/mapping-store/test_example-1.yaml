@@ -1,0 +1,53 @@
+# Source: elasticsearch/mapping-reference/mapping-store.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapping-store
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text",
+          "store": true 
+        },
+        "date": {
+          "type": "date",
+          "store": true 
+        },
+        "content": {
+          "type": "text"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "title":   "Some short title",
+    "date":    "2015-01-01",
+    "content": "A very long content field..."
+  }
+
+  GET my-index-000001/_search
+  {
+    "stored_fields": [ "title", "date" ] 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

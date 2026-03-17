@@ -1,0 +1,37 @@
+# Source: query-languages/query-dsl/query-dsl-terms-set-query.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: query-dsl-terms-set-query
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET /job-candidates/_search
+  {
+    "query": {
+      "terms_set": {
+        "programming_languages": {
+          "terms": [ "c++", "java", "php" ],
+          "minimum_should_match_script": {
+            "source": "Math.min(params.num_terms, doc['required_matches'].value)"
+          },
+          "boost": 1.0
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

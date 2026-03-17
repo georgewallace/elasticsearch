@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-57
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 57
+--- !code
+|
+  {
+      "query" : "SELECT DATETIME_PARSE('10:20:30', 'HH:mm:ss') AS \"time\"",
+      "time_zone" : "Europe/Athens"
+  }
+
+        time
+  ------------------------------------
+  10:20:30.000+02:00
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

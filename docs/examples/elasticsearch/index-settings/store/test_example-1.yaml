@@ -1,0 +1,29 @@
+# Source: elasticsearch/index-settings/store.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: store
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /my-index-000001
+  {
+    "settings": {
+      "index.store.type": "hybridfs"
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,56 @@
+# Source: text-analysis/analysis-predicatefilter-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-predicatefilter-tokenfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_analyze
+  {
+    "tokenizer": "whitespace",
+    "filter": [
+      {
+        "type": "predicate_token_filter",
+        "script": {
+          "source": """
+            token.term.length() > 3
+          """
+        }
+      }
+    ],
+    "text": "the fox jumps the lazy dog"
+  }
+--- !result
+|
+  {
+    "tokens" : [
+      {
+        "token" : "jumps",
+        "start_offset" : 8,
+        "end_offset" : 13,
+        "type" : "word",
+        "position" : 2
+      },
+      {
+        "token" : "lazy",
+        "start_offset" : 18,
+        "end_offset" : 22,
+        "type" : "word",
+        "position" : 4
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

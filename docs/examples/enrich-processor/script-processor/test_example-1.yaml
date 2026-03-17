@@ -1,0 +1,68 @@
+# Source: enrich-processor/script-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: script-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "processors": [
+        {
+          "script": {
+            "description": "Extract 'tags' from 'env' field",
+            "lang": "painless",
+            "source": """
+              String[] envSplit = ctx['env'].splitOnToken(params['delimiter']);
+              ArrayList tags = new ArrayList();
+              tags.add(envSplit[params['position']].trim());
+              ctx['tags'] = tags;
+            """,
+            "params": {
+              "delimiter": "-",
+              "position": 1
+            }
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "env": "es01-prod"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          ...
+          "_source": {
+            "env": "es01-prod",
+            "tags": [
+              "prod"
+            ]
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,24 @@
+# Source: query-languages/sql/sql-data-types.md
+--- !metadata
+id: example-1
+language: sql
+topic: sql-data-types
+subtopic: default
+example_order: 1
+--- !code
+|
+  SELECT first_name FROM index WHERE first_name = 'John'
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

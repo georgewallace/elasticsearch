@@ -1,0 +1,32 @@
+# Source: elasticsearch/rest-apis/update-document.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: update-document
+subtopic: default
+example_order: 12
+--- !code
+|
+  POST /test/_update/1
+  {
+    "doc": {
+      "product_price": 100
+    },
+    "upsert": {
+      "product_price": 50
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

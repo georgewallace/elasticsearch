@@ -1,0 +1,83 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-25
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 25
+--- !code
+|
+  POST _search?typed_keys
+  {
+    "suggest": {
+      "text" : "some test mssage",
+      "my-first-suggester" : {
+        "term" : {
+          "field" : "message"
+        }
+      },
+      "my-second-suggester" : {
+        "phrase" : {
+          "field" : "message"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "suggest": {
+      "term#my-first-suggester": [ 
+        {
+          "text": "some",
+          "offset": 0,
+          "length": 4,
+          "options": []
+        },
+        {
+          "text": "test",
+          "offset": 5,
+          "length": 4,
+          "options": []
+        },
+        {
+          "text": "mssage",
+          "offset": 10,
+          "length": 6,
+          "options": [
+            {
+              "text": "message",
+              "score": 0.8333333,
+              "freq": 4
+            }
+          ]
+        }
+      ],
+      "phrase#my-second-suggester": [ 
+        {
+          "text": "some test mssage",
+          "offset": 0,
+          "length": 16,
+          "options": [
+            {
+              "text": "some test message",
+              "score": 0.030227963
+            }
+          ]
+        }
+      ]
+    },
+    ...
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

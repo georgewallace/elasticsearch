@@ -1,0 +1,69 @@
+# Source: elasticsearch-plugins/analysis-nori-speech.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-nori-speech
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT nori_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "tokenizer": "nori_tokenizer",
+              "filter": [
+                "my_posfilter"
+              ]
+            }
+          },
+          "filter": {
+            "my_posfilter": {
+              "type": "nori_part_of_speech",
+              "stoptags": [
+                "NR"   
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET nori_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "여섯 용이"  
+  }
+--- !result
+|
+  {
+    "tokens" : [ {
+      "token" : "용",
+      "start_offset" : 3,
+      "end_offset" : 4,
+      "type" : "word",
+      "position" : 1
+    }, {
+      "token" : "이",
+      "start_offset" : 4,
+      "end_offset" : 5,
+      "type" : "word",
+      "position" : 2
+    } ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,52 @@
+# Source: query-languages/eql/eql-function-ref.md
+--- !metadata
+id: example-13
+language: eql
+topic: eql-function-ref
+subtopic: default
+example_order: 13
+--- !code
+|
+  number("1337")              // returns 1337
+  number("42.5")              // returns 42.5
+  number("deadbeef", 16)      // returns 3735928559
+
+  // integer literals beginning with "0x" are auto-detected as hexadecimal
+  number("0xdeadbeef")        // returns 3735928559
+  number("0xdeadbeef", 16)    // returns 3735928559
+
+  // "+" and "-" are supported
+  number("+1337")             // returns 1337
+  number("-1337")             // returns -1337
+
+  // surrounding whitespace is ignored
+  number("  1337  ")          // returns 1337
+
+  // process.pid = "1337"
+  number(process.pid)         // returns 1337
+
+  // null handling
+  number(null)                // returns null
+  number(null, 16)            // returns null
+
+  // strings beginning with "0x" are treated as hexadecimal (base 16),
+  // even if the <base_num> is explicitly null.
+  number("0xdeadbeef", null) // returns 3735928559
+
+  // otherwise, strings are treated as decimal (base 10)
+  // if the <base_num> is explicitly null.
+  number("1337", null)        // returns 1337
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

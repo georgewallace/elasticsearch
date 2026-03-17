@@ -1,0 +1,51 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST test/_search
+  {
+    "suggest": {
+      "text" : "noble prize",
+      "simple_phrase" : {
+        "phrase" : {
+          "field" :  "title.trigram",
+          "size" :   1,
+          "direct_generator" : [ {
+            "field" :            "title.trigram",
+            "suggest_mode" :     "always",
+            "min_word_length" :  1
+          } ],
+          "collate": {
+            "query": { 
+              "source" : {
+                "match": {
+                  "{{field_name}}" : "{{suggestion}}" 
+                }
+              }
+            },
+            "params": {"field_name" : "title"}, 
+            "prune": true 
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

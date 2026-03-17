@@ -1,0 +1,73 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT test
+  {
+    "settings": {
+      "index": {
+        "number_of_shards": 1,
+        "analysis": {
+          "analyzer": {
+            "trigram": {
+              "type": "custom",
+              "tokenizer": "standard",
+              "filter": ["lowercase","shingle"]
+            },
+            "reverse": {
+              "type": "custom",
+              "tokenizer": "standard",
+              "filter": ["lowercase","reverse"]
+            }
+          },
+          "filter": {
+            "shingle": {
+              "type": "shingle",
+              "min_shingle_size": 2,
+              "max_shingle_size": 3
+            }
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text",
+          "fields": {
+            "trigram": {
+              "type": "text",
+              "analyzer": "trigram"
+            },
+            "reverse": {
+              "type": "text",
+              "analyzer": "reverse"
+            }
+          }
+        }
+      }
+    }
+  }
+  POST test/_doc?refresh=true
+  {"title": "noble warriors"}
+  POST test/_doc?refresh=true
+  {"title": "nobel prize"}
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

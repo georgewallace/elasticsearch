@@ -1,0 +1,29 @@
+# Source: scripting-languages/painless/painless-operators-array.md
+--- !metadata
+id: example-4
+language: painless
+topic: painless-operators-array
+subtopic: default
+example_order: 4
+--- !code
+|
+  def d = new int[2];  
+  d[0] = 2;            
+  d[1] = 5;            
+  def x = d[0] + d[1]; 
+  def y = 1;           
+  def z = d[y];
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

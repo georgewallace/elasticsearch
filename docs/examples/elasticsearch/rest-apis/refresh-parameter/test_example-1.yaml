@@ -1,0 +1,27 @@
+# Source: elasticsearch/rest-apis/refresh-parameter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: refresh-parameter
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /test/_doc/1?refresh
+  {"test": "test"}
+  PUT /test/_doc/2?refresh=true
+  {"test": "test"}
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

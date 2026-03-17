@@ -1,0 +1,29 @@
+# Source: elasticsearch/rest-apis/optimistic-concurrency-control.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: optimistic-concurrency-control
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT products/_doc/1567?if_seq_no=362&if_primary_term=2
+  {
+    "product": "r2d2",
+    "details": "A resourceful astromech droid",
+    "tags": [ "droid" ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

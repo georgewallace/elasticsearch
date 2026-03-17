@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/chunk.md
+--- !metadata
+id: example-1
+language: esql
+topic: chunk
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW result = CHUNK("It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief.", {"strategy": "word", "max_chunk_size": 10, "overlap": 1})
+  | MV_EXPAND result
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

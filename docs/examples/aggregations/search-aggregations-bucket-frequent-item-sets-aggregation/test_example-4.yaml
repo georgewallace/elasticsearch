@@ -1,0 +1,114 @@
+# Source: search-aggregations-bucket-frequent-item-sets-aggregation.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-aggregations-bucket-frequent-item-sets-aggregation
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET kibana_sample_data_ecommerce/_search
+  {
+    "runtime_mappings": {
+      "price_range": {
+        "type": "keyword",
+        "script": {
+          "source": """
+             def bucket_start = (long) Math.floor(doc['taxful_total_price'].value / 50) * 50;
+             def bucket_end = bucket_start + 50;
+             emit(bucket_start.toString() + "-" + bucket_end.toString());
+          """
+        }
+      }
+    },
+    "size": 0,
+    "aggs": {
+      "my_agg": {
+        "frequent_item_sets": {
+          "minimum_set_size": 4,
+          "fields": [
+            {
+              "field": "category.keyword"
+            },
+            {
+              "field": "price_range"
+            },
+            {
+              "field": "geoip.city_name"
+            }
+          ],
+          "size": 3
+        }
+      }
+    }
+  }
+--- !result
+|
+  (...)
+  "aggregations" : {
+      "my_agg" : {
+        "buckets" : [
+          {
+            "key" : {
+              "category.keyword" : [
+                "Women's Clothing",
+                "Women's Shoes"
+              ],
+              "price_range" : [
+                "50-100"
+              ],
+              "geoip.city_name" : [
+                "New York"
+              ]
+            },
+            "doc_count" : 100,
+            "support" : 0.0213903743315508
+          },
+          {
+            "key" : {
+              "category.keyword" : [
+                "Women's Clothing",
+                "Women's Shoes"
+              ],
+              "price_range" : [
+                "50-100"
+              ],
+              "geoip.city_name" : [
+                "Dubai"
+              ]
+            },
+            "doc_count" : 59,
+            "support" : 0.012620320855614974
+          },
+          {
+            "key" : {
+              "category.keyword" : [
+                "Men's Clothing",
+                "Men's Shoes"
+              ],
+              "price_range" : [
+                "50-100"
+              ],
+              "geoip.city_name" : [
+                "Marrakesh"
+              ]
+            },
+            "doc_count" : 53,
+            "support" : 0.011336898395721925
+          }
+        ],
+      (...)
+      }
+    }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

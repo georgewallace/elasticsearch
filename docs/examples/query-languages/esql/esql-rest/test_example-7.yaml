@@ -1,0 +1,49 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 7
+--- !code
+|
+  POST /_query?format=json
+  {
+    "query": """
+      FROM library
+      | KEEP author, name, page_count, release_date
+      | SORT page_count DESC
+      | LIMIT 5
+    """,
+    "columnar": true
+  }
+--- !result
+|
+  {
+    "took": 28,
+    "is_partial": false,
+    "columns": [
+      {"name": "author", "type": "text"},
+      {"name": "name", "type": "text"},
+      {"name": "page_count", "type": "integer"},
+      {"name": "release_date", "type": "date"}
+    ],
+    "values": [
+      ["Peter F. Hamilton", "Vernor Vinge", "Frank Herbert", "Alastair Reynolds", "James S.A. Corey"],
+      ["Pandora's Star", "A Fire Upon the Deep", "Dune", "Revelation Space", "Leviathan Wakes"],
+      [768, 613, 604, 585, 561],
+      ["2004-03-02T00:00:00.000Z", "1992-06-01T00:00:00.000Z", "1965-06-01T00:00:00.000Z", "2000-03-15T00:00:00.000Z", "2011-06-02T00:00:00.000Z"]
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

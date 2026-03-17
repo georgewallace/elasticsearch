@@ -1,0 +1,30 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-20
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 20
+--- !code
+|
+  SELECT gender, FIRST_VALUE(SUBSTRING(first_name, 2, 6), birth_date) AS "first" FROM emp GROUP BY gender ORDER BY gender;
+
+      gender     |     first
+  ---------------+---------------
+  null           |illian
+  F              |umant
+  M              |emzi
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

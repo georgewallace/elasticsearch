@@ -1,0 +1,58 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT /bengali_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "bengali_stop": {
+            "type":       "stop",
+            "stopwords":  "_bengali_" 
+          },
+          "bengali_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["উদাহরণ"] 
+          },
+          "bengali_stemmer": {
+            "type":       "stemmer",
+            "language":   "bengali"
+          }
+        },
+        "analyzer": {
+          "rebuilt_bengali": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "decimal_digit",
+              "bengali_keywords",
+              "indic_normalization",
+              "bengali_normalization",
+              "bengali_stop",
+              "bengali_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

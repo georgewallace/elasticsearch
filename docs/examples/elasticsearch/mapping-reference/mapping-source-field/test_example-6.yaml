@@ -1,0 +1,44 @@
+# Source: elasticsearch/mapping-reference/mapping-source-field.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: mapping-source-field
+subtopic: default
+example_order: 6
+--- !code
+|
+  PUT idx_keep/_doc/1
+  {
+    "path": {
+      "to": [
+        { "foo": [3, 2, 1] },
+        { "foo": [30, 20, 10] }
+      ],
+      "bar": "baz"
+    },
+    "ids": [ 200, 100, 300, 100 ]
+  }
+--- !result
+|
+  {
+    "path": {
+      "to": [
+        { "foo": [3, 2, 1] },
+        { "foo": [30, 20, 10] }
+      ],
+      "bar": "baz"
+    },
+    "ids": [ 200, 100, 300, 100 ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

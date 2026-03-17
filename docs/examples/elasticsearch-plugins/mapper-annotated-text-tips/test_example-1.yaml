@@ -1,0 +1,41 @@
+# Source: elasticsearch-plugins/mapper-annotated-text-tips.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapper-annotated-text-tips
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "my_unstructured_text_field": {
+          "type": "annotated_text"
+        },
+        "my_structured_people_field": {
+          "type": "text",
+          "fields": {
+            "keyword" : {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

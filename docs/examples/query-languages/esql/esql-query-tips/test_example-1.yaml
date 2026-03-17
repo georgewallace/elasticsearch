@@ -1,0 +1,27 @@
+# Source: query-languages/esql/esql-query-tips.md
+--- !metadata
+id: example-1
+language: esql
+topic: esql-query-tips
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM logs-*
+  FROM metrics-*
+  FROM .ds-*
+  FROM my-index-2024.*
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

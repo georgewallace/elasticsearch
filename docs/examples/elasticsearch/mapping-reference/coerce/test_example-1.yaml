@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/coerce.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: coerce
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "number_one": {
+          "type": "integer"
+        },
+        "number_two": {
+          "type": "integer",
+          "coerce": false
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "number_one": "10" 
+  }
+
+  PUT my-index-000001/_doc/2
+  {
+    "number_two": "10" 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

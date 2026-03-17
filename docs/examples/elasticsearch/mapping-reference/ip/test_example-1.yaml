@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/ip.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: ip
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "ip_addr": {
+          "type": "ip"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "ip_addr": "192.168.1.1"
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "term": {
+        "ip_addr": "192.168.0.0/16"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

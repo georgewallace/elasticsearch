@@ -1,0 +1,41 @@
+# Source: elasticsearch/rest-apis/rescore-search-results.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: rescore-search-results
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET my-index/_search
+  {
+    "query": {
+      "multi_match": {
+        "fields": ["title", "content"],
+        "query": "the quick brown fox"
+      }
+    },
+    "rescore": {
+      "learning_to_rank": {
+        "model_id": "ltr-model",
+        "params": {
+          "query_text": "the quick brown fox"
+        }
+      },
+      "window_size": 100
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

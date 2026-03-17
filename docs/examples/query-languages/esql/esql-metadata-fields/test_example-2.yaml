@@ -1,0 +1,28 @@
+# Source: query-languages/esql/esql-metadata-fields.md
+--- !metadata
+id: example-2
+language: esql
+topic: esql-metadata-fields
+subtopic: default
+example_order: 2
+--- !code
+|
+  FROM ul_logs, apps METADATA _index, _version
+  | WHERE id IN (13, 14) AND _version == 1
+  | EVAL key = CONCAT(_index, "_", TO_STR(id))
+  | SORT id, _index
+  | KEEP id, _index, _version, key
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

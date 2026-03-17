@@ -1,0 +1,100 @@
+# Source: elasticsearch/rest-apis/reciprocal-rank-fusion.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: reciprocal-rank-fusion
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET example-index/_search
+  {
+      "retriever": {
+          "rrf": {
+              "retrievers": [
+                  {
+                      "standard": {
+                          "query": {
+                              "term": {
+                                  "text": "rrf"
+                              }
+                          }
+                      }
+                  },
+                  {
+                      "knn": {
+                          "field": "vector",
+                          "query_vector": [3],
+                          "k": 5,
+                          "num_candidates": 5
+                      }
+                  }
+              ],
+              "rank_window_size": 5,
+              "rank_constant": 1
+          }
+      },
+      "size": 3,
+      "aggs": {
+          "int_count": {
+              "terms": {
+                  "field": "integer"
+              }
+          }
+      }
+  }
+--- !result
+|
+  "hits" : [
+      {
+          "_index" : "example-index",
+          "_id" : "4",
+          "_score" : 0.16152832,              
+          "_source" : {
+              "integer" : 2,
+              "text" : "rrf rrf rrf rrf"
+          }
+      },
+      {
+          "_index" : "example-index",
+          "_id" : "3",                        
+          "_score" : 0.15876243,
+          "_source" : {
+              "integer" : 1,
+              "vector" : [3],
+              "text" : "rrf rrf rrf"
+          }
+      },
+      {
+          "_index" : "example-index",
+          "_id" : "2",                        
+          "_score" : 0.15350538,
+          "_source" : {
+              "integer" : 2,
+              "vector" : [4],
+              "text" : "rrf rrf"
+          }
+      },
+      {
+          "_index" : "example-index",
+          "_id" : "1",                        
+          "_score" : 0.13963442,
+          "_source" : {
+              "integer" : 1,
+              "vector" : [5],
+              "text" : "rrf"
+          }
+      }
+  ]
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

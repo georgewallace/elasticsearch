@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-59
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 59
+--- !code
+|
+  SELECT DATE_PART('year', '2019-09-22T11:22:33.123Z'::datetime) AS "years";
+
+     years
+  ----------
+  2019
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

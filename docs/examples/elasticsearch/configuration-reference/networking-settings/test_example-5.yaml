@@ -1,0 +1,30 @@
+# Source: elasticsearch/configuration-reference/networking-settings.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: networking-settings
+subtopic: default
+example_order: 5
+--- !code
+|
+  PUT _cluster/settings
+  {
+     "persistent" : {
+        "transport.tracer.include" : "*",
+        "transport.tracer.exclude" : "internal:coordination/fault_detection/*"
+     }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

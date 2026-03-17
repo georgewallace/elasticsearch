@@ -1,0 +1,36 @@
+# Source: elasticsearch/rest-apis/reindex-indices.md
+--- !metadata
+id: example-16
+language: elastic_console
+topic: reindex-indices
+subtopic: default
+example_order: 16
+--- !code
+|
+  GET my-new-index-000001/_doc/1
+--- !result
+|
+  {
+    "found": true,
+    "_id": "1",
+    "_index": "my-new-index-000001",
+    "_version": 1,
+    "_seq_no": 44,
+    "_primary_term": 1,
+    "_source": {
+      "text": "words words",
+      "tag": "foo"
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

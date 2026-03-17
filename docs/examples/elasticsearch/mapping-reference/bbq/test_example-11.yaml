@@ -1,0 +1,32 @@
+# Source: elasticsearch/mapping-reference/bbq.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: bbq
+subtopic: default
+example_order: 11
+--- !code
+|
+  GET bbq-index/_search
+  {
+    "knn": {
+      "field": "my_vector",
+      "query_vector": [0.12, -0.45, ...],
+      "k": 10,
+      "num_candidates": 100
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

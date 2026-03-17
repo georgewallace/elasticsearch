@@ -1,0 +1,120 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET /retrievers_example/_search
+  {
+      "retriever": {
+          "linear": {
+              "retrievers": [
+                  {
+                      "retriever": {
+                          "standard": {
+                              "query": {
+                                  "function_score": {
+                                      "query": {
+                                          "term": {
+                                              "topic": "ai"
+                                          }
+                                      },
+                                      "functions": [
+                                          {
+                                              "script_score": {
+                                                  "script": {
+                                                      "source": "doc['timestamp'].value.millis"
+                                                  }
+                                              }
+                                          }
+                                      ],
+                                      "boost_mode": "replace"
+                                  }
+                              },
+                              "sort": {
+                                  "timestamp": {
+                                      "order": "asc"
+                                  }
+                              }
+                          }
+                      },
+                      "weight": 2,
+                      "normalizer": "minmax"
+                  },
+                  {
+                      "retriever": {
+                          "knn": {
+                              "field": "vector",
+                              "query_vector": [
+                                  0.23,
+                                  0.67,
+                                  0.89
+                              ],
+                              "k": 3,
+                              "num_candidates": 5
+                          }
+                      },
+                      "weight": 1.5
+                  }
+              ],
+              "rank_window_size": 10
+          }
+      },
+      "_source": false
+  }
+--- !result
+|
+  {
+      "took": 42,
+      "timed_out": false,
+      "_shards": {
+          "total": 1,
+          "successful": 1,
+          "skipped": 0,
+          "failed": 0
+      },
+      "hits": {
+          "total": {
+              "value": 4,
+              "relation": "eq"
+          },
+          "max_score": 3.5,
+          "hits": [
+              {
+                  "_index": "retrievers_example",
+                  "_id": "3",
+                  "_score": 3.5
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "2",
+                  "_score": 2.0
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "4",
+                  "_score": 1.1
+              },
+              {
+                  "_index": "retrievers_example",
+                  "_id": "1",
+                  "_score": 0.1
+              }
+          ]
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

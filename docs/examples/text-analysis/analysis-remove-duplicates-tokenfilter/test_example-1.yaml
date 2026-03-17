@@ -1,0 +1,64 @@
+# Source: text-analysis/analysis-remove-duplicates-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-remove-duplicates-tokenfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET _analyze
+  {
+    "tokenizer": "whitespace",
+    "filter": [
+      "keyword_repeat",
+      "stemmer"
+    ],
+    "text": "jumping dog"
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": "jumping",
+        "start_offset": 0,
+        "end_offset": 7,
+        "type": "word",
+        "position": 0
+      },
+      {
+        "token": "jump",
+        "start_offset": 0,
+        "end_offset": 7,
+        "type": "word",
+        "position": 0
+      },
+      {
+        "token": "dog",
+        "start_offset": 8,
+        "end_offset": 11,
+        "type": "word",
+        "position": 1
+      },
+      {
+        "token": "dog",
+        "start_offset": 8,
+        "end_offset": 11,
+        "type": "word",
+        "position": 1
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

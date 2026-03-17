@@ -1,0 +1,65 @@
+# Source: search-aggregations-bucket-significanttext-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-significanttext-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET news/_search
+  {
+    "query": {
+      "match": { "content": "Bird flu" }
+    },
+    "aggregations": {
+      "my_sample": {
+        "sampler": {
+          "shard_size": 100
+        },
+        "aggregations": {
+          "keywords": {
+            "significant_text": { "field": "content" }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took": 9,
+    "timed_out": false,
+    "_shards": ...,
+    "hits": ...,
+      "aggregations" : {
+          "my_sample": {
+              "doc_count": 100,
+              "keywords" : {
+                  "doc_count": 100,
+                  "buckets" : [
+                      {
+                          "key": "h5n1",
+                          "doc_count": 4,
+                          "score": 4.71235374214817,
+                          "bg_count": 5
+                      }
+                      ...
+                  ]
+              }
+          }
+      }
+  }
+--- !test
+stage: news
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

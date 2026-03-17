@@ -1,0 +1,59 @@
+# Source: search-aggregations-bucket-geotilegrid-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-bucket-geotilegrid-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST /museums/_search?size=0
+  {
+    "aggregations": {
+      "tiles-in-bounds": {
+        "geotile_grid": {
+          "field": "location",
+          "precision": 22,
+          "bounds": {
+            "top_left": "POINT (4.9 52.4)",
+            "bottom_right": "POINT (5.0 52.3)"
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "tiles-in-bounds": {
+        "buckets": [
+          {
+            "key": "22/2154412/1378379",
+            "doc_count": 1
+          },
+          {
+            "key": "22/2154385/1378332",
+            "doc_count": 1
+          },
+          {
+            "key": "22/2154259/1378425",
+            "doc_count": 1
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

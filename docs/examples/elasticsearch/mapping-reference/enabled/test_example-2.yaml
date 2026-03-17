@@ -1,0 +1,44 @@
+# Source: elasticsearch/mapping-reference/enabled.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: enabled
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "enabled": false 
+    }
+  }
+
+  PUT my-index-000001/_doc/session_1
+  {
+    "user_id": "kimchy",
+    "session_data": {
+      "arbitrary_object": {
+        "some_array": [ "foo", "bar", { "baz": 2 } ]
+      }
+    },
+    "last_updated": "2015-12-06T18:20:22"
+  }
+
+  GET my-index-000001/_doc/session_1 
+
+  GET my-index-000001/_mapping
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

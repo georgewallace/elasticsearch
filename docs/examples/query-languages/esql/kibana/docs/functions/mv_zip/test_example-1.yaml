@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/mv_zip.md
+--- !metadata
+id: example-1
+language: esql
+topic: mv_zip
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW a = ["x", "y", "z"], b = ["1", "2"]
+  | EVAL c = mv_zip(a, b, "-")
+  | KEEP a, b, c
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

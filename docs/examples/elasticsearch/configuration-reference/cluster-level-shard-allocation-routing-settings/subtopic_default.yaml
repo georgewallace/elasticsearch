@@ -1,0 +1,9 @@
+id: default
+topic: cluster-level-shard-allocation-routing-settings
+title: Default
+description: 
+
+setup:
+
+
+teardown:

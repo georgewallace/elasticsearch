@@ -1,0 +1,64 @@
+# Source: elasticsearch/mapping-reference/percolator.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: percolator
+subtopic: default
+example_order: 10
+--- !code
+|
+  PUT my_queries1
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "wildcard_prefix": { 
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": [
+              "lowercase",
+              "wildcard_edge_ngram"
+            ]
+          }
+        },
+        "filter": {
+          "wildcard_edge_ngram": { 
+            "type": "edge_ngram",
+            "min_gram": 1,
+            "max_gram": 32
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "query": {
+          "type": "percolator"
+        },
+        "my_field": {
+          "type": "text",
+          "fields": {
+            "prefix": { 
+              "type": "text",
+              "analyzer": "wildcard_prefix",
+              "search_analyzer": "standard"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

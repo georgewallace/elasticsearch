@@ -1,0 +1,44 @@
+# Source: elasticsearch/mapping-reference/copy-to.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: copy-to
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT /test_index
+  {
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "description": {
+          "properties": {
+            "notes": {
+              "type": "text",
+              "copy_to": [ "description.notes_raw"], 
+              "analyzer": "standard",
+              "search_analyzer": "standard"
+            },
+            "notes_raw": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,34 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-18
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 18
+--- !code
+|
+  GET /_search
+  {
+    "query" : {
+      "match": { "user.id": "kimchy" }
+    },
+    "highlight" : {
+      "fields" : {
+        "comment" : {"fragment_size" : 150, "number_of_fragments" : 3}
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

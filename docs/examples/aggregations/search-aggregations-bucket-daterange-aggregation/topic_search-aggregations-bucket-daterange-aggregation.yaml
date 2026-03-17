@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-daterange-aggregation
+title: Search Aggregations Bucket Daterange Aggregation
+description: 
+
+setup:
+
+
+teardown:

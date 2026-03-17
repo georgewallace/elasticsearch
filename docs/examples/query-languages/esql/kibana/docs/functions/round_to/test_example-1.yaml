@@ -1,0 +1,35 @@
+# Source: query-languages/esql/kibana/docs/functions/round_to.md
+--- !metadata
+id: example-1
+language: esql
+topic: round_to
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | STATS COUNT(*) BY birth_window=ROUND_TO(
+      birth_date,
+      "1900-01-01T00:00:00Z"::DATETIME,
+      "1950-01-01T00:00:00Z"::DATETIME,
+      "1955-01-01T00:00:00Z"::DATETIME,
+      "1960-01-01T00:00:00Z"::DATETIME,
+      "1965-01-01T00:00:00Z"::DATETIME,
+      "1970-01-01T00:00:00Z"::DATETIME,
+      "1975-01-01T00:00:00Z"::DATETIME
+  )
+  | SORT birth_window ASC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

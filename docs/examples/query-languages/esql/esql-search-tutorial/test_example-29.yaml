@@ -1,0 +1,40 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-29
+language: elastic_console
+topic: esql-search-tutorial
+subtopic: default
+example_order: 29
+--- !code
+|
+  PUT /cooking_blog/_mapping
+  {
+    "properties": {
+      "recipe_vector": {
+        "type": "dense_vector",
+        "dims": 3
+      }
+    }
+  }
+
+  POST /cooking_blog/_doc/6
+  {
+    "title": "Quick Vegan Stir-Fry",
+    "description": "A fast and healthy vegan stir-fry with tofu and vegetables",
+    "recipe_vector": [0.5, 0.8, 0.3],
+    "rating": 4.6
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,46 @@
+# Source: elasticsearch/rest-apis/collapse-search-results.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: collapse-search-results
+subtopic: default
+example_order: 6
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "query": {
+      "match": {
+        "message": "you know for search"
+      }
+    },
+    "collapse": {
+      "field": "user.id"
+    },
+    "rescore" : {
+        "window_size" : 50,
+        "query" : {
+           "rescore_query" : {
+              "match_phrase": {
+                  "message": "you know for search"
+              }
+           },
+           "query_weight" : 0.3,
+           "rescore_query_weight" : 1.4
+        }
+     }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

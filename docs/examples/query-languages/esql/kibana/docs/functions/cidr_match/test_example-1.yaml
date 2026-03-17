@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/cidr_match.md
+--- !metadata
+id: example-1
+language: esql
+topic: cidr_match
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM hosts
+  | WHERE CIDR_MATCH(ip1, "127.0.0.2/32", "127.0.0.3/32")
+  | KEEP card, host, ip0, ip1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

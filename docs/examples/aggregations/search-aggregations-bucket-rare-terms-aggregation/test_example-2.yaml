@@ -1,0 +1,51 @@
+# Source: search-aggregations-bucket-rare-terms-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-rare-terms-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_search
+  {
+    "aggs": {
+      "genres": {
+        "rare_terms": {
+          "field": "genre",
+          "max_doc_count": 2
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "genres": {
+        "buckets": [
+          {
+            "key": "swing",
+            "doc_count": 1
+          },
+          {
+            "key": "jazz",
+            "doc_count": 2
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

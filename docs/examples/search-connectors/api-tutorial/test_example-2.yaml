@@ -1,0 +1,48 @@
+# Source: search-connectors/api-tutorial.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: api-tutorial
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /_security/api_key
+  {
+    "name": "music-connector",
+    "role_descriptors": {
+      "music-connector-role": {
+        "cluster": [
+          "monitor",
+          "manage_connector"
+        ],
+        "indices": [
+          {
+            "names": [
+              "music",
+              ".search-acl-filter-music",
+              ".elastic-connectors*"
+            ],
+            "privileges": [
+              "all"
+            ],
+            "allow_restricted_indices": false
+          }
+        ]
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

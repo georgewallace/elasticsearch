@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/functions/examples/to_date_nanos.md
+--- !metadata
+id: example-1
+language: esql
+topic: to_date_nanos
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM date_nanos
+  | WHERE MV_MIN(nanos) < TO_DATE_NANOS("2023-10-23T12:27:28.948Z")
+      AND millis > "2000-01-01"
+  | SORT nanos DESC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

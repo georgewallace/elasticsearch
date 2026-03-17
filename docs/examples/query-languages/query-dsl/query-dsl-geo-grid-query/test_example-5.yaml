@@ -1,0 +1,62 @@
+# Source: query-languages/query-dsl/query-dsl-geo-grid-query.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: query-dsl-geo-grid-query
+subtopic: default
+example_order: 5
+--- !code
+|
+  GET /my_locations/_search
+  {
+    "query": {
+      "geo_grid" :{
+        "location" : {
+          "geotile" : "6/32/22"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "took" : 1,
+    "timed_out" : false,
+    "_shards" : {
+      "total" : 1,
+      "successful" : 1,
+      "skipped" : 0,
+      "failed" : 0
+    },
+    "hits" : {
+      "total" : {
+        "value" : 1,
+        "relation" : "eq"
+      },
+      "max_score" : 1.0,
+      "hits" : [
+        {
+          "_index" : "my_locations",
+          "_id" : "3",
+          "_score" : 1.0,
+          "_source" : {
+            "location" : "POINT(2.336389 48.861111)",
+            "city" : "Paris",
+            "name" : "Musée du Louvre"
+          }
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

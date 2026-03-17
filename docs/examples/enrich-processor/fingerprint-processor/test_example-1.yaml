@@ -1,0 +1,65 @@
+# Source: enrich-processor/fingerprint-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: fingerprint-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "processors": [
+        {
+          "fingerprint": {
+            "fields": ["user"]
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "user": {
+            "last_name": "Smith",
+            "first_name": "John",
+            "date_of_birth": "1980-01-15",
+            "is_active": true
+          }
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          ...
+          "_source": {
+            "fingerprint" : "WbSUPW4zY1PBPehh2AA/sSxiRjw=",
+            "user" : {
+              "last_name" : "Smith",
+              "first_name" : "John",
+              "date_of_birth" : "1980-01-15",
+              "is_active" : true
+            }
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

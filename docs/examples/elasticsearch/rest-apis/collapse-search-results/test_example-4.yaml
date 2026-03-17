@@ -1,0 +1,36 @@
+# Source: elasticsearch/rest-apis/collapse-search-results.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: collapse-search-results
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET /my-index-000001/_search
+  {
+    "query": {
+      "match": {
+        "message": "GET /search"
+      }
+    },
+    "collapse": {
+      "field": "user.id"
+    },
+    "sort": [ "user.id" ],
+    "search_after": ["dd5ce1ad"]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

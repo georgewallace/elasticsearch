@@ -1,0 +1,66 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-23
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 23
+--- !code
+|
+  PUT /italian_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "italian_elision": {
+            "type": "elision",
+            "articles": [
+                  "c", "l", "all", "dall", "dell",
+                  "nell", "sull", "coll", "pell",
+                  "gl", "agl", "dagl", "degl", "negl",
+                  "sugl", "un", "m", "t", "s", "v", "d"
+            ],
+            "articles_case": true
+          },
+          "italian_stop": {
+            "type":       "stop",
+            "stopwords":  "_italian_" 
+          },
+          "italian_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["esempio"] 
+          },
+          "italian_stemmer": {
+            "type":       "stemmer",
+            "language":   "light_italian"
+          }
+        },
+        "analyzer": {
+          "rebuilt_italian": {
+            "tokenizer":  "standard",
+            "filter": [
+              "italian_elision",
+              "lowercase",
+              "italian_stop",
+              "italian_keywords",
+              "italian_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

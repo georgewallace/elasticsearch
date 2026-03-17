@@ -1,0 +1,25 @@
+# Source: scripting-languages/painless/painless-operators-reference.md
+--- !metadata
+id: example-5
+language: painless
+topic: painless-operators-reference
+subtopic: default
+example_order: 5
+--- !code
+|
+  Example example = new Example(); 
+  List x = example?.factory();
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

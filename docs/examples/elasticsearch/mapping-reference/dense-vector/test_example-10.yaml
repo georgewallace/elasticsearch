@@ -1,0 +1,35 @@
+# Source: elasticsearch/mapping-reference/dense-vector.md
+--- !metadata
+id: example-10
+language: elastic_console
+topic: dense-vector
+subtopic: default
+example_order: 10
+--- !code
+|
+  PUT my-bit-vectors
+  {
+    "mappings": {
+      "properties": {
+        "my_vector": {
+          "type": "dense_vector",
+          "dims": 40, 
+          "element_type": "bit"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

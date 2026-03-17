@@ -1,0 +1,75 @@
+# Source: elasticsearch-plugins/analysis-nori-tokenizer.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-nori-tokenizer
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT nori_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "tokenizer": {
+            "nori_user_dict": {
+              "type": "nori_tokenizer",
+              "decompound_mode": "mixed",
+              "discard_punctuation": "false",
+              "user_dictionary": "userdict_ko.txt",
+              "lenient": "true"
+            }
+          },
+          "analyzer": {
+            "my_analyzer": {
+              "type": "custom",
+              "tokenizer": "nori_user_dict"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET nori_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "세종시"  
+  }
+--- !result
+|
+  {
+    "tokens" : [ {
+      "token" : "세종시",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "word",
+      "position" : 0,
+      "positionLength" : 2    
+    }, {
+      "token" : "세종",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "word",
+      "position" : 0
+    }, {
+      "token" : "시",
+      "start_offset" : 2,
+      "end_offset" : 3,
+      "type" : "word",
+      "position" : 1
+     }]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

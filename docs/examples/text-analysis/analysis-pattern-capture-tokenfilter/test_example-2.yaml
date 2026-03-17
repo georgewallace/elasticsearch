@@ -1,0 +1,48 @@
+# Source: text-analysis/analysis-pattern-capture-tokenfilter.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-pattern-capture-tokenfilter
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT test
+  {
+     "settings" : {
+        "analysis" : {
+           "filter" : {
+              "email" : {
+                 "type" : "pattern_capture",
+                 "preserve_original" : true,
+                 "patterns" : [
+                    "([^@]+)",
+                    "(\\p{L}+)",
+                    "(\\d+)",
+                    "@(.+)"
+                 ]
+              }
+           },
+           "analyzer" : {
+              "email" : {
+                 "tokenizer" : "uax_url_email",
+                 "filter" : [ "email", "lowercase",  "unique" ]
+              }
+           }
+        }
+     }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

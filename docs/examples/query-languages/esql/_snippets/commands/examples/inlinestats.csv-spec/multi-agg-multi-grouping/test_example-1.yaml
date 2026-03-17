@@ -1,0 +1,29 @@
+# Source: query-languages/esql/_snippets/commands/examples/inlinestats.csv-spec/multi-agg-multi-grouping.md
+--- !metadata
+id: example-1
+language: esql
+topic: multi-agg-multi-grouping
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM employees
+  | WHERE still_hired
+  | KEEP emp_no, languages, salary, hire_date
+  | EVAL tenure = DATE_DIFF("year", hire_date, "2025-09-18T00:00:00")
+  | DROP hire_date
+  | INLINE STATS avg_salary = AVG(salary), count = count(*) BY languages, tenure
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

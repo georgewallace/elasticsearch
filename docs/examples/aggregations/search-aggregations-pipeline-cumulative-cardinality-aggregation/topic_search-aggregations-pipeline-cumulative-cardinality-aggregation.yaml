@@ -1,0 +1,8 @@
+id: search-aggregations-pipeline-cumulative-cardinality-aggregation
+title: Search Aggregations Pipeline Cumulative Cardinality Aggregation
+description: 
+
+setup:
+
+
+teardown:

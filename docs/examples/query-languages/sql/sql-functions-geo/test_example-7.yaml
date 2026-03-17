@@ -1,0 +1,26 @@
+# Source: query-languages/sql/sql-functions-geo.md
+--- !metadata
+id: example-7
+language: sql
+topic: sql-functions-geo
+subtopic: default
+example_order: 7
+--- !code
+|
+  ST_X(
+      geometry 
+  )
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

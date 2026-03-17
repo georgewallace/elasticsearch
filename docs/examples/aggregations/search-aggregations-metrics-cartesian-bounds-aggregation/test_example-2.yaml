@@ -1,0 +1,67 @@
+# Source: search-aggregations-metrics-cartesian-bounds-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-metrics-cartesian-bounds-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /places
+  {
+    "mappings": {
+      "properties": {
+        "geometry": {
+          "type": "shape"
+        }
+      }
+    }
+  }
+
+  POST /places/_bulk?refresh
+  {"index":{"_id":1}}
+  {"name": "NEMO Science Museum", "geometry": "POINT(491.2350 5237.4081)" }
+  {"index":{"_id":2}}
+  {"name": "Sportpark De Weeren", "geometry": { "type": "Polygon", "coordinates": [ [ [ 496.5305328369141, 5239.347642069457 ], [ 496.6979026794433, 5239.1721758934835 ], [ 496.9425201416015, 5239.238958618537 ], [ 496.7944622039794, 5239.420969150824 ], [ 496.5305328369141, 5239.347642069457 ] ] ] } }
+
+  POST /places/_search?size=0
+  {
+    "aggs": {
+      "viewport": {
+        "cartesian_bounds": {
+          "field": "geometry"
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "viewport": {
+        "bounds": {
+          "top_left": {
+            "x": 491.2349853515625,
+            "y": 5239.4208984375
+          },
+          "bottom_right": {
+            "x": 496.9425048828125,
+            "y": 5237.408203125
+          }
+        }
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

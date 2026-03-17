@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/st_y.md
+--- !metadata
+id: example-1
+language: esql
+topic: st_y
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW point = TO_GEOPOINT("POINT(42.97109629958868 14.7552534006536)")
+  | EVAL x =  ST_X(point), y = ST_Y(point)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

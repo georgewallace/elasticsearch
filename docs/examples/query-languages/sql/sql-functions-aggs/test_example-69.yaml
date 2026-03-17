@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-69
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 69
+--- !code
+|
+  SELECT MIN(salary / 24.0) AS min, MAX(salary / 24.0) AS max, VAR_SAMP(salary / 24.0) AS varsamp FROM emp;
+
+         min        |       max        |     varsamp
+  ------------------+------------------+----------------
+  1055.1666666666667|3124.9583333333335|332278.830154847
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

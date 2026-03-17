@@ -1,0 +1,49 @@
+# Source: elasticsearch/mapping-reference/flattened.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: flattened
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT bug_reports
+  {
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text"
+        },
+        "labels": {
+          "type": "flattened"
+        }
+      }
+    }
+  }
+
+  POST bug_reports/_doc/1
+  {
+    "title": "Results are not sorted correctly.",
+    "labels": {
+      "priority": "urgent",
+      "release": ["v1.2.5", "v1.3.0"],
+      "timestamp": {
+        "created": 1541458026,
+        "closed": 1541457010
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

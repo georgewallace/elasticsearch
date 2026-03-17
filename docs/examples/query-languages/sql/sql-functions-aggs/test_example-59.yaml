@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-59
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 59
+--- !code
+|
+  SELECT MIN(salary) AS min, MAX(salary) AS max, STDDEV_SAMP(salary) AS stddev FROM emp;
+
+        min      |      max      |      stddev
+  ---------------+---------------+------------------
+  25324          |74999          |13834.471662090747
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

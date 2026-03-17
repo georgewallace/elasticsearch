@@ -1,0 +1,33 @@
+# Source: query-languages/esql/esql-query-log.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: esql-query-log
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /_cluster/settings
+  {
+    "transient": {
+      "esql.querylog.threshold.warn": "10s",
+      "esql.querylog.threshold.info": "5s",
+      "esql.querylog.threshold.debug": "2s",
+      "esql.querylog.threshold.trace": "500ms",
+      "esql.querylog.include.user": true
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,62 @@
+# Source: elasticsearch/mapping-reference/properties.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: properties
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": { 
+        "manager": {
+          "properties": { 
+            "age":  { "type": "integer" },
+            "name": { "type": "text"  }
+          }
+        },
+        "employees": {
+          "type": "nested",
+          "properties": { 
+            "age":  { "type": "integer" },
+            "name": { "type": "text"  }
+          }
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1 
+  {
+    "region": "US",
+    "manager": {
+      "name": "Alice White",
+      "age": 30
+    },
+    "employees": [
+      {
+        "name": "John Smith",
+        "age": 34
+      },
+      {
+        "name": "Peter Brown",
+        "age": 26
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

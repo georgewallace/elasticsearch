@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-pipeline-min-bucket-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

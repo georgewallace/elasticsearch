@@ -1,0 +1,35 @@
+# Source: search-aggregations-metrics-min-aggregation.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-metrics-min-aggregation
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST /sales/_search
+  {
+    "aggs": {
+      "grade_min": {
+        "min": {
+          "field": "grade",
+          "missing": 10 
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

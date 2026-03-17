@@ -1,0 +1,39 @@
+# Source: query-languages/query-dsl/query-dsl-script-score-query.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: query-dsl-script-score-query
+subtopic: default
+example_order: 11
+--- !code
+|
+  GET my-index-bit-vectors/_search
+  {
+    "query": {
+      "script_score": {
+        "query" : {
+          "match_all": {}
+        },
+        "script": {
+          "source": "dotProduct(params.query_vector, 'my_dense_vector')",
+          "params": {
+            "query_vector": [0.23, 1.45, 3.67, 4.89, -0.56, 2.34, 3.21, 1.78, -2.45, 0.98, -0.12, 3.45, 4.56, 2.78, 1.23, 0.67, 3.89, 4.12, -2.34, 1.56, 0.78, 3.21, 4.12, 2.45, -1.67, 0.34, -3.45, 4.56, -2.78, 1.23, -0.67, 3.89, -4.34, 2.12, -1.56, 0.78, -3.21, 4.45, 2.12, 1.67] 
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

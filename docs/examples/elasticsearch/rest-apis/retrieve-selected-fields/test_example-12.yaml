@@ -1,0 +1,30 @@
+# Source: elasticsearch/rest-apis/retrieve-selected-fields.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: retrieve-selected-fields
+subtopic: default
+example_order: 12
+--- !code
+|
+  GET /_search
+  {
+    "stored_fields" : [],
+    "query" : {
+      "term" : { "user" : "kimchy" }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

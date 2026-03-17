@@ -1,0 +1,225 @@
+# Source: search-aggregations-bucket-count-ks-test-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-bucket-count-ks-test-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST correlate_latency/_search?size=0&filter_path=aggregations
+  {
+    "aggs": {
+      "buckets": {
+        "terms": { 
+          "field": "version",
+          "size": 2
+        },
+        "aggs": {
+          "latency_ranges": {
+            "range": { 
+              "field": "latency",
+              "ranges": [
+                { "to": 0 },
+                { "from": 0, "to": 105 },
+                { "from": 105, "to": 225 },
+                { "from": 225, "to": 445 },
+                { "from": 445, "to": 665 },
+                { "from": 665, "to": 885 },
+                { "from": 885, "to": 1115 },
+                { "from": 1115, "to": 1335 },
+                { "from": 1335, "to": 1555 },
+                { "from": 1555, "to": 1775 },
+                { "from": 1775 }
+              ]
+            }
+          },
+          "ks_test": { 
+            "bucket_count_ks_test": {
+              "buckets_path": "latency_ranges>_count",
+              "alternative": ["less", "greater", "two_sided"]
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "aggregations" : {
+      "buckets" : {
+        "doc_count_error_upper_bound" : 0,
+        "sum_other_doc_count" : 0,
+        "buckets" : [
+          {
+            "key" : "1.0",
+            "doc_count" : 100,
+            "latency_ranges" : {
+              "buckets" : [
+                {
+                  "key" : "*-0.0",
+                  "to" : 0.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "0.0-105.0",
+                  "from" : 0.0,
+                  "to" : 105.0,
+                  "doc_count" : 1
+                },
+                {
+                  "key" : "105.0-225.0",
+                  "from" : 105.0,
+                  "to" : 225.0,
+                  "doc_count" : 9
+                },
+                {
+                  "key" : "225.0-445.0",
+                  "from" : 225.0,
+                  "to" : 445.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "445.0-665.0",
+                  "from" : 445.0,
+                  "to" : 665.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "665.0-885.0",
+                  "from" : 665.0,
+                  "to" : 885.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "885.0-1115.0",
+                  "from" : 885.0,
+                  "to" : 1115.0,
+                  "doc_count" : 10
+                },
+                {
+                  "key" : "1115.0-1335.0",
+                  "from" : 1115.0,
+                  "to" : 1335.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "1335.0-1555.0",
+                  "from" : 1335.0,
+                  "to" : 1555.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "1555.0-1775.0",
+                  "from" : 1555.0,
+                  "to" : 1775.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "1775.0-*",
+                  "from" : 1775.0,
+                  "doc_count" : 20
+                }
+              ]
+            },
+            "ks_test" : {
+              "less" : 2.248673241788478E-4,
+              "greater" : 1.0,
+              "two_sided" : 5.791639181800257E-4
+            }
+          },
+          {
+            "key" : "2.0",
+            "doc_count" : 100,
+            "latency_ranges" : {
+              "buckets" : [
+                {
+                  "key" : "*-0.0",
+                  "to" : 0.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "0.0-105.0",
+                  "from" : 0.0,
+                  "to" : 105.0,
+                  "doc_count" : 19
+                },
+                {
+                  "key" : "105.0-225.0",
+                  "from" : 105.0,
+                  "to" : 225.0,
+                  "doc_count" : 11
+                },
+                {
+                  "key" : "225.0-445.0",
+                  "from" : 225.0,
+                  "to" : 445.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "445.0-665.0",
+                  "from" : 445.0,
+                  "to" : 665.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "665.0-885.0",
+                  "from" : 665.0,
+                  "to" : 885.0,
+                  "doc_count" : 20
+                },
+                {
+                  "key" : "885.0-1115.0",
+                  "from" : 885.0,
+                  "to" : 1115.0,
+                  "doc_count" : 10
+                },
+                {
+                  "key" : "1115.0-1335.0",
+                  "from" : 1115.0,
+                  "to" : 1335.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "1335.0-1555.0",
+                  "from" : 1335.0,
+                  "to" : 1555.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "1555.0-1775.0",
+                  "from" : 1555.0,
+                  "to" : 1775.0,
+                  "doc_count" : 0
+                },
+                {
+                  "key" : "1775.0-*",
+                  "from" : 1775.0,
+                  "doc_count" : 0
+                }
+              ]
+            },
+            "ks_test" : {
+              "less" : 0.9642895789647244,
+              "greater" : 4.58718174664754E-9,
+              "two_sided" : 5.916656831139733E-9
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !test
+stage: correlate_latency
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,47 @@
+# Source: elasticsearch/mapping-reference/keyword.md
+--- !metadata
+id: example-9
+language: elastic_console
+topic: keyword
+subtopic: default
+example_order: 9
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "card": { "type": "wildcard" }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "card": ["king", "ace", "ace", "jack"]
+  }
+--- !result
+|
+  {
+    "card": ["ace", "jack", "king"]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

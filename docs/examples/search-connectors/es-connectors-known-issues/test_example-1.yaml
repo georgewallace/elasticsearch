@@ -1,0 +1,31 @@
+# Source: search-connectors/es-connectors-known-issues.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-known-issues
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT .elastic-connectors-sync-jobs-v1/_mapping
+  {
+    "properties": {
+      "job_type": {
+        "type": "keyword"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

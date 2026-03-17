@@ -1,0 +1,26 @@
+# Source: scripting-languages/painless/painless-operators-boolean.md
+--- !metadata
+id: example-3
+language: painless
+topic: painless-operators-boolean
+subtopic: default
+example_order: 3
+--- !code
+|
+  boolean x = 5 > 4; 
+  double y = 6.0;    
+  x = 6 > y;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

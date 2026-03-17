@@ -1,0 +1,32 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-17
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 17
+--- !code
+|
+  GET /_search
+  {
+    "highlight": {
+      "fields": [
+        { "title": {} },
+        { "text": {} }
+      ]
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

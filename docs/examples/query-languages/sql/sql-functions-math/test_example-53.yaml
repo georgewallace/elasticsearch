@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-53
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 53
+--- !code
+|
+  SELECT RADIANS(90), PI()/2;
+
+     RADIANS(90)    |      PI()/2
+  ------------------+------------------
+  1.5707963267948966|1.5707963267948966
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,33 @@
+# Source: query-languages/esql/kibana/docs/functions/st_geohex.md
+--- !metadata
+id: example-1
+language: esql
+topic: st_geohex
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM airports
+  | EVAL geohex = ST_GEOHEX(location, 1)
+  | STATS
+      count = COUNT(geohex),
+      centroid = ST_CENTROID_AGG(location)
+        BY geohex
+  | WHERE count >= 10
+  | EVAL geohexString = TO_STRING(geohex)
+  | KEEP count, centroid, geohexString
+  | SORT count DESC, geohexString ASC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

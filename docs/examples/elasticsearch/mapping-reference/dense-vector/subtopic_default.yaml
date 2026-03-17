@@ -1,0 +1,10 @@
+id: default
+topic: dense-vector
+title: Default
+description: 
+stage: my_index
+
+setup:
+
+
+teardown:

@@ -1,0 +1,71 @@
+# Source: search-aggregations-bucket-frequent-item-sets-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-frequent-item-sets-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_async_search/<id>
+--- !result
+|
+  (...)
+  "aggregations" : {
+      "my_agg" : {
+        "buckets" : [ 
+          {
+            "key" : { 
+              "category.keyword" : [
+                "Women's Clothing",
+                "Women's Shoes"
+              ],
+              "geoip.city_name" : [
+                "New York"
+              ]
+            },
+            "doc_count" : 217, 
+            "support" : 0.04641711229946524 
+          },
+          {
+            "key" : {
+              "category.keyword" : [
+                "Women's Clothing",
+                "Women's Accessories"
+              ],
+              "geoip.city_name" : [
+                "New York"
+              ]
+            },
+            "doc_count" : 135,
+            "support" : 0.028877005347593583
+          },
+          {
+            "key" : {
+              "category.keyword" : [
+                "Men's Clothing",
+                "Men's Shoes"
+              ],
+              "geoip.city_name" : [
+                "Cairo"
+              ]
+            },
+            "doc_count" : 123,
+            "support" : 0.026310160427807486
+          }
+        ],
+      (...)
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

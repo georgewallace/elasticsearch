@@ -1,0 +1,26 @@
+# Source: query-languages/esql/kibana/docs/functions/present_over_time.md
+--- !metadata
+id: example-1
+language: esql
+topic: present_over_time
+subtopic: default
+example_order: 1
+--- !code
+|
+  TS k8s
+  | WHERE cluster == "prod" AND pod == "two"
+  | STATS events_received = MAX(PRESENT_OVER_TIME(events_received)) BY pod, time_bucket = TBUCKET(2 minute)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

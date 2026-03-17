@@ -1,0 +1,10 @@
+id: default
+topic: reindex-indices
+title: Default
+description: 
+stage: my_index_big
+
+setup:
+
+
+teardown:

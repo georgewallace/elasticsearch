@@ -1,0 +1,44 @@
+# Source: text-analysis/analysis-stop-analyzer.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-stop-analyzer
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /stop_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "english_stop": {
+            "type":       "stop",
+            "stopwords":  "_english_" 
+          }
+        },
+        "analyzer": {
+          "rebuilt_stop": {
+            "tokenizer": "lowercase",
+            "filter": [
+              "english_stop"          
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,68 @@
+# Source: enrich-processor/set-processor.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: set-processor
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _ingest/pipeline/set_os
+  {
+    "description": "sets the value of host.os.name from the field os",
+    "processors": [
+      {
+        "set": {
+          "field": "host.os.name",
+          "value": "{{{os}}}"
+        }
+      }
+    ]
+  }
+
+  POST _ingest/pipeline/set_os/_simulate
+  {
+    "docs": [
+      {
+        "_source": {
+          "os": "Ubuntu"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs" : [
+      {
+        "doc" : {
+          "_index" : "_index",
+          "_id" : "_id",
+          "_version" : "-3",
+          "_source" : {
+            "host" : {
+              "os" : {
+                "name" : "Ubuntu"
+              }
+            },
+            "os" : "Ubuntu"
+          },
+          "_ingest" : {
+            "timestamp" : "2019-03-11T21:54:37.909224Z"
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

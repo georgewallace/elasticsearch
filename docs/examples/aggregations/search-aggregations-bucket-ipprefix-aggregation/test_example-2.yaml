@@ -1,0 +1,66 @@
+# Source: search-aggregations-bucket-ipprefix-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-ipprefix-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /network-traffic/_search
+  {
+    "size": 0,
+    "aggs": {
+      "ipv4-subnets": {
+        "ip_prefix": {
+          "field": "ipv4",
+          "prefix_length": 24
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+
+    "aggregations": {
+      "ipv4-subnets": {
+        "buckets": [
+          {
+            "key": "192.168.1.0",
+            "is_ipv6": false,
+            "doc_count": 4,
+            "prefix_length": 24,
+            "netmask": "255.255.255.0"
+          },
+          {
+            "key": "192.168.2.0",
+            "is_ipv6": false,
+            "doc_count": 3,
+            "prefix_length": 24,
+            "netmask": "255.255.255.0"
+          },
+          {
+             "key": "192.168.3.0",
+             "is_ipv6": false,
+             "doc_count": 2,
+             "prefix_length": 24,
+             "netmask": "255.255.255.0"
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

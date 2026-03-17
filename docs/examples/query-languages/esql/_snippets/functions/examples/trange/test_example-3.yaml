@@ -1,0 +1,28 @@
+# Source: query-languages/esql/_snippets/functions/examples/trange.md
+--- !metadata
+id: example-3
+language: esql
+topic: trange
+subtopic: default
+example_order: 3
+--- !code
+|
+  FROM k8s
+  | WHERE TRANGE(to_datetime("2024-05-10T00:17:14Z"), to_datetime("2024-05-10T00:18:33Z"))
+  | SORT @timestamp
+  | KEEP @timestamp
+  | LIMIT 10
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

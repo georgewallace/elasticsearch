@@ -1,0 +1,64 @@
+# Source: elasticsearch/rest-apis/search-suggesters.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: search-suggesters
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST test/_search
+  {
+    "suggest": {
+      "text": "noble prize",
+      "simple_phrase": {
+        "phrase": {
+          "field": "title.trigram",
+          "size": 1,
+          "gram_size": 3,
+          "direct_generator": [ {
+            "field": "title.trigram",
+            "suggest_mode": "always"
+          } ],
+          "highlight": {
+            "pre_tag": "<em>",
+            "post_tag": "</em>"
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "_shards": ...
+    "hits": ...
+    "timed_out": false,
+    "took": 3,
+    "suggest": {
+      "simple_phrase" : [
+        {
+          "text" : "noble prize",
+          "offset" : 0,
+          "length" : 11,
+          "options" : [ {
+            "text" : "nobel prize",
+            "highlighted": "<em>nobel</em> prize",
+            "score" : 0.48614594
+          }]
+        }
+      ]
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

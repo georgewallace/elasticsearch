@@ -1,0 +1,30 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-23
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 23
+--- !code
+|
+  SELECT gender AS g, KURTOSIS(salary) AS k, SKEWNESS(salary) AS s FROM emp GROUP BY gender;
+
+         g       |        k         |         s
+  ---------------+------------------+-------------------
+  null           |2.2215791166941923|-0.03373126000214023
+  F              |1.7873117044424276|0.05504995122217512
+  M              |2.280646181070106 |0.44302407229580243
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

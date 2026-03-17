@@ -1,0 +1,74 @@
+# Source: scripting-languages/painless/painless-runtime-fields-context.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: painless-runtime-fields-context
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET seats/_search
+  {
+    "size": 0,
+    "fields": [
+      "time",
+      "day_of_week"
+      ],
+      "aggs": {
+        "day_of_week": {
+          "terms": {
+            "field": "day_of_week",
+            "size": 10
+          }
+        }
+      }
+  }
+--- !result
+|
+  {
+    ...
+    "hits" : {
+      "total" : {
+        "value" : 11,
+        "relation" : "eq"
+      },
+      "max_score" : null,
+      "hits" : [ ]
+    },
+    "aggregations" : {
+      "day_of_week" : {
+        "doc_count_error_upper_bound" : 0,
+        "sum_other_doc_count" : 0,
+        "buckets" : [
+          {
+            "key" : "TUESDAY",
+            "doc_count" : 5
+          },
+          {
+            "key" : "THURSDAY",
+            "doc_count" : 4
+          },
+          {
+            "key" : "MONDAY",
+            "doc_count" : 1
+          },
+          {
+            "key" : "SUNDAY",
+            "doc_count" : 1
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

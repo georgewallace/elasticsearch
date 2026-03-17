@@ -1,0 +1,65 @@
+# Source: enrich-processor/redact-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: redact-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline": {
+      "processors": [
+        {
+          "redact": {
+            "field": "message",
+            "patterns": [
+              "%{GITHUB_NAME:GITHUB_NAME}"
+            ],
+            "pattern_definitions": {
+              "GITHUB_NAME": "@%{USERNAME}"
+            }
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "message": "@elastic-data-management the PR is ready for review"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs": [
+      {
+        "doc": {
+          "_index": "_index",
+          "_id": "_id",
+          "_version": "-3",
+          "_source": {
+            "message": "<GITHUB_NAME> the PR is ready for review"
+          },
+          "_ingest": {
+            "timestamp": "2023-02-01T16:53:14.560005377Z"
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

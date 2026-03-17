@@ -1,0 +1,40 @@
+# Source: elasticsearch/mapping-reference/copy-to.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: copy-to
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT good_example_index
+  {
+    "mappings": {
+      "properties": {
+        "field_1": {
+          "type": "text",
+          "copy_to": ["field_2", "field_3"]
+        },
+        "field_2": {
+          "type": "text"
+        },
+        "field_3": {
+          "type": "text"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

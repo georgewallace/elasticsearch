@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-2
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 2
+--- !code
+|
+  SELECT author, name FROM library WHERE MATCH(author, 'frank');
+
+      author     |       name
+  ---------------+-------------------
+  Frank Herbert  |Dune
+  Frank Herbert  |Dune Messiah
+  Frank Herbert  |Children of Dune
+  Frank Herbert  |God Emperor of Dune
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

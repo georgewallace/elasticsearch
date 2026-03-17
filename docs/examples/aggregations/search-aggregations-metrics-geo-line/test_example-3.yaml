@@ -1,0 +1,39 @@
+# Source: search-aggregations-metrics-geo-line.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: search-aggregations-metrics-geo-line
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST /tour/_search?filter_path=aggregations
+  {
+    "aggregations": {
+      "path": {
+        "terms": {"field": "city"},
+        "aggregations": {
+          "museum_tour": {
+            "geo_line": {
+              "point": {"field": "location"},
+              "sort": {"field": "@timestamp"}
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

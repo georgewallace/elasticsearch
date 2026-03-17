@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-limitations.md
+--- !metadata
+id: example-6
+language: sql
+topic: sql-limitations
+subtopic: default
+example_order: 6
+--- !code
+|
+  column         |     type      |    mapping
+  ----------------------+---------------+-------------
+  nested_A              |STRUCT         |NESTED
+  nested_A.nested_X     |STRUCT         |NESTED
+  nested_A.nested_X.text|VARCHAR        |KEYWORD
+  nested_A.text         |VARCHAR        |KEYWORD
+  nested_B              |STRUCT         |NESTED
+  nested_B.text         |VARCHAR        |KEYWORD
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

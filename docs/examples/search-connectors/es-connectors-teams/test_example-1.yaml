@@ -1,0 +1,29 @@
+# Source: search-connectors/es-connectors-teams.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: es-connectors-teams
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT _connector/my-microsoft_teams-connector
+  {
+    "index_name": "my-elasticsearch-index",
+    "name": "Content synced from Microsoft Teams",
+    "service_type": "microsoft_teams"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

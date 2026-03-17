@@ -1,0 +1,30 @@
+# Source: elasticsearch/mapping-reference/shape.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: shape
+subtopic: default
+example_order: 4
+--- !code
+|
+  POST /example/_doc
+  {
+    "location" : {
+      "type" : "linestring",
+      "coordinates" : [[-377.03653, 389.897676], [-377.009051, 389.889939]]
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

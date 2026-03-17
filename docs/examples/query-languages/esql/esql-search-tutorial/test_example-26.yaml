@@ -1,0 +1,37 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-26
+language: esql
+topic: esql-search-tutorial
+subtopic: default
+example_order: 26
+--- !code
+|
+  FROM cooking_blog METADATA _id, _index, _score
+  | FORK (
+      WHERE title:"vegetarian curry" 
+      | SORT _score DESC
+      | LIMIT 5
+  ) (
+      WHERE semantic_description:"easy vegetarian curry recipes" 
+      | SORT _score DESC
+      | LIMIT 5
+  )
+  | FUSE LINEAR WITH { "weights": { "fork1": 0.7, "fork2": 0.3 } } 
+  | KEEP title, description, rating, _score
+  | SORT _score DESC
+  | LIMIT 5
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

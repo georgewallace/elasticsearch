@@ -1,0 +1,42 @@
+# Source: elasticsearch/mapping-reference/mapping-id-field.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: mapping-id-field
+subtopic: default
+example_order: 1
+--- !code
+|
+  # Example documents
+  PUT my-index-000001/_doc/1
+  {
+    "text": "Document with ID 1"
+  }
+
+  PUT my-index-000001/_doc/2?refresh=true
+  {
+    "text": "Document with ID 2"
+  }
+
+  GET my-index-000001/_search
+  {
+    "query": {
+      "terms": {
+        "_id": [ "1", "2" ] 
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

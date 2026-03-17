@@ -1,0 +1,10 @@
+id: default
+topic: eql
+title: Default
+description: 
+stage: sec_logs
+
+setup:
+
+
+teardown:

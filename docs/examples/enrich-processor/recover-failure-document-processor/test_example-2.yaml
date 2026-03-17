@@ -1,0 +1,70 @@
+# Source: enrich-processor/recover-failure-document-processor.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: recover-failure-document-processor
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+      "pipeline": {
+          "processors": [
+              {
+                  "recover_failure_document": {}
+              }
+          ]
+      },
+      "docs": [
+          {
+              "_index": ".fs-my-datastream-ingest-2025.05.09-000001",
+              "_id": "HnTJs5YBwrYNjPmaFcri",
+              "_score": 1,
+              "_source": {
+                  "@timestamp": "2025-05-09T06:41:24.775Z",
+                  "error": {
+                      "type": "illegal_argument_exception",
+                      "message": "field [counter] not present as part of path [counter]",
+                      "stack_trace": "j.l.IllegalArgumentException: field [counter] not present as part of path [counter] at o.e.i.IngestDocument.getFieldValue(IngestDocument.java: 202 at o.e.i.c.SetProcessor.execute(SetProcessor.java: 86) 14 more",
+                      "pipeline_trace": [
+                          "complicated-processor"
+                      ],
+                      "pipeline": "complicated-processor",
+                      "processor_type": "set",
+                      "processor_tag": "copy to new counter again"
+                  }
+              }
+          }
+      ]
+  }
+--- !result
+|
+  {
+      "docs": [
+          {
+              "error": {
+                  "root_cause": [
+                      {
+                          "type": "illegal_argument_exception",
+                          "reason": "field [document] not present as part of path [document]"
+                      }
+                  ],
+                  "type": "illegal_argument_exception",
+                  "reason": "field [document] not present as part of path [document]"
+              }
+          }
+      ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

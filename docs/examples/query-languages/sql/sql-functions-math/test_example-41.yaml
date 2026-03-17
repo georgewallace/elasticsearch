@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-math.md
+--- !metadata
+id: example-41
+language: sql
+topic: sql-functions-math
+subtopic: default
+example_order: 41
+--- !code
+|
+  SELECT DEGREES(ATAN(TAN(RADIANS(90))));
+
+  DEGREES(ATAN(TAN(RADIANS(90))))
+  -------------------------------
+  90.0
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

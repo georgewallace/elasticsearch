@@ -1,0 +1,50 @@
+# Source: elasticsearch/mapping-reference/mapping-doc-count-field.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: mapping-doc-count-field
+subtopic: default
+example_order: 3
+--- !code
+|
+  GET /_search
+  {
+      "aggs" : {
+          "histogram_titles" : {
+              "terms" : { "field" : "my_text" }
+          }
+      }
+  }
+--- !result
+|
+  {
+      ...
+      "aggregations" : {
+          "histogram_titles" : {
+              "doc_count_error_upper_bound": 0,
+              "sum_other_doc_count": 0,
+              "buckets" : [
+                  {
+                      "key" : "histogram_2",
+                      "doc_count" : 62
+                  },
+                  {
+                      "key" : "histogram_1",
+                      "doc_count" : 45
+                  }
+              ]
+          }
+      }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

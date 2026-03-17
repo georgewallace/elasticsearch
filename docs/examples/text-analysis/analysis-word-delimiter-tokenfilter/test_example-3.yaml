@@ -1,0 +1,45 @@
+# Source: text-analysis/analysis-word-delimiter-tokenfilter.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-word-delimiter-tokenfilter
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "keyword",
+            "filter": [ "my_custom_word_delimiter_filter" ]
+          }
+        },
+        "filter": {
+          "my_custom_word_delimiter_filter": {
+            "type": "word_delimiter",
+            "type_table": [ "- => ALPHA" ],
+            "split_on_case_change": false,
+            "split_on_numerics": false,
+            "stem_english_possessive": true
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

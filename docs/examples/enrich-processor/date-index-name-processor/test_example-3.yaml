@@ -1,0 +1,63 @@
+# Source: enrich-processor/date-index-name-processor.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: date-index-name-processor
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST _ingest/pipeline/_simulate
+  {
+    "pipeline" :
+    {
+      "description": "monthly date-time index naming",
+      "processors" : [
+        {
+          "date_index_name" : {
+            "field" : "date1",
+            "index_name_prefix" : "my-index-",
+            "date_rounding" : "M"
+          }
+        }
+      ]
+    },
+    "docs": [
+      {
+        "_source": {
+          "date1": "2016-04-25T12:02:01.789Z"
+        }
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "docs" : [
+      {
+        "doc" : {
+          "_id" : "_id",
+          "_index" : "<my-index-{2016-04-25||/M{yyyy-MM-dd|UTC}}>",
+          "_version" : "-3",
+          "_source" : {
+            "date1" : "2016-04-25T12:02:01.789Z"
+          },
+          "_ingest" : {
+            "timestamp" : "2016-11-08T19:43:03.850+0000"
+          }
+        }
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

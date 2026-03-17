@@ -1,0 +1,56 @@
+# Source: query-languages/query-dsl/query-dsl-shape-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-shape-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /shapes
+  {
+    "mappings": {
+      "properties": {
+        "geometry": {
+          "type": "shape"
+        }
+      }
+    }
+  }
+
+  PUT /shapes/_doc/footprint
+  {
+    "geometry": {
+      "type": "envelope",
+      "coordinates": [ [ 1355.0, 5355.0 ], [ 1400.0, 5200.0 ] ]
+    }
+  }
+
+  GET /example/_search
+  {
+    "query": {
+      "shape": {
+        "geometry": {
+          "indexed_shape": {
+            "index": "shapes",
+            "id": "footprint",
+            "path": "geometry"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

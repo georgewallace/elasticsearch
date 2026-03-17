@@ -1,0 +1,42 @@
+# Source: elasticsearch/mapping-reference/binary.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: binary
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "blob": {
+          "type": "binary"
+        }
+      }
+    }
+  }
+
+  PUT my-index-000001/_doc/1
+  {
+    "name": "Some binary blob",
+    "blob": "U29tZSBiaW5hcnkgYmxvYg==" 
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,27 @@
+# Source: query-languages/esql/_snippets/commands/layout/fuse.md
+--- !metadata
+id: example-4
+language: esql
+topic: fuse
+subtopic: default
+example_order: 4
+--- !code
+|
+  FROM books METADATA _id, _index, _score 
+  | FORK (WHERE title:"Shakespeare" | SORT _score DESC)  # Fork 1: Lexical search on title
+         (WHERE semantic_title:"Shakespeare" | SORT _score DESC)  # Fork 2: Semantic search on semantic_title
+  | FUSE LINEAR  # Merge results using linear combination of scores (equal weights by default)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

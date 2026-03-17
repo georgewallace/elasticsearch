@@ -1,0 +1,114 @@
+# Source: elasticsearch/rest-apis/query-api-keys.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: query-api-keys
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /_security/_query/api_key
+  {
+    "size": 0,
+    "query": {
+      "bool": {
+        "must": {
+          "term": {
+            "invalidated": false  
+          }
+        },
+        "should": [  
+          {
+            "range": { "expiration": { "gte": "now" } }
+          },
+          {
+            "bool": { "must_not": { "exists": { "field": "expiration" } } }
+          }
+        ],
+        "minimum_should_match": 1
+      }
+    },
+    "aggs": {
+      "keys_by_username": {
+        "composite": {
+          "sources": [ { "usernames": { "terms": { "field": "username" } } } ]  
+        },
+        "aggs": {
+          "expires_soon": {
+            "filter": {
+              "range": { "expiration": { "lte": "now+30d/d" } }  
+            },
+            "aggs": {
+              "key_names": { "terms": { "field": "name" } }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "total" : 4,  
+    "count" : 0,
+    "api_keys" : [ ],
+    "aggregations" : {
+      "keys_by_username" : {
+        "after_key" : {
+          "usernames" : "king"
+        },
+        "buckets" : [
+          {
+            "key" : {
+              "usernames" : "june"
+            },
+            "doc_count" : 2,  
+            "expires_soon" : {
+              "doc_count" : 1,
+              "key_names" : {
+                "doc_count_error_upper_bound" : 0,
+                "sum_other_doc_count" : 0,
+                "buckets" : [
+                  {
+                    "key" : "june-key-10",
+                    "doc_count" : 1
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "key" : {
+              "usernames" : "king"
+            },
+            "doc_count" : 2,
+            "expires_soon" : {
+              "doc_count" : 1,  
+              "key_names" : {
+                "doc_count_error_upper_bound" : 0,
+                "sum_other_doc_count" : 0,
+                "buckets" : [  
+                  {
+                    "key" : "king-key-10",
+                    "doc_count" : 1
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

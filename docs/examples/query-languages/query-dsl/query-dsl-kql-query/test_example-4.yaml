@@ -1,0 +1,32 @@
+# Source: query-languages/query-dsl/query-dsl-kql-query.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: query-dsl-kql-query
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "kql": {
+        "query": "@timestamp >= ""2025-10-01"" AND @timestamp < ""2025-10-02""",
+        "time_zone": "Europe/Paris"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

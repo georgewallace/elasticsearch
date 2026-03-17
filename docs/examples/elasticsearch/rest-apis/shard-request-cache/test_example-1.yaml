@@ -1,0 +1,24 @@
+# Source: elasticsearch/rest-apis/shard-request-cache.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: shard-request-cache
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /my-index-000001,my-index-000002/_cache/clear?request=true
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

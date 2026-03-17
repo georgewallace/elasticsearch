@@ -1,0 +1,40 @@
+# Source: enrich-processor/date-index-name-processor.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: date-index-name-processor
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /my-index/_doc/1?pipeline=monthlyindex
+  {
+    "date1" : "2016-04-25T12:02:01.789Z"
+  }
+--- !result
+|
+  {
+    "_index" : "my-index-2016-04-01",
+    "_id" : "1",
+    "_version" : 1,
+    "result" : "created",
+    "_shards" : {
+      "total" : 2,
+      "successful" : 1,
+      "failed" : 0
+    },
+    "_seq_no" : 55,
+    "_primary_term" : 1
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

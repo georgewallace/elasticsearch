@@ -1,0 +1,55 @@
+# Source: elasticsearch/rest-apis/retrievers/retrievers-examples.md
+--- !metadata
+id: example-19
+language: elastic_console
+topic: retrievers-examples
+subtopic: default
+example_order: 19
+--- !code
+|
+  GET retrievers_example/_search
+  {
+      "retriever": {
+          "text_similarity_reranker": {
+              "retriever": {
+                  "text_similarity_reranker": {
+                      "retriever": {
+                          "knn": {
+                              "field": "vector",
+                              "query_vector": [
+                                  0.23,
+                                  0.67,
+                                  0.89
+                              ],
+                              "k": 3,
+                              "num_candidates": 5
+                          }
+                      },
+                      "rank_window_size": 100,
+                      "field": "text",
+                      "inference_id": "my-rerank-model",
+                      "inference_text": "What are the state of the art applications of AI in information retrieval?"
+                  }
+              },
+              "rank_window_size": 10,
+              "field": "text",
+              "inference_id": "my-other-more-expensive-rerank-model",
+              "inference_text": "Applications of Large Language Models in technology and their impact on user satisfaction"
+          }
+      },
+      "_source": false
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

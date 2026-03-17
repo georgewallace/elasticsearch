@@ -1,0 +1,9 @@
+id: default
+topic: analysis-icu-normalization-charfilter
+title: Default
+description: 
+
+setup:
+
+
+teardown:

@@ -1,0 +1,25 @@
+# Source: scripting-languages/painless/using-datetime-in-painless.md
+--- !metadata
+id: example-2
+language: painless
+topic: using-datetime-in-painless
+subtopic: default
+example_order: 2
+--- !code
+|
+  String datetime = '1983-10-13T22:15:30Z';
+  ZonedDateTime zdt = ZonedDateTime.parse(datetime);
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,36 @@
+# Source: text-analysis/analysis-stop-tokenfilter.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-stop-tokenfilter
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /my-index-000001
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "my_analyzer": {
+            "tokenizer": "whitespace",
+            "filter": [ "stop" ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

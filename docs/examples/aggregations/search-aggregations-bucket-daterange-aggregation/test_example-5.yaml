@@ -1,0 +1,63 @@
+# Source: search-aggregations-bucket-daterange-aggregation.md
+--- !metadata
+id: example-5
+language: elastic_console
+topic: search-aggregations-bucket-daterange-aggregation
+subtopic: default
+example_order: 5
+--- !code
+|
+  POST /sales/_search?size=0
+  {
+    "aggs": {
+      "range": {
+        "date_range": {
+          "field": "date",
+          "format": "MM-yyy",
+          "ranges": [
+            { "from": "01-2015", "to": "03-2015", "key": "quarter_01" },
+            { "from": "03-2015", "to": "06-2015", "key": "quarter_02" }
+          ],
+          "keyed": true
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "range": {
+        "buckets": {
+          "quarter_01": {
+            "from": 1.4200704E12,
+            "from_as_string": "01-2015",
+            "to": 1.425168E12,
+            "to_as_string": "03-2015",
+            "doc_count": 5
+          },
+          "quarter_02": {
+            "from": 1.425168E12,
+            "from_as_string": "03-2015",
+            "to": 1.4331168E12,
+            "to_as_string": "06-2015",
+            "doc_count": 2
+          }
+        }
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

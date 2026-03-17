@@ -1,0 +1,10 @@
+id: default
+topic: update-by-query-api
+title: Default
+description: 
+stage: my_index
+
+setup:
+
+
+teardown:

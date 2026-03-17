@@ -1,0 +1,29 @@
+# Source: text-analysis/analysis-word-delimiter-graph-tokenfilter.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-word-delimiter-graph-tokenfilter
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_analyze
+  {
+    "tokenizer": "keyword",
+    "filter": [ "word_delimiter_graph" ],
+    "text": "Neil's-Super-Duper-XL500--42+AutoCoder"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

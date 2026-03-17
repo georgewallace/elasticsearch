@@ -1,0 +1,43 @@
+# Source: search-aggregations-bucket-composite-aggregation.md
+--- !metadata
+id: example-16
+language: elastic_console
+topic: search-aggregations-bucket-composite-aggregation
+subtopic: default
+example_order: 16
+--- !code
+|
+  PUT my-index-000001
+  {
+    "settings": {
+      "index": {
+        "sort.field": [ "username", "timestamp" ],   
+        "sort.order": [ "asc", "desc" ]              
+      }
+    },
+    "mappings": {
+      "properties": {
+        "username": {
+          "type": "keyword",
+          "doc_values": true
+        },
+        "timestamp": {
+          "type": "date"
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

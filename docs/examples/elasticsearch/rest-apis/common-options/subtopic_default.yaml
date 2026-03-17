@@ -1,0 +1,10 @@
+id: default
+topic: common-options
+title: Default
+description: 
+stage: my_index
+
+setup:
+
+
+teardown:

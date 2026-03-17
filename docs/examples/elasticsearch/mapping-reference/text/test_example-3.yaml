@@ -1,0 +1,63 @@
+# Source: elasticsearch/mapping-reference/text.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: text
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "text": {
+          "type": "text",
+          "store": true,
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+  PUT idx/_doc/1
+  {
+    "text": [
+      "the quick brown fox",
+      "the quick brown fox",
+      "jumped over the lazy dog"
+    ]
+  }
+--- !result
+|
+  {
+    "text": [
+      "the quick brown fox",
+      "the quick brown fox",
+      "jumped over the lazy dog"
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

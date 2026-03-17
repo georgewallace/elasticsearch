@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-functions-datetime.md
+--- !metadata
+id: example-45
+language: sql
+topic: sql-functions-datetime
+subtopic: default
+example_order: 45
+--- !code
+|
+  {
+      "query" : "SELECT DATE_PARSE('07/04/2020', 'dd/MM/yyyy') AS \"date\"",
+      "time_zone" : "Europe/Athens"
+  }
+
+     date
+  ------------
+  2020-04-07T00:00:00.000+03:00
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

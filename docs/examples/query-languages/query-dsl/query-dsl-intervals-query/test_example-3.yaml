@@ -1,0 +1,40 @@
+# Source: query-languages/query-dsl/query-dsl-intervals-query.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: query-dsl-intervals-query
+subtopic: default
+example_order: 3
+--- !code
+|
+  POST _search
+  {
+    "query": {
+      "intervals" : {
+        "my_text" : {
+          "match" : {
+            "query" : "hot porridge",
+            "filter" : {
+              "script" : {
+                "source" : "interval.start > 10 && interval.end < 20 && interval.gaps == 0"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

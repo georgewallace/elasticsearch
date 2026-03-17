@@ -1,0 +1,34 @@
+# Source: query-languages/query-dsl/query-dsl-span-first-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-span-first-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "span_first": {
+        "match": {
+          "span_term": { "user.id": "kimchy" }
+        },
+        "end": 3
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

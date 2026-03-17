@@ -1,0 +1,42 @@
+# Source: query-languages/eql.md
+--- !metadata
+id: example-27
+language: elastic_console
+topic: eql
+subtopic: default
+example_order: 27
+--- !code
+|
+  PUT /_cluster/settings
+  {
+    "persistent": {
+      "cluster": {
+        "remote": {
+          "cluster_one": {
+            "seeds": [
+              "127.0.0.1:9300"
+            ]
+          },
+          "cluster_two": {
+            "seeds": [
+              "127.0.0.1:9301"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,29 @@
+# Source: query-languages/esql/_snippets/commands/examples/fork.csv-spec/simpleForkWithStats.md
+--- !metadata
+id: example-1
+language: esql
+topic: simpleForkWithStats
+subtopic: default
+example_order: 1
+--- !code
+|
+  FROM books METADATA _score
+  | WHERE author:"Faulkner"
+  | EVAL score = round(_score, 2)
+  | FORK (SORT score DESC, author | LIMIT 5 | KEEP author, score)
+         (STATS total = COUNT(*))
+  | SORT _fork, score DESC, author
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

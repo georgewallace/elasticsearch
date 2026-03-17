@@ -1,0 +1,25 @@
+# Source: query-languages/esql/kibana/docs/functions/to_radians.md
+--- !metadata
+id: example-1
+language: esql
+topic: to_radians
+subtopic: default
+example_order: 1
+--- !code
+|
+  ROW deg = [90.0, 180.0, 270.0]
+  | EVAL rad = TO_RADIANS(deg)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

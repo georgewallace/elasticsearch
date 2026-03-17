@@ -1,0 +1,36 @@
+# Source: query-languages/query-dsl/query-dsl-geo-shape-query.md
+--- !metadata
+id: example-6
+language: elastic_console
+topic: query-dsl-geo-shape-query
+subtopic: default
+example_order: 6
+--- !code
+|
+  PUT /test/_doc/1
+  {
+    "location": [
+      {
+        "coordinates": [46.25,20.14],
+        "type": "point"
+      },
+      {
+        "coordinates": [47.49,19.04],
+        "type": "point"
+      }
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,33 @@
+# Source: query-languages/query-dsl/query-dsl-simple-query-string-query.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: query-dsl-simple-query-string-query
+subtopic: default
+example_order: 1
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "simple_query_string" : {
+          "query": "\"fried eggs\" +(eggplant | potato) -frittata",
+          "fields": ["title^5", "body"],
+          "default_operator": "and"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,42 @@
+# Source: elasticsearch/rest-apis/highlighting-examples.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: highlighting-examples
+subtopic: default
+example_order: 12
+--- !code
+|
+  PUT index2
+  {
+    "mappings": {
+      "properties": {
+        "comment": {
+          "type": "text",
+          "analyzer": "standard",
+          "term_vector": "with_positions_offsets",
+          "fields": {
+            "english": {
+              "type": "text",
+              "analyzer": "english",
+              "term_vector": "with_positions_offsets"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

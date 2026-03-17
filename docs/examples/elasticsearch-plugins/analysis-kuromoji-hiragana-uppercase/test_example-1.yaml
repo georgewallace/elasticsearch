@@ -1,0 +1,71 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-hiragana-uppercase.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: analysis-kuromoji-hiragana-uppercase
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "analyzer": {
+            "my_analyzer": {
+              "tokenizer": "kuromoji_tokenizer",
+              "filter": [
+                "hiragana_uppercase"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "ちょっとまって"
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": "ちよつと",
+        "start_offset": 0,
+        "end_offset": 4,
+        "type": "word",
+        "position": 0
+      },
+      {
+        "token": "まつ",
+        "start_offset": 4,
+        "end_offset": 6,
+        "type": "word",
+        "position": 1
+      },
+      {
+        "token": "て",
+        "start_offset": 6,
+        "end_offset": 7,
+        "type": "word",
+        "position": 2
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

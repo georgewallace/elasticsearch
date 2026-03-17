@@ -1,0 +1,68 @@
+# Source: elasticsearch-plugins/analysis-kuromoji-tokenizer.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-kuromoji-tokenizer
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT kuromoji_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "tokenizer": {
+            "kuromoji_user_dict": {
+              "type": "kuromoji_tokenizer",
+              "mode": "extended",
+              "discard_punctuation": "false",
+              "user_dictionary": "userdict_ja.txt",
+              "lenient": "true"
+            }
+          },
+          "analyzer": {
+            "my_analyzer": {
+              "type": "custom",
+              "tokenizer": "kuromoji_user_dict"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  GET kuromoji_sample/_analyze
+  {
+    "analyzer": "my_analyzer",
+    "text": "東京スカイツリー"
+  }
+--- !result
+|
+  {
+    "tokens" : [ {
+      "token" : "東京",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "word",
+      "position" : 0
+    }, {
+      "token" : "スカイツリー",
+      "start_offset" : 2,
+      "end_offset" : 8,
+      "type" : "word",
+      "position" : 1
+    } ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,81 @@
+# Source: search-aggregations-bucket-significantterms-aggregation.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: search-aggregations-bucket-significantterms-aggregation
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_search
+  {
+    "aggregations": {
+      "forces": {
+        "terms": { "field": "force" },
+        "aggregations": {
+          "significant_crime_types": {
+            "significant_terms": { "field": "crime_type" }
+          }
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+   ...
+   "aggregations": {
+      "forces": {
+          "doc_count_error_upper_bound": 1375,
+          "sum_other_doc_count": 7879845,
+          "buckets": [
+              {
+                  "key": "Metropolitan Police Service",
+                  "doc_count": 894038,
+                  "significant_crime_types": {
+                      "doc_count": 894038,
+                      "bg_count": 5064554,
+                      "buckets": [
+                          {
+                              "key": "Robbery",
+                              "doc_count": 27617,
+                              "score": 0.0599,
+                              "bg_count": 53182
+                          }
+                          ...
+                      ]
+                  }
+              },
+              {
+                  "key": "British Transport Police",
+                  "doc_count": 47347,
+                  "significant_crime_types": {
+                      "doc_count": 47347,
+                      "bg_count": 5064554,
+                      "buckets": [
+                          {
+                              "key": "Bicycle theft",
+                              "doc_count": 3640,
+                              "score": 0.371,
+                              "bg_count": 66799
+                          }
+                          ...
+                      ]
+                  }
+              }
+          ]
+      }
+    }
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

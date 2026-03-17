@@ -1,0 +1,31 @@
+# Source: query-languages/sql/sql-syntax-select.md
+--- !metadata
+id: example-27
+language: sql
+topic: sql-syntax-select
+subtopic: default
+example_order: 27
+--- !code
+|
+  SELECT languages AS l, COUNT(*) AS c FROM emp GROUP BY l HAVING c BETWEEN 15 AND 20;
+
+         l       |       c
+  ---------------+---------------
+  1              |15
+  2              |19
+  3              |17
+  4              |18
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

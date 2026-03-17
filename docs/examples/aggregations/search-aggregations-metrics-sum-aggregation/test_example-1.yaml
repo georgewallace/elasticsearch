@@ -1,0 +1,45 @@
+# Source: search-aggregations-metrics-sum-aggregation.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: search-aggregations-metrics-sum-aggregation
+subtopic: default
+example_order: 1
+--- !code
+|
+  POST /sales/_search?size=0
+  {
+    "query": {
+      "constant_score": {
+        "filter": {
+          "match": { "type": "hat" }
+        }
+      }
+    },
+    "aggs": {
+      "hat_prices": { "sum": { "field": "price" } }
+    }
+  }
+--- !result
+|
+  {
+    ...
+    "aggregations": {
+      "hat_prices": {
+        "value": 450.0
+      }
+    }
+  }
+--- !test
+stage: sales
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

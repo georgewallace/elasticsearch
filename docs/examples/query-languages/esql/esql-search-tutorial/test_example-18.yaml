@@ -1,0 +1,28 @@
+# Source: query-languages/esql/esql-search-tutorial.md
+--- !metadata
+id: example-18
+language: esql
+topic: esql-search-tutorial
+subtopic: default
+example_order: 18
+--- !code
+|
+  FROM cooking_blog
+  | WHERE rating >= 4.5  # Only highly-rated recipes
+  | KEEP title, author, rating, tags
+  | SORT rating DESC
+  | LIMIT 1000
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

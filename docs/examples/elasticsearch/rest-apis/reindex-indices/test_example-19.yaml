@@ -1,0 +1,25 @@
+# Source: elasticsearch/rest-apis/reindex-indices.md
+--- !metadata
+id: example-19
+language: elastic_console
+topic: reindex-indices
+subtopic: default
+example_order: 19
+--- !code
+|
+  GET metricbeat-2016.05.30-1/_doc/1
+  GET metricbeat-2016.05.31-1/_doc/1
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

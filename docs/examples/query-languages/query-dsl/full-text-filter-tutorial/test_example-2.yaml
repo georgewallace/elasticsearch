@@ -1,0 +1,77 @@
+# Source: query-languages/query-dsl/full-text-filter-tutorial.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: full-text-filter-tutorial
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT /cooking_blog/_mapping
+  {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "standard", 
+        "fields": { 
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256 
+          }
+        }
+      },
+      "description": { 
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "author": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "date": {
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      "category": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "tags": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "rating": {
+        "type": "float"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

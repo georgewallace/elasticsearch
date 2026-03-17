@@ -1,0 +1,37 @@
+# Source: query-languages/query-dsl/query-dsl-has-child-query.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: query-dsl-has-child-query
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "has_child": {
+        "type": "child",
+        "query": {
+          "match_all": {}
+        },
+        "max_children": 10,
+        "min_children": 2,
+        "score_mode": "min"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

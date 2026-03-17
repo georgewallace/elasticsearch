@@ -1,0 +1,58 @@
+# Source: elasticsearch/mapping-reference/range.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: range
+subtopic: default
+example_order: 7
+--- !code
+|
+  PUT idx
+  {
+    "settings": {
+      "index": {
+        "mapping": {
+          "source": {
+            "mode": "synthetic"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "my_range": { "type": "ip_range" }
+      }
+    }
+  }
+
+  PUT idx/_doc/1
+  {
+    "my_range": [
+      "10.0.0.0/24",
+      {
+        "gte": "10.0.0.0",
+        "lte": "10.0.0.255"
+      }
+    ]
+  }
+--- !result
+|
+  {
+    "my_range": {
+        "gte": "10.0.0.0",
+        "lte": "10.0.0.255"
+      }
+
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,42 @@
+# Source: scripting-languages/painless/painless-debugging.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: painless-debugging
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /hockey/_update/1
+  {
+    "script": "Debug.explain(ctx._source)"
+  }
+--- !result
+|
+  {
+    "error" : {
+      "root_cause": ...,
+      "type": "illegal_argument_exception",
+      "reason": "failed to execute script",
+      "caused_by": {
+        "type": "script_exception",
+        "to_string": "{gp=[26, 82, 1], last=gaudreau, assists=[17, 46, 0], first=johnny, goals=[9, 27, 1]}",
+        "painless_class": "java.util.LinkedHashMap",
+        "java_class": "java.util.LinkedHashMap",
+        ...
+      }
+    },
+    "status": 400
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

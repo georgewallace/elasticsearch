@@ -1,0 +1,45 @@
+# Source: elasticsearch-plugins/analysis-nori-tokenizer.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-nori-tokenizer
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT nori_sample
+  {
+    "settings": {
+      "index": {
+        "analysis": {
+          "tokenizer": {
+            "nori_user_dict": {
+              "type": "nori_tokenizer",
+              "decompound_mode": "mixed",
+              "user_dictionary_rules": ["c++", "C쁠쁠", "세종", "세종시 세종 시"]
+            }
+          },
+          "analyzer": {
+            "my_analyzer": {
+              "type": "custom",
+              "tokenizer": "nori_user_dict"
+            }
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

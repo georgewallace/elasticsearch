@@ -1,0 +1,9 @@
+id: default
+topic: search-aggregations-metrics-scripted-metric-aggregation
+title: Default
+description: 
+
+setup:
+
+
+teardown:

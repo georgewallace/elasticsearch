@@ -1,0 +1,39 @@
+# Source: pipeline.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: pipeline
+subtopic: subtopic-1
+example_order: 4
+--- !code
+|
+  POST /_search
+  {
+    "aggs": {
+      "my_date_histo": {
+        "date_histogram": {
+          "field": "timestamp",
+          "calendar_interval": "day"
+        },
+        "aggs": {
+          "the_deriv": {
+            "derivative": { "buckets_path": "_count" } 
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

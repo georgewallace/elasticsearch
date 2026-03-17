@@ -1,0 +1,10 @@
+id: default
+topic: painless-min-should-match-context
+title: Default
+description: 
+stage: seats
+
+setup:
+
+
+teardown:

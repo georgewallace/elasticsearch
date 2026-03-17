@@ -1,0 +1,30 @@
+# Source: query-languages/query-dsl/query-dsl-sparse-vector-query.md
+--- !metadata
+id: example-7
+language: elastic_console
+topic: query-dsl-sparse-vector-query
+subtopic: default
+example_order: 7
+--- !code
+|
+  POST /my-semantic-sparse-index/_bulk
+  { "index": { "_index": "my-semantic-sparse-index", "_id": "1" } }
+  { "title": "Best surfing spots", "content_semantic": "Hawaii has world-class surfing with warm water and consistent swells." }
+  { "index": { "_index": "my-semantic-sparse-index", "_id": "2" } }
+  { "title": "City breaks", "content_semantic": "Paris offers museums, cafés, and beautiful architecture." }
+  { "index": { "_index": "my-semantic-sparse-index", "_id": "3" } }
+  { "title": "Learning to surf", "content_semantic": "Beginners often start on longboards at gentle beach breaks." }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

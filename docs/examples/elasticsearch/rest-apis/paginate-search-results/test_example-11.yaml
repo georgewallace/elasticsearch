@@ -1,0 +1,29 @@
+# Source: elasticsearch/rest-apis/paginate-search-results.md
+--- !metadata
+id: example-11
+language: elastic_console
+topic: paginate-search-results
+subtopic: default
+example_order: 11
+--- !code
+|
+  GET /_search?scroll=1m
+  {
+    "sort": [
+      "_doc"
+    ]
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

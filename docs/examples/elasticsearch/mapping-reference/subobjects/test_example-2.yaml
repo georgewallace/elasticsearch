@@ -1,0 +1,36 @@
+# Source: elasticsearch/mapping-reference/subobjects.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: subobjects
+subtopic: default
+example_order: 2
+--- !code
+|
+  PUT my-index-000001
+  {
+    "mappings": {
+      "subobjects": false 
+    }
+  }
+
+  PUT my-index-000001/_doc/metric_1
+  {
+    "time" : "100ms", 
+    "time.min" : "10ms",
+    "time.max" : "900ms"
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

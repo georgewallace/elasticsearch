@@ -1,0 +1,67 @@
+# Source: text-analysis/analysis-multiplexer-tokenfilter.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: analysis-multiplexer-tokenfilter
+subtopic: default
+example_order: 2
+--- !code
+|
+  POST /multiplexer_example/_analyze
+  {
+    "analyzer" : "my_analyzer",
+    "text" : "Going HOME"
+  }
+--- !result
+|
+  {
+    "tokens": [
+      {
+        "token": "Going",
+        "start_offset": 0,
+        "end_offset": 5,
+        "type": "<ALPHANUM>",
+        "position": 0
+      },
+      {
+        "token": "going",
+        "start_offset": 0,
+        "end_offset": 5,
+        "type": "<ALPHANUM>",
+        "position": 0
+      },
+      {
+        "token": "go",
+        "start_offset": 0,
+        "end_offset": 5,
+        "type": "<ALPHANUM>",
+        "position": 0
+      },
+      {
+        "token": "HOME",
+        "start_offset": 6,
+        "end_offset": 10,
+        "type": "<ALPHANUM>",
+        "position": 1
+      },
+      {
+        "token": "home",          
+        "start_offset": 6,
+        "end_offset": 10,
+        "type": "<ALPHANUM>",
+        "position": 1
+      }
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

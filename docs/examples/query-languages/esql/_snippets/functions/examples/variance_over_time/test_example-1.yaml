@@ -1,0 +1,25 @@
+# Source: query-languages/esql/_snippets/functions/examples/variance_over_time.md
+--- !metadata
+id: example-1
+language: esql
+topic: variance_over_time
+subtopic: default
+example_order: 1
+--- !code
+|
+  TS k8s
+  | STATS avg_var_cost=AVG(VARIANCE_OVER_TIME(network.cost)) BY cluster, time_bucket = TBUCKET(1minute)
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,29 @@
+# Source: query-languages/eql/eql-syntax.md
+--- !metadata
+id: example-46
+language: eql
+topic: eql-syntax
+subtopic: default
+example_order: 46
+--- !code
+|
+  sequence
+    [ process where event.type == "creation" ]
+    [ library where process.name == "regsvr32.exe" ]
+    [ library where process.name == "regsvr32.exe" ]
+    [ library where process.name == "regsvr32.exe" ]
+    [ registry where true ]
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

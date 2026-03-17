@@ -1,0 +1,8 @@
+id: search-aggregations-bucket-datehistogram-aggregation
+title: Search Aggregations Bucket Datehistogram Aggregation
+description: 
+
+setup:
+
+
+teardown:

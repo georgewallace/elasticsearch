@@ -1,0 +1,45 @@
+# Source: text-analysis/analysis-delimited-payload-tokenfilter.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: analysis-delimited-payload-tokenfilter
+subtopic: default
+example_order: 4
+--- !code
+|
+  PUT text_payloads
+  {
+    "mappings": {
+      "properties": {
+        "text": {
+          "type": "text",
+          "term_vector": "with_positions_payloads",
+          "analyzer": "payload_delimiter"
+        }
+      }
+    },
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "payload_delimiter": {
+            "tokenizer": "whitespace",
+            "filter": [ "delimited_payload" ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,27 @@
+# Source: query-languages/sql/sql-functions-geo.md
+--- !metadata
+id: example-14
+language: sql
+topic: sql-functions-geo
+subtopic: default
+example_order: 14
+--- !code
+|
+  SELECT ST_Distance(ST_WKTToSQL('POINT (10 20)'), ST_WKTToSQL('POINT (20 30)')) distance;
+
+     distance:d
+  1499101.2889383635
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

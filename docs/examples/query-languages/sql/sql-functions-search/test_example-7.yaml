@@ -1,0 +1,33 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-7
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 7
+--- !code
+|
+  SELECT author, name, page_count, SCORE() FROM library WHERE QUERY('_exists_:"author" AND page_count:>200 AND (name:/star.*/ OR name:duna~)');
+
+        author      |       name        |  page_count   |    SCORE()
+  ------------------+-------------------+---------------+---------------
+  Frank Herbert     |Dune               |604            |3.7164764
+  Frank Herbert     |Dune Messiah       |331            |3.4169943
+  Frank Herbert     |Children of Dune   |408            |3.2064917
+  Frank Herbert     |God Emperor of Dune|454            |3.0504425
+  Peter F. Hamilton |Pandora's Star     |768            |3.0
+  Robert A. Heinlein|Starship Troopers  |335            |3.0
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-search.md
+--- !metadata
+id: example-8
+language: sql
+topic: sql-functions-search
+subtopic: default
+example_order: 8
+--- !code
+|
+  SELECT author, name, SCORE() FROM library WHERE QUERY('dune god', 'default_operator=and;default_field=name');
+
+      author     |       name        |    SCORE()
+  ---------------+-------------------+---------------
+  Frank Herbert  |God Emperor of Dune|3.6984892
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

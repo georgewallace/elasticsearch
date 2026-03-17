@@ -1,0 +1,38 @@
+# Source: text-analysis/analysis-standard-analyzer.md
+--- !metadata
+id: example-3
+language: elastic_console
+topic: analysis-standard-analyzer
+subtopic: default
+example_order: 3
+--- !code
+|
+  PUT /standard_example
+  {
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "rebuilt_standard": {
+            "tokenizer": "standard",
+            "filter": [
+              "lowercase"       
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

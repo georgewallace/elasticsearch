@@ -1,0 +1,49 @@
+# Source: scripting-languages/painless/painless-api-examples.md
+--- !metadata
+id: example-12
+language: elastic_console
+topic: painless-api-examples
+subtopic: default
+example_order: 12
+--- !code
+|
+  POST /_scripts/painless/_execute
+  {
+    "script": {
+      "source": """
+        if (doc['model_number'].value.equals('QVKC92Q'))
+        {emit(1.7 * params._source['measures']['voltage']);}
+        else{emit(params._source['measures']['voltage']);}
+      """
+    },
+    "context": "double_field",
+    "context_setup": {
+      "index": "my-index-000001",
+      "document": {
+        "@timestamp": 1516470094000,
+        "model_number": "QVKC92Q",
+        "measures": {
+          "voltage": 5.6
+        }
+      }
+    }
+  }
+--- !result
+|
+  {
+    "result" : [
+      9.52
+    ]
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

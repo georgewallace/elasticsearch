@@ -1,0 +1,29 @@
+# Source: scripting-languages/painless/painless-operators-boolean.md
+--- !metadata
+id: example-22
+language: painless
+topic: painless-operators-boolean
+subtopic: default
+example_order: 22
+--- !code
+|
+  def a = 0;               
+  def b = 1;               
+  boolean c = a == b;      
+  def d = new HashMap();   
+  def e = new ArrayList(); 
+  c = d == e;
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

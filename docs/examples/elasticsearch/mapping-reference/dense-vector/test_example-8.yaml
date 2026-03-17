@@ -1,0 +1,38 @@
+# Source: elasticsearch/mapping-reference/dense-vector.md
+--- !metadata
+id: example-8
+language: elastic_console
+topic: dense-vector
+subtopic: default
+example_order: 8
+--- !code
+|
+  PUT my-byte-quantized-index
+  {
+    "mappings": {
+      "properties": {
+        "my_vector": {
+          "type": "dense_vector",
+          "dims": 4,
+          "index": true,
+          "index_options": {
+            "type": "int4_hnsw"
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

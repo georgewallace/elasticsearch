@@ -1,0 +1,30 @@
+# Source: query-languages/sql/sql-getting-started.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: sql-getting-started
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT /library/_bulk?refresh
+  {"index":{"_id": "Leviathan Wakes"}}
+  {"name": "Leviathan Wakes", "author": "James S.A. Corey", "release_date": "2011-06-02", "page_count": 561}
+  {"index":{"_id": "Hyperion"}}
+  {"name": "Hyperion", "author": "Dan Simmons", "release_date": "1989-05-26", "page_count": 482}
+  {"index":{"_id": "Dune"}}
+  {"name": "Dune", "author": "Frank Herbert", "release_date": "1965-06-01", "page_count": 604}
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

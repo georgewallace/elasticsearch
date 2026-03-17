@@ -1,0 +1,41 @@
+# Source: scripting-languages/painless/use-painless-scripts-in-runtime-fields.md
+--- !metadata
+id: example-1
+language: elastic_console
+topic: use-painless-scripts-in-runtime-fields
+subtopic: default
+example_order: 1
+--- !code
+|
+  PUT my-index/
+  {
+    "mappings": {
+      "runtime": {
+        "day_of_week": {
+          "type": "keyword",
+          "script": {
+            "source":
+            """emit(doc['@timestamp'].value.dayOfWeekEnum
+            .getDisplayName(TextStyle.FULL, Locale.ROOT))"""
+          }
+        }
+      },
+      "properties": {
+        "@timestamp": {"type": "date"}
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

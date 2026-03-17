@@ -1,0 +1,55 @@
+# Source: text-analysis/analysis-lang-analyzer.md
+--- !metadata
+id: example-28
+language: elastic_console
+topic: analysis-lang-analyzer
+subtopic: default
+example_order: 28
+--- !code
+|
+  PUT /portuguese_example
+  {
+    "settings": {
+      "analysis": {
+        "filter": {
+          "portuguese_stop": {
+            "type":       "stop",
+            "stopwords":  "_portuguese_" 
+          },
+          "portuguese_keywords": {
+            "type":       "keyword_marker",
+            "keywords":   ["exemplo"] 
+          },
+          "portuguese_stemmer": {
+            "type":       "stemmer",
+            "language":   "light_portuguese"
+          }
+        },
+        "analyzer": {
+          "rebuilt_portuguese": {
+            "tokenizer":  "standard",
+            "filter": [
+              "lowercase",
+              "portuguese_stop",
+              "portuguese_keywords",
+              "portuguese_stemmer"
+            ]
+          }
+        }
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

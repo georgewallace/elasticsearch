@@ -1,0 +1,47 @@
+# Source: query-languages/query-dsl/query-dsl-function-score-query.md
+--- !metadata
+id: example-2
+language: elastic_console
+topic: query-dsl-function-score-query
+subtopic: default
+example_order: 2
+--- !code
+|
+  GET /_search
+  {
+    "query": {
+      "function_score": {
+        "query": { "match_all": {} },
+        "boost": "5", 
+        "functions": [
+          {
+            "filter": { "match": { "test": "bar" } },
+            "random_score": {}, 
+            "weight": 23
+          },
+          {
+            "filter": { "match": { "test": "cat" } },
+            "weight": 42
+          }
+        ],
+        "max_boost": 42,
+        "score_mode": "max",
+        "boost_mode": "multiply",
+        "min_score": 42
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

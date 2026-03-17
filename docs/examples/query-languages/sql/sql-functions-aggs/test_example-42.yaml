@@ -1,0 +1,28 @@
+# Source: query-languages/sql/sql-functions-aggs.md
+--- !metadata
+id: example-42
+language: sql
+topic: sql-functions-aggs
+subtopic: default
+example_order: 42
+--- !code
+|
+  SELECT MIN(salary) AS min, MAX(salary) AS max, AVG(salary) AS avg, MAD(salary) AS mad FROM emp;
+
+        min      |      max      |      avg      |      mad
+  ---------------+---------------+---------------+---------------
+  25324          |74999          |48248.55       |10096.5
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

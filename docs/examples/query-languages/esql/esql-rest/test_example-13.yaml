@@ -1,0 +1,38 @@
+# Source: query-languages/esql/esql-rest.md
+--- !metadata
+id: example-13
+language: elastic_console
+topic: esql-rest
+subtopic: default
+example_order: 13
+--- !code
+|
+  POST /_query/async
+  {
+    "query": """
+      FROM library
+      | EVAL year = DATE_TRUNC(1 YEARS, release_date)
+      | STATS MAX(page_count) BY year
+      | SORT year
+      | LIMIT 5
+    """,
+    "wait_for_completion_timeout": "2s"
+  }
+--- !result
+|
+  {
+    "id": "FmNJRUZ1YWZCU3dHY1BIOUhaenVSRkEaaXFlZ3h4c1RTWFNocDdnY2FSaERnUTozNDE=",
+    "is_running": true
+  }
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

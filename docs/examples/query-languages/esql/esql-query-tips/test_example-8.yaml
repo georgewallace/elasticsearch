@@ -1,0 +1,27 @@
+# Source: query-languages/esql/esql-query-tips.md
+--- !metadata
+id: example-8
+language: esql
+topic: esql-query-tips
+subtopic: default
+example_order: 8
+--- !code
+|
+  FROM logs-*
+  | WHERE @timestamp > NOW() - 24 hours
+  | STATS request_count = COUNT(*) BY bucket = DATE_TRUNC(1 hour, @timestamp)
+  | SORT bucket ASC
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took

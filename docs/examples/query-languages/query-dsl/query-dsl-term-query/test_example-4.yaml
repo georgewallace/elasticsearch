@@ -1,0 +1,31 @@
+# Source: query-languages/query-dsl/query-dsl-term-query.md
+--- !metadata
+id: example-4
+language: elastic_console
+topic: query-dsl-term-query
+subtopic: default
+example_order: 4
+--- !code
+|
+  GET my-index-000001/_search?pretty
+  {
+    "query": {
+      "term": {
+        "full_text": "Quick Brown Foxes!"
+      }
+    }
+  }
+--- !result
+
+--- !test
+steps:
+  - action:
+      kind: EXAMPLE_CODE
+  - expected:
+      kind: EXAMPLE_RESULT
+      status_codes: [200, 201]
+      match_fields:
+        - field: '*'
+          match_kind: EQUALS
+      ignore_fields:
+        - took
